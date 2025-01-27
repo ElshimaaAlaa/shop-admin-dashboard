@@ -1,8 +1,13 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import AllCategory from "./Categories/All Categories/AllCategory";
+
 function App() {
   return (
-    <div className="">
-      
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<AllCategory />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
