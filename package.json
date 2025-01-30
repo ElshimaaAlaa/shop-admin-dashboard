@@ -3,8 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@radix-ui/react-dropdown-menu": "^2.1.5",
     "axios": "^1.7.9",
     "cra-template": "1.2.0",
+    "formik": "^2.4.6",
+    "lucide-react": "^0.474.0",
     "react": "^19.0.0",
     "react-bootstrap": "^2.10.7",
     "react-dom": "^19.0.0",
