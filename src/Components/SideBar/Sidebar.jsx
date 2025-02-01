@@ -22,7 +22,7 @@ function Sidebar() {
   };
 
   return (
-    <div className="bg-black w-20 h-115vh relative">
+    <div className="bg-black w-20 h-auto relative">
       <div className="flex justify-center">
         <img
           src="/assets/images/logo.png"

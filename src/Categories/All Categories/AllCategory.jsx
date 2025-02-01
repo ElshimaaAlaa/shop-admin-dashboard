@@ -14,7 +14,7 @@ function AllCategory() {
       setLoading(true);
       try {
         const response = await axios({
-          url: "https://demo.vrtex.duckdns.org/api/categories",
+          url:"https://demo.vrtex.duckdns.org/api/categories",
           method: "GET",
           headers: {
             Authorization:
@@ -22,8 +22,9 @@ function AllCategory() {
           },
         });
         if (response.status === 200) {
-          setCategories(response.data.data);
-          console.log(response.data.data);
+          console.log('success', categories)
+          setCategories(categories.data.data);
+          console.log(categories.data.data);
         } else {
           console.error("Failed to fetch data: ");
         }
@@ -35,15 +36,17 @@ function AllCategory() {
       }
     };
 
-    fetchCategories();
-  }, []);
+    // fetchCategories(); //call function to fetch categories
+  }, [categories]);
 
   return (
-    <div className="bg-lightgray p-10">
-      <h1 className="font-bold text-2xl mb-3 p-2">Categories</h1>
+    <div className="bg-lightgray p-10 min-h-screen">
+      <h1 className="font-bold mb-3 p-2" style={{ fontSize: "20px" }}>
+        Categories
+      </h1>
       <div className="flex justify-between items-center gap-5 bg-white p-4 rounded">
         <div className="relative w-full">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
           <input
             type="text"
             placeholder="Search"
@@ -72,16 +75,30 @@ function AllCategory() {
         <table className="bg-white min-w-full table border-collapse mt-8">
           <thead>
             <tr>
-              <th className="px-3 py-3 border border-gray-200 text-left">
+              <th className="px-3 py-3 border border-gray-200 text-left w-6">
                 <input type="checkbox" className="form-checkbox h-4 w-4" />
               </th>
               <th className="px-6 py-3 border border-gray-200 text-left">
-                Category
+                <p className="flex justify-between items-center">
+                  Category
+                  <img
+                    src="/assets/images/style=stroke.png"
+                    alt=""
+                    className="w-4 h-4 cursor-pointer"
+                  />
+                </p>
               </th>
               <th className="px-6 py-3 border border-gray-200 text-left">
-                Stock
+                <p className="flex justify-between items-center">
+                  Stock
+                  <img
+                    src="/assets/images/sort-amount-down_svgrepo.com.png"
+                    alt=""
+                    className="w-6 h-6 cursor-pointer"
+                  />
+                </p>
               </th>
-              <th className="px-6 py-3 border border-gray-200 text-left">
+              <th className="px-6 py-3 border border-gray-200 text-left w-5">
                 Actions
               </th>
             </tr>
@@ -89,7 +106,7 @@ function AllCategory() {
           <tbody>
             {categories.map((category) => (
               <tr key={category.id}>
-                <td className="px-3 py-3 border border-gray-200 w-5">
+                <td className="px-3 py-3 border border-gray-200">
                   <input type="checkbox" className="form-checkbox h-4 w-4" />
                 </td>
                 <td

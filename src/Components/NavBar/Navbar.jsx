@@ -15,13 +15,11 @@ function Navbar() {
             <img
               src="/assets/images/arrow-multi-line-right_svgrepo.com.png"
               alt="Logo"
-              // width={24}
-              // height={24}
               className="w-9 h-9"
             />
           </button>
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
             <input
               type="text"
               placeholder="Search Something Here"

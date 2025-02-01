@@ -8,13 +8,16 @@ function AllProducts() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [products, setProducts] = useState([]);
+  const [perPage, setPerPage] = useState(0);
+  const Page = useState(1);
+  const totalPages = useState();
 
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
         const response = await axios({
-          url: "https://demo.vrtex.duckdns.org/api/products?stock=out_of_stock&per_page=3&page=2",
+          url: `https://demo.vrtex.duckdns.org/api/products?stock=out_of_stock&per_page=${perPage}&page=${Page}`, //pagenation
           method: "GET",
           headers: {
             Accept: "application/json",
@@ -37,18 +40,20 @@ function AllProducts() {
       setLoading(false);
     };
     // fetchProducts();
-  }, []);
+  }, [perPage, Page]);
 
   return (
     <div className="bg-lightgray p-10">
-      <h1 className="font-bold text-2xl mb-3 p-2">Products</h1>
+      <h1 className="font-bold mb-3 p-2" style={{ fontSize: "20px" }}>
+        Products
+      </h1>
       <div className="flex justify-between items-center gap-5 bg-white p-4 rounded">
         <div className="relative w-full">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
           <input
             type="text"
             placeholder="Search"
-            className="font-bold w-full pl-10 pr-4 py-3 bg-gray-100 rounded text-sm focus:outline-none border border-gray-200"
+            className="font-bold w-full pl-10 pr-4 py-3 bg-gray-50 rounded text-sm focus:outline-none border border-gray-200"
           />
         </div>
         <div
@@ -78,16 +83,44 @@ function AllProducts() {
                 <p>Product</p>
               </th>
               <th className="px-6 py-3 border border-gray-200 text-left">
-                Category
+                <p className="flex items-center justify-between">
+                  Category
+                  <img
+                    src="/assets/images/style=stroke.png"
+                    alt=""
+                    className="w-4 h-4 cursor-pointer"
+                  />
+                </p>
               </th>
               <th className="px-6 py-3 border border-gray-200 text-left">
-                Price
+                <p className="flex items-center justify-between">
+                  Price
+                  <img
+                    src="/assets/images/sort-amount-down_svgrepo.com.png"
+                    alt=""
+                    className="w-5 h-5 cursor-pointer"
+                  />
+                </p>
               </th>
               <th className="px-6 py-3 border border-gray-200 text-left">
-                Stock
+                <p className="flex items-center justify-between">
+                  Stock
+                  <img
+                    src="/assets/images/sort-amount-down_svgrepo.com.png"
+                    alt=""
+                    className="w-5 h-5 cursor-pointer"
+                  />
+                </p>
               </th>
               <th className="px-6 py-3 border border-gray-200 text-left">
-                Colors
+                <p className="flex items-center justify-between">
+                  Colors
+                  <img
+                    src="/assets/images/style=stroke.png"
+                    alt=""
+                    className="w-4 h-4 cursor-pointer"
+                  />
+                </p>
               </th>
               <th className="px-6 py-3 border border-gray-200 text-left w-5">
                 Actions
@@ -97,7 +130,7 @@ function AllProducts() {
           <tbody>
             {products.map((product) => (
               <tr key={product.id}>
-                <td className="px-3 py-3 border border-gray-200 w-5">
+                <td className="px-3 py-3 border border-gray-200 ">
                   <input type="checkbox" className="form-checkbox h-4 w-4" />
                 </td>
                 <td
