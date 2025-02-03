@@ -10,6 +10,11 @@ import AddProduct from "./Products/Add Product/AddProduct";
 import EditProduct from "./Products/Edit Product/EditProduct";
 import ViewProduct from "./Products/View Product/ViewProduct";
 import Dashboard from "./Pages/Main/Main";
+import AllDiscounts from "./DisCounts and Promotions/All Discounts/AllDiscounts";
+import AddDiscounts from "./DisCounts and Promotions/Add Discounts/AddDiscounts";
+import Orders from "./Orders/Orders";
+import ViewOrder from "./Orders/ViewOrder";
+import Shipping from "./Settings/Shipping";
 
 function App() {
   return (
@@ -28,6 +33,14 @@ function App() {
           <Route path="/AddProduct" element={<AddProduct />} />
           <Route path="/EditProduct" element={<EditProduct />} />
           <Route path="/ViewProduct" element={<ViewProduct />} />
+          {/* discounts */}
+          <Route path="/AllDiscounts" element={<AllDiscounts />} />
+          <Route path="/AddDiscounts" element={<AddDiscounts />} />
+          {/* Orders */}
+          <Route path="/AllOrders" element={<Orders />} />
+          <Route path="/ViewOrder" element={<ViewOrder />} />
+          {/* settings */}
+          <Route path="/Shipping" element={<Shipping />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -46,11 +46,11 @@ function Sidebar() {
         />
         <Discount
           color={activeItem === "discount" ? "#E0A75E" : "#FFFFFF"}
-          onClick={() => handleClick("discount")}
+          onClick={() => handleClick("discount" , "/AllDiscounts")}
         />
         <Shipping
           color={activeItem === "shipping" ? "#E0A75E" : "#FFFFFF"}
-          onClick={() => handleClick("shipping")}
+          onClick={() => handleClick("shipping","/AllOrders")}
         />
         <Charts
           color={activeItem === "charts" ? "#E0A75E" : "#FFFFFF"}

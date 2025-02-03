@@ -3,47 +3,53 @@ import React, { useEffect, useState } from "react";
 import { Search, Plus, Pencil, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-function AllCategory() {
-  const [categories, setCategories] = useState([]);
+function Shipping() {
+  const [discounts, setDiscounts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const navigate = useNavigate();
-
   // Fetch data from API
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchDiscounts = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(
-          "https://demo.vrtex.duckdns.org/api/shop/categories",
-          {
-            headers: {
-              Authorization:
-                "Bearer 1K9elSZiyQKW2wIs5uWHOR1hfLVPBavnhHRCUnbF079f2990",
-            },
-          }
-        );
-
+        const response = await axios({
+          url: "",
+          method: "GET",
+          headers: {
+            Authorization:
+              "Bearer 1K9elSZiyQKW2wIs5uWHOR1hfLVPBavnhHRCUnbF079f2990",
+          },
+        });
         if (response.status === 200) {
-          setCategories(response.data.data);
+          console.log("success", discounts);
+          setDiscounts(discounts.data.data);
+          console.log(discounts.data.data);
+        } else {
+          console.error("Failed to fetch data: ");
         }
       } catch (error) {
         setError(true);
-        console.error("API call failed: ", error.message);
+        console.error("API call failed: ", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchCategories(); // Call function to fetch categories
-  }, []);
+    //fetchDiscounts(); //call function to fetch categories
+  }, [discounts]);
 
   return (
     <div className="bg-lightgray p-10 min-h-screen">
       <h1 className="font-bold mb-3 p-2" style={{ fontSize: "20px" }}>
-        Categories
+        Shipping Providers
       </h1>
-      <div className="flex justify-between items-center gap-5 bg-white p-4 rounded-3xl">
+      <div className="bg-white p-4 rounded mb-5">
+        <h1>5</h1>
+        <img src="/assets/images/shipping-fast-solid_svgrepo.com.png" alt=""/>
+        <p>Shipping Providers</p>
+      </div>
+      <div className="flex justify-between items-center gap-5 bg-white p-4 rounded">
         <div className="relative w-full">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
           <input
@@ -52,17 +58,26 @@ function AllCategory() {
             className="font-bold w-full pl-10 pr-4 py-3 bg-muted/50 rounded text-sm focus:outline-none border border-gray-200 bg-lightgray"
           />
         </div>
-        <div
-          className="flex gap-3 bg-primary text-white font-bold p-3 rounded w-52 cursor-pointer"
-          onClick={() => navigate("/addCategory")}
-        >
-          <div className="bg-white text-primary font-bold rounded ">
-            <Plus className="p-1 font-bold" />
+        <div className="flex items-center gap-5 w-80">
+          {/* <div className="bg-customOrange-mediumOrange rounded p-3 font-bold cursor-pointer flex items-center gap-3">
+            <img
+              src="/assets/images/date-range_svgrepo.com.png"
+              alt=""
+              className="w-5 h-5"
+            />
+            <p className="text-primary">Select Date</p>
+          </div> */}
+          <div
+            className="flex gap-3 bg-primary text-white font-bold p-3 rounded  cursor-pointer"
+            onClick={() => navigate("/AddDiscounts")}
+          >
+            <div className="bg-white text-primary font-bold  rounded ">
+              <Plus className="p-1 font-bold" />
+            </div>
+            <p>Add Shipping Provider</p>
           </div>
-          <p>Add Category</p>
         </div>
       </div>
-
       {error ? (
         <div className="text-red-500 text-center mt-10 font-bold">
           Failed to fetch data. Please try again.
@@ -75,22 +90,13 @@ function AllCategory() {
         <table className="bg-white min-w-full table border-collapse mt-8">
           <thead>
             <tr>
-              <th className="px-3 py-3 border border-gray-200 text-left w-12">
+              <th className="px-3 py-3 border border-gray-200 text-left w-5">
                 <input type="checkbox" className="form-checkbox h-4 w-4" />
+                {/* <p>Product</p> */}
               </th>
               <th className="px-6 py-3 border border-gray-200 text-left">
                 <p className="flex justify-between items-center">
-                  Category
-                  <img
-                    src="/assets/images/style=stroke.png"
-                    alt=""
-                    className="w-4 h-4 cursor-pointer"
-                  />
-                </p>
-              </th>
-              <th className="px-6 py-3 border border-gray-200 text-left">
-                <p className="flex justify-between items-center">
-                  Stock
+                Shipping Providers
                   <img
                     src="/assets/images/sort-amount-down_svgrepo.com.png"
                     alt=""
@@ -98,13 +104,43 @@ function AllCategory() {
                   />
                 </p>
               </th>
+              {/* <th className="px-6 py-3 border border-gray-200 text-left">
+                <p className="flex justify-between items-center">
+                  Discount Rate
+                  <img
+                    src="/assets/images/sort-amount-down_svgrepo.com.png"
+                    alt=""
+                    className="w-6 h-6 cursor-pointer"
+                  />
+                </p>
+              </th> */}
+              {/* <th className="px-6 py-3 border border-gray-200 text-left">
+                <p className="flex justify-between items-center">
+                  End Date
+                  <img
+                    src="/assets/images/sort-amount-down_svgrepo.com.png"
+                    alt=""
+                    className="w-6 h-6 cursor-pointer"
+                  />
+                </p>
+              </th> */}
+              {/* <th className="px-6 py-3 border border-gray-200 text-left">
+                <p className="flex justify-between items-center">
+                  Colors
+                  <img
+                    src="/assets/images/style=stroke.png"
+                    alt=""
+                    className="w-4 h-4 cursor-pointer "
+                  />
+                </p>
+              </th> */}
               <th className="px-6 py-3 border border-gray-200 text-left w-5">
                 Actions
               </th>
             </tr>
           </thead>
           <tbody>
-            {categories.map((category) => (
+            {discounts.map((category) => (
               <tr key={category.id}>
                 <td className="px-3 py-3 border border-gray-200">
                   <input type="checkbox" className="form-checkbox h-4 w-4" />
@@ -147,4 +183,4 @@ function AllCategory() {
     </div>
   );
 }
-export default AllCategory;
+export default Shipping;
