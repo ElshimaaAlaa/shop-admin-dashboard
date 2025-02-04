@@ -1,7 +1,9 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Search, Plus, Pencil, Trash2 } from "lucide-react";
+import { Search, Plus, Pencil } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import DeleteCategory from "../Delete Category/DeleteCategory";
+import { ClipLoader } from "react-spinners";
 
 function AllCategory() {
   const [categories, setCategories] = useState([]);
@@ -26,6 +28,7 @@ function AllCategory() {
 
         if (response.status === 200) {
           setCategories(response.data.data);
+          console.log(response.data.data);
         }
       } catch (error) {
         setError(true);
@@ -37,6 +40,11 @@ function AllCategory() {
 
     fetchCategories(); // Call function to fetch categories
   }, []);
+
+  const handleDeleteCategory = (categoryId) => {
+    setCategories(categories.filter((category) => category.id !== categoryId));
+    window.location.reload();
+  };
 
   return (
     <div className="bg-lightgray p-10 min-h-screen">
@@ -69,7 +77,7 @@ function AllCategory() {
         </div>
       ) : loading ? (
         <div className="text-gray-600 text-center font-bold mt-10">
-          Loading...
+          <ClipLoader color="#E0A75E" />
         </div>
       ) : (
         <table className="bg-white min-w-full table border-collapse mt-8">
@@ -107,36 +115,35 @@ function AllCategory() {
             {categories.map((category) => (
               <tr key={category.id}>
                 <td className="px-3 py-3 border border-gray-200">
-                  <input type="checkbox" className="form-checkbox h-4 w-4" />
+                <input type="checkbox" className="form-checkbox h-4 w-4" />
                 </td>
                 <td
-                  className="flex gap-3 px-6 py-3 border border-gray-200 cursor-pointer"
-                  onClick={() => navigate("/ViewCategory")}
+                  className="flex gap-3 px-6 py-3 border border-gray-200"
+                  // onClick={() => navigate("/ViewCategory")}
                 >
                   <img
                     src={category.image}
                     alt="category-image"
-                    className="w-6 h-6 object-cover"
+                    className="w-7 h-7 object-cover rounded-full"
                   />
                   {category.name}
                 </td>
                 <td className="px-6 py-3 border border-gray-200">
-                  {category.stock}
+                  {category.stock || 0}
                 </td>
                 <td className="px-6 py-3 border border-gray-200 w-10">
                   <div className="flex items-center gap-1">
                     <button
-                      className="h-6 w-6 p-1"
+                      className="h-6 w-6 p-1 me-2"
                       onClick={() => navigate("/EditCategory")}
                     >
                       <Pencil className="h-4 w-4 text-[#E6A86C]" />
                     </button>
-                    <button
-                      className="h-6 w-6 p-1"
-                      onClick={() => navigate("/deleteCategory")}
-                    >
-                      <Trash2 className="h-4 w-4 text-red-500" />
-                    </button>
+                    <DeleteCategory
+                      categoryId={category.id}
+                      id={category.id}
+                      onDelete={handleDeleteCategory}
+                    />
                   </div>
                 </td>
               </tr>
@@ -147,4 +154,5 @@ function AllCategory() {
     </div>
   );
 }
+
 export default AllCategory;

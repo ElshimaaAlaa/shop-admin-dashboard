@@ -1,26 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { Search, Plus, Pencil, Trash2 } from "lucide-react";
+import { Search, Plus, Pencil } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { ClipLoader } from "react-spinners";
+import DeleteProduct from "../Delete Product/DeleteProduct";
 
 function AllProducts() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [products, setProducts] = useState([]);
-  const [perPage, setPerPage] = useState(0);
-  const Page = useState(1);
-  const totalPages = useState();
 
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
         const response = await axios({
-          url: `https://demo.vrtex.duckdns.org/api/products?stock=out_of_stock&per_page=${perPage}&page=${Page}`, //pagenation
+          url: `https://demo.vrtex.duckdns.org/api/shop/products`,
           method: "GET",
           headers: {
-            Accept: "application/json",
             "Accept-Language": "ar",
             Authorization:
               "Bearer 1K9elSZiyQKW2wIs5uWHOR1hfLVPBavnhHRCUnbF079f2990",
@@ -39,11 +37,16 @@ function AllProducts() {
       }
       setLoading(false);
     };
-    // fetchProducts();
-  }, [perPage, Page]);
+
+    fetchProducts();
+  }, []);
+  const handleDeleteProduct = (productId) => {
+    setProducts(products.filter((product) => product.id !== productId));
+    window.location.reload();
+  };
 
   return (
-    <div className="bg-lightgray p-10">
+    <div className="bg-lightgray p-10 min-h-screen">
       <h1 className="font-bold mb-3 p-2" style={{ fontSize: "20px" }}>
         Products
       </h1>
@@ -72,7 +75,7 @@ function AllProducts() {
         </div>
       ) : loading ? (
         <div className="text-gray-600 text-center font-bold mt-10">
-          Loading...
+          <ClipLoader color="#E0A75E" />
         </div>
       ) : (
         <table className="bg-white min-w-full table border-collapse mt-8">
@@ -130,22 +133,24 @@ function AllProducts() {
           <tbody>
             {products.map((product) => (
               <tr key={product.id}>
-                <td className="px-3 py-3 border border-gray-200 ">
-                  <input type="checkbox" className="form-checkbox h-4 w-4" />
+                <td className="px-3 py-3 border border-gray-200">
+                  <p className="flex items-center gap-3">
+                    <input type="checkbox" className="form-checkbox h-5 w-4" />
+                    <img
+                      src={product.images[0].src}
+                      alt={product.name}
+                      className="w-7 h-7 object-cover rounded-full"
+                    />
+                    {product.name}
+                  </p>
                 </td>
-                <td
-                  className="flex gap-3 px-6 py-3 border border-gray-200"
-                  onClick={() => navigate("/ViewProduct")}
-                >
+                <td className="flex gap-3 px-6 py-3 border border-gray-200">
                   <img
-                    src={product.image}
-                    alt="product-image"
-                    className="w-6 h-6 object-cover"
+                    src={product.category.image}
+                    alt="category-image"
+                    className="w-7 h-7 object-cover rounded-full"
                   />
-                  {product.name}
-                </td>
-                <td className="px-6 py-3 border border-gray-200">
-                  {product.category}
+                  {product.category.name}
                 </td>
                 <td className="px-6 py-3 border border-gray-200">
                   {product.price}
@@ -154,7 +159,30 @@ function AllProducts() {
                   {product.stock}
                 </td>
                 <td className="px-6 py-3 border border-gray-200">
-                  {product.colors?.join(", ") || "N/A"}
+                  {product.colors.map((color) => (
+                    <div key={color.id} className="flex items-center gap-2">
+                      <div
+                        className="w-5 h-5 rounded-full"
+                        style={{ backgroundColor: color.code }}
+                      />
+                    </div>
+                  ))}
+                </td>
+                <td className="px-6 py-3 border border-gray-200 ">
+                  <div className="flex gap-4">
+                  <button
+                    className="h-6 w-6 p-1"
+                    onClick={() => navigate(`/EditProduct/${product.id}`)}
+                  >
+                    <Pencil className="h-4 w-4 text-[#E6A86C]" />
+                  </button>
+                  <DeleteProduct
+                    categoryId={product.id}
+                    id={product.id}
+                    onDelete={handleDeleteProduct}
+                  />
+                  </div>
+               
                 </td>
               </tr>
             ))}
@@ -164,5 +192,4 @@ function AllProducts() {
     </div>
   );
 }
-
 export default AllProducts;

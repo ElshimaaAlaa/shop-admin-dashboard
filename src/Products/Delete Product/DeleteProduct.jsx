@@ -1,47 +1,39 @@
 import React, { useState } from "react";
-import FailedModal from "../../Components/Modal/Failed Modal/FailedModal";
-import axios from "axios";
 import { Trash2 } from "lucide-react";
+import axios from "axios";
+import FailedModal from "../../Components/Modal/Failed Modal/FailedModal";
 import { ClipLoader } from "react-spinners";
 
-function DeleteCategory({ id, onDelete }) {
-  const [showModal, setShowModal] = useState(false);
+function DeleteProduct({ id, onDelete }) {
   const [isLoading, setIsLoading] = useState(false);
-  const handleDeleteCategory = async () => {
+  const [showModal, setShowModal] = useState(false);
+  const handleDeleteProduct = async () => {
     setIsLoading(true);
-    if (!id) {
-      console.error("ID is missing");
-      return; // Prevent the API call if ID is missing
-    }
     try {
       const response = await axios({
         method: "DELETE",
-        url: `http://demo.localhost:8000/api/categories/delete/${id}`,
+        url: `http://demo.localhost:8000/api/products/delete/${id}`,
         headers: {
           Authorization:
-            "Bearer 1K9elSZiyQKW2wIs5uWHOR1hfLVPBavnhHRCUnbF079f2990",
+            "Bearer 1K9elSZiyQKW2wIs5uWHOR1hfLVPBavnhHRCUnbF079f2990 ",
         },
       });
       if (response.status === 200) {
-        onDelete(id);
-        setIsLoading(true);
-        console.log("Category deleted successfully");
-        setShowModal(true);
-      } else {
-        console.error("Failed to delete category");
         setShowModal(false);
         setIsLoading(false);
+        onDelete(id);
+      } else {
+        setIsLoading(false);
+        console.error("Failed to delete product");
       }
     } catch (error) {
-      console.error("Failed to delete category", error);
-      setShowModal(false);
-      setIsLoading(false);
+        setIsLoading(false);
+      console.error("Failed to delete product", error);
     }
   };
   return (
     <div>
-      {/* Delete Category Button */}
-      <button className="h-6 w-6 p-1" onClick={() => setShowModal(true)}>
+      <button className="h-6 w-6 p-1" onClick={()=>setShowModal(true)}>
         <Trash2 className="h-4 w-4 text-red-500" />
       </button>
       <FailedModal isOpen={showModal} onClose={() => setShowModal(false)}>
@@ -53,7 +45,7 @@ function DeleteCategory({ id, onDelete }) {
           />
         </div>
         <p className="font-bold w-72 text-center">
-          Are You Sure You Want To Delete This Category ?
+          Are You Sure You Want To Delete This Product ?
         </p>
         <div className="flex gap-3 mt-5 mb-3">
           <button
@@ -64,13 +56,18 @@ function DeleteCategory({ id, onDelete }) {
           </button>
           <button
             className="rounded text-white bg-customred font-bold p-3 w-32"
-            onClick={handleDeleteCategory}
+            onClick={handleDeleteProduct}
           >
-            {isLoading ? <ClipLoader color="#fff" size={"22px"} className="text-center" /> : "Delete"}
+            {isLoading ? (
+              <ClipLoader color="#fff" size={"22px"} className="text-center" />
+            ) : (
+              "Delete"
+            )}
           </button>
         </div>
       </FailedModal>
     </div>
   );
 }
-export default DeleteCategory;
+
+export default DeleteProduct;
