@@ -12,7 +12,7 @@ function AddCategory() {
   const validationShcema = Yup.object({
     name: Yup.string().required("Name is required"),
     description: Yup.string().required("Description is required"),
-    image: Yup.string().required("Image is required"),
+    // image: Yup.string().required("Image is required"),
   });
   const handleSubmit = async (values) => {
     const items = {
@@ -28,7 +28,7 @@ function AddCategory() {
           Authorization:
             "Bearer 1K9elSZiyQKW2wIs5uWHOR1hfLVPBavnhHRCUnbF079f2990",
         },
-        data:items,
+        data:{items},
       });
       if (response.status === 200) {
         console.log("Category added successfully");

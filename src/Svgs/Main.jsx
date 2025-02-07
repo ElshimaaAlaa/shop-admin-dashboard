@@ -3,7 +3,7 @@ const Main = ({onClick , color = "#fff"}) => {
   return (
     <svg
     onClick={onClick}
-      width="22"
+      width="60"
       height="22"
       viewBox="0 0 24 25"
       fill="none"

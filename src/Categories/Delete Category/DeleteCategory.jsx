@@ -16,7 +16,7 @@ function DeleteCategory({ id, onDelete }) {
     try {
       const response = await axios({
         method: "DELETE",
-        url: `http://demo.localhost:8000/api/categories/delete/${id}`,
+        url: `http://demo.localhost:8000/api/shop/categories/delete/${id}`,
         headers: {
           Authorization:
             "Bearer 1K9elSZiyQKW2wIs5uWHOR1hfLVPBavnhHRCUnbF079f2990",

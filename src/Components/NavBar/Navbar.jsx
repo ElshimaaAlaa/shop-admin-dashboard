@@ -23,7 +23,7 @@ function Navbar() {
             <input
               type="text"
               placeholder="Search Something Here"
-              className="w-[400px] pl-10 pr-4 py-3 bg-muted/50 rounded text-sm focus:outline-none border border-gray-200 bg-lightgray"
+              className="w-[400px] pl-10 pr-4 py-3 bg-muted/50 rounded-xl text-sm focus:outline-none border border-gray-200 bg-lightgray"
             />
           </div>
         </div>
@@ -42,13 +42,17 @@ function Navbar() {
             <Globe className="w-7 h-6" />
           </button>
           {/* user profile settings */}
-          <div className="bg-lightgray border border-gray-300 rounded flex items-center p-4 gap-6">
-            <img src="/assets/images/image 4.png" alt="profile-image" className="w-12"/>
+          <div className="bg-lightgray border border-gray-300 rounded-xl flex items-center p-4 gap-6">
+            <img
+              src="/assets/images/image 4.png"
+              alt="profile-image"
+              className="w-12"
+            />
             <div>
               <h3 className="font-bold">Ahmed Mohamed</h3>
               <p className="text-gray-600 mt-3">Vertex CEO</p>
             </div>
-            <img src="/assets/images/dropdown-arrow_svgrepo.com.png" alt=""/>
+            <img src="/assets/images/dropdown-arrow_svgrepo.com.png" alt="" />
           </div>
         </div>
       </nav>
@@ -56,15 +60,6 @@ function Navbar() {
   );
 }
 export default Navbar;
-
-
-
-
-
-
-
-
-
 /* 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
