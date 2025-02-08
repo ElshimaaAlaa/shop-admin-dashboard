@@ -1,38 +1,27 @@
-import * as React from "react";
-import { DataGrid } from "@mui/x-data-grid";
-import Paper from "@mui/material/Paper";
-import axios from "axios";
-import { useState, useEffect } from "react";
-import { Search, Plus, Pencil } from "lucide-react";
+import React, { useEffect, useState, useMemo } from "react";
+import ReactPaginate from "react-paginate";
+import { Search, Plus, Pencil, ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import DeleteCategory from "../Delete Category/DeleteCategory";
 import { ClipLoader } from "react-spinners";
+import { fetchCategories } from "../../ApiServices/AllCategoriesApi";
 
 function AllCategory() {
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5);
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
-  const paginationModel = { page: 0, pageSize: 5 };
 
   // Fetch data from API
   useEffect(() => {
-    const fetchCategories = async () => {
+    const getCategories = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get(
-          "https://demo.vrtex.duckdns.org/api/shop/categories",
-          {
-            headers: {
-              Authorization:
-                "Bearer 1K9elSZiyQKW2wIs5uWHOR1hfLVPBavnhHRCUnbF079f2990",
-            },
-          }
-        );
-
-        if (response.status === 200) {
-          setCategories(response.data.data);
-        }
+        const data = await fetchCategories();
+        setCategories(data);
       } catch (error) {
         setError(true);
         console.error("API call failed: ", error.message);
@@ -40,81 +29,40 @@ function AllCategory() {
         setIsLoading(false);
       }
     };
-    fetchCategories(); // Call function to fetch categories
+    getCategories(); // Call function to fetch categories
   }, []);
 
   const handleDeleteCategory = (categoryId) => {
-    setCategories(categories.filter((category) => category.id !== categoryId));
-    window.location.reload();
+    setCategories((prevCategories) =>
+      prevCategories.filter((category) => category.id !== categoryId)
+    );
   };
 
-  const columns = [
-    {
-      field: "name",
-      headerName: "Category",
-      width: 590,
-      renderCell: (params) => (
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <img
-            src={params.row.image}
-            alt={params.row.name}
-            style={{
-              width: 30,
-              height: 30,
-              borderRadius: "50%",
-              marginRight: 10,
-            }}
-          />
-          <span>{params.row.name}</span>
-        </div>
-      ),
-    },
-    { field: "stock", headerName: "Stock", width: 590 },
-    {
-      field: "actions",
-      headerName: "Actions",
-      width: 100,
-      renderCell: (params) => (
-        <div className="flex items-center gap-1">
-          <button
-            className="h-6 w-6 p-1 me-2"
-            onClick={() => navigate("/EditCategory")}
-          >
-            <Pencil className="h-4 w-4 text-[#E6A86C]" />
-          </button>
-          <DeleteCategory
-            categoryId={params.row.id}
-            id={params.row.id}
-            onDelete={handleDeleteCategory}
-          />
-        </div>
-      ),
-    },
-  ];
+  // Filter categories based on search query
+  const filteredCategories = categories.filter((category) =>
+    category.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-  const rows = categories.map((category) => ({
-    id: category.id,
-    name: category.name,
-    stock: category.stock || 0,
-    image: category.image || "https://via.placeholder.com/30",
-  }));
+  // Pagination logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = useMemo(() => {
+    return filteredCategories.slice(indexOfFirstItem, indexOfLastItem);
+  }, [filteredCategories, indexOfFirstItem, indexOfLastItem]);
 
-  // Custom function to apply styles to selected rows
-  const getRowClassName = (params) => {
-    return params.indexRelativeToCurrentPage % 2 === 0 ? "even-row" : "odd-row";
-  };
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <div className="bg-lightgray p-10 min-h-screen">
-      <h1 className="font-bold mb-3 p-2" style={{ fontSize: "20px" }}>
-        Categories
-      </h1>
-      <div className="flex justify-between items-center gap-5 bg-white p-4 rounded-lg">
+      <h1 className="font-bold mb-3 p-2 text-xl">Categories</h1>
+      <div className="flex justify-between items-center gap-5 bg-white p-4 rounded-2xl">
         <div className="relative w-full">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
           <input
             type="text"
             placeholder="Search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             className="font-bold w-full pl-10 pr-4 py-3 bg-muted/50 rounded-xl text-sm focus:outline-none border border-gray-200 bg-lightgray"
           />
         </div>
@@ -138,34 +86,99 @@ function AllCategory() {
           <ClipLoader color="#E0A75E" />
         </div>
       ) : (
-        <Paper className="mt-6">
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            initialState={{ pagination: { paginationModel } }}
-            pageSizeOptions={[5]}
-            checkboxSelection
-            sx={{
-              border: 0,
-              "& .MuiDataGrid-row.Mui-selected": {
-                backgroundColor: "#FCEFDB",
-              },
-              "& .MuiDataGrid-row.Mui-selected:hover": {
-                backgroundColor: "#FCEFDB",
-              },
-              "& .MuiCheckbox-root.Mui-checked": {
-                color: "#E0A75E",
-              },
-              "& .MuiDataGrid-cell:focus": {
-                outline: "none",
-              },
-              "& .MuiDataGrid-row:focus": {
-                outline: "none",
-              },
-            }}
-            getRowClassName={getRowClassName} // Apply custom row styles
+        <>
+          <table className="bg-white min-w-full table border-collapse mt-8 rounded-lg overflow-hidden">
+            <thead>
+              <tr>
+                <th className="px-3 py-3 border border-gray-200 text-left w-12">
+                  <input
+                    type="checkbox"
+                    className="form-checkbox h-4 w-4"
+                    aria-label="Select category"
+                  />
+                </th>
+                <th className="px-6 py-3 border border-gray-200 text-left">
+                  <p className="flex justify-between items-center">
+                    Category
+                    <img
+                      src="/assets/images/style=stroke.png"
+                      alt=""
+                      className="w-4 h-4 cursor-pointer"
+                    />
+                  </p>
+                </th>
+                <th className="px-6 py-3 border border-gray-200 text-left">
+                  <p className="flex justify-between items-center">
+                    Stock
+                    <img
+                      src="/assets/images/sort-amount-down_svgrepo.com.png"
+                      alt="category"
+                      className="w-6 h-6 cursor-pointer"
+                    />
+                  </p>
+                </th>
+                <th className="px-6 py-3 border border-gray-200 text-left w-5">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentItems.map((category) => (
+                <tr key={category.id}>
+                  <td className="px-3 py-3 border border-gray-200">
+                    <input
+                      type="checkbox"
+                      className="form-checkbox h-4 w-4"
+                      aria-label="Select category"
+                    />
+                  </td>
+                  <td className="flex gap-3 px-6 py-3 border border-gray-200">
+                    <img
+                      src={category.image || "/path/to/default-image.png"}
+                      alt="category"
+                      className="w-7 h-7 object-cover rounded-full"
+                      onError={(e) => {
+                        e.target.src = "/path/to/default-image.png";
+                      }}
+                    />
+                    {category.name}
+                  </td>
+                  <td className="px-6 py-3 border border-gray-200">
+                    {category.stock || 0}
+                  </td>
+                  <td className="px-6 py-3 border border-gray-200 w-10">
+                    <div className="flex items-center gap-1">
+                      <button
+                        className="h-6 w-6 p-1 me-2"
+                        onClick={() => navigate("/EditCategory")}
+                        aria-label="Edit category"
+                      >
+                        <Pencil className="h-4 w-4 text-[#E6A86C]" />
+                      </button>
+                      <DeleteCategory
+                        categoryId={category.id}
+                        id={category.id}
+                        onDelete={handleDeleteCategory}
+                      />
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {/* Pagination */}
+          <ReactPaginate
+            pageCount={Math.ceil(filteredCategories.length / itemsPerPage)}
+            onPageChange={({ selected }) => paginate(selected + 1)}
+            containerClassName="flex items-center justify-end mt-5 text-gray-500"
+            pageClassName="mx-1 px-3 py-1 rounded "
+            activeClassName="bg-customOrange-lightOrange text-primary"
+            previousLabel={<ChevronLeft className="w-4 h-4 text-center" />}
+            nextLabel={<ChevronRight className="w-4 h-4" />}
+            previousClassName="mx-1 px-3 py-1 rounded bg-gray-100"
+            nextClassName="mx-1 px-3 py-1 rounded bg-gray-100"
           />
-        </Paper>
+        </>
       )}
     </div>
   );

@@ -11,8 +11,8 @@ function DeleteProduct({ id, onDelete }) {
     setIsLoading(true);
     try {
       const response = await axios({
-        method: "DELETE",
-        url: `http://demo.localhost:8000/api/products/delete/${id}`,
+        method: "GET",
+        url: `http://demo.localhost:8000/api/shop/products/delete/${id}`,
         headers: {
           Authorization:
             "Bearer 1K9elSZiyQKW2wIs5uWHOR1hfLVPBavnhHRCUnbF079f2990 ",
@@ -41,7 +41,7 @@ function DeleteProduct({ id, onDelete }) {
           <img
             src="/assets/images/delete_svgrepo.com.png"
             alt="delete-img"
-            className="h-14 w-14"
+            className="h-14 w-14 p-1"
           />
         </div>
         <p className="font-bold w-72 text-center">

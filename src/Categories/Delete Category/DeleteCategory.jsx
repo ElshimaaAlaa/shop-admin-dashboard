@@ -15,8 +15,8 @@ function DeleteCategory({ id, onDelete }) {
     }
     try {
       const response = await axios({
-        method: "DELETE",
-        url: `http://demo.localhost:8000/api/shop/categories/delete/${id}`,
+        method: "GET",
+        url: `https://demo.vrtex.duckdns.org/api/shop/categories/delete/${id}`,
         headers: {
           Authorization:
             "Bearer 1K9elSZiyQKW2wIs5uWHOR1hfLVPBavnhHRCUnbF079f2990",
@@ -49,7 +49,7 @@ function DeleteCategory({ id, onDelete }) {
           <img
             src="/assets/images/delete_svgrepo.com.png"
             alt="delete-img"
-            className="h-14 w-14"
+            className="h-14 w-14 p-1"
           />
         </div>
         <p className="font-bold w-72 text-center">
