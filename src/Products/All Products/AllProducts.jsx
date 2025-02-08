@@ -90,7 +90,7 @@ function AllProducts() {
             <thead>
               <tr>
                 <th className="flex items-center gap-4 px-3 py-3 border border-gray-200 text-left">
-                  <input type="checkbox" className="form-checkbox h-4 w-4" />
+                  <input type="checkbox" className="form-checkbox h-4 w-4 me-3" />
                   <p>Product</p>
                 </th>
                 <th className="px-6 py-3 border border-gray-200 text-left">
@@ -141,11 +141,11 @@ function AllProducts() {
             <tbody>
               {currentItems.map((product) => (
                 <tr key={product.id}>
-                  <td className="px-3 py-3 border border-gray-200">
+                  <td className="px-3 py-3 border border-gray-200 cursor-pointer" onClick={()=>navigate(`/products/${product.id}`)}>
                     <p className="flex items-center gap-3">
                       <input
                         type="checkbox"
-                        className="form-checkbox h-5 w-4"
+                        className="form-checkbox h-5 w-4 me-3"
                       />
                       <img
                         src={product.images[0].src}
