@@ -13,7 +13,7 @@ function AllProducts() {
   const [itemsPerPage] = useState(5);
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
-
+  
   // Fetch data from API
   useEffect(() => {
     const getProducts = async () => {
@@ -67,7 +67,7 @@ function AllProducts() {
         </div>
         <div
           className="flex gap-3 bg-primary text-white font-bold p-3 rounded-xl w-52 cursor-pointer"
-          onClick={() => navigate("/addProduct")}
+          onClick={() => navigate("/Home/addProduct")}
         >
           <div className="bg-white text-primary font-bold rounded ">
             <Plus className="p-1 font-bold" />
@@ -183,7 +183,7 @@ function AllProducts() {
                     <div className="flex gap-4">
                       <button
                         className="h-6 w-6 p-1"
-                        onClick={() => navigate(`/EditProduct/${product.id}`)}
+                        // onClick={() => navigate(`/EditProduct/${product.id}`)}
                       >
                         <Pencil className="h-4 w-4 text-[#E6A86C]" />
                       </button>

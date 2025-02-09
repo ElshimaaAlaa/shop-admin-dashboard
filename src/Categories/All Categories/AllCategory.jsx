@@ -1,4 +1,3 @@
-// AllCategory.js
 import React, { useEffect, useState, useMemo } from "react";
 import ReactPaginate from "react-paginate";
 import { Search, Plus, Pencil, ChevronLeft, ChevronRight } from "lucide-react";
@@ -54,7 +53,7 @@ function AllCategory() {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const handleEditCategory = (category) => {
-    navigate("/EditCategory", { state: { category } });
+    navigate("/Home/EditCategory", { state: { category } });
   };
 
   return (
@@ -73,7 +72,7 @@ function AllCategory() {
         </div>
         <div
           className="flex gap-3 bg-primary text-white font-bold p-3 rounded-xl w-52 cursor-pointer"
-          onClick={() => navigate("/addCategory")}
+          onClick={() => navigate("/Home/addCategory")}
         >
           <div className="bg-white text-primary font-bold rounded ">
             <Plus className="p-1 font-bold" />
@@ -95,13 +94,13 @@ function AllCategory() {
           <table className="bg-white min-w-full table border-collapse mt-8 rounded-lg overflow-hidden">
             <thead>
               <tr>
-                {/* <th className="px-3 py-3 border border-gray-200 text-left w-12">
+                <th className="px-3 py-3 border border-gray-200 text-left w-12">
                   <input
                     type="checkbox"
                     className="form-checkbox h-4 w-4"
                     aria-label="Select category"
                   />
-                </th> */}
+                </th>
                 <th className="px-6 py-3 border border-gray-200 text-left">
                   <p className="flex justify-between items-center">
                     Category
@@ -130,13 +129,13 @@ function AllCategory() {
             <tbody>
               {currentItems.map((category) => (
                 <tr key={category.id}>
-                  {/* <td className="px-3 py-3 border border-gray-200">
+                  <td className="px-3 py-3 border border-gray-200">
                     <input
                       type="checkbox"
                       className="form-checkbox h-4 w-4"
                       aria-label="Select category"
                     />
-                  </td> */}
+                  </td>
                   <td className="flex gap-3 px-6 py-3 border border-gray-200">
                     <img
                       src={category.image || "/path/to/default-image.png"}

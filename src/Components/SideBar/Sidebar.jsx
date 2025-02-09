@@ -41,13 +41,13 @@ function Sidebar() {
         </div>
         <div
           className={activeItem === "products" ? "active-icon" : ""}
-          onClick={() => handleClick("products", "/Products")}
+          onClick={() => handleClick("products", "/Home/Products")}
         >
           <Products color={activeItem === "products" ? "#E0A75E" : "#FFFFFF"} />
         </div>
         <div
           className={activeItem === "categories" ? "active-icon" : ""}
-          onClick={() => handleClick("categories", "/categories")}
+          onClick={() => handleClick("categories", "/Home/categories")}
         >
           <Cats color={activeItem === "categories" ? "#E0A75E" : "#FFFFFF"} />
         </div>

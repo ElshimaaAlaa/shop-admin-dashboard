@@ -14,31 +14,44 @@ import AddDiscounts from "./DisCounts and Promotions/Add Discounts/AddDiscounts"
 import Orders from "./Orders/Orders";
 import ViewOrder from "./Orders/ViewOrder";
 import Shipping from "./Settings/Shipping";
+import AdminLogin from "./Auth/Login/AdminLogin";
+import ForgotPassword from "./Auth/Forgot Password/ForgotPassword";
+import VerifayPassword from "./Auth/Verivation Code/VerifayPassword";
+import CreateNewPassword from "./Auth/Create Password/CreateNewPassword";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />}>
-          <Route path="/Dashboard" element={<Dashboard />} />
+        {/* Auth Routes */}
+        <Route path="/" element={<AdminLogin />} />
+        <Route path="/ForgotPassword" element={<ForgotPassword />} />
+        <Route path="/VerifayPassword" element={<VerifayPassword />} />
+        <Route path="/CreateNewPassword" element={<CreateNewPassword />} />
+
+        <Route path="/Home" element={<Home />}>
           {/* Categories */}
-          <Route path="/categories" element={<AllCategory />} />
-          <Route path="/addCategory" element={<AddCategory />} />
-          <Route path="/EditCategory" element={<EditCategory />} />
-          <Route path="/ViewCategory" element={<ViewCategory />} />
-          {/* products */}
-          <Route path="/products" element={<AllProducts />} />
-          <Route path="/AddProduct" element={<AddProduct />} />
-          <Route path="/EditProduct" element={<EditProduct />} />
-          <Route path="/products/:id" element={<ViewProduct />} />
-          {/* discounts */}
-          <Route path="/AllDiscounts" element={<AllDiscounts />} />
-          <Route path="/AddDiscounts" element={<AddDiscounts />} />
+          <Route path="categories" element={<AllCategory />} />
+          <Route path="addCategory" element={<AddCategory />} />
+          <Route path="editCategory" element={<EditCategory />} />
+          <Route path="viewCategory" element={<ViewCategory />} />
+
+          {/* Products */}
+          <Route path="products" element={<AllProducts />} />
+          <Route path="addProduct" element={<AddProduct />} />
+          <Route path="EditProduct" element={<EditProduct />} />
+          <Route path="products/:id" element={<ViewProduct />} />
+
+          {/* Discounts */}
+          {/* <Route path="allDiscounts" element={<AllDiscounts />} /> */}
+          {/* <Route path="addDiscounts" element={<AddDiscounts />} /> */}
+
           {/* Orders */}
-          <Route path="/AllOrders" element={<Orders />} />
-          <Route path="/ViewOrder" element={<ViewOrder />} />
-          {/* settings */}
-          <Route path="/Shipping" element={<Shipping />} />
+          {/* <Route path="orders" element={<Orders />} /> */}
+          {/* <Route path="viewOrder/:id" element={<ViewOrder />} /> */}
+
+          {/* Settings */}
+          {/* <Route path="shipping" element={<Shipping />} /> */}
         </Route>
       </Routes>
     </BrowserRouter>

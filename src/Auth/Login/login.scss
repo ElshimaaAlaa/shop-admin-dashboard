@@ -1,0 +1,15 @@
+.loginContainer {
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    border-radius: 10px;
+    margin: auto;
+    padding: 30px;
+    .loginForm {
+      .emailInput,
+      .passwordInput {
+        border: 1px solid #d3d3d3;
+        outline: none;
+        height: 52px;
+        border-radius: 10px;
+      }
+    }
+  }
