@@ -6,7 +6,7 @@ export const fetchProducts = async () => {
       url: `${API_BASE_URL}/products`,
       method: "GET",
       headers: {
-        "Accept-Language": "ar",
+        "Accept-Language": "en",
         Authorization:
           "Bearer 1K9elSZiyQKW2wIs5uWHOR1hfLVPBavnhHRCUnbF079f2990",
       },

@@ -1,5 +1,4 @@
 import axios from "axios";
-
 export const ViewProduct = async (productId) => {
   try {
     const response = await axios({

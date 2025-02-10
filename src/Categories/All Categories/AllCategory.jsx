@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import DeleteCategory from "../Delete Category/DeleteCategory";
 import { ClipLoader } from "react-spinners";
 import { fetchCategories } from "../../ApiServices/AllCategoriesApi";
+import { Helmet } from "react-helmet";
 
 function AllCategory() {
   const [categories, setCategories] = useState([]);
@@ -14,7 +15,6 @@ function AllCategory() {
   const [itemsPerPage] = useState(5);
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
-
   // Fetch data from API
   useEffect(() => {
     const getCategories = async () => {
@@ -31,18 +31,15 @@ function AllCategory() {
     };
     getCategories(); // Call function to fetch categories
   }, []);
-
   const handleDeleteCategory = (categoryId) => {
     setCategories((prevCategories) =>
       prevCategories.filter((category) => category.id !== categoryId)
     );
   };
-
   // Filter categories based on search query
   const filteredCategories = categories.filter((category) =>
     category.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
   // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -52,14 +49,13 @@ function AllCategory() {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  const handleEditCategory = (category) => {
-    navigate("/Home/EditCategory", { state: { category } });
-  };
-
   return (
     <div className="bg-lightgray p-10 min-h-screen">
+      <Helmet>
+        <title>All Categories - VERTEX</title>
+      </Helmet>
       <h1 className="font-bold mb-3 p-2 text-xl">Categories</h1>
-      <div className="flex justify-between items-center gap-5 bg-white p-4 rounded-2xl">
+      <div className="flex justify-between items-center gap-5 bg-white p-4 rounded-md">
         <div className="relative w-full">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
           <input
@@ -67,11 +63,11 @@ function AllCategory() {
             placeholder="Search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="font-bold w-full pl-10 pr-4 py-3 bg-muted/50 rounded-xl text-sm focus:outline-none border border-gray-200 bg-lightgray"
+            className="font-bold w-full pl-10 pr-4 py-3 bg-muted/50 rounded-md text-sm focus:outline-none border border-gray-200 bg-lightgray"
           />
         </div>
         <div
-          className="flex gap-3 bg-primary text-white font-bold p-3 rounded-xl w-52 cursor-pointer"
+          className="flex gap-3 bg-primary text-white font-bold p-3 rounded-md w-52 cursor-pointer"
           onClick={() => navigate("/Home/addCategory")}
         >
           <div className="bg-white text-primary font-bold rounded ">
@@ -91,7 +87,7 @@ function AllCategory() {
         </div>
       ) : (
         <>
-          <table className="bg-white min-w-full table border-collapse mt-8 rounded-lg overflow-hidden">
+          <table className="bg-white min-w-full table border-collapse mt-8 border-1 rounded-md overflow-hidden">
             <thead>
               <tr>
                 <th className="px-3 py-3 border border-gray-200 text-left w-12">
@@ -154,8 +150,10 @@ function AllCategory() {
                     <div className="flex items-center gap-1">
                       <button
                         className="h-6 w-6 p-1 me-2"
-                        onClick={() => handleEditCategory(category)}
                         aria-label="Edit category"
+                        onClick={() =>
+                          navigate(`/Home/editCategory`, { state: category })
+                        }
                       >
                         <Pencil className="h-4 w-4 text-[#E6A86C]" />
                       </button>

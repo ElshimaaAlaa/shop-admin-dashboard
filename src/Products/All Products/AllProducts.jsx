@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import DeleteProduct from "../Delete Product/DeleteProduct";
 import { ClipLoader } from "react-spinners";
 import { fetchProducts } from "../../ApiServices/AllProuctsApi";
+import { Helmet } from "react-helmet";
 function AllProducts() {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -13,7 +14,6 @@ function AllProducts() {
   const [itemsPerPage] = useState(5);
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
-  
   // Fetch data from API
   useEffect(() => {
     const getProducts = async () => {
@@ -31,30 +31,30 @@ function AllProducts() {
     getProducts(); // Call function to fetch categories
   }, []);
 
-  const handleDeleteProduct = (categoryId) => {
+  const handleDeleteProduct = (productId) => {
     setProducts((prevCategories) =>
-      prevCategories.filter((category) => category.id !== categoryId)
+      prevCategories.filter((product) => product.id !== productId)
     );
   };
-
   // Filter categories based on search query
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
   // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = useMemo(() => {
     return filteredProducts.slice(indexOfFirstItem, indexOfLastItem);
   }, [filteredProducts, indexOfFirstItem, indexOfLastItem]);
-
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <div className="bg-lightgray p-10 min-h-screen">
+      <Helmet>
+        <title>All Products | VERTEX</title>
+      </Helmet>
       <h1 className="font-bold mb-3 p-2 text-xl">Products</h1>
-      <div className="flex justify-between items-center gap-5 bg-white p-4 rounded-2xl">
+      <div className="flex justify-between items-center gap-5 bg-white p-4 rounded-md">
         <div className="relative w-full">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
           <input
@@ -62,11 +62,11 @@ function AllProducts() {
             placeholder="Search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="font-bold w-full pl-10 pr-4 py-3 bg-muted/50 rounded-xl text-sm focus:outline-none border border-gray-200 bg-lightgray"
+            className="font-bold w-full pl-10 pr-4 py-3 bg-muted/50 rounded-md text-sm focus:outline-none border border-gray-200 bg-lightgray"
           />
         </div>
         <div
-          className="flex gap-3 bg-primary text-white font-bold p-3 rounded-xl w-52 cursor-pointer"
+          className="flex gap-3 bg-primary text-white font-bold p-3 rounded-md w-52 cursor-pointer"
           onClick={() => navigate("/Home/addProduct")}
         >
           <div className="bg-white text-primary font-bold rounded ">
@@ -86,10 +86,10 @@ function AllProducts() {
         </div>
       ) : (
         <>
-          <table className="bg-white min-w-full table border-collapse mt-8 rounded-lg overflow-hidden">
+          <table className="bg-white min-w-full table border-collapse border-1 mt-8 rounded-lg overflow-hidden">
             <thead>
               <tr>
-                <th className="flex items-center gap-4 px-3 py-3 border border-gray-200 text-left">
+                <th className="flex items-center gap-4 px-3 py-3 border-gray-200 text-left">
                   <input type="checkbox" className="form-checkbox h-4 w-4 me-3" />
                   <p>Product</p>
                 </th>
@@ -133,7 +133,7 @@ function AllProducts() {
                     />
                   </p>
                 </th>
-                <th className="px-6 py-3 border border-gray-200 text-left w-5">
+                <th className="px-6 py-3  border-gray-200 text-left w-5">
                   Actions
                 </th>
               </tr>
@@ -141,7 +141,7 @@ function AllProducts() {
             <tbody>
               {currentItems.map((product) => (
                 <tr key={product.id}>
-                  <td className="px-3 py-3 border border-gray-200 cursor-pointer" onClick={()=>navigate(`/products/${product.id}`)}>
+                  <td className="px-3 py-3 border border-gray-200 cursor-pointer" onClick={()=>navigate(`/Home/products/${product.id}`)}>
                     <p className="flex items-center gap-3">
                       <input
                         type="checkbox"
@@ -155,7 +155,7 @@ function AllProducts() {
                       {product.name}
                     </p>
                   </td>
-                  <td className="flex gap-3 px-6 py-3 border border-gray-200">
+                  <td className="flex gap-3 px-6 py-3 border-t border-gray-200">
                     <img
                       src={product.category.image}
                       alt="category-image"

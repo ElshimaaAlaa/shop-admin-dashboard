@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const API_BASE_URL = "https://demo.vrtex.duckdns.org/api/shop";
+
 export const addProduct = async (formData) => {
   try {
     const response = await axios({
