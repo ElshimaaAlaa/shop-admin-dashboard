@@ -63,7 +63,7 @@ function AllCategory() {
             placeholder="Search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="font-bold w-full pl-10 pr-4 py-3 bg-muted/50 rounded-md text-sm focus:outline-none border border-gray-200 bg-lightgray"
+            className="w-full pl-10 pr-4 py-3 bg-muted/50 rounded-md text-sm focus:outline-none border border-gray-200 bg-lightgray"
           />
         </div>
         <div

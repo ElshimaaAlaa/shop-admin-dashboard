@@ -12,13 +12,14 @@ function DeleteProduct({ id, onDelete }) {
     try {
       const response = await axios({
         method: "GET",
-        url: `http://demo.localhost:8000/api/shop/products/delete/${id}`,
+        url: `https://demo.vrtex.duckdns.org/api/shop/products/delete/${id}`,
         headers: {
           Authorization:
-            "Bearer 1K9elSZiyQKW2wIs5uWHOR1hfLVPBavnhHRCUnbF079f2990 ",
+            "Bearer 1K9elSZiyQKW2wIs5uWHOR1hfLVPBavnhHRCUnbF079f2990",
         },
       });
       if (response.status === 200) {
+        console.log("Product deleted successfully");
         setShowModal(false);
         setIsLoading(false);
         onDelete(id);
@@ -69,5 +70,4 @@ function DeleteProduct({ id, onDelete }) {
     </div>
   );
 }
-
 export default DeleteProduct;

@@ -148,7 +148,7 @@ function AllProducts() {
                         className="form-checkbox h-5 w-4 me-3"
                       />
                       <img
-                        src={product.images[0].src}
+                        src={product.images[0].src || "/assets/images/product.png"}
                         alt={product.name}
                         className="w-7 h-7 object-cover rounded-full"
                       />
@@ -173,7 +173,7 @@ function AllProducts() {
                     {product.colors.map((color) => (
                       <div key={color.id} className="flex items-center gap-2">
                         <div
-                          className="w-5 h-5 rounded-full"
+                          className="w-6 h-6 rounded-full"
                           style={{ backgroundColor: color.code }}
                         />
                       </div>
@@ -188,7 +188,6 @@ function AllProducts() {
                         <Pencil className="h-4 w-4 text-[#E6A86C]" />
                       </button>
                       <DeleteProduct
-                        productId={product.id}
                         id={product.id}
                         onDelete={handleDeleteProduct}
                       />
