@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Formik, Form, Field } from "formik";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ClipLoader } from "react-spinners";
 import { Helmet } from "react-helmet";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 import { updateCategory } from "../../ApiServices/updateCategory";
+import Footer from "../../Components/Footer/Footer";
 
 function EditCategory() {
   const navigate = useNavigate();
@@ -13,13 +13,11 @@ function EditCategory() {
   const [previewImage, setPreviewImage] = useState(state?.image || null);
   const [showModal, setShowModal] = useState(false);
   const category = state || {};
-
   const initialValues = {
     name: category?.name || "",
     description: category?.description || "",
     image: null,
   };
-
   const handleSubmit = async (values) => {
     setIsLoading(true);
     try {
@@ -73,7 +71,9 @@ function EditCategory() {
                   className="w-full bg-transparent outline-none border border-gray-300 rounded-md p-2 h-32 mt-5"
                 />
                 {errors.description && touched.description && (
-                  <div className="text-red-500 text-sm">{errors.description}</div>
+                  <div className="text-red-500 text-sm">
+                    {errors.description}
+                  </div>
                 )}
               </div>
               <div className="bg-white p-5 rounded-md w-2/4">
@@ -116,26 +116,14 @@ function EditCategory() {
                 </div>
               </div>
             </div>
-            <div className="flex gap-5 items-center border-t justify-end bg-white rounded p-5 w-full mt-5 absolute bottom-0">
-              <button
-                type="button"
-                className="bg-gray-200 text-gray-500 font-bold p-3 w-32 rounded-md"
-                onClick={() => navigate("/Home/categories")}
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="bg-primary text-white font-bold rounded-md p-3 w-40"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <ClipLoader color="#fff" size={22} />
-                ) : (
-                  "Save Changes"
-                )}
-              </button>
-            </div>
+            <Footer
+              Savetext={"Save Changes"}
+              Cancel={"Cancel"}
+              isSaveLoading={isLoading}
+              savebtnType={"submit"}
+              cancelbtnType={"button"}
+              CancelOnClick={() => navigate("/Home/categories")}
+            />
           </Form>
         )}
       </Formik>

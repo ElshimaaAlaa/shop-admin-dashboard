@@ -75,7 +75,6 @@ function AllProducts() {
           <p>Add Product</p>
         </div>
       </div>
-
       {error ? (
         <div className="text-red-500 text-center mt-10 font-bold">
           Failed to fetch data. Please try again.
@@ -90,7 +89,10 @@ function AllProducts() {
             <thead>
               <tr>
                 <th className="flex items-center gap-4 px-3 py-3 border-gray-200 text-left">
-                  <input type="checkbox" className="form-checkbox h-4 w-4 me-3" />
+                  <input
+                    type="checkbox"
+                    className="form-checkbox h-4 w-4 me-3"
+                  />
                   <p>Product</p>
                 </th>
                 <th className="px-6 py-3 border border-gray-200 text-left">
@@ -141,14 +143,19 @@ function AllProducts() {
             <tbody>
               {currentItems.map((product) => (
                 <tr key={product.id}>
-                  <td className="px-3 py-3 border border-gray-200 cursor-pointer" onClick={()=>navigate(`/Home/products/${product.id}`)}>
+                  <td
+                    className="px-3 py-3 border border-gray-200 cursor-pointer"
+                    onClick={() => navigate(`/Home/products/${product.id}`)}
+                  >
                     <p className="flex items-center gap-3">
                       <input
                         type="checkbox"
                         className="form-checkbox h-5 w-4 me-3"
                       />
                       <img
-                        src={product.images[0].src || "/assets/images/product.png"}
+                        src={
+                          product.images[0].src || "/assets/images/product.png"
+                        }
                         alt={product.name}
                         className="w-7 h-7 object-cover rounded-full"
                       />
@@ -183,7 +190,9 @@ function AllProducts() {
                     <div className="flex gap-4">
                       <button
                         className="h-6 w-6 p-1"
-                        // onClick={() => navigate(`/EditProduct/${product.id}`)}
+                        onClick={() =>
+                          navigate(`/Home/EditProduct`, { state: product })
+                        }
                       >
                         <Pencil className="h-4 w-4 text-[#E6A86C]" />
                       </button>

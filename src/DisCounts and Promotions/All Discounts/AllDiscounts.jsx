@@ -2,9 +2,11 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Search, Plus, Pencil, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet";
+import { fetchProducts } from "../../ApiServices/AllProuctsApi";
 
 function AllDiscounts() {
-  const [discounts, setDiscounts] = useState([]);
+  const [product, setProduct] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const navigate = useNavigate();
@@ -13,21 +15,8 @@ function AllDiscounts() {
     const fetchDiscounts = async () => {
       setLoading(true);
       try {
-        const response = await axios({
-          url: "",
-          method: "GET",
-          headers: {
-            Authorization:
-              "Bearer 1K9elSZiyQKW2wIs5uWHOR1hfLVPBavnhHRCUnbF079f2990",
-          },
-        });
-        if (response.status === 200) {
-          console.log("success", discounts);
-          setDiscounts(discounts.data.data);
-          console.log(discounts.data.data);
-        } else {
-          console.error("Failed to fetch data: ");
-        }
+        const products = await fetchProducts();
+        setProduct(products);
       } catch (error) {
         setError(true);
         console.error("API call failed: ", error);
@@ -36,15 +25,16 @@ function AllDiscounts() {
       }
     };
 
-    //fetchDiscounts(); //call function to fetch categories
-  }, [discounts]);
+    fetchDiscounts(); //call function to fetch categories
+  }, []);
 
   return (
     <div className="bg-lightgray p-10 min-h-screen">
-      <h1 className="font-bold mb-3 p-2" style={{ fontSize: "20px" }}>
-        Promotions & Discounts
-      </h1>
-      <div className="flex justify-between items-center gap-5 bg-white p-4 rounded">
+      <Helmet>
+        <title>Promotions & Discounts - VERTEX</title>
+      </Helmet>
+      <h1 className="font-bold mb-3 p-2 text-xl">Promotions & Discounts</h1>
+      <div className="flex justify-between items-center gap-5 bg-white p-4 rounded-md">
         <div className="relative w-full">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
           <input
@@ -54,10 +44,14 @@ function AllDiscounts() {
           />
         </div>
         <div className="flex items-center gap-5 w-96">
-            <div className="bg-customOrange-mediumOrange rounded p-3 font-bold cursor-pointer flex items-center gap-3">
-               <img src="/assets/images/date-range_svgrepo.com.png" alt="" className="w-5 h-5"/>
-               <p className="text-primary">Select Date</p>
-            </div>
+          <div className="bg-customOrange-mediumOrange rounded p-3 font-bold cursor-pointer flex items-center gap-3">
+            <img
+              src="/assets/images/date-range_svgrepo.com.png"
+              alt=""
+              className="w-5 h-5"
+            />
+            <p className="text-primary">Select Date</p>
+          </div>
           <div
             className="flex gap-3 bg-primary text-white font-bold p-3 rounded  cursor-pointer"
             onClick={() => navigate("/AddDiscounts")}
@@ -131,30 +125,37 @@ function AllDiscounts() {
             </tr>
           </thead>
           <tbody>
-            {discounts.map((category) => (
-              <tr key={category.id}>
+            {product.map((product) => (
+              <tr key={product.id}>
                 <td className="px-3 py-3 border border-gray-200">
                   <input type="checkbox" className="form-checkbox h-4 w-4" />
+                  {product.name}
+                  <img
+                    src={product.image}
+                    alt="product-image"
+                    className="w-6 h-6 object-cover"
+                  />
                 </td>
                 <td
                   className="flex gap-3 px-6 py-3 border border-gray-200 cursor-pointer"
-                  onClick={() => navigate("/ViewCategory")}
+                  // onClick={() => navigate("/Viewproduct")}
                 >
-                  <img
-                    src={category.image}
-                    alt="category-image"
-                    className="w-6 h-6 object-cover"
-                  />
-                  {category.name}
+                  {product.price}
                 </td>
                 <td className="px-6 py-3 border border-gray-200">
-                  {category.stock}
+                  {product.discount_percentage}
+                </td>
+                <td className="px-6 py-3 border border-gray-200">
+                  {product.discount_expire_at}
+                </td>
+                <td className="px-6 py-3 border border-gray-200">
+                  {""}
                 </td>
                 <td className="px-6 py-3 border border-gray-200 w-10">
                   <div className="flex items-center gap-1">
                     <button
                       className="h-6 w-6 p-1"
-                      onClick={() => navigate("/EditCategory")}
+                      // onClick={() => navigate("/Editproduct")}
                     >
                       <Pencil className="h-4 w-4 text-[#E6A86C]" />
                     </button>

@@ -39,11 +39,11 @@ function App() {
           {/* Products */}
           <Route path="products" element={<AllProducts />} />
           <Route path="addProduct" element={<AddProduct />} />
-          <Route path="EditProduct" element={<EditProduct />} />
+          <Route path="/Home/EditProduct" element={<EditProduct />} />
           <Route path="/Home/products/:productId" element={<ViewProduct />} />
 
           {/* Discounts */}
-          {/* <Route path="allDiscounts" element={<AllDiscounts />} /> */}
+          <Route path="allDiscounts" element={<AllDiscounts />} />
           {/* <Route path="addDiscounts" element={<AddDiscounts />} /> */}
 
           {/* Orders */}

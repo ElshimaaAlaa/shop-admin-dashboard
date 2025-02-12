@@ -3,10 +3,9 @@ import { Formik, Form, Field } from "formik";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { addCategory } from "../../ApiServices/AddNewCategoryApi";
-import { ClipLoader } from "react-spinners";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 import { Helmet } from "react-helmet";
-
+import Footer from "../../Components/Footer/Footer";
 function AddCategory() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -26,7 +25,7 @@ function AddCategory() {
     setIsLoading(true);
     const formData = new FormData();
     formData.append("name[ar]", values.name);
-    formData.append("name[en]", values.name); 
+    formData.append("name[en]", values.name);
     formData.append("description[ar]", values.description);
     formData.append("description[en]", values.description);
     if (values.image) {
@@ -114,21 +113,15 @@ function AddCategory() {
                 </div>
               </div>
             </div>
-            <div className="flex gap-5 items-center border-t justify-end bg-white rounded p-5 w-full mt-5 absolute bottom-0">
-              <button
-                type="button"
-                className="bg-gray-200 text-gray-500 font-bold p-3 w-32 rounded-md"
-                onClick={() => navigate("/Home/categories")}
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="bg-primary text-white font-bold rounded-md p-3 w-32"
-              >
-                {isLoading ? <ClipLoader color="#fff" size={22} /> : "Save"}
-              </button>
-            </div>
+            <Footer
+              savebtnType={"submit"}
+              cancelbtnType={"button"}
+              isSaveLoading={isLoading}
+              Savetext={"Save"}
+              Cancel={"Cancel"}
+              CancelOnClick={() => navigate("/Home/categories")}
+              SaveOnClick={handleSubmit}
+            />
           </Form>
         )}
       </Formik>

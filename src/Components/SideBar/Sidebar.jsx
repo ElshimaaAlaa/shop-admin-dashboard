@@ -53,7 +53,7 @@ function Sidebar() {
         </div>
         <div
           className={activeItem === "discount" ? "active-icon" : ""}
-          onClick={() => handleClick("discount", "/AllDiscounts")}
+          onClick={() => handleClick("discount", "/Home/AllDiscounts")}
         >
           <Discount color={activeItem === "discount" ? "#E0A75E" : "#FFFFFF"} />
         </div>
