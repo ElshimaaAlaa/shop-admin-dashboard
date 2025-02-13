@@ -28,9 +28,8 @@ function AllProducts() {
         setIsLoading(false);
       }
     };
-    getProducts(); // Call function to fetch categories
+    getProducts();
   }, []);
-
   const handleDeleteProduct = (productId) => {
     setProducts((prevCategories) =>
       prevCategories.filter((product) => product.id !== productId)

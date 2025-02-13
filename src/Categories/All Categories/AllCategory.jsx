@@ -46,7 +46,6 @@ function AllCategory() {
   const currentItems = useMemo(() => {
     return filteredCategories.slice(indexOfFirstItem, indexOfLastItem);
   }, [filteredCategories, indexOfFirstItem, indexOfLastItem]);
-
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
@@ -67,7 +66,7 @@ function AllCategory() {
           />
         </div>
         <div
-          className="flex gap-3 bg-primary text-white font-bold p-3 rounded-md w-52 cursor-pointer"
+          className="flex gap-3 bg-primary text-white font-bold p-3 rounded-md w-60 cursor-pointer"
           onClick={() => navigate("/Home/addCategory")}
         >
           <div className="bg-white text-primary font-bold rounded ">

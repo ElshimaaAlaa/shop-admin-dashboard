@@ -6,14 +6,14 @@ import { Helmet } from "react-helmet";
 import { fetchCategories } from "../../ApiServices/AllCategoriesApi";
 import { addProduct } from "../../ApiServices/AddNewProductApi";
 import "./AddProduct.scss";
-import Footer from "../../Components/Footer/Footer";
+import { ClipLoader } from "react-spinners";
 
 function AddProduct() {
   const [isLoading, setIsLoading] = useState(false);
   const [categories, setCategories] = useState([]);
   const [mainImageIndex, setMainImageIndex] = useState(0);
   const navigate = useNavigate();
-  //fetches categories
+  // Fetch categories on mount
   useEffect(() => {
     const getCategories = async () => {
       const categories = await fetchCategories();
@@ -22,15 +22,15 @@ function AddProduct() {
     getCategories();
   }, []);
 
-  const intialValues = {
+  const initialValues = {
     name: "",
     description: "",
     images: [],
     category_id: "",
-    price: 0,
-    discount: 0,
+    price: "",
+    discount: "",
     discount_expire_at: "",
-    stock: 0,
+    stock: "",
     sizes: [],
     colors: [],
   };
@@ -68,44 +68,58 @@ function AddProduct() {
   const handleSubmit = async (values) => {
     setIsLoading(true);
     const formData = new FormData();
+
     formData.append("name[ar]", values.name);
     formData.append("name[en]", values.name);
     formData.append("description[ar]", values.description);
     formData.append("description[en]", values.description);
-    values.images.forEach((image, index) => {
-      if (index === mainImageIndex) {
-        formData.append("images[]", image); // Main image
-      }
-    });
-    values.images.forEach((image, index) => {
-      if (index !== mainImageIndex) {
-        formData.append("images[]", image); // Other images
-      }
-    });
+
+    if (Array.isArray(values.images)) {
+      values.images.forEach((image, index) => {
+        if (index === mainImageIndex) {
+          formData.append("images[]", image); // Main image
+        }
+      });
+      values.images.forEach((image, index) => {
+        if (index !== mainImageIndex) {
+          formData.append("images[]", image); // Other images
+        }
+      });
+    }
+
     formData.append("category_id", values.category_id);
     formData.append("price", values.price);
     formData.append("discount_percentage", values.discount);
     formData.append("discount_expire_at", values.discount_expire_at);
     formData.append("stock", values.stock);
-    values.sizes.forEach((size, index) => {
-      formData.append(`sizes[${index}]`, size);
-    });
-    values.colors.forEach((color, index) => {
-      formData.append(`colors[${index}]`, color);
-    });
-    //Log FormData content
+    // Append sizes array
+    if (Array.isArray(values.sizes)) {
+      values.sizes.forEach((size, index) => {
+        formData.append(`sizes[${index}]`, size);
+      });
+    }
+    // Append colors array
+    if (Array.isArray(values.colors)) {
+      values.colors.forEach((color, index) => {
+        formData.append(`colors[${index}]`, color);
+      });
+    }
+    // Debug: log all FormData entries
     for (let [key, value] of formData.entries()) {
       console.log(key, value);
     }
+
     try {
       await addProduct(formData);
       console.log("Product added successfully");
+      navigate("/Home/Products");
     } catch (error) {
       console.error("Failed to add product", error);
     } finally {
       setIsLoading(false);
     }
   };
+
   return (
     <div className="bg-gray-100 flex flex-col min-h-screen relative">
       <Helmet>
@@ -114,7 +128,7 @@ function AddProduct() {
       </Helmet>
       <h1 className="font-bold text-xl mb-3 mx-10 mt-5 p-2">Add Product</h1>
       <Formik
-        initialValues={intialValues}
+        initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
@@ -185,13 +199,13 @@ function AddProduct() {
                   >
                     {values.images.length > 0 ? (
                       <>
-                        {/* Main Image */}
+                        {/* Main Image Preview */}
                         <img
                           src={URL.createObjectURL(
                             values.images[mainImageIndex]
                           )}
                           alt="main-product-image"
-                          className="object-contain rounded-md "
+                          className="object-contain rounded-md"
                         />
                         {/* Thumbnails */}
                         <div className="flex gap-2 mt-2">
@@ -281,9 +295,8 @@ function AddProduct() {
                 </div>
               </div>
               {/* Sizes & Colors */}
-              <div className="sizes-colors-section bg-white p-3 w-2/4 h-52 overflow-y-scroll">
-                <h2 className="font-bold mb-5">Sizes & Colors</h2>
-                {/* Sizes */}
+              <div className="bg-transparent p-3 w-2/4 h-52">
+                {/* <h2 className="font-bold mb-5">Sizes & Colors</h2>
                 <FieldArray name="sizes">
                   {({ push, remove }) => (
                     <div className="sizes-colors-container">
@@ -317,7 +330,6 @@ function AddProduct() {
                     </div>
                   )}
                 </FieldArray>
-                {/* Colors */}
                 <FieldArray name="colors">
                   {({ push, remove }) => (
                     <div className="sizes-colors-container">
@@ -356,18 +368,24 @@ function AddProduct() {
                       </button>
                     </div>
                   )}
-                </FieldArray>
+                </FieldArray> */}
               </div>
             </div>
-            <Footer
-              savebtnType={"submit"}
-              cancelbtnType={"button"}
-              CancelOnClick={() => navigate("/Home/products")}
-              SaveOnClick={handleSubmit}
-              isSaveLoading={isLoading}
-              Savetext={"Save"}
-              Cancel={"Cancel"}
-            />
+            <div className="flex gap-5 items-center border-t justify-end bg-white rounded p-5 w-full mt-5 absolute bottom-0">
+              <button
+                type="button"
+                className="bg-gray-200 text-gray-500 font-bold p-3 w-40 rounded-md"
+                onClick={() => navigate("/Home/products")}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="bg-primary text-white font-bold rounded-md p-3 w-40"
+              >
+                {isLoading ? <ClipLoader color="#fff" size={22} /> : "Save"}
+              </button>
+            </div>
           </Form>
         )}
       </Formik>

@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import { addCategory } from "../../ApiServices/AddNewCategoryApi";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 import { Helmet } from "react-helmet";
-import Footer from "../../Components/Footer/Footer";
+import { ClipLoader } from "react-spinners";
 function AddCategory() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -113,15 +113,21 @@ function AddCategory() {
                 </div>
               </div>
             </div>
-            <Footer
-              savebtnType={"submit"}
-              cancelbtnType={"button"}
-              isSaveLoading={isLoading}
-              Savetext={"Save"}
-              Cancel={"Cancel"}
-              CancelOnClick={() => navigate("/Home/categories")}
-              SaveOnClick={handleSubmit}
-            />
+            <div className="flex gap-5 items-center border-t justify-end bg-white rounded p-5 w-full mt-5 absolute bottom-0">
+              <button
+                type={"button"}
+                className="bg-gray-200 text-gray-500 font-bold p-3 w-40 rounded-md"
+                onClick={() => navigate("/Home/categories")}
+              >
+                Cancel
+              </button>
+              <button
+                type={"submit"}
+                className="bg-primary text-white font-bold rounded-md p-3 w-40"
+              >
+                {isLoading ? <ClipLoader color="#fff" size={22} /> : "Save"}
+              </button>
+            </div>
           </Form>
         )}
       </Formik>

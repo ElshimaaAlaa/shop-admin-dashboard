@@ -59,7 +59,7 @@ function Sidebar() {
         </div>
         <div
           className={activeItem === "shipping" ? "active-icon" : ""}
-          onClick={() => handleClick("shipping", "/AllOrders")}
+          onClick={() => handleClick("shipping", "")}
         >
           <Shipping color={activeItem === "shipping" ? "#E0A75E" : "#FFFFFF"} />
         </div>

@@ -1,3 +1,4 @@
+// ViewProduct.js
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
@@ -7,7 +8,7 @@ function ViewProduct() {
   const [productData, setProductData] = useState({});
   const { productId } = useParams();
   const [mainImage, setMainImage] = useState(null);
-  // Fetch product details
+
   useEffect(() => {
     const fetchProductDetails = async () => {
       try {
@@ -19,7 +20,7 @@ function ViewProduct() {
               "Bearer 1K9elSZiyQKW2wIs5uWHOR1hfLVPBavnhHRCUnbF079f2990",
           },
         });
-        console.log('Product Data:', response.data.data);
+        console.log("Product Data:", response.data.data);
         if (response.status === 200) {
           setProductData(response.data.data);
           setMainImage(response.data.data.images[0]?.src);
@@ -32,6 +33,10 @@ function ViewProduct() {
     };
     fetchProductDetails();
   }, [productId]);
+
+  // Retrieve sizes and colors from attributes (or fallback to top-level if needed)
+  const sizes = productData.attributes?.sizes || productData.sizes || [];
+  const colors = productData.attributes?.colors || productData.colors || [];
 
   return (
     <div className="bg-gray-100 flex flex-col min-h-screen">
@@ -128,13 +133,13 @@ function ViewProduct() {
             <div className="mt-3 border-1 p-2 rounded-md flex justify-between items-center">
               <p className="text-14">Sizes</p>
               <div className="flex gap-2">
-                {productData.sizes && productData.sizes.length > 0 ? (
-                  productData.sizes.map((size) => (
+                {sizes && sizes.length > 0 ? (
+                  sizes.map((size, index) => (
                     <span
-                      key={size.id}
+                      key={index}
                       className="text-customOrange-darkOrange bg-customOrange-mediumOrange p-2 h-9 w-8 text-center rounded"
                     >
-                      {size.name}
+                      {size}
                     </span>
                   ))
                 ) : (
@@ -145,12 +150,12 @@ function ViewProduct() {
             <div className="mt-3 border-1 p-2 rounded-md flex justify-between items-center">
               <p className="text-14">Colors</p>
               <div className="flex gap-2">
-                {productData.colors && productData.colors.length > 0 ? (
-                  productData.colors.map((color) => (
+                {colors && colors.length > 0 ? (
+                  colors.map((color, index) => (
                     <div
-                      key={color.id}
+                      key={index}
                       className="w-7 h-7 rounded-md"
-                      style={{ backgroundColor: color.code }}
+                      style={{ backgroundColor: color }}
                     />
                   ))
                 ) : (
@@ -164,4 +169,5 @@ function ViewProduct() {
     </div>
   );
 }
+
 export default ViewProduct;

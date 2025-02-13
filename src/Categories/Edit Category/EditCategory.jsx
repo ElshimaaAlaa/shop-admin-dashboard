@@ -4,8 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 import { updateCategory } from "../../ApiServices/updateCategory";
-import Footer from "../../Components/Footer/Footer";
-
+import { ClipLoader } from "react-spinners";
 function EditCategory() {
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -15,9 +14,10 @@ function EditCategory() {
   const category = state || {};
   const initialValues = {
     name: category?.name || "",
-    description: category?.description || "",
+    description: category?.description?.ar || category?.description?.en || "",
     image: null,
   };
+
   const handleSubmit = async (values) => {
     setIsLoading(true);
     try {
@@ -32,13 +32,11 @@ function EditCategory() {
       await updateCategory(formData, category.id);
       setIsLoading(false);
       setShowModal(true);
-      navigate("/Home/categories", { replace: true });
     } catch (error) {
       setIsLoading(false);
       console.error("Failed to update category:", error);
     }
   };
-
   return (
     <div className="bg-gray-100 p- min-h-screen flex flex-col relative">
       <Helmet>
@@ -54,6 +52,7 @@ function EditCategory() {
         {({ setFieldValue, errors, touched }) => (
           <Form className="flex flex-col">
             <div className="flex gap-5 mx-10">
+              {/* Basic Information Section */}
               <div className="bg-white p-5 rounded-md w-full">
                 <h2 className="font-bold mb-5">Basic Information</h2>
                 <Field
@@ -64,6 +63,7 @@ function EditCategory() {
                 {errors.name && touched.name && (
                   <div className="text-red-500 text-sm">{errors.name}</div>
                 )}
+
                 <Field
                   as="textarea"
                   name="description"
@@ -76,6 +76,7 @@ function EditCategory() {
                   </div>
                 )}
               </div>
+              {/* Image Upload Section */}
               <div className="bg-white p-5 rounded-md w-2/4">
                 <h2 className="font-bold mb-5">Category Icon / Image</h2>
                 <div className="border-2 border-dotted border-gray-300 rounded-md p-3 h-52 flex items-center justify-center">
@@ -109,24 +110,36 @@ function EditCategory() {
                           alt="upload-image-file"
                           className="mb-2"
                         />
-                        <p className="">Upload Your Category Image</p>
+                        <p>Upload Your Category Image</p>
                       </>
                     )}
                   </label>
                 </div>
               </div>
             </div>
-            <Footer
-              Savetext={"Save Changes"}
-              Cancel={"Cancel"}
-              isSaveLoading={isLoading}
-              savebtnType={"submit"}
-              cancelbtnType={"button"}
-              CancelOnClick={() => navigate("/Home/categories")}
-            />
+            <div className="flex gap-5 items-center border-t justify-end bg-white rounded p-5 w-full mt-5 absolute bottom-0">
+              <button
+                type={"button"}
+                className="bg-gray-200 text-gray-500 font-bold p-3 w-40 rounded-md"
+                onClick={() => navigate("/Home/categories")}
+              >
+                Cancel
+              </button>
+              <button
+                type={"submit"}
+                className="bg-primary text-white font-bold rounded-md p-3 w-40"
+              >
+                {isLoading ? (
+                  <ClipLoader color="#fff" size={22} />
+                ) : (
+                  "Save Changes"
+                )}
+              </button>
+            </div>
           </Form>
         )}
       </Formik>
+      {/* Success Modal */}
       <SuccessModal isOpen={showModal}>
         <div className="flex flex-col w-400">
           <p className="font-bold mt-5">Category updated successfully!</p>
