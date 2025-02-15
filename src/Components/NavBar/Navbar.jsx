@@ -31,18 +31,18 @@ function Navbar() {
         {/* Right section */}
         <div className="flex items-center gap-5">
           {/* notifications */}
-          <button variant="ghost" size="icon" className="relative">
+          {/* <button variant="ghost" size="icon" className="relative">
             <Bell className="w-7 h-6" />
             <span className="absolute -top-1 -right-2 w-4 h-4 bg-red-600 text-white text-xs rounded-full flex items-center justify-center">
               3
-            </span>
-          </button>
+            </span> */}
+          {/* </button> */}
           {/* language settings */}
-          <button variant="ghost" size="icon">
+          {/* <button variant="ghost" size="icon">
             <Globe className="w-7 h-6" />
-          </button>
+          </button> */}
           {/* user profile settings */}
-          <div className="bg-lightgray border border-gray-300 rounded-xl flex items-center p-4 gap-6">
+          {/* <div className="bg-lightgray border border-gray-300 rounded-xl flex items-center p-4 gap-6">
             <img
               src="/assets/images/image 4.png"
               alt="profile-image"
@@ -53,7 +53,7 @@ function Navbar() {
               <p className="text-gray-600 mt-3">Vertex CEO</p>
             </div>
             <img src="/assets/images/dropdown-arrow_svgrepo.com.png" alt="" />
-          </div>
+          </div> */}
         </div>
       </nav>
     </div>

@@ -43,19 +43,21 @@ function AddCategory() {
   };
 
   return (
-    <div className="bg-lightgray min-h-screen relative">
+    <div className="bg-lightgray h-115vh relative">
       <Helmet>
         <title>Add Category | Vertex Dashboard</title>
       </Helmet>
-      <h1 className="font-bold mb-3 pt-8 pb-4 text-xl mx-10">Add Category</h1>
       <Formik
         initialValues={initialValues}
         onSubmit={handleSubmit}
         validationSchema={validationSchema}
       >
         {({ setFieldValue }) => (
-          <Form className="flex flex-col">
-            <div className="flex gap-5 mx-10">
+          <Form className="flex flex-col ">
+            <h1 className="font-bold rounded-md p-5 text-xl mx-10 bg-white mt-10 mb-5 ">
+              Add Category
+            </h1>
+            <div className="flex gap-5 mx-10 ">
               <div className="bg-white p-5 rounded-xl w-full">
                 <h2 className="font-bold mb-5">Basic Information</h2>
                 <Field

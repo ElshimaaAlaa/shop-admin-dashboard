@@ -5,6 +5,8 @@ import { Helmet } from "react-helmet";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 import { updateCategory } from "../../ApiServices/updateCategory";
 import { ClipLoader } from "react-spinners";
+import { RiDeleteBin6Fill } from "react-icons/ri";
+
 function EditCategory() {
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -14,7 +16,7 @@ function EditCategory() {
   const category = state || {};
   const initialValues = {
     name: category?.name || "",
-    description: category?.description?.ar || category?.description?.en || "",
+    description: category?.description,
     image: null,
   };
 
@@ -32,18 +34,26 @@ function EditCategory() {
       await updateCategory(formData, category.id);
       setIsLoading(false);
       setShowModal(true);
+      category.name = values.name;
+      category.description = values.description;
+      if (values.image) {
+        category.image = URL.createObjectURL(values.image);
+      }
     } catch (error) {
       setIsLoading(false);
       console.error("Failed to update category:", error);
     }
   };
+
   return (
-    <div className="bg-gray-100 p- min-h-screen flex flex-col relative">
+    <div className="bg-gray-100 h-115vh flex flex-col relative">
       <Helmet>
         <title>Edit Category - VERTEX</title>
         <meta name="description" content="Edit category details in VERTEX" />
       </Helmet>
-      <h1 className="font-bold text-xl mb-6 mx-10 my-10">Edit Category</h1>
+      <h1 className="font-bold rounded-md p-5 text-xl mx-10 bg-white mt-10 mb-5">
+        Edit Category
+      </h1>
       <Formik
         initialValues={initialValues}
         enableReinitialize
@@ -68,7 +78,7 @@ function EditCategory() {
                   as="textarea"
                   name="description"
                   placeholder="Description"
-                  className="w-full bg-transparent outline-none border border-gray-300 rounded-md p-2 h-32 mt-5"
+                  className="w-full bg-transparent outline-none border border-gray-300 rounded-md p-2 h-36 mt-5"
                 />
                 {errors.description && touched.description && (
                   <div className="text-red-500 text-sm">
@@ -79,7 +89,7 @@ function EditCategory() {
               {/* Image Upload Section */}
               <div className="bg-white p-5 rounded-md w-2/4">
                 <h2 className="font-bold mb-5">Category Icon / Image</h2>
-                <div className="border-2 border-dotted border-gray-300 rounded-md p-3 h-52 flex items-center justify-center">
+                <div className="rounded-md h-56 flex items-center justify-center">
                   <input
                     type="file"
                     name="image"
@@ -98,11 +108,33 @@ function EditCategory() {
                     className="text-gray-500 cursor-pointer flex flex-col items-center gap-2"
                   >
                     {previewImage ? (
-                      <img
-                        src={previewImage}
-                        alt="preview"
-                        className="w-full h-40 object-cover rounded-lg"
-                      />
+                      <>
+                        <img
+                          src={previewImage}
+                          alt="preview"
+                          className="w-450 h-44 object-fill rounded-lg"
+                        />
+                        <div className="mt-2 flex items-center gap-3">
+                          <button
+                            type="button"
+                            className="bg-customOrange-mediumOrange flex items-center justify-center font-semibold gap-3 text-primary rounded-xl p-3  border border-primary w-370"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              document.getElementById("image-upload").click();
+                            }}
+                          >
+                            <img
+                              src="/assets/images/upload-minimalistic_svgrepo.com.png"
+                              alt="upload-image"
+                              className="h-5"
+                            />
+                            Upload Another Image
+                          </button>
+                          <button className="border rounded-xl border-red-600 bg-red-100 p-3">
+                            <RiDeleteBin6Fill className="text-red-700 h-5 w-5" />
+                          </button>
+                        </div>
+                      </>
                     ) : (
                       <>
                         <img
@@ -120,14 +152,14 @@ function EditCategory() {
             <div className="flex gap-5 items-center border-t justify-end bg-white rounded p-5 w-full mt-5 absolute bottom-0">
               <button
                 type={"button"}
-                className="bg-gray-200 text-gray-500 font-bold p-3 w-40 rounded-md"
+                className="bg-gray-200 text-gray-500 font-semibold p-3 w-40 rounded-md"
                 onClick={() => navigate("/Home/categories")}
               >
                 Cancel
               </button>
               <button
                 type={"submit"}
-                className="bg-primary text-white font-bold rounded-md p-3 w-40"
+                className="bg-primary text-white font-semibold rounded-md p-3 w-40"
               >
                 {isLoading ? (
                   <ClipLoader color="#fff" size={22} />
@@ -141,10 +173,12 @@ function EditCategory() {
       </Formik>
       {/* Success Modal */}
       <SuccessModal isOpen={showModal}>
-        <div className="flex flex-col w-400">
-          <p className="font-bold mt-5">Category updated successfully!</p>
+        <div className="flex flex-col w-370 items-center">
+          <p className="font-bold mt-5 text-center">
+            Category updated successfully!
+          </p>
           <button
-            className="bg-primary text-white rounded-md p-2 text-14 font-semibold mt-4"
+            className="bg-primary text-white rounded-md p-2 text-14 font-semibold mt-4 w-64"
             onClick={() => navigate("/Home/categories")}
           >
             Back to Categories

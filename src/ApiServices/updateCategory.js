@@ -1,17 +1,19 @@
 import axios from "axios";
-const API_BASE_URL = "http://demo.localhost:8000/api/shop/categories";
+const API_BASE_URL = "https://demo.vrtex.duckdns.org/api/shop/categories";
 export const updateCategory = async (formData, categoryId) => {
   try {
     const response = await axios({
-      method: "POST",
+      method: "PUT",
       url: `${API_BASE_URL}/update/${categoryId}`,
       data: formData,
       headers: {
         "Content-Type": "multipart/form-data",
+        Authorization: `Bearer 1K9elSZiyQKW2wIs5uWHOR1hfLVPBavnhHRCUnbF079f2990`,
       },
     });
     if (response.status === 200) {
-      return response.data;
+      console.log("Category updated successfully");
+      return response.data; 
     } else {
       throw new Error("Failed to update category: Server error");
     }
