@@ -42,7 +42,7 @@ function DeleteCategory({ id, onDelete }) {
     <div>
       {/* Delete Category Button */}
       <button className="h-6 w-6 p-1" onClick={() => setShowModal(true)}>
-        <RiDeleteBin6Fill className=" text-red-500" size={18}  />
+        <RiDeleteBin6Fill className=" text-red-600" size={18}  />
       </button>
       <FailedModal isOpen={showModal} onClose={() => setShowModal(false)}>
         <div className="p-5">

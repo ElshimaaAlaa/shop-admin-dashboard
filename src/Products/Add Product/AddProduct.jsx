@@ -121,7 +121,7 @@ function AddProduct() {
   };
 
   return (
-    <div className="bg-gray-100 flex flex-col min-h-screen relative">
+    <div className="bg-gray-100 flex flex-col h-115vh relative">
       <Helmet>
         <title>Add Product - VERTEX</title>
         <meta name="description" content="Add new product to VERTEX" />

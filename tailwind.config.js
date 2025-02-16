@@ -27,6 +27,7 @@ module.exports = {
       },
       width: {
         1: "1px",
+        "200":"200px",
         "300px": "300px",
         "360px": "360px",
         "460px": "460px",
