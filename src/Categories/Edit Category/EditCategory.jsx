@@ -16,7 +16,7 @@ function EditCategory() {
   const category = state || {};
   const initialValues = {
     name: category?.name || "",
-    description: category?.description,
+    description: category?.description || "",
     image: null,
   };
 
@@ -44,7 +44,11 @@ function EditCategory() {
       console.error("Failed to update category:", error);
     }
   };
-
+  // Delete Image Handler
+  const handleDeleteImage = (setFieldValue) => {
+    setPreviewImage(null);
+    setFieldValue("image", null);
+  };
   return (
     <div className="bg-gray-100 h-115vh flex flex-col relative">
       <Helmet>
@@ -130,7 +134,11 @@ function EditCategory() {
                             />
                             Upload Another Image
                           </button>
-                          <button className="border rounded-xl border-red-600 bg-red-100 p-3">
+                          <button
+                            type="button"
+                            className="border rounded-xl border-red-600 bg-red-100 p-3"
+                            onClick={() => handleDeleteImage(setFieldValue)}
+                          >
                             <RiDeleteBin6Fill className="text-red-700 h-5 w-5" />
                           </button>
                         </div>
@@ -188,4 +196,5 @@ function EditCategory() {
     </div>
   );
 }
+
 export default EditCategory;
