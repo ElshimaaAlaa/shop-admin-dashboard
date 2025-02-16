@@ -7,7 +7,7 @@ export const updateProfile = async (formData) => {
       url: `${API_BASE_URL}/update-profile`,
       method: "POST",
       headers: {
-        "Accept-Language": "en",
+        "Accept-Language": "ar",
         Authorization:
           "Bearer 1K9elSZiyQKW2wIs5uWHOR1hfLVPBavnhHRCUnbF079f2990",
       },

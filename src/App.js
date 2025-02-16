@@ -36,7 +36,7 @@ function App() {
           {/* Categories */}
           <Route path="categories" element={<AllCategory />} />
           <Route path="addCategory" element={<AddCategory />} />
-          <Route path="/Home/editCategory" element={<EditCategory />} />
+          <Route path="/Home/editCategory/:id" element={<EditCategory />} />
           <Route path="viewCategory" element={<ViewCategory />} />
 
           {/* Products */}
@@ -58,8 +58,7 @@ function App() {
 
           {/* Personal Information */}
           <Route path="MainInfo" element={<MainInfo />}>
-            <Route index element={<PersonalInformation />} /> {/* Default route */}
-            <Route path="personalInformation" element={<PersonalInformation />} />
+            <Route index element={<PersonalInformation />} />
             <Route path="EditInfo" element={<EditInfo />} />
           </Route>
         </Route>

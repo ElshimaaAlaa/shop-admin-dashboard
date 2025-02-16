@@ -9,11 +9,12 @@ export const updateCategory = async (formData, categoryId) => {
       headers: {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer 1K9elSZiyQKW2wIs5uWHOR1hfLVPBavnhHRCUnbF079f2990`,
+        "Accept-Language": "en",
       },
     });
     if (response.status === 200) {
       console.log("Category updated successfully");
-      return response.data; 
+      return response.data;
     } else {
       throw new Error("Failed to update category: Server error");
     }

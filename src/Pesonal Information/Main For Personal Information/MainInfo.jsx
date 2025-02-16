@@ -4,7 +4,7 @@ import InfoSideBar from "./InfoSideBar";
 
 function MainInfo() {
   return (
-    <div className="bg-white rounded-md mx-16 p-10 flex items-center justify-between relative top-10">
+    <div className="bg-white rounded-md mx-10 p-10 flex items-center justify-between top-10 relative">
       <section>
         <Outlet />
       </section>
@@ -12,4 +12,5 @@ function MainInfo() {
     </div>
   );
 }
+
 export default MainInfo;

@@ -96,7 +96,7 @@ function AddCategory() {
                       <img
                         src={previewImage}
                         alt="preview"
-                        className="w-full h-40 object-cover rounded-lg"
+                        className="w-450 h-44 object-fill rounded-lg"
                       />
                     ) : (
                       <>

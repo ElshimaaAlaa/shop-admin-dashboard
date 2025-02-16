@@ -45,7 +45,7 @@ function DeleteAccount() {
           alt="user-info"
           className="w-6 h-6"
         />
-        <p className="font-semibold text-13 mt-1 text-red-500">
+        <p className="font-semibold text-15 mt-1 text-red-500">
           Delete Account
         </p>
       </div>

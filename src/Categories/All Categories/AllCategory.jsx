@@ -51,7 +51,7 @@ function AllCategory() {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   return (
-    <div className="bg-lightgray p-10 min-h-screen">
+    <div className="bg-lightgray p-10 h-115vh">
       <Helmet>
         <title>All Categories - VERTEX</title>
       </Helmet>
@@ -146,7 +146,7 @@ function AllCategory() {
                             className="h-6 w-6 p-1 me-2"
                             aria-label="Edit category"
                             onClick={() =>
-                              navigate(`/Home/editCategory`, {
+                              navigate(`/Home/editCategory/${category.id}`, {
                                 state: category,
                               })
                             }

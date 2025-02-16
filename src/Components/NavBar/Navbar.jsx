@@ -1,13 +1,9 @@
 import React from "react";
-// import Image from "next/image"
 import { Bell, Globe, ChevronDown, Search } from "lucide-react";
-// import { Button } from "@/components/ui/button"
-// import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
 function Navbar() {
   return (
     <div className="">
-      {/* static at this time  */}
       <nav className="flex items-center justify-between px-4 py-2 bg-white">
         {/* Left section */}
         <div className="flex items-center gap-4">
@@ -19,7 +15,10 @@ function Navbar() {
             />
           </button>
           <div className="relative">
-            <Search color="#E0A75E" className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
+            <Search
+              color="#E0A75E"
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5"
+            />
             <input
               type="text"
               placeholder="Search Something Here"
@@ -30,18 +29,27 @@ function Navbar() {
 
         {/* Right section */}
         <div className="flex items-center gap-5">
-          {/* notifications */}
-          {/* <button variant="ghost" size="icon" className="relative">
-            <Bell className="w-7 h-6" />
-            <span className="absolute -top-1 -right-2 w-4 h-4 bg-red-600 text-white text-xs rounded-full flex items-center justify-center">
-              3
-            </span> */}
-          {/* </button> */}
-          {/* language settings */}
-          {/* <button variant="ghost" size="icon">
-            <Globe className="w-7 h-6" />
-          </button> */}
-          {/* user profile settings */}
+          {/* Language settings */}
+          <div className="flex items-center gap-2 bg-gray-100 rounded-md p-3">
+            <button variant="ghost" size="icon">
+              <Globe className="w-7 h-6" />
+            </button>
+            <select className="bg-transparent border-none focus:outline-none">
+              <option className="" value="en">English</option>
+              <option value="ar">Arabic</option>
+            </select>
+          </div>
+          {/* Notifications */}
+          <button
+            variant="ghost"
+            size="icon"
+            className="relative bg-gray-100 rounded-md p-3"
+          >
+            <Bell className="w-5 h-5" />
+            <span className="absolute top-2 right-3 w-2 h-2 bg-red-600 text-white text-11 rounded-full flex items-center justify-center"></span>
+          </button>
+
+          {/* User profile settings */}
           {/* <div className="bg-lightgray border border-gray-300 rounded-xl flex items-center p-4 gap-6">
             <img
               src="/assets/images/image 4.png"
@@ -52,13 +60,14 @@ function Navbar() {
               <h3 className="font-bold">Ahmed Mohamed</h3>
               <p className="text-gray-600 mt-3">Vertex CEO</p>
             </div>
-            <img src="/assets/images/dropdown-arrow_svgrepo.com.png" alt="" />
+            <ChevronDown className="w-5 h-5" />
           </div> */}
         </div>
       </nav>
     </div>
   );
 }
+
 export default Navbar;
 /* 
           <DropdownMenu>

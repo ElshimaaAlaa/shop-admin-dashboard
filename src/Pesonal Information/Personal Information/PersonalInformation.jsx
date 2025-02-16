@@ -36,7 +36,7 @@ function PersonalInformation() {
         <div className="flex items-center justify-between">
           <h1 className="font-bold text-2xl">Personal Information</h1>
           <button
-            onClick={() => navigate("EditInfo")}
+            onClick={() => navigate("EditInfo", { state: personalInfo })}
             className="text-white font-semibold flex items-center justify-center gap-3 bg-primary p-3 w-24 rounded-md"
           >
             <img src="/assets/images/edit-3_svgrepo.com.png" alt="edit-info" />
@@ -44,7 +44,7 @@ function PersonalInformation() {
           </button>
         </div>
         {/* image */}
-        <div className="flex items-center gap-5 my-10 border rounded-md p-5">
+        <div className="flex items-center gap-5 my-10 border rounded-md p-5 w-130vh">
           <img
             src={"/assets/images/unsplash_et_78QkMMQs.png"} // image not displayed
             alt="user-profile"
@@ -52,7 +52,8 @@ function PersonalInformation() {
           />
           <div>
             <h2 className="font-semibold">{personalInfo?.name}</h2>
-            <p className="text-gray-400 mt-3">Vertex CEO</p> {/* not returned in data*/}
+            <p className="text-gray-400 mt-3">Vertex CEO</p>{" "}
+            {/* not returned in data*/}
           </div>
         </div>
         {/* name, phone, and email */}
@@ -69,7 +70,8 @@ function PersonalInformation() {
           </div>
           <div className="mt-5">
             <p className="text-gray-400 text-14">Phone</p>
-            <h3 className="text-13">+96-876-980-98</h3> {/* not returned in data*/}
+            <h3 className="text-13">+96-876-980-98</h3>{" "}
+            {/* not returned in data*/}
           </div>
         </div>
       </section>
