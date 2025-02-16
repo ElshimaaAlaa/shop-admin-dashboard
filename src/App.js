@@ -18,6 +18,9 @@ import AdminLogin from "./Auth/Login/AdminLogin";
 import ForgotPassword from "./Auth/Forgot Password/ForgotPassword";
 import VerifayPassword from "./Auth/Verivation Code/VerifayPassword";
 import CreateNewPassword from "./Auth/Create Password/CreateNewPassword";
+import PersonalInformation from "./Pesonal Information/Personal Information/PersonalInformation";
+import MainInfo from "./Pesonal Information/Main For Personal Information/MainInfo";
+import EditInfo from "./Pesonal Information/Edit Personal Information/EditInfo";
 
 function App() {
   return (
@@ -52,6 +55,13 @@ function App() {
 
           {/* Settings */}
           {/* <Route path="shipping" element={<Shipping />} /> */}
+
+          {/* Personal Information */}
+          <Route path="MainInfo" element={<MainInfo />}>
+            <Route index element={<PersonalInformation />} /> {/* Default route */}
+            <Route path="personalInformation" element={<PersonalInformation />} />
+            <Route path="EditInfo" element={<EditInfo />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

@@ -6,7 +6,7 @@ import { Bell, Globe, ChevronDown, Search } from "lucide-react";
 
 function Navbar() {
   return (
-    <div>
+    <div className="">
       {/* static at this time  */}
       <nav className="flex items-center justify-between px-4 py-2 bg-white">
         {/* Left section */}
