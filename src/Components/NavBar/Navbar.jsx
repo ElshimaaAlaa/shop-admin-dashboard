@@ -30,7 +30,7 @@ function Navbar() {
         {/* Right section */}
         <div className="flex items-center gap-5">
           {/* Language settings */}
-          <div className="flex items-center gap-2 bg-gray-100 rounded-md p-3">
+          {/* <div className="flex items-center gap-2 bg-gray-100 rounded-md p-3">
             <button variant="ghost" size="icon">
               <Globe className="w-7 h-6" />
             </button>
@@ -38,7 +38,7 @@ function Navbar() {
               <option className="" value="en">English</option>
               <option value="ar">Arabic</option>
             </select>
-          </div>
+          </div> */}
           {/* Notifications */}
           <button
             variant="ghost"

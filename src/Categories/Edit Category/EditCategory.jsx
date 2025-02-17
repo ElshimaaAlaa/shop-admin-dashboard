@@ -5,7 +5,6 @@ import { Helmet } from "react-helmet";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 import { updateCategory } from "../../ApiServices/updateCategory";
 import { ClipLoader } from "react-spinners";
-import { RiDeleteBin6Fill } from "react-icons/ri";
 
 function EditCategory() {
   const navigate = useNavigate();
@@ -14,9 +13,11 @@ function EditCategory() {
   const [previewImage, setPreviewImage] = useState(state?.image || null);
   const [showModal, setShowModal] = useState(false);
   const category = state || {};
+
   const initialValues = {
     name: category?.name || "",
     description: category?.description || "",
+    type: category?.type || "",
     image: null,
   };
 
@@ -28,27 +29,19 @@ function EditCategory() {
       formData.append("name[en]", values.name);
       formData.append("description[ar]", values.description);
       formData.append("description[en]", values.description);
+      formData.append("type", values.type);
       if (values.image) {
         formData.append("image", values.image);
       }
       await updateCategory(formData, category.id);
       setIsLoading(false);
       setShowModal(true);
-      category.name = values.name;
-      category.description = values.description;
-      if (values.image) {
-        category.image = URL.createObjectURL(values.image);
-      }
     } catch (error) {
       setIsLoading(false);
       console.error("Failed to update category:", error);
     }
   };
-  // Delete Image Handler
-  const handleDeleteImage = (setFieldValue) => {
-    setPreviewImage(null);
-    setFieldValue("image", null);
-  };
+
   return (
     <div className="bg-gray-100 h-115vh flex flex-col relative">
       <Helmet>
@@ -63,21 +56,40 @@ function EditCategory() {
         enableReinitialize
         onSubmit={handleSubmit}
       >
-        {({ setFieldValue, errors, touched }) => (
+        {({ setFieldValue, errors, touched, values }) => (
           <Form className="flex flex-col">
             <div className="flex gap-5 mx-10">
               {/* Basic Information Section */}
               <div className="bg-white p-5 rounded-md w-full">
                 <h2 className="font-bold mb-5">Basic Information</h2>
-                <Field
-                  name="name"
-                  placeholder="Category Name"
-                  className="w-full bg-transparent outline-none border border-gray-300 rounded-md h-14 p-2 block"
-                />
-                {errors.name && touched.name && (
-                  <div className="text-red-500 text-sm">{errors.name}</div>
-                )}
-
+                <div className="flex items-center gap-4">
+                  <Field
+                    name="name"
+                    placeholder="Category Name"
+                    className="w-full bg-transparent outline-none border border-gray-300 rounded-md h-14 p-2 block"
+                  />
+                  {errors.name && touched.name && (
+                    <div className="text-red-500 text-sm">{errors.name}</div>
+                  )}
+                  <Field
+                    name="type"
+                    as="select"
+                    className="w-full bg-transparent outline-none border border-gray-300 rounded-md h-14 p-2 block"
+                  >
+                    <option value="1" selected={values.type === "1"}>
+                      Standard
+                    </option>
+                    <option value="2" selected={values.type === "2"}>
+                      Color-Only
+                    </option>
+                    <option value="3" selected={values.type === "3"}>
+                      Size-Only
+                    </option>
+                    <option value="4" selected={values.type === "4"}>
+                      Color & Size
+                    </option>
+                  </Field>
+                </div>
                 <Field
                   as="textarea"
                   name="description"
@@ -85,11 +97,10 @@ function EditCategory() {
                   className="w-full bg-transparent outline-none border border-gray-300 rounded-md p-2 h-36 mt-5"
                 />
                 {errors.description && touched.description && (
-                  <div className="text-red-500 text-sm">
-                    {errors.description}
-                  </div>
+                  <div className="text-red-500 text-sm">{errors.description}</div>
                 )}
               </div>
+
               {/* Image Upload Section */}
               <div className="bg-white p-5 rounded-md w-2/4">
                 <h2 className="font-bold mb-5">Category Icon / Image</h2>
@@ -121,7 +132,7 @@ function EditCategory() {
                         <div className="mt-2 flex items-center gap-3">
                           <button
                             type="button"
-                            className="bg-customOrange-mediumOrange flex items-center justify-center font-semibold gap-3 text-primary rounded-xl p-3  border border-primary w-370"
+                            className="flex items-center justify-center text-16 gap-3 text-primary rounded-xl p-3 border border-primary w-370"
                             onClick={(e) => {
                               e.preventDefault();
                               document.getElementById("image-upload").click();
@@ -133,13 +144,6 @@ function EditCategory() {
                               className="h-5"
                             />
                             Upload Another Image
-                          </button>
-                          <button
-                            type="button"
-                            className="border rounded-xl border-red-600 bg-red-100 p-3"
-                            onClick={() => handleDeleteImage(setFieldValue)}
-                          >
-                            <RiDeleteBin6Fill className="text-red-700 h-5 w-5" />
                           </button>
                         </div>
                       </>
@@ -157,23 +161,20 @@ function EditCategory() {
                 </div>
               </div>
             </div>
+            {/* Buttons Section */}
             <div className="flex gap-5 items-center border-t justify-end bg-white rounded p-5 w-full mt-5 absolute bottom-0">
               <button
-                type={"button"}
+                type="button"
                 className="bg-gray-200 text-gray-500 font-semibold p-3 w-40 rounded-md"
                 onClick={() => navigate("/Home/categories")}
               >
                 Cancel
               </button>
               <button
-                type={"submit"}
+                type="submit"
                 className="bg-primary text-white font-semibold rounded-md p-3 w-40"
               >
-                {isLoading ? (
-                  <ClipLoader color="#fff" size={22} />
-                ) : (
-                  "Save Changes"
-                )}
+                {isLoading ? <ClipLoader color="#fff" size={22} /> : "Save Changes"}
               </button>
             </div>
           </Form>
@@ -182,9 +183,7 @@ function EditCategory() {
       {/* Success Modal */}
       <SuccessModal isOpen={showModal}>
         <div className="flex flex-col w-370 items-center">
-          <p className="font-bold mt-5 text-center">
-            Category updated successfully!
-          </p>
+          <p className="font-bold mt-5 text-center">Category updated successfully!</p>
           <button
             className="bg-primary text-white rounded-md p-2 text-14 font-semibold mt-4 w-64"
             onClick={() => navigate("/Home/categories")}
@@ -196,5 +195,4 @@ function EditCategory() {
     </div>
   );
 }
-
 export default EditCategory;

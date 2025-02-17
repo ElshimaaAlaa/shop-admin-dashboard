@@ -3,7 +3,7 @@ const API_BASE_URL = "https://demo.vrtex.duckdns.org/api/shop/categories";
 export const updateCategory = async (formData, categoryId) => {
   try {
     const response = await axios({
-      method: "PUT",
+      method: "POST",
       url: `${API_BASE_URL}/update/${categoryId}`,
       data: formData,
       headers: {

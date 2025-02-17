@@ -16,7 +16,11 @@ export const addCategory = async (formData) => {
         },
       }
     );
-    return response.data;
+    if (response.status === 200) {
+      console.log("Category added successfully");
+      console.log(response.data);
+      return response.data;
+    }
   } catch (error) {
     console.error("Failed to add category", error);
     throw error;

@@ -21,6 +21,7 @@ import CreateNewPassword from "./Auth/Create Password/CreateNewPassword";
 import PersonalInformation from "./Pesonal Information/Personal Information/PersonalInformation";
 import MainInfo from "./Pesonal Information/Main For Personal Information/MainInfo";
 import EditInfo from "./Pesonal Information/Edit Personal Information/EditInfo";
+import Profile from "./Profile/Profile";
 
 function App() {
   return (
@@ -61,6 +62,7 @@ function App() {
             <Route index element={<PersonalInformation />} />
             <Route path="EditInfo" element={<EditInfo />} />
           </Route>
+          <Route path="/Home/Profile" element={<Profile/>}/>
         </Route>
       </Routes>
     </BrowserRouter>

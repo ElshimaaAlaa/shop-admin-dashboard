@@ -15,6 +15,7 @@ function AddCategory() {
     name: "",
     description: "",
     image: null,
+    type :""
   };
   const validationSchema = Yup.object({
     name: Yup.string().required("Name is required"),
@@ -28,9 +29,11 @@ function AddCategory() {
     formData.append("name[en]", values.name);
     formData.append("description[ar]", values.description);
     formData.append("description[en]", values.description);
+    formData.append("type", values.type);
     if (values.image) {
       formData.append("image", values.image);
     }
+  
     try {
       await addCategory(formData);
       console.log("Category added successfully");
@@ -41,7 +44,6 @@ function AddCategory() {
       setIsLoading(false);
     }
   };
-
   return (
     <div className="bg-lightgray h-115vh relative">
       <Helmet>
@@ -60,11 +62,25 @@ function AddCategory() {
             <div className="flex gap-5 mx-10 ">
               <div className="bg-white p-5 rounded-xl w-full">
                 <h2 className="font-bold mb-5">Basic Information</h2>
-                <Field
-                  placeholder="Category Name"
-                  name="name"
-                  className="w-full bg-transparent outline-none border border-gray-300 rounded-xl h-14 p-2 block"
-                />
+                <div className="flex items-center gap-4">
+                  <Field
+                    placeholder="Category Name"
+                    name="name"
+                    className="w-full bg-transparent outline-none border border-gray-300 rounded-xl h-14 p-2 block"
+                  />
+                  <Field
+                    placeholder="Type"
+                    as="select"
+                    name="type"
+                    className="w-full bg-transparent outline-none  border border-gray-300 rounded-xl h-14 p-2 block focus:border-2 focus:border-primary"
+                  >
+                    <option>Type</option>
+                    <option value="1">Standard</option>
+                    <option value="2">Color-Only</option>
+                    <option value="3">Size-Only</option>
+                    <option value="4">Color & Size</option>
+                  </Field>
+                </div>
                 <Field
                   as="textarea"
                   placeholder="Description"

@@ -6,6 +6,7 @@ import { GetPersonalInfo } from "../../ApiServices/GetPersonalInfo";
 function PersonalInformation() {
   const navigate = useNavigate();
   const [personalInfo, setPersonalInfo] = useState([]);
+  const [imageError, setImageError] = useState(false); // State to handle image error
 
   useEffect(() => {
     const getInfo = async () => {
@@ -18,6 +19,10 @@ function PersonalInformation() {
     };
     getInfo();
   }, []);
+
+  const handleImageError = () => {
+    setImageError(true); // Set fallback image in case of error
+  };
 
   return (
     <div>
@@ -43,20 +48,24 @@ function PersonalInformation() {
             Edit
           </button>
         </div>
-        {/* image */}
+        {/* Image Section */}
         <div className="flex items-center gap-5 my-10 border rounded-md p-5 w-130vh">
           <img
-            src={"/assets/images/unsplash_et_78QkMMQs.png"} // image not displayed
+            src={
+              imageError
+                ? "/assets/images/unsplash_et_78QkMMQs.png" // Fallback image in case of error
+                : personalInfo.image || "/assets/images/unsplash_et_78QkMMQs.png"
+            }
             alt="user-profile"
             className="rounded-xl"
+            onError={handleImageError} // Handle image error
           />
           <div>
             <h2 className="font-semibold">{personalInfo?.name}</h2>
-            <p className="text-gray-400 mt-3">Vertex CEO</p>{" "}
-            {/* not returned in data*/}
+            <p className="text-gray-400 mt-3">Vertex CEO</p>
           </div>
         </div>
-        {/* name, phone, and email */}
+        {/* Name, Phone, and Email */}
         <div className="border rounded-md p-5">
           <div className="flex items-center gap-96">
             <div>
@@ -70,8 +79,9 @@ function PersonalInformation() {
           </div>
           <div className="mt-5">
             <p className="text-gray-400 text-14">Phone</p>
-            <h3 className="text-13">+96-876-980-98</h3>{" "}
-            {/* not returned in data*/}
+            <h3 className="text-13">
+              {personalInfo.phone || "+96-876-980-98"}
+            </h3>
           </div>
         </div>
       </section>

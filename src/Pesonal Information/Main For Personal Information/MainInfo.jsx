@@ -12,5 +12,4 @@ function MainInfo() {
     </div>
   );
 }
-
 export default MainInfo;

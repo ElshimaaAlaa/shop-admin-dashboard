@@ -5,61 +5,54 @@ import Name from "../../Svgs/Name";
 import Email from "../../Svgs/Email";
 import Phone from "../../Svgs/Phone";
 import { useLocation, useNavigate } from "react-router-dom";
-import { updateProfile } from "firebase/auth";
 import { ClipLoader } from "react-spinners";
+import axios from "axios";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 
 function EditInfo() {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
   const navigate = useNavigate();
   const { state } = useLocation();
   const personalInfo = state || {};
-  const [imagePreview, setImagePreview] = useState(personalInfo?.image || null); // For image preview
-
-  const intialValues = {
+  const initialValues = {
     name: personalInfo?.name || "",
     email: personalInfo?.email || "",
     phone: personalInfo?.phone || "",
-    image: null, // For file upload
+    image: null,
   };
-
   const handleSubmit = async (values) => {
     setIsLoading(true);
     try {
       const formData = new FormData();
       formData.append("name", values.name);
       formData.append("email", values.email);
-    //   formData.append("phone", values.phone);
-      if (values.image) {
-        formData.append("image", values.image); // Append the image file
+      formData.append("phone", values.phone);
+      if (selectedImage) {
+        formData.append("image", selectedImage);
       }
-      await updateProfile(formData); // Update profile with form data
+      const response = await axios.post(
+        "https://demo.vrtex.duckdns.org/api/update-profile",
+        formData,
+        {
+          headers: {
+            Accept: "application/json",
+            "Accept-Language": "ar",
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer 1K9elSZiyQKW2wIs5uWHOR1hfLVPBavnhHRCUnbF079f2990`,
+          },
+        }
+      );
+      console.log("Profile updated:", response.data);
       setShowModal(true);
-    //   setIsLoading(true)
     } catch (error) {
-      console.error("Failed to update profile", error);
-      setShowModal(false);
-      setIsLoading(false);
+      console.error("Failed to update profile:", error);
     } finally {
-    //   setIsLoading(false);
+      setIsLoading(false);
     }
   };
-
-  const handleImageChange = (event, setFieldValue) => {
-    const file = event.target.files[0];
-    if (file) {
-      setFieldValue("image", file); // Update Formik field value
-      setImagePreview(URL.createObjectURL(file)); // Set image preview
-    }
-  };
-
-  const handleImageDelete = (setFieldValue) => {
-    setFieldValue("image", null); // Clear Formik field value
-    setImagePreview(null); // Clear image preview
-  };
-
   return (
     <div>
       <Helmet>
@@ -68,60 +61,62 @@ function EditInfo() {
       <section>
         <h1 className="font-bold text-2xl">Edit Personal Information</h1>
         <Formik
-          initialValues={intialValues}
+          initialValues={initialValues}
           enableReinitialize
           onSubmit={handleSubmit}
         >
-          {({ setFieldValue, values }) => (
+          {({ setFieldValue }) => (
             <Form>
-              {/* Image Section */}
-              <div className="flex items-center justify-between my-10 border rounded-md p-5">
-                <div className="flex items-center gap-5">
-                  {imagePreview ? (
+              {/* Image Upload Section */}
+              <div className="my-10 gap-3">
+                {selectedImage || personalInfo?.image ? (
+                  <div className="flex justify-between items-center">
                     <img
-                      src={imagePreview}
-                      alt="user-profile"
-                      className="rounded-xl h-20 w-20 object-cover"
+                      src={
+                        selectedImage
+                          ? URL.createObjectURL(selectedImage)
+                          : personalInfo.image
+                      }
+                      alt="Profile"
+                      className="w-32 h-32 rounded-md object-cover border border-gray-300"
                     />
-                  ) : (
-                    <img
-                      src="/assets/images/unsplash_et_78QkMMQs.png" // Default image
-                      alt="user-profile"
-                      className="rounded-xl h-20 w-20 object-cover"
-                    />
-                  )}
-                  <div>
-                    <h2 className="font-semibold">{personalInfo?.name}</h2>
-                    <p className="text-gray-400 mt-3">Vertex CEO</p>
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        id="imageUpload"
+                        onChange={(e) => {
+                          setSelectedImage(e.target.files[0]);
+                          setFieldValue("image", e.target.files[0]);
+                        }}
+                      />
+                      <button className="cursor-pointer flex items-center gap-3">
+                        <img
+                          src="/assets/images/upload.png"
+                          alt="upload-image"
+                          className="w-5"
+                        />
+                        Upload New Image
+                      </button>
+                      <button
+                        type="button"
+                        className=" bg-red-100  p-2 rounded-md border-red-600"
+                        onClick={() => {
+                          setSelectedImage(null);
+                          setFieldValue("image", null);
+                        }}
+                      >
+                        <RiDeleteBin6Fill className="text-red-700 h-5 w-5" />
+                      </button>
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <label className="flex font-semibold items-center gap-3 cursor-pointer">
-                    <img
-                      src="/assets/images/upload.png"
-                      alt="upload-image"
-                      className="h-4 w-4"
-                    />
-                    Upload Picture
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => handleImageChange(e, setFieldValue)}
-                    />
-                  </label>
-                  <button
-                    type="button"
-                    className="border rounded-xl border-red-600 bg-red-100 p-3"
-                    onClick={() => handleImageDelete(setFieldValue)}
-                  >
-                    <RiDeleteBin6Fill className="text-red-700 h-5 w-5" />
-                  </button>
-                </div>
+                ) : (
+                  <p className="text-gray-500">No image available</p>
+                )}
               </div>
-
               {/* Form Fields */}
-              <div className="border p-5 rounded-md bg-gray-100 w-130vh">
+              <div className="border p-5 rounded-md bg-gray-100 w-130vh mt-4">
                 <div className="flex items-center gap-2">
                   <div className="relative">
                     <Field
@@ -161,7 +156,7 @@ function EditInfo() {
                 <button
                   type="button"
                   className="bg-gray-200 text-gray-500 font-semibold p-3 w-32 rounded-md"
-                  onClick={() => navigate('/Home/MainInfo')}
+                  onClick={() => navigate("/Home/MainInfo")}
                 >
                   Cancel
                 </button>
@@ -183,10 +178,10 @@ function EditInfo() {
             Profile updated successfully!
           </p>
           <button
-            className="bg-primary text-white rounded-md p-2 text-14 font-semibold mt-4 w-64"
-            onClick={() => setShowModal(false)}
+            className="bg-primary text-white rounded-md p-2 text-14 mt-4 w-64 font-semibold"
+            onClick={() => navigate("/Home/MainInfo")}
           >
-            Done! Updated Successfully
+            Done ! Updated Successfully
           </button>
         </div>
       </SuccessModal>
