@@ -97,7 +97,9 @@ function EditCategory() {
                   className="w-full bg-transparent outline-none border border-gray-300 rounded-md p-2 h-36 mt-5"
                 />
                 {errors.description && touched.description && (
-                  <div className="text-red-500 text-sm">{errors.description}</div>
+                  <div className="text-red-500 text-sm">
+                    {errors.description}
+                  </div>
                 )}
               </div>
 
@@ -174,7 +176,11 @@ function EditCategory() {
                 type="submit"
                 className="bg-primary text-white font-semibold rounded-md p-3 w-40"
               >
-                {isLoading ? <ClipLoader color="#fff" size={22} /> : "Save Changes"}
+                {isLoading ? (
+                  <ClipLoader color="#fff" size={22} />
+                ) : (
+                  "Save Changes"
+                )}
               </button>
             </div>
           </Form>
@@ -182,8 +188,15 @@ function EditCategory() {
       </Formik>
       {/* Success Modal */}
       <SuccessModal isOpen={showModal}>
-        <div className="flex flex-col w-370 items-center">
-          <p className="font-bold mt-5 text-center">Category updated successfully!</p>
+        <div className="flex flex-col justify-center w-370 items-center">
+          <img
+            src="/assets/images/success.png"
+            alt="success"
+            className="w-32 mt-6"
+          />
+          <p className="font-bold mt-5 text-center">
+            Category updated successfully!
+          </p>
           <button
             className="bg-primary text-white rounded-md p-2 text-14 font-semibold mt-4 w-64"
             onClick={() => navigate("/Home/categories")}

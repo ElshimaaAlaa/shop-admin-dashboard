@@ -124,6 +124,11 @@ function CreateNewPassword() {
           onClose={() => setShowSuccessModal(false)}
         >
           <div className="flex flex-col items-center justify-center rounded p-5">
+            <img
+              src="/assets/images/success.png"
+              alt="success"
+              className="w-32 mt-6"
+            />
             <h2 className="font-bold text-2xl mt-2">Password Changed!</h2>
             <p className="w-80 text-secondary text-center mt-2">
               Your password has been changed successfully.

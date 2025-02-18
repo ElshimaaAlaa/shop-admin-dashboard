@@ -12,8 +12,8 @@ function LogOut() {
   }
   return (
     <div>
-      <p className="text-gray-500 flex items-center gap-2 cursor-pointer" onClick={()=>setShowModal(true)}>
-        <MdOutlineLogout className="text-red-600 h-5 w-5" />
+      <p className="text-gray-500 flex items-center gap-3 p-2 text-17 hover:bg-gray-50 cursor-pointer" onClick={()=>setShowModal(true)}>
+        <MdOutlineLogout className="text-red-600 h-6 w-6" />
         Log Out
       </p>
       <FailedModal isOpen={showModal} onClose={() => setShowModal(false)}>

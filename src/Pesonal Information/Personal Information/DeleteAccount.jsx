@@ -9,7 +9,7 @@ function DeleteAccount() {
     setIsLoading(true);
     try {
       const response = await axios({
-        url: "https://demo.vrtex.duckdns.org/api/delete-account",
+        url: "https://demo.vrtex.duckdns.org/api/shop/delete-account",
         method: "GET",
         headers: {
           Authorization:

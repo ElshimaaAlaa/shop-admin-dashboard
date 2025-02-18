@@ -15,7 +15,7 @@ function AddCategory() {
     name: "",
     description: "",
     image: null,
-    type :""
+    type: "",
   };
   const validationSchema = Yup.object({
     name: Yup.string().required("Name is required"),
@@ -33,7 +33,7 @@ function AddCategory() {
     if (values.image) {
       formData.append("image", values.image);
     }
-  
+
     try {
       await addCategory(formData);
       console.log("Category added successfully");
@@ -151,7 +151,12 @@ function AddCategory() {
       </Formik>
       {/* Success Modal */}
       <SuccessModal isOpen={showModal} onClose={() => setShowModal(false)}>
-        <div className="flex flex-col items-center w-400">
+        <div className="flex flex-col items-center justify-center w-400">
+          <img
+            src="/assets/images/success.png"
+            alt="success"
+            className="w-32 mt-6"
+          />
           <p className="font-bold mt-5">Category added successfully!</p>
           <button
             className="bg-primary text-white rounded-md p-2 text-14 font-semibold mt-4"

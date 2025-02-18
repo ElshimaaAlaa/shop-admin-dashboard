@@ -23,6 +23,7 @@ function EditInfo() {
     phone: personalInfo?.phone || "",
     image: null,
   };
+
   const handleSubmit = async (values) => {
     setIsLoading(true);
     try {
@@ -53,6 +54,7 @@ function EditInfo() {
       setIsLoading(false);
     }
   };
+
   return (
     <div>
       <Helmet>
@@ -91,17 +93,20 @@ function EditInfo() {
                           setFieldValue("image", e.target.files[0]);
                         }}
                       />
-                      <button className="cursor-pointer flex items-center gap-3">
+                      <label
+                        htmlFor="imageUpload"
+                        className="cursor-pointer flex items-center gap-3"
+                      >
                         <img
                           src="/assets/images/upload.png"
                           alt="upload-image"
                           className="w-5"
                         />
                         Upload New Image
-                      </button>
+                      </label>
                       <button
                         type="button"
-                        className=" bg-red-100  p-2 rounded-md border-red-600"
+                        className="bg-red-100 p-2 rounded-md border-red-600"
                         onClick={() => {
                           setSelectedImage(null);
                           setFieldValue("image", null);
@@ -188,4 +193,5 @@ function EditInfo() {
     </div>
   );
 }
+
 export default EditInfo;

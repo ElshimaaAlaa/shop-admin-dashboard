@@ -2,12 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
 import { GetPersonalInfo } from "../../ApiServices/GetPersonalInfo";
+import UpdatePassword from "./UpdatePassword";
 
 function PersonalInformation() {
   const navigate = useNavigate();
   const [personalInfo, setPersonalInfo] = useState([]);
-  const [imageError, setImageError] = useState(false); // State to handle image error
-
   useEffect(() => {
     const getInfo = async () => {
       try {
@@ -19,11 +18,6 @@ function PersonalInformation() {
     };
     getInfo();
   }, []);
-
-  const handleImageError = () => {
-    setImageError(true); // Set fallback image in case of error
-  };
-
   return (
     <div>
       <Helmet>
@@ -51,14 +45,9 @@ function PersonalInformation() {
         {/* Image Section */}
         <div className="flex items-center gap-5 my-10 border rounded-md p-5 w-130vh">
           <img
-            src={
-              imageError
-                ? "/assets/images/unsplash_et_78QkMMQs.png" // Fallback image in case of error
-                : personalInfo.image || "/assets/images/unsplash_et_78QkMMQs.png"
-            }
+            src={personalInfo.image}
             alt="user-profile"
             className="rounded-xl"
-            onError={handleImageError} // Handle image error
           />
           <div>
             <h2 className="font-semibold">{personalInfo?.name}</h2>
@@ -79,12 +68,11 @@ function PersonalInformation() {
           </div>
           <div className="mt-5">
             <p className="text-gray-400 text-14">Phone</p>
-            <h3 className="text-13">
-              {personalInfo.phone || "+96-876-980-98"}
-            </h3>
+            <h3 className="text-13">{personalInfo.phone}</h3>
           </div>
         </div>
       </section>
+      <UpdatePassword />
     </div>
   );
 }

@@ -2,7 +2,7 @@ import axios from "axios";
 export const GetPersonalInfo = async () => {
   try {
     const response = await axios({
-      url: "https://demo.vrtex.duckdns.org/api/profile",
+      url: "https://demo.vrtex.duckdns.org/api/shop/profile",
       method: "GET",
       headers: {
         Authorization: `Bearer 1K9elSZiyQKW2wIs5uWHOR1hfLVPBavnhHRCUnbF079f2990`,
@@ -10,6 +10,10 @@ export const GetPersonalInfo = async () => {
     });
     if (response.status === 200) {
       console.log(response.data.data);
+      localStorage.setItem("User Name", response.data.data.name);
+      localStorage.setItem("User email", response.data.data.email);
+      localStorage.setItem("User Phone", response.data.data.phone);
+      localStorage.setItem("User image", response.data.data.image);
       return response.data.data;
     } else {
       console.error("Failed to fetch data");
