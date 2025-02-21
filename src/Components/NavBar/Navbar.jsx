@@ -1,6 +1,7 @@
 import React from "react";
 import { Bell, Search } from "lucide-react";
 import ProfileMenu from "../../Profile/Profile";
+import LanguageSelector from "../../Profile/UpdateLanguage";
 
 function Navbar() {
   return (
@@ -29,15 +30,16 @@ function Navbar() {
         </div>
         {/* Right section */}
         <div className="flex items-center gap-5">
+          {/* <LanguageSelector /> */}
           {/* Notifications */}
-          <button
+          {/* <button
             variant="ghost"
             size="icon"
             className="relative bg-gray-100 rounded-md p-3"
           >
             <Bell className="w-5 h-5" />
             <span className="absolute top-2 right-3 w-2 h-2 bg-red-600 text-white text-11 rounded-full flex items-center justify-center"></span>
-          </button>
+          </button> */}
           <ProfileMenu />
         </div>
       </nav>

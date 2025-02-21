@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import FailedModal from "../../Components/Modal/Failed Modal/FailedModal";
 import axios from "axios";
 import { ClipLoader } from "react-spinners";
-import { RiDeleteBin6Fill } from "react-icons/ri";
+import { RiDeleteBin6Line } from "react-icons/ri";
 
 function DeleteCategory({ id, onDelete }) {
   const [showModal, setShowModal] = useState(false);
@@ -42,7 +42,7 @@ function DeleteCategory({ id, onDelete }) {
     <div>
       {/* Delete Category Button */}
       <button className="h-6 w-6 p-1" onClick={() => setShowModal(true)}>
-        <RiDeleteBin6Fill className=" text-red-600" size={18}  />
+        <RiDeleteBin6Line color="red" size={19}/>
       </button>
       <FailedModal isOpen={showModal} onClose={() => setShowModal(false)}>
         <div className="p-5">

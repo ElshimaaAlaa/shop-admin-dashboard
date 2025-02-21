@@ -6,7 +6,9 @@ import UpdatePassword from "./UpdatePassword";
 
 function PersonalInformation() {
   const navigate = useNavigate();
-  const [personalInfo, setPersonalInfo] = useState([]);
+  const [personalInfo, setPersonalInfo] = useState({});
+  const [error, setError] = useState(null);
+
   useEffect(() => {
     const getInfo = async () => {
       try {
@@ -14,10 +16,12 @@ function PersonalInformation() {
         setPersonalInfo(data);
       } catch (error) {
         console.error("Failed to fetch personal info:", error);
+        setError("Failed to load personal information. Please try again later.");
       }
     };
     getInfo();
   }, []);
+
   return (
     <div>
       <Helmet>
@@ -32,43 +36,51 @@ function PersonalInformation() {
         />
       </Helmet>
       <section>
-        <div className="flex items-center justify-between">
-          <h1 className="font-bold text-2xl">Personal Information</h1>
+        <div className="flex flex-col md:flex-row items-center justify-between mb-6">
+          <h1 className="font-bold text-2xl mb-4 md:mb-0">Personal Information</h1>
           <button
             onClick={() => navigate("EditInfo", { state: personalInfo })}
             className="text-white font-semibold flex items-center justify-center gap-3 bg-primary p-3 w-24 rounded-md"
+            aria-label="Edit personal information"
           >
-            <img src="/assets/images/edit-3_svgrepo.com.png" alt="edit-info" />
+            <img src="/assets/images/edit-3_svgrepo.com.png" alt="Edit icon" />
             Edit
           </button>
         </div>
-        {/* Image Section */}
-        <div className="flex items-center gap-5 my-10 border rounded-md p-5 w-130vh">
+        {error && (
+          <div className="bg-red-100 text-red-600 p-3 rounded-md mb-6">
+            {error}
+          </div>
+        )}
+        <div className="flex flex-col md:flex-row items-center gap-5 my-10 border rounded-md p-5 w-full">
           <img
-            src={personalInfo.image}
-            alt="user-profile"
-            className="rounded-xl"
+            src={personalInfo.image || "/assets/images/default-profile.png"}
+            alt="User profile"
+            className="rounded-xl w-24 h-24 md:w-32 md:h-32 object-cover"
+            onError={(e) => {
+              e.target.src = "/assets/images/default-profile.png";
+            }}
           />
-          <div>
-            <h2 className="font-semibold">{personalInfo?.name}</h2>
-            <p className="text-gray-400 mt-3">Vertex CEO</p>
+          <div className="text-center md:text-left">
+            <h2 className="font-semibold">{personalInfo?.name || "N/A"}</h2>
+            <p className="text-gray-400 mt-3">{personalInfo?.role || "Vertex CEO"}</p>
           </div>
         </div>
-        {/* Name, Phone, and Email */}
-        <div className="border rounded-md p-5">
-          <div className="flex items-center gap-96">
+        {/* Name, Phone, and Email Section */}
+        <div className="border rounded-md p-5 w-full">
+          <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-96">
             <div>
               <p className="text-gray-400 text-14">Name</p>
-              <h3 className="text-13">{personalInfo?.name}</h3>
+              <h3 className="text-13">{personalInfo?.name || "N/A"}</h3>
             </div>
             <div>
               <p className="text-gray-400 text-14">Email</p>
-              <h3 className="text-13">{personalInfo?.email}</h3>
+              <h3 className="text-13">{personalInfo?.email || "N/A"}</h3>
             </div>
           </div>
           <div className="mt-5">
             <p className="text-gray-400 text-14">Phone</p>
-            <h3 className="text-13">{personalInfo.phone}</h3>
+            <h3 className="text-13">{personalInfo?.phone || "N/A"}</h3>
           </div>
         </div>
       </section>

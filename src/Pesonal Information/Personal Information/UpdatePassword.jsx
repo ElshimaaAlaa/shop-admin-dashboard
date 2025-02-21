@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
-import { Form, Formik, Field } from "formik";
-import { FaRegEye, FaEyeSlash } from "react-icons/fa";
-import Password from "../../Svgs/Password";
+import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import "./UpdatePassword.scss";
 import MainBtn from "../../Components/Main Button/MainBtn";
 import { ClipLoader } from "react-spinners";
 import { handleUpdatePassword } from "../../ApiServices/UpdatePassword";
 import { useNavigate } from "react-router-dom";
+import PasswordInput from "../../Components/Password Input/PasswordInput";
 
 function UpdatePassword() {
   const [showModal, setShowModal] = useState(false);
@@ -16,11 +15,14 @@ function UpdatePassword() {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const intialValues = {
+
+  const initialValues = {
     password: "",
     password_confirmation: "",
   };
+
   const validationSchema = Yup.object({
     password: Yup.string()
       .min(8, "Password must be at least 8 characters long")
@@ -29,8 +31,10 @@ function UpdatePassword() {
       .oneOf([Yup.ref("password"), null], "Passwords must match")
       .required("Confirm Password is required"),
   });
+
   const handleSubmit = async (values) => {
     setIsLoading(true);
+    setError(null);
     try {
       await handleUpdatePassword(values.password, values.password_confirmation);
       setShowSuccessModal(true);
@@ -41,8 +45,7 @@ function UpdatePassword() {
       }, 2500);
     } catch (error) {
       console.error("Failed to update password", error);
-      setShowModal(false);
-      setShowSuccessModal(false);
+      setError("Failed to update password. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -53,6 +56,7 @@ function UpdatePassword() {
       <button
         className="flex items-center gap-4 border border-primary rounded-md p-3 text-primary font-bold mt-10"
         onClick={() => setShowModal(true)}
+        aria-label="Update password"
       >
         <img
           src="/assets/images/password_svgrepo.com.png"
@@ -62,51 +66,28 @@ function UpdatePassword() {
         Update Password
       </button>
       <SuccessModal isOpen={showModal} onClose={() => setShowModal(false)}>
-        <h1 className="text-primary font-bold text-2xl p-5">Update Password</h1>
+        <h1 className="text-primary font-semibold text-2xl p-5">Update Password</h1>
         <Formik
-          initialValues={intialValues}
+          initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
           <Form className="pe-5 ps-5 pb-5">
-            <div className="relative mt-5">
-              <Field
-                name="password"
-                type={showNewPassword ? "text" : "password"}
-                placeholder="New Password"
-                className="passwordInput pl-10 w-80 lg:w-400 md:w-390 sm:w-390 s:w-390"
-              />
-              <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
-                <Password />
-              </span>
-              <span
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer"
-                onClick={() => setShowNewPassword(!showNewPassword)}
-                aria-label={showNewPassword ? "Hide password" : "Show password"}
-              >
-                {showNewPassword ? <FaRegEye /> : <FaEyeSlash />}
-              </span>
-            </div>
-            <div className="relative mt-5">
-              <Field
-                name="password_confirmation"
-                type={showConfirmPassword ? "text" : "password"}
-                placeholder="Confirm New Password"
-                className="passwordInput pl-10 w-80 lg:w-400 md:w-390 sm:w-390 s:w-390"
-              />
-              <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
-                <Password />
-              </span>
-              <span
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                aria-label={
-                  showConfirmPassword ? "Hide password" : "Show password"
-                }
-              >
-                {showConfirmPassword ? <FaRegEye /> : <FaEyeSlash />}
-              </span>
-            </div>
+            <PasswordInput
+              name="password"
+              placeholder="New Password"
+              showPassword={showNewPassword}
+              togglePasswordVisibility={() => setShowNewPassword(!showNewPassword)}
+            />
+            <PasswordInput
+              name="password_confirmation"
+              placeholder="Confirm New Password"
+              showPassword={showConfirmPassword}
+              togglePasswordVisibility={() => setShowConfirmPassword(!showConfirmPassword)}
+            />
+            {error && (
+              <div className="text-red-600 text-sm mt-3">{error}</div>
+            )}
             <div className="mt-5">
               <MainBtn
                 text={

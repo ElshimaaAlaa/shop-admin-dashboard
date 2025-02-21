@@ -1,12 +1,13 @@
 import React, { useEffect, useState, useMemo } from "react";
 import ReactPaginate from "react-paginate";
-import { Search, Plus, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import DeleteProduct from "../Delete Product/DeleteProduct";
 import { ClipLoader } from "react-spinners";
 import { fetchProducts } from "../../ApiServices/AllProuctsApi";
 import { Helmet } from "react-helmet";
 import { AiFillEdit } from "react-icons/ai";
+import SearchBar from "../../Components/Search Bar/SearchBar";
 
 function AllProducts() {
   const [products, setProducts] = useState([]);
@@ -37,10 +38,11 @@ function AllProducts() {
       prevCategories.filter((product) => product.id !== productId)
     );
   };
-  // Filter categories based on search query
-  const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredProducts = useMemo(() => {
+    return products.filter((product) =>
+      product.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [products, searchQuery]);
   // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -50,7 +52,7 @@ function AllProducts() {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <div className="bg-lightgray p-10 min-h-screen">
+    <div className="bg-gray-100 p-10 ">
       <Helmet>
         <title>All Products | VERTEX</title>
       </Helmet>
@@ -58,48 +60,34 @@ function AllProducts() {
         Products
       </h1>
       <div className="bg-white p-5 rounded-md">
-        <div className="flex justify-between items-center gap-5 bg-white rounded-md">
-          <div className="relative w-full">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
-            <input
-              type="text"
-              placeholder="Search"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="font-bold w-full pl-10 pr-4 py-3 bg-muted/50 rounded-md text-sm focus:outline-none border border-gray-200 bg-lightgray"
-            />
-          </div>
-          <div
-            className="flex gap-3 bg-primary text-white font-bold p-3 rounded-md w-52 cursor-pointer"
-            onClick={() => navigate("/Home/addProduct")}
-          >
-            <div className="bg-white text-primary font-bold rounded ">
-              <Plus className="p-1 font-bold" />
-            </div>
-            <p>Add Product</p>
-          </div>
-        </div>
+        <SearchBar
+          // onclick={() => navigate("/Home/addProduct")}
+          value={searchQuery}
+          onchange={(e) => setSearchQuery(e.target.value)}
+          text={"Add Product"}
+        />
         {error ? (
           <div className="text-red-500 text-center mt-10 font-bold">
             Failed to fetch data. Please try again.
           </div>
         ) : isLoading ? (
-          <div className="text-gray-600 text-center font-bold mt-10">
+          <div className="text-gray-400 text-center  mt-10">
             <ClipLoader color="#E0A75E" />
+            <p className="mt-2">Loading Products...</p>
           </div>
         ) : (
           <div className="border overflow-hidden rounded-md mt-5">
             <table className="bg-white min-w-full table ">
               <thead>
                 <tr>
-                  <th className="flex items-center gap-4 px-3 py-3 text-left border-r">
+                  <th className="flex items-center gap-4 px-3 py-3 text-left border-r w-250">
                     <input
                       type="checkbox"
                       className="form-checkbox h-4 w-4 me-3"
                     />
                     <p>Product</p>
                   </th>
-                  <th className="px-6 py-3  text-left">
+                  <th className="px-6 py-3  text-left w-250">
                     <p className="flex items-center justify-between">
                       Category
                       <img
@@ -109,7 +97,7 @@ function AllProducts() {
                       />
                     </p>
                   </th>
-                  <th className="px-6 py-3  text-left border-r border-l ">
+                  <th className="px-6 py-3  text-left border-r border-l w-250 ">
                     <p className="flex items-center justify-between">
                       Price
                       <img
@@ -119,7 +107,7 @@ function AllProducts() {
                       />
                     </p>
                   </th>
-                  <th className="px-6 py-3 text-left border-r ">
+                  <th className="px-6 py-3 text-left border-r w-250">
                     <p className="flex items-center justify-between">
                       Stock
                       <img
@@ -129,7 +117,7 @@ function AllProducts() {
                       />
                     </p>
                   </th>
-                  <th className="px-6 py-3  text-left border-r ">
+                  <th className="px-6 py-3  text-left border-r w-250">
                     <p className="flex items-center justify-between">
                       Colors
                       <img
@@ -148,7 +136,7 @@ function AllProducts() {
                 {currentItems.map((product) => (
                   <tr key={product.id}>
                     <td
-                      className="px-3 py-3 cursor-pointer border-t border-r"
+                      className="px-3 py-3 cursor-pointer border-t border-r w-250"
                       onClick={() => navigate(`/Home/products/${product.id}`)}
                     >
                       <p className="flex items-center gap-3">
@@ -167,7 +155,7 @@ function AllProducts() {
                         {product.name}
                       </p>
                     </td>
-                    <td className="flex gap-3 px-6 py-3 border-gray-200 border-t border-r">
+                    <td className="flex gap-3 px-6 py-3 border-gray-200 border-t border-r w-250">
                       <img
                         src={product.category.image}
                         alt="category-image"
@@ -175,13 +163,13 @@ function AllProducts() {
                       />
                       {product.category.name}
                     </td>
-                    <td className="px-6 py-3 border-t border-r">
+                    <td className="px-6 py-3 border-t border-r w-250">
                       {product.price}
                     </td>
-                    <td className="px-6 py-3 border-t border-r">
+                    <td className="px-6 py-3 border-t border-r w-250">
                       {product.stock}
                     </td>
-                    <td className="px-6 py-3 border-t border-r">
+                    <td className="px-6 py-3 border-t border-r w-250">
                       {product.colors.map((color) => (
                         <div key={color.id} className="flex items-center gap-2">
                           <div
@@ -199,7 +187,7 @@ function AllProducts() {
                             navigate(`/Home/EditProduct`, { state: product })
                           }
                         >
-                          <AiFillEdit size={20} className="text-[#E6A86C]" />
+                          <AiFillEdit size={23} className="text-[#E6A86C]" />
                         </button>
                         <DeleteProduct
                           id={product.id}

@@ -10,12 +10,11 @@ function Home() {
       <Helmet>
         <title>Home Page</title>
       </Helmet>
-      <div className="flex h-screen">
+      <div className="flex">
         <Sidebar />
         <div className="flex-1 ml-0">
           <Navbar />
-          {/* Main Content Area */}
-          <div className="mt-0 bg-gray-100 min-h-screen">
+          <div className="mt-0 bg-gray-100 h-110vh">
             <Outlet />
           </div>
         </div>

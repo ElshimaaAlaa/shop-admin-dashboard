@@ -7,6 +7,7 @@ import { fetchCategories } from "../../ApiServices/AllCategoriesApi";
 import { addProduct } from "../../ApiServices/AddNewProductApi";
 import "./AddProduct.scss";
 import { ClipLoader } from "react-spinners";
+import Footer from "../../Components/Footer/Footer";
 
 function AddProduct() {
   const [isLoading, setIsLoading] = useState(false);
@@ -119,14 +120,15 @@ function AddProduct() {
       setIsLoading(false);
     }
   };
-
   return (
     <div className="bg-gray-100 flex flex-col h-115vh relative">
       <Helmet>
         <title>Add Product - VERTEX</title>
         <meta name="description" content="Add new product to VERTEX" />
       </Helmet>
-      <h1 className="font-bold text-xl mb-3 mx-10 mt-5 p-2">Add Product</h1>
+      <h1 className="font-bold rounded-md p-5 text-xl mx-10 bg-white mt-10 mb-5 ">
+        Add Product
+      </h1>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -295,97 +297,15 @@ function AddProduct() {
                 </div>
               </div>
               {/* Sizes & Colors */}
-              <div className="bg-transparent p-3 w-2/4 h-52">
-                {/* <h2 className="font-bold mb-5">Sizes & Colors</h2>
-                <FieldArray name="sizes">
-                  {({ push, remove }) => (
-                    <div className="sizes-colors-container">
-                      <h3>Sizes</h3>
-                      {values.sizes.map((size, index) => (
-                        <div
-                          key={index}
-                          className="input-container flex items-center gap-5"
-                        >
-                          <Field
-                            name={`sizes[${index}]`}
-                            placeholder="Size (e.g., M, L)"
-                            className="input-field border-1 rounded-md border-gray-200 outline-none p-1 mt-2"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => remove(index)}
-                            className="add-remove-button text-14 bg-red-500 text-white rounded-md w-6 h-6 font-bold"
-                          >
-                            X
-                          </button>
-                        </div>
-                      ))}
-                      <button
-                        type="button"
-                        onClick={() => push("")}
-                        className="add-button text-gray-500 text-14"
-                      >
-                        + Add Size
-                      </button>
-                    </div>
-                  )}
-                </FieldArray>
-                <FieldArray name="colors">
-                  {({ push, remove }) => (
-                    <div className="sizes-colors-container">
-                      <h3 className="text-14">Colors</h3>
-                      {values.colors.map((color, index) => (
-                        <div
-                          key={index}
-                          className="input-container flex items-center gap-5"
-                        >
-                          <Field
-                            name={`colors[${index}]`}
-                            placeholder="Color (e.g., Red or #FF0000)"
-                            className="input-field border-1 rounded-md border-gray-200 outline-none p-1 mt-2"
-                          />
-                          {color && (
-                            <div
-                              className="color-preview"
-                              style={{ backgroundColor: color }}
-                            ></div>
-                          )}
-                          <button
-                            type="button"
-                            onClick={() => remove(index)}
-                            className="add-remove-button text-14 bg-red-500 text-white rounded-md w-6 h-6 font-bold"
-                          >
-                            X
-                          </button>
-                        </div>
-                      ))}
-                      <button
-                        type="button"
-                        onClick={() => push("")}
-                        className="add-button text-gray-500 text-14"
-                      >
-                        + Add Color
-                      </button>
-                    </div>
-                  )}
-                </FieldArray> */}
-              </div>
             </div>
-            <div className="flex gap-5 items-center border-t justify-end bg-white rounded p-5 w-full mt-5 absolute bottom-0">
-              <button
-                type="button"
-                className="bg-gray-200 text-gray-500 font-bold p-3 w-40 rounded-md"
-                onClick={() => navigate("/Home/products")}
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="bg-primary text-white font-bold rounded-md p-3 w-40"
-              >
-                {isLoading ? <ClipLoader color="#fff" size={22} /> : "Save"}
-              </button>
-            </div>
+            <Footer
+              saveText={"Save"}
+              cancelText={"Cancel"}
+              cancelOnClick={() => navigate("/Home/products")}
+              saveBtnType={"submit"}
+              cancelBtnType={"button"}
+              isLoading={isLoading}
+            />
           </Form>
         )}
       </Formik>

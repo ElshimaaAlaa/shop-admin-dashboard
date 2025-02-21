@@ -5,7 +5,47 @@ import * as Yup from "yup";
 import { addCategory } from "../../ApiServices/AddNewCategoryApi";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 import { Helmet } from "react-helmet";
-import { ClipLoader } from "react-spinners";
+import "./style.scss";
+import Footer from "../../Components/Footer/Footer";
+
+const ImageUpload = ({ previewImage, onImageChange }) => {
+  return (
+    <div className="border-2 border-dotted border-gray-300 rounded-md p-3 h-56 flex items-center justify-center">
+      <input
+        type="file"
+        name="image"
+        onChange={onImageChange}
+        className="hidden"
+        id="image-upload"
+        aria-label="Upload category image"
+      />
+      <label
+        htmlFor="image-upload"
+        className="text-gray-500 cursor-pointer flex flex-col items-center gap-2"
+      >
+        {previewImage ? (
+          <img
+            src={previewImage}
+            alt="preview"
+            className="w-400 h-48 object-fill rounded-md"
+          />
+        ) : (
+          <>
+            <img
+              src="/assets/images/upload-file_svgrepo.com.png"
+              alt="upload-image-file"
+              className="mb-2"
+            />
+            <p className="">Upload Your Category Image</p>
+            <p className="text-sm text-gray-300 mt-2 w-60 text-center">
+              Only PNG, SVG Format Allowed. Size: 500KB Max.
+            </p>
+          </>
+        )}
+      </label>
+    </div>
+  );
+};
 function AddCategory() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -45,7 +85,7 @@ function AddCategory() {
     }
   };
   return (
-    <div className="bg-lightgray h-115vh relative">
+    <div className="bg-gray-100 h-full relative">
       <Helmet>
         <title>Add Category | Vertex Dashboard</title>
       </Helmet>
@@ -66,86 +106,55 @@ function AddCategory() {
                   <Field
                     placeholder="Category Name"
                     name="name"
-                    className="w-full bg-transparent outline-none border border-gray-300 rounded-xl h-14 p-2 block"
+                    className="w-full bg-transparent outline-none border border-gray-300 rounded-md h-14 p-2 block"
                   />
                   <Field
                     placeholder="Type"
                     as="select"
                     name="type"
-                    className="w-full bg-transparent outline-none  border border-gray-300 rounded-xl h-14 p-2 block focus:border-2 focus:border-primary"
+                    className="w-full bg-transparent outline-none  border border-gray-300 rounded-md h-14 p-2 block focus:border-2 focus:border-primary"
                   >
-                    <option>Type</option>
-                    <option value="1">Standard</option>
-                    <option value="2">Color-Only</option>
-                    <option value="3">Size-Only</option>
-                    <option value="4">Color & Size</option>
+                    <option className="option">Type</option>
+                    <option value="1" className="option">
+                      Standard
+                    </option>
+                    <option value="2" className="option">
+                      Color-Only
+                    </option>
+                    <option value="3" className="option">
+                      Size-Only
+                    </option>
+                    <option value="4" className="option">
+                      Color & Size
+                    </option>
                   </Field>
                 </div>
                 <Field
                   as="textarea"
                   placeholder="Description"
                   name="description"
-                  className="w-full bg-transparent outline-none border border-gray-300 rounded-xl p-2 h-32 mt-5"
+                  className="w-full bg-transparent outline-none border border-gray-300 rounded-md p-2 h-32 mt-5"
                 />
               </div>
-              <div className="bg-white p-5 rounded-xl w-2/4">
+              <div className="bg-white p-4 rounded-md w-2/4">
                 <h2 className="font-bold mb-5">Category Icon / Image</h2>
-                <div className="border-2 border-dotted border-gray-300 rounded-xl p-3 h-52 flex items-center justify-center">
-                  <input
-                    type="file"
-                    name="image"
-                    onChange={(event) => {
-                      const file = event.currentTarget.files[0];
-                      if (file) {
-                        setFieldValue("image", file); // Set the file in Formik's state
-                        setPreviewImage(URL.createObjectURL(file)); // Generate a preview URL
-                      }
-                    }}
-                    className="hidden"
-                    id="image-upload"
-                  />
-                  <label
-                    htmlFor="image-upload"
-                    className="text-gray-500 cursor-pointer flex flex-col items-center gap-2"
-                  >
-                    {previewImage ? (
-                      <img
-                        src={previewImage}
-                        alt="preview"
-                        className="w-450 h-44 object-fill rounded-lg"
-                      />
-                    ) : (
-                      <>
-                        <img
-                          src="/assets/images/upload-file_svgrepo.com.png"
-                          alt="upload-image-file"
-                          className="mb-2"
-                        />
-                        <p className="">Upload Your Category Image</p>
-                        <p className="text-sm text-gray-300 mt-2 w-60 text-center">
-                          Only PNG, SVG Format Allowed. Size: 500KB Max.
-                        </p>
-                      </>
-                    )}
-                  </label>
-                </div>
+                <ImageUpload previewImage={previewImage} onImageChange={(event)=>{
+                  const file = event.currentTarget.files[0];
+                  if(file){
+                    setPreviewImage(URL.createObjectURL(file));
+                    setFieldValue("image", file);
+                  }
+                }}/>
               </div>
             </div>
-            <div className="flex gap-5 items-center border-t justify-end bg-white rounded p-5 w-full mt-5 absolute bottom-0">
-              <button
-                type={"button"}
-                className="bg-gray-200 text-gray-500 font-bold p-3 w-40 rounded-md"
-                onClick={() => navigate("/Home/categories")}
-              >
-                Cancel
-              </button>
-              <button
-                type={"submit"}
-                className="bg-primary text-white font-bold rounded-md p-3 w-40"
-              >
-                {isLoading ? <ClipLoader color="#fff" size={22} /> : "Save"}
-              </button>
-            </div>
+            <Footer
+              saveText={"Save"}
+              cancelText={"Cancel"}
+              cancelOnClick={() => navigate("/Home/categories")}
+              saveBtnType={"submit"}
+              cancelBtnType={"button"}
+              isLoading={isLoading}
+            />
           </Form>
         )}
       </Formik>

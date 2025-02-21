@@ -1,4 +1,4 @@
-import { Form, Formik, Field } from "formik";
+import { Form, Formik } from "formik";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet";
 import Name from "../../Svgs/Name";
@@ -8,15 +8,18 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 import axios from "axios";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
-import { RiDeleteBin6Fill } from "react-icons/ri";
+import InputField from "../../Components/Input Field/InputField";
+import { RiDeleteBin6Line } from "react-icons/ri";
 
 function EditInfo() {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
   const { state } = useLocation();
   const personalInfo = state || {};
+
   const initialValues = {
     name: personalInfo?.name || "",
     email: personalInfo?.email || "",
@@ -26,6 +29,7 @@ function EditInfo() {
 
   const handleSubmit = async (values) => {
     setIsLoading(true);
+    setError(null);
     try {
       const formData = new FormData();
       formData.append("name", values.name);
@@ -50,6 +54,7 @@ function EditInfo() {
       setShowModal(true);
     } catch (error) {
       console.error("Failed to update profile:", error);
+      setError("Failed to update profile. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -61,7 +66,7 @@ function EditInfo() {
         <title>Edit Personal Information</title>
       </Helmet>
       <section>
-        <h1 className="font-bold text-2xl">Edit Personal Information</h1>
+        <h1 className="font-bold text-xl">Edit Personal Information</h1>
         <Formik
           initialValues={initialValues}
           enableReinitialize
@@ -69,10 +74,9 @@ function EditInfo() {
         >
           {({ setFieldValue }) => (
             <Form>
-              {/* Image Upload Section */}
               <div className="my-10 gap-3">
                 {selectedImage || personalInfo?.image ? (
-                  <div className="flex justify-between items-center">
+                  <div className="flex flex-col md:flex-row justify-between items-center gap-4">
                     <img
                       src={
                         selectedImage
@@ -92,6 +96,7 @@ function EditInfo() {
                           setSelectedImage(e.target.files[0]);
                           setFieldValue("image", e.target.files[0]);
                         }}
+                        aria-label="Upload new image"
                       />
                       <label
                         htmlFor="imageUpload"
@@ -99,7 +104,7 @@ function EditInfo() {
                       >
                         <img
                           src="/assets/images/upload.png"
-                          alt="upload-image"
+                          alt="Upload new-image"
                           className="w-5"
                         />
                         Upload New Image
@@ -111,8 +116,9 @@ function EditInfo() {
                           setSelectedImage(null);
                           setFieldValue("image", null);
                         }}
+                        aria-label="Delete image"
                       >
-                        <RiDeleteBin6Fill className="text-red-700 h-5 w-5" />
+                        <RiDeleteBin6Line size={20} color="red" />
                       </button>
                     </div>
                   </div>
@@ -120,43 +126,15 @@ function EditInfo() {
                   <p className="text-gray-500">No image available</p>
                 )}
               </div>
-              {/* Form Fields */}
-              <div className="border p-5 rounded-md bg-gray-100 w-130vh mt-4">
-                <div className="flex items-center gap-2">
-                  <div className="relative">
-                    <Field
-                      placeholder="Name"
-                      className="pl-10 w-450 p-3 border border-gray-400 rounded-lg outline-none"
-                      name="name"
-                    />
-                    <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
-                      <Name />
-                    </span>
-                  </div>
-                  <div className="relative">
-                    <Field
-                      placeholder="Email"
-                      className="pl-10 w-450 p-3 border border-gray-400 rounded-lg outline-none"
-                      name="email"
-                    />
-                    <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
-                      <Email />
-                    </span>
-                  </div>
+              <div className="border p-5 rounded-md bg-gray-100 w-full mt-4">
+                <div className="flex flex-col md:flex-row gap-4">
+                  <InputField icon={Name} placeholder="Name" name="name" />
+                  <InputField icon={Email} placeholder="Email" name="email" />
                 </div>
-                <div className="relative mt-4">
-                  <Field
-                    placeholder="Phone"
-                    className="pl-10 w-full p-3 border border-gray-400 rounded-lg outline-none"
-                    name="phone"
-                  />
-                  <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
-                    <Phone />
-                  </span>
+                <div className="mt-4">
+                  <InputField icon={Phone} placeholder="Phone" name="phone" />
                 </div>
               </div>
-
-              {/* Buttons */}
               <div className="mt-5 flex items-center justify-end gap-3">
                 <button
                   type="button"
@@ -179,6 +157,11 @@ function EditInfo() {
       {/* Success Modal */}
       <SuccessModal isOpen={showModal}>
         <div className="flex flex-col w-370 items-center">
+          <img
+            src="/assets/images/success.png"
+            alt="Success"
+            className="w-32 mt-6"
+          />
           <p className="font-bold mt-5 text-center">
             Profile updated successfully!
           </p>
@@ -193,5 +176,4 @@ function EditInfo() {
     </div>
   );
 }
-
 export default EditInfo;

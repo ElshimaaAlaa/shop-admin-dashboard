@@ -84,7 +84,7 @@ function VerifayPassword() {
           onSubmit={handleSubmit}
         >
           {({ errors, touched }) => (
-            <Form className="mt-5 flex flex-col items-center">
+            <Form className="mt-5 flex flex-col">
               <div className="flex gap-2">
                 {Array(6)
                   .fill("")
@@ -93,7 +93,7 @@ function VerifayPassword() {
                       key={index}
                       name={`otp${index + 1}`}
                       maxLength="1"
-                      className={`enterCode text-center font-bold w-12 lg:w-60 md:w-60 ${
+                      className={`enterCode text-center font-bold w-12 lg:w-14 md:w-14 ${
                         errors[`otp${index + 1}`] && touched[`otp${index + 1}`]
                           ? "border-red-500"
                           : ""
@@ -102,10 +102,7 @@ function VerifayPassword() {
                     />
                   ))}
               </div>
-              <p
-                className="text-darkGray mt-4 mb-3 flex"
-                style={{ fontSize: "16px" }}
-              >
+              <p className="text-black mt-5 mb-5 flex text-16 ">
                 Didn’t Get Code ?
                 <ResendCode />
               </p>

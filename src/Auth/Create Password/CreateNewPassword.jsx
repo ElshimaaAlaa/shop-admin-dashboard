@@ -1,15 +1,14 @@
 import React, { useState } from "react";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form} from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
-import { FaRegEye, FaEyeSlash } from "react-icons/fa";
 import { ClipLoader } from "react-spinners";
 import { Helmet } from "react-helmet";
 import MainBtn from "../../Components/Main Button/MainBtn";
-import Password from "../../Svgs/Password";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 import "./CreateNewPassword.scss";
 import { CreateNewPasswordService } from "../../ApiServices/CreateNewPasswordService";
+import PasswordInput from "../../Components/Password Input/PasswordInput";
 function CreateNewPassword() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -44,7 +43,7 @@ function CreateNewPassword() {
       );
       setShowSuccessModal(true);
       localStorage.removeItem("Email");
-      setTimeout(() => navigate("/Login"), 2500);
+      setTimeout(() => navigate("/"), 2500);
     } catch (error) {
       setError(error);
     } finally {
@@ -59,7 +58,7 @@ function CreateNewPassword() {
       </Helmet>
       <div className="CreateNewPasswordContainer lg:w-450 md:w-450 sm:w-450 xs:w-450 s:w-450 bg-white">
         <div className="flex justify-center">
-          <img src="/assets/images/logo.png" alt="logo" />
+          <img src="/assets/images/logo (2).png" alt="logo" />
         </div>
         <h1 className="font-bold mt-10" style={{ fontSize: "22px" }}>
           Create New Password
@@ -70,52 +69,32 @@ function CreateNewPassword() {
           validationSchema={validationSchema}
         >
           {({ errors, touched }) => (
-            <Form className="mt-5 flex flex-col items-center">
-              <div className="relative mt-5">
-                <Field
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Password"
-                  className="passwordInput pl-10 w-80 lg:w-390 md:w-390 sm:w-390 s:w-390"
-                />
-                <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
-                  <Password />
-                </span>
-                <span
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer"
-                  onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                >
-                  {showPassword ? <FaRegEye /> : <FaEyeSlash />}
-                </span>
-              </div>
-              <div className="relative mt-5 mb-5">
-                <Field
-                  name="password_confirmation"
-                  type={showConfirmPassword ? "text" : "password"}
-                  placeholder="Confirm Password"
-                  className="passwordInput pl-10 w-80 lg:w-390 md:w-390 sm:w-390 s:w-390"
-                />
-                <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
-                  <Password />
-                </span>
-                <span
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  aria-label={
-                    showConfirmPassword ? "Hide password" : "Show password"
-                  }
-                >
-                  {showConfirmPassword ? <FaRegEye /> : <FaEyeSlash />}
-                </span>
-              </div>
+            <Form className="mt-5 flex flex-col justify-center ">
+              <PasswordInput
+                name={"password"}
+                placeholder={"Password"}
+                showPassword={showConfirmPassword}
+                togglePasswordVisibility={() =>
+                  setShowConfirmPassword(!showConfirmPassword)
+                }
+              />
+              <PasswordInput
+                name={"password_confirmation"}
+                placeholder={"Confirm Password"}
+                showPassword={showPassword}
+                togglePasswordVisibility={() => setShowPassword(!showPassword)}
+              />
               {error && (
                 <div className="text-red-500 text-sm mb-4">{error}</div>
               )}
-              <MainBtn
-                text={loading ? <ClipLoader color="#fff" size={22} /> : "Save"}
-                btnType="submit"
-              />
+              <div className="mt-5">
+                <MainBtn
+                  text={
+                    loading ? <ClipLoader color="#fff" size={20} /> : "Save"
+                  }
+                  btnType="submit"
+                />
+              </div>
             </Form>
           )}
         </Formik>
@@ -129,8 +108,8 @@ function CreateNewPassword() {
               alt="success"
               className="w-32 mt-6"
             />
-            <h2 className="font-bold text-2xl mt-2">Password Changed!</h2>
-            <p className="w-80 text-secondary text-center mt-2">
+            <h2 className="font-bold text-xl mt-4">Password Changed!</h2>
+            <p className="w-80 text-secondary text-14 text-center mt-2">
               Your password has been changed successfully.
             </p>
           </div>

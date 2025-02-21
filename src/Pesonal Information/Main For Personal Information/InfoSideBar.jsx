@@ -1,52 +1,54 @@
 import React from "react";
 import DeleteAccount from "../Personal Information/DeleteAccount";
+
 function InfoSideBar() {
+  const menuItems = [
+    {
+      icon: "/assets/images/profile_svgrepo.com.png",
+      alt: "Personal Information Icon",
+      label: "Personal Information",
+      className: "text-primary",
+    },
+    {
+      icon: "/assets/svgs/Vector.svg",
+      alt: "Store Theme Icon",
+      label: "Store Theme",
+    },
+    {
+      icon: "/assets/svgs/store-1_svgrepo.com.svg",
+      alt: "Store Information Icon",
+      label: "Store Information",
+    },
+    {
+      icon: "/assets/svgs/pricetag2_svgrepo.com.svg",
+      alt: "Pricing Plans Icon",
+      label: "Pricing Plans",
+    },
+    {
+      icon: "/assets/svgs/payment_svgrepo.com.svg",
+      alt: "Payment Information Icon",
+      label: "Payment Information",
+    },
+  ];
+
   return (
-    <section className="flex flex-col gap-10 border-l p-10">
-      <div
-        className="flex items-center gap-3 cursor-pointer"
-      >
-        <img
-          src="/assets/images/profile_svgrepo.com.png"
-          alt="user-info"
-          className="w-6 h-6"
-        />
-        <p className="font-semibold text-15 mt-1 text-primary">
-          Personal Information
-        </p>
-      </div>
-      <div className="flex items-center gap-3 cursor-pointer">
-        <img
-          src="/assets/svgs/Vector.svg"
-          alt="user-info"
-          className="w-6 h-6"
-        />
-        <p className="font-semibold text-15 mt-1">Store Theme</p>
-      </div>
-      <div className="flex items-center gap-3 cursor-pointer">
-        <img
-          src="/assets/svgs/store-1_svgrepo.com.svg"
-          alt="user-info"
-          className="w-6 h-6"
-        />
-        <p className="font-semibold text-15 mt-1">Store Information</p>
-      </div>
-      <div className="flex items-center gap-3 cursor-pointer">
-        <img
-          src="/assets/svgs/pricetag2_svgrepo.com.svg"
-          alt="user-info"
-          className="w-6 h-6"
-        />
-        <p className="font-semibold text-15 mt-1">Pricing Plans</p>
-      </div>
-      <div className="flex items-center gap-3 cursor-pointer">
-        <img
-          src="/assets/svgs/payment_svgrepo.com.svg"
-          alt="user-info"
-          className="w-6 h-6"
-        />
-        <p className="font-semibold text-15 mt-1">Payment Information</p>
-      </div>
+    <section className="flex flex-col gap-7 md:gap-7 border-l p-4 md:p-10">
+      {menuItems.map((item, index) => (
+        <button
+          key={index}
+          className="flex items-center gap-3 w-full text-left hover:bg-gray-100 p-2 rounded-md transition-colors"
+          aria-label={item.label}
+        >
+          <img
+            src={item.icon}
+            alt={item.alt}
+            className="w-6 h-6"
+          />
+          <p className={`font-semibold text-15 mt-1 ${item.className || ""}`}>
+            {item.label}
+          </p>
+        </button>
+      ))}
       <DeleteAccount />
     </section>
   );

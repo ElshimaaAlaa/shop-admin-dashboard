@@ -2,16 +2,73 @@ import React, { useState } from "react";
 import { Formik, Form, Field } from "formik";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import * as Yup from "yup";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 import { updateCategory } from "../../ApiServices/updateCategory";
-import { ClipLoader } from "react-spinners";
+import Footer from "../../Components/Footer/Footer";
 
+const ImageUpload = ({ previewImage, onImageChange }) => {
+  return (
+    <div className="rounded-md h-56 flex items-center justify-center">
+      <input
+        type="file"
+        name="image"
+        onChange={onImageChange}
+        className="hidden"
+        id="image-upload"
+        aria-label="Upload category image"
+      />
+      <label
+        htmlFor="image-upload"
+        className="text-gray-500 cursor-pointer flex flex-col items-center gap-2"
+      >
+        {previewImage ? (
+          <>
+            <img
+              src={previewImage}
+              alt="Category preview"
+              className="w-400 h-44 object-cover rounded-md"
+            />
+            <div className="mt-2 flex items-center gap-3">
+              <button
+                type="button"
+                className="flex items-center justify-center text-16 gap-3 text-primary rounded-md p-3 border border-primary w-400"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById("image-upload").click();
+                }}
+                aria-label="Upload another image"
+              >
+                <img
+                  src="/assets/images/upload-minimalistic_svgrepo.com.png"
+                  alt="Upload another-image"
+                  className="h-5"
+                />
+                Upload Another Image
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <img
+              src="/assets/images/upload-file_svgrepo.com.png"
+              alt="Upload category-image"
+              className="mb-2"
+            />
+            <p>Upload Your Category Image</p>
+          </>
+        )}
+      </label>
+    </div>
+  );
+};
 function EditCategory() {
   const navigate = useNavigate();
   const { state } = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState(state?.image || null);
   const [showModal, setShowModal] = useState(false);
+  const [error, setError] = useState(null);
   const category = state || {};
 
   const initialValues = {
@@ -21,8 +78,15 @@ function EditCategory() {
     image: null,
   };
 
+  const validationSchema = Yup.object({
+    name: Yup.string().required("Category name is required"),
+    description: Yup.string().required("Description is required"),
+    type: Yup.string().required("Type is required"),
+  });
+
   const handleSubmit = async (values) => {
     setIsLoading(true);
+    setError(null);
     try {
       const formData = new FormData();
       formData.append("name[ar]", values.name);
@@ -38,35 +102,38 @@ function EditCategory() {
       setShowModal(true);
     } catch (error) {
       setIsLoading(false);
+      setError("Failed to update category. Please try again.");
       console.error("Failed to update category:", error);
     }
   };
 
   return (
-    <div className="bg-gray-100 h-115vh flex flex-col relative">
+    <div className="bg-gray-100 h-full flex flex-col relative">
       <Helmet>
         <title>Edit Category - VERTEX</title>
         <meta name="description" content="Edit category details in VERTEX" />
       </Helmet>
-      <h1 className="font-bold rounded-md p-5 text-xl mx-10 bg-white mt-10 mb-5">
+      <h1 className="font-bold rounded-md p-5 text-xl mx-4 md:mx-10 bg-white mt-10 mb-5">
         Edit Category
       </h1>
       <Formik
         initialValues={initialValues}
         enableReinitialize
+        validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
         {({ setFieldValue, errors, touched, values }) => (
           <Form className="flex flex-col">
-            <div className="flex gap-5 mx-10">
+            <div className="flex flex-col md:flex-row gap-5 mx-4 md:mx-10">
               {/* Basic Information Section */}
               <div className="bg-white p-5 rounded-md w-full">
                 <h2 className="font-bold mb-5">Basic Information</h2>
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col md:flex-row items-center gap-4">
                   <Field
                     name="name"
                     placeholder="Category Name"
                     className="w-full bg-transparent outline-none border border-gray-300 rounded-md h-14 p-2 block"
+                    aria-label="Category name"
                   />
                   {errors.name && touched.name && (
                     <div className="text-red-500 text-sm">{errors.name}</div>
@@ -75,6 +142,7 @@ function EditCategory() {
                     name="type"
                     as="select"
                     className="w-full bg-transparent outline-none border border-gray-300 rounded-md h-14 p-2 block"
+                    aria-label="Category type"
                   >
                     <option value="1" selected={values.type === "1"}>
                       Standard
@@ -95,6 +163,7 @@ function EditCategory() {
                   name="description"
                   placeholder="Description"
                   className="w-full bg-transparent outline-none border border-gray-300 rounded-md p-2 h-36 mt-5"
+                  aria-label="Category description"
                 />
                 {errors.description && touched.description && (
                   <div className="text-red-500 text-sm">
@@ -102,87 +171,32 @@ function EditCategory() {
                   </div>
                 )}
               </div>
-
               {/* Image Upload Section */}
-              <div className="bg-white p-5 rounded-md w-2/4">
+              <div className="bg-white p-5 rounded-md w-full md:w-1/2">
                 <h2 className="font-bold mb-5">Category Icon / Image</h2>
-                <div className="rounded-md h-56 flex items-center justify-center">
-                  <input
-                    type="file"
-                    name="image"
-                    onChange={(event) => {
-                      const file = event.currentTarget.files[0];
-                      if (file) {
-                        setFieldValue("image", file);
-                        setPreviewImage(URL.createObjectURL(file));
-                      }
-                    }}
-                    className="hidden"
-                    id="image-upload"
-                  />
-                  <label
-                    htmlFor="image-upload"
-                    className="text-gray-500 cursor-pointer flex flex-col items-center gap-2"
-                  >
-                    {previewImage ? (
-                      <>
-                        <img
-                          src={previewImage}
-                          alt="preview"
-                          className="w-450 h-44 object-fill rounded-lg"
-                        />
-                        <div className="mt-2 flex items-center gap-3">
-                          <button
-                            type="button"
-                            className="flex items-center justify-center text-16 gap-3 text-primary rounded-xl p-3 border border-primary w-370"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              document.getElementById("image-upload").click();
-                            }}
-                          >
-                            <img
-                              src="/assets/images/upload-minimalistic_svgrepo.com.png"
-                              alt="upload-image"
-                              className="h-5"
-                            />
-                            Upload Another Image
-                          </button>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <img
-                          src="/assets/images/upload-file_svgrepo.com.png"
-                          alt="upload-image-file"
-                          className="mb-2"
-                        />
-                        <p>Upload Your Category Image</p>
-                      </>
-                    )}
-                  </label>
-                </div>
+                <ImageUpload
+                  previewImage={previewImage}
+                  onImageChange={(event) => {
+                    const file = event.currentTarget.files[0];
+                    if (file) {
+                      setFieldValue("image", file);
+                      setPreviewImage(URL.createObjectURL(file));
+                    }
+                  }}
+                />
               </div>
             </div>
-            {/* Buttons Section */}
-            <div className="flex gap-5 items-center border-t justify-end bg-white rounded p-5 w-full mt-5 absolute bottom-0">
-              <button
-                type="button"
-                className="bg-gray-200 text-gray-500 font-semibold p-3 w-40 rounded-md"
-                onClick={() => navigate("/Home/categories")}
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="bg-primary text-white font-semibold rounded-md p-3 w-40"
-              >
-                {isLoading ? (
-                  <ClipLoader color="#fff" size={22} />
-                ) : (
-                  "Save Changes"
-                )}
-              </button>
-            </div>
+            {error && (
+              <div className="text-red-500 text-center mt-5">{error}</div>
+            )}
+            <Footer
+              saveText={"Save Changes"}
+              cancelText={"Cancel"}
+              cancelOnClick={() => navigate("/Home/categories")}
+              saveBtnType={"submit"}
+              cancelBtnType={"button"}
+              isLoading={isLoading}
+            />
           </Form>
         )}
       </Formik>
@@ -191,7 +205,7 @@ function EditCategory() {
         <div className="flex flex-col justify-center w-370 items-center">
           <img
             src="/assets/images/success.png"
-            alt="success"
+            alt="Success"
             className="w-32 mt-6"
           />
           <p className="font-bold mt-5 text-center">
@@ -200,6 +214,7 @@ function EditCategory() {
           <button
             className="bg-primary text-white rounded-md p-2 text-14 font-semibold mt-4 w-64"
             onClick={() => navigate("/Home/categories")}
+            aria-label="Back to categories"
           >
             Back to Categories
           </button>

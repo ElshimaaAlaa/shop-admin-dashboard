@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import FailedModal from "../../Components/Modal/Failed Modal/FailedModal";
 import { ClipLoader } from "react-spinners";
 import axios from "axios";
+import { RiDeleteBin6Line } from "react-icons/ri";
+
 function DeleteAccount() {
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -40,11 +42,7 @@ function DeleteAccount() {
         className="flex items-center gap-3 cursor-pointer"
         onClick={() => setShowModal(true)}
       >
-        <img
-          src="/assets/images/delete-2_svgrepo.com.png"
-          alt="user-info"
-          className="w-6 h-6"
-        />
+        <RiDeleteBin6Line color="red" size={20}/>
         <p className="font-semibold text-15 mt-1 text-red-500">
           Delete Account
         </p>

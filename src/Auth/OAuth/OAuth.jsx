@@ -6,7 +6,6 @@ import SocialMediaAuth from "../../ApiServices/SocialMediaAuth"
 function OAuth() {
   const googleProvider = new GoogleAuthProvider();
   const facebookProvider = new FacebookAuthProvider();
-
   const handleOnClick = async (provider) => {
     try {
       const res = await SocialMediaAuth(provider);
@@ -21,20 +20,20 @@ function OAuth() {
       <div
         className="flex items-center justify-center gap-4 mt-7 "
       >
-        <p
-          className="text-10 md:text-11 lg:text-11 flex items-center gap-4 bg-lightGray p-3 rounded text-darkGray font-bold border-2 border-borderColor cursor-pointer"
+        <button
+          className="text-10 md:text-11 lg:text-11 w-200 flex items-center gap-4 bg-lightGray p-3 rounded-md text-darkGray font-bold border-2 border-borderColor cursor-pointer"
           onClick={() => handleOnClick(facebookProvider)}
         >
           <Facebook />
           Sign in With Facebook
-        </p>
-        <p
-          className="text-10 md:text-11 lg:text-11 flex items-center gap-4 bg-lightGray p-3 rounded text-darkGray font-bold border-2 border-borderColor cursor-pointer"
+        </button>
+        <button
+          className="text-10 md:text-11 lg:text-11 flex w-200 items-center gap-4 bg-lightGray p-3 rounded-md text-darkGray font-bold border-2 border-borderColor cursor-pointer"
           onClick={() => handleOnClick(googleProvider)}
         >
           <Google />
           Sign in With Google
-        </p>
+        </button>
       </div>
     </div>
   );

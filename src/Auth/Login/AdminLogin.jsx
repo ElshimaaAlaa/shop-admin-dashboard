@@ -5,12 +5,12 @@ import { useNavigate } from "react-router-dom";
 import "./login.scss";
 import OAuth from "../OAuth/OAuth";
 import Email from "../../Svgs/Email";
-import Password from "../../Svgs/Password";
 import MainBtn from "../../Components/Main Button/MainBtn";
-import { FaRegEye, FaEyeSlash } from "react-icons/fa";
 import { ClipLoader } from "react-spinners";
 import { Helmet } from "react-helmet";
 import { loginService } from "../../ApiServices/LoginService";
+import InputField from "../../Components/Input Field/InputField";
+import PasswordInput from "../../Components/Password Input/PasswordInput";
 function AdminLogin() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -63,7 +63,7 @@ function AdminLogin() {
   };
 
   return (
-    <div className="bg-gradient-to-r from-customBlue-mediumBlue via-customOrange-mediumOrange to-customOrange-mediumOrange min-h-screen flex items-center justify-center bg-gray-300">
+    <div className=" min-h-screen flex items-center justify-center ">
       <Helmet>
         <meta charSet="utf-8" />
         <title>Login</title>
@@ -85,9 +85,9 @@ function AdminLogin() {
           />
         </div>
         <OAuth />
-        <div className="flex items-center justify-center mt-6">
+        <div className="flex items-center justify-center mt-8">
           <div className="border-t border-gray-300 flex-grow"></div>
-          <span className="mx-4 text-dark font-bold text-sm">
+          <span className="mx-4 text-gray-400 font-bold text-sm">
             OR With Email
           </span>
           <div className="border-t border-gray-300 flex-grow"></div>
@@ -97,35 +97,14 @@ function AdminLogin() {
           onSubmit={handleSubmit}
           validationSchema={validationSchema}
         >
-          <Form className="loginForm mt-5">
-            <div className="relative">
-              <Field
-                placeholder="Email"
-                className="emailInput pl-10 w-full p-3 border border-gray-300 rounded-lg"
-                name="email"
-              />
-              <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
-                <Email />
-              </span>
-            </div>
-            <div className="relative mt-5">
-              <Field
-                placeholder="Password"
-                className="passwordInput pl-10 w-full p-3 border border-gray-300 rounded-lg"
-                name="password"
-                type={showPassword ? "text" : "password"}
-              />
-              <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
-                <Password />
-              </span>
-              <span
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
-                onClick={() => setShowPassword(!showPassword)}
-                aria-label={showPassword ? "Hide password" : "Show password"}
-              >
-                {showPassword ? <FaRegEye /> : <FaEyeSlash />}
-              </span>
-            </div>
+          <Form className="loginForm mt-8">
+            <InputField name={"email"} placeholder={"Email"} icon={Email} />
+            <PasswordInput
+              name={"password"}
+              placeholder={"Password"}
+              showPassword={showPassword}
+              togglePasswordVisibility={() => setShowPassword(!showPassword)}
+            />
             {error && <p className="text-red-500 text-sm mt-3">{error}</p>}
             <div className="flex items-center justify-between mt-5">
               <div className="flex items-center justify-between">
@@ -135,7 +114,7 @@ function AdminLogin() {
                   checked={rememberMe}
                   onChange={() => setRememberMe(!rememberMe)}
                 />
-                <p className="text-11 lg:text-14">Remember Me</p>
+                <p className="text-11 lg:text-14 text-gray-600">Remember Me</p>
               </div>
               <div
                 className="font-bold text-11 lg:text-14 cursor-pointer"
@@ -146,7 +125,7 @@ function AdminLogin() {
             </div>
             <div className="mt-5">
               <MainBtn
-                text={loading ? <ClipLoader color="#fff" /> : "Login"}
+                text={loading ? <ClipLoader color="#fff" size={20}/> : "Login"}
                 btnType="submit"
                 disabled={loading}
               />
