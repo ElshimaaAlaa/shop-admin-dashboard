@@ -5,7 +5,7 @@ function Footer({saveText , cancelText , cancelOnClick , saveOnClick , isLoading
     <div className="flex gap-5 items-center border-t justify-end bg-white rounded p-5 w-full mt-5 absolute bottom-0">
       <button
         type={"button"}
-        className="bg-gray-200 text-gray-500 font-bold p-3 w-40 rounded-md"
+        className="bg-gray-100 text-gray-400 font-bold p-3 w-40 rounded-md"
         onClick={cancelOnClick}
       >
         {cancelText}

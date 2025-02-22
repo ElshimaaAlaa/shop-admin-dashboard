@@ -14,17 +14,17 @@ function SearchBar({onclick , value ,onchange ,text}) {
           placeholder="Search"
           value={value}
           onChange={onchange}
-          className="w-full pl-10 pr-4 py-4 bg-muted/50 rounded-md text-sm focus:outline-none border border-gray-200 bg-lightgray"
+          className="w-full pl-10 pr-4 py-4 bg-muted/50 rounded-md text-sm focus:outline-none border border-gray-200 bg-lightgray placeholder:text-15"
         />
       </div>
       <div
-        className="flex gap-3 bg-primary text-white py-4 px-3 rounded-md w-52 cursor-pointer"
+        className="flex items-center gap-3 bg-primary text-white py-4 px-3 rounded-md w-64 cursor-pointer"
         onClick={onclick}
       >
-        <div className="bg-white text-primary rounded-md ">
-          <Plus className="p-1 font-bold" />
+        <div className=" text-white rounded-full border-2 border-white">
+          <Plus className="font-bold" size={18}/>
         </div>
-        <p>{text}</p>
+        <p className="font-semibold">{text}</p>
       </div>
     </div>
   );

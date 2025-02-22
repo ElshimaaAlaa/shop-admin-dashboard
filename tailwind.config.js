@@ -7,6 +7,10 @@ module.exports = {
         lightgray: "#F7F7F7",
         primary: "#E0A75E",
         customred: "#DC2626",
+        burgandy:"#AF4B4B",
+        lightBurgandy:"#F7EDED",
+        green:"#589E67",
+        lightGreen:"#EEF5F0",
         customOrange: {
           lightOrange: "#FCEFDB",
           mediumOrange: "#EFD9A466",

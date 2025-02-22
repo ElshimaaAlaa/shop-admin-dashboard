@@ -54,6 +54,23 @@ function AllCategory() {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  const getTypeStyles = (typeName) => {
+    let bgColor = "";
+    let textColor = "";
+    let dotColor = "";
+
+    if (typeName === "Main") {
+      bgColor = "bg-lightGreen"; 
+      textColor = "text-green"; 
+      dotColor = "bg-green";
+    } else if (typeName === "Both") {
+      bgColor = "bg-lightBurgandy"; 
+      textColor = "text-burgandy"; 
+      dotColor = "bg-burgandy";
+    }
+    return { bgColor, textColor, dotColor };
+  };
+
   return (
     <div className="bg-gray-100 p-4 md:p-10">
       <Helmet>
@@ -67,7 +84,7 @@ function AllCategory() {
           onclick={() => navigate("/Home/addCategory")}
           value={searchQuery}
           onchange={(e) => setSearchQuery(e.target.value)}
-          text="Add Category"
+          text="Add New Category"
         />
         {error ? (
           <div className="text-red-500 text-center mt-10 font-bold">
@@ -91,15 +108,13 @@ function AllCategory() {
                         aria-label="Select all categories"
                       />
                     </th>
-                    <th className="px-6 py-3 text-left border">
+                    <th className="px-6 py-3 text-left border w-500px">
                       <p className="flex justify-between items-center">
                         Category
-                        <img
-                          src="/assets/images/style=stroke.png"
-                          alt="Sort categories"
-                          className="w-4 h-4 cursor-pointer"
-                        />
                       </p>
+                    </th>
+                    <th className="px-6 py-3 text-left border w-500px">
+                      <p className="flex justify-between items-center">Type</p>
                     </th>
                     <th className="px-6 py-3 text-left w-5 border-t border-b">
                       Actions
@@ -107,48 +122,67 @@ function AllCategory() {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentItems.map((category) => (
-                    <tr key={category.id}>
-                      <td className="px-3 py-3 border">
-                        <input
-                          type="checkbox"
-                          className="form-checkbox h-4 w-4"
-                          aria-label={`Select ${category.name}`}
-                        />
-                      </td>
-                      <td className="flex gap-3 px-6 py-3 border-t">
-                        <img
-                          src={category.image || "/path/to/default-image.png"}
-                          alt={category.name}
-                          className="w-7 h-7 object-cover rounded-full"
-                          onError={(e) => {
-                            e.target.src = "/path/to/default-image.png";
-                          }}
-                        />
-                        {category.name}
-                      </td>
-                      <td className="px-6 py-3 w-10 border-t border-l">
-                        <div className="flex items-center gap-1">
-                          <button
-                            className="h-6 w-6 p-1 me-2"
-                            aria-label={`Edit ${category.name}`}
-                            onClick={() =>
-                              navigate(`/Home/editCategory/${category.id}`, {
-                                state: category,
-                              })
-                            }
-                          >
-                            <AiFillEdit size={23} className="text-[#E6A86C]" />
-                          </button>
-                          <DeleteCategory
-                            categoryId={category.id}
-                            id={category.id}
-                            onDelete={handleDeleteCategory}
+                  {currentItems.map((category) => {
+                    const { bgColor, textColor, dotColor } = getTypeStyles(
+                      category.type_name
+                    );
+                    return (
+                      <tr key={category.id}>
+                        <td className="px-3 py-3 border">
+                          <input
+                            type="checkbox"
+                            className="form-checkbox h-4 w-4"
+                            aria-label={`Select ${category.name}`}
                           />
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                        </td>
+                        <td className="flex gap-3 px-6 py-3 border-t text-customGray-grayText">
+                          <img
+                            src={category.image || "/path/to/default-image.png"}
+                            alt={category.name}
+                            className="w-7 h-7 object-cover rounded-full"
+                          />
+                          {category.name}
+                        </td>
+                        <td className="px-6 py-3 border-t border-l">
+                          <div
+                            className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${bgColor}`}
+                          >
+                            <span
+                              className={`w-2 h-2 rounded-full ${dotColor}`}
+                            ></span>
+                            <span
+                              className={`text-sm font-medium ${textColor}`}
+                            >
+                              {category.type_name}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-3 w-10 border-t border-l">
+                          <div className="flex items-center gap-1">
+                            <button
+                              className="h-6 w-6 p-1 me-2"
+                              aria-label={`Edit ${category.name}`}
+                              onClick={() =>
+                                navigate(`/Home/editCategory/${category.id}`, {
+                                  state: category,
+                                })
+                              }
+                            >
+                              <AiFillEdit
+                                size={23}
+                                className="text-[#E6A86C]"
+                              />
+                            </button>
+                            <DeleteCategory
+                              categoryId={category.id}
+                              id={category.id}
+                              onDelete={handleDeleteCategory}
+                            />
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
