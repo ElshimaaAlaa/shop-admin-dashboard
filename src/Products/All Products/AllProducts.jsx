@@ -61,7 +61,7 @@ function AllProducts() {
       </h1>
       <div className="bg-white p-5 rounded-md">
         <SearchBar
-          onclick={() => navigate("/Home/addProduct")}
+          // onclick={() => navigate("/Home/addProduct")}
           value={searchQuery}
           onchange={(e) => setSearchQuery(e.target.value)}
           text={"Add New Product"}

@@ -87,7 +87,7 @@ function AllCategory() {
           text="Add New Category"
         />
         {error ? (
-          <div className="text-red-500 text-center mt-10 font-bold">
+          <div className="text-red-500 text-center mt-10">
             Failed to fetch data. Please try again.
           </div>
         ) : isLoading ? (

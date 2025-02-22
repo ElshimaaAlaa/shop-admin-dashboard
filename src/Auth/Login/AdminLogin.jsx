@@ -87,7 +87,7 @@ function AdminLogin() {
         <OAuth />
         <div className="flex items-center justify-center mt-8">
           <div className="border-t border-gray-300 flex-grow"></div>
-          <span className="mx-4 text-gray-400 font-bold text-sm">OR</span>
+          <span className="mx-4 text-gray-400 text-14 text-sm">OR</span>
           <div className="border-t border-gray-300 flex-grow"></div>
         </div>
         <Formik

@@ -1,6 +1,5 @@
 import React from "react";
 import { Field } from "formik";
-import Password from "../../Svgs/Password";
 import { FaRegEye, FaEyeSlash } from "react-icons/fa";
 function PasswordInput({ name, placeholder, showPassword, togglePasswordVisibility }) {
   return (
@@ -9,11 +8,8 @@ function PasswordInput({ name, placeholder, showPassword, togglePasswordVisibili
         name={name}
         type={showPassword ? "text" : "password"}
         placeholder={placeholder}
-        className="passwordInput pl-10 w-full placeholder:text-14 "
+        className="passwordInput border p-3 w-full placeholder:text-14 focus:border-2 focus:border-primary "
       />
-      <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
-        <Password />
-      </span>
       <button
         type="button"
         className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer"
