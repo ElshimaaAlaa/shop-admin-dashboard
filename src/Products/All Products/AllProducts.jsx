@@ -61,10 +61,10 @@ function AllProducts() {
       </h1>
       <div className="bg-white p-5 rounded-md">
         <SearchBar
-          // onclick={() => navigate("/Home/addProduct")}
+          onclick={() => navigate("/Home/addProduct")}
           value={searchQuery}
           onchange={(e) => setSearchQuery(e.target.value)}
-          text={"Add Product"}
+          text={"Add New Product"}
         />
         {error ? (
           <div className="text-red-500 text-center mt-10 font-bold">
@@ -87,45 +87,13 @@ function AllProducts() {
                     />
                     <p>Product</p>
                   </th>
-                  <th className="px-6 py-3  text-left w-250">
-                    <p className="flex items-center justify-between">
-                      Category
-                      <img
-                        src="/assets/images/style=stroke.png"
-                        alt=""
-                        className="w-4 h-4 cursor-pointer"
-                      />
-                    </p>
-                  </th>
+                  <th className="px-6 py-3  text-left w-250">Category</th>
                   <th className="px-6 py-3  text-left border-r border-l w-250 ">
-                    <p className="flex items-center justify-between">
-                      Price
-                      <img
-                        src="/assets/images/sort-amount-down_svgrepo.com.png"
-                        alt=""
-                        className="w-5 h-5 cursor-pointer"
-                      />
-                    </p>
+                    Price
                   </th>
-                  <th className="px-6 py-3 text-left border-r w-250">
-                    <p className="flex items-center justify-between">
-                      Stock
-                      <img
-                        src="/assets/images/sort-amount-down_svgrepo.com.png"
-                        alt=""
-                        className="w-5 h-5 cursor-pointer"
-                      />
-                    </p>
-                  </th>
+                  <th className="px-6 py-3 text-left border-r w-250">Stock</th>
                   <th className="px-6 py-3  text-left border-r w-250">
-                    <p className="flex items-center justify-between">
-                      Colors
-                      <img
-                        src="/assets/images/style=stroke.png"
-                        alt=""
-                        className="w-4 h-4 cursor-pointer"
-                      />
-                    </p>
+                    Colors
                   </th>
                   <th className="px-6 py-3  border-gray-200 text-left w-5">
                     Actions
@@ -136,7 +104,7 @@ function AllProducts() {
                 {currentItems.map((product) => (
                   <tr key={product.id}>
                     <td
-                      className="px-3 py-3 cursor-pointer border-t border-r w-250"
+                      className="px-3 py-3 cursor-pointer border-t border-r w-250 text-customGray-grayText"
                       onClick={() => navigate(`/Home/products/${product.id}`)}
                     >
                       <p className="flex items-center gap-3">
@@ -155,7 +123,7 @@ function AllProducts() {
                         {product.name}
                       </p>
                     </td>
-                    <td className="flex gap-3 px-6 py-3 border-gray-200 border-t border-r w-250">
+                    <td className="flex gap-3 px-6 py-3 border-gray-200 border-t border-r w-250 text-customGray-grayText">
                       <img
                         src={product.category.image}
                         alt="category-image"
@@ -163,13 +131,13 @@ function AllProducts() {
                       />
                       {product.category.name}
                     </td>
-                    <td className="px-6 py-3 border-t border-r w-250">
+                    <td className="px-6 py-3 border-t border-r w-250 text-customGray-grayText">
                       {product.price}
                     </td>
-                    <td className="px-6 py-3 border-t border-r w-250">
+                    <td className="px-6 py-3 border-t border-r w-250 text-customGray-grayText">
                       {product.stock}
                     </td>
-                    <td className="px-6 py-3 border-t border-r w-250">
+                    <td className="px-6 py-3 border-t border-r w-250 ">
                       {product.colors.map((color) => (
                         <div key={color.id} className="flex items-center gap-2">
                           <div
