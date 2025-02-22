@@ -9,7 +9,7 @@ function PasswordInput({ name, placeholder, showPassword, togglePasswordVisibili
         name={name}
         type={showPassword ? "text" : "password"}
         placeholder={placeholder}
-        className="passwordInput pl-10 w-full "
+        className="passwordInput pl-10 w-full placeholder:text-14 "
       />
       <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
         <Password />

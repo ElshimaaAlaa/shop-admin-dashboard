@@ -56,14 +56,14 @@ function PersonalInformation() {
           <img
             src={personalInfo.image || "/assets/images/default-profile.png"}
             alt="User profile"
-            className="rounded-xl w-24 h-24 md:w-32 md:h-32 object-cover"
+            className="rounded-xl w-24 h-24 md:w:24 md:h-24 object-cover"
             onError={(e) => {
               e.target.src = "/assets/images/default-profile.png";
             }}
           />
           <div className="text-center md:text-left">
-            <h2 className="font-semibold">{personalInfo?.name || "N/A"}</h2>
-            <p className="text-gray-400 mt-3">{personalInfo?.role || "Vertex CEO"}</p>
+            <h2 className="font-semibold mt-3">{personalInfo?.name || "N/A"}</h2>
+            <p className="text-gray-400 mt-2">{personalInfo?.role || "Vertex CEO"}</p>
           </div>
         </div>
         {/* Name, Phone, and Email Section */}

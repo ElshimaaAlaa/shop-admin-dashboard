@@ -51,7 +51,7 @@ function CreateNewPassword() {
     }
   };
   return (
-    <div className="p-4 sm:p-8 md:p-16 bg-gradient-to-r from-customBlue-mediumBlue via-customOrange-mediumOrange to-customOrange-mediumOrange min-h-screen flex items-center justify-center">
+    <div className="p-4 sm:p-8 md:p-16 main-container min-h-screen flex items-center justify-center">
       <Helmet>
         <meta charSet="utf-8" />
         <title>Create New Password</title>

@@ -34,7 +34,7 @@ function ForgotPassword() {
     }
   };
   return (
-    <div className="bg-gradient-to-r from-customBlue-mediumBlue via-customOrange-mediumOrange to-customOrange-mediumOrange min-h-screen flex items-center justify-center">
+    <div className=" main-container min-h-screen flex items-center justify-center">
       <Helmet>
         <meta charSet="utf-8" />
         <title>Forgot Password</title>
@@ -53,7 +53,7 @@ function ForgotPassword() {
           validationSchema={validationSchema}
         >
           <Form className="mt-5 flex  flex-col items-center">
-            <InputField name={"email"} placeholder={"Email"} icon={Email} />
+            <InputField name={"email"} placeholder={"Enter Your Email"} icon={Email}/>
             <div className="mt-5">
               <MainBtn
                 text={isLoading ? <ClipLoader color="#fff" /> : "Send Code"}

@@ -65,7 +65,7 @@ function VerifayPassword() {
     }
   };
   return (
-    <div className="bg-gradient-to-r from-customBlue-mediumBlue via-customOrange-mediumOrange to-customOrange-mediumOrange min-h-screen flex items-center justify-center">
+    <div className="main-container min-h-screen flex items-center justify-center">
       <Helmet>
         <meta charSet="utf-8" />
         <title>Verifay Password</title>

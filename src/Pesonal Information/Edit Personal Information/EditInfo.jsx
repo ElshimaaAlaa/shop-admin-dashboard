@@ -76,7 +76,7 @@ function EditInfo() {
             <Form>
               <div className="my-10 gap-3">
                 {selectedImage || personalInfo?.image ? (
-                  <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+                  <div className="flex flex-col md:flex-row justify-between items-center gap-4 border rounded-md p-5">
                     <img
                       src={
                         selectedImage
@@ -84,9 +84,9 @@ function EditInfo() {
                           : personalInfo.image
                       }
                       alt="Profile"
-                      className="w-32 h-32 rounded-md object-cover border border-gray-300"
+                      className="w-32 h-32 rounded-md object-cover"
                     />
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-5 font-bold">
                       <input
                         type="file"
                         accept="image/*"
@@ -107,11 +107,11 @@ function EditInfo() {
                           alt="Upload new-image"
                           className="w-5"
                         />
-                        Upload New Image
+                        Upload Picture
                       </label>
                       <button
                         type="button"
-                        className="bg-red-100 p-2 rounded-md border-red-600"
+                        className="bg-red-50 p-2 rounded-md border border-red-400"
                         onClick={() => {
                           setSelectedImage(null);
                           setFieldValue("image", null);

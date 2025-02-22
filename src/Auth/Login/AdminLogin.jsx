@@ -11,6 +11,7 @@ import { Helmet } from "react-helmet";
 import { loginService } from "../../ApiServices/LoginService";
 import InputField from "../../Components/Input Field/InputField";
 import PasswordInput from "../../Components/Password Input/PasswordInput";
+
 function AdminLogin() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -22,7 +23,6 @@ function AdminLogin() {
     password: "",
   });
 
-  // Check if credentials are saved in localStorage
   useEffect(() => {
     const savedEmail = localStorage.getItem("Email");
     const savedPassword = localStorage.getItem("password");
@@ -31,6 +31,7 @@ function AdminLogin() {
       setRememberMe(true);
     }
   }, []);
+
   const validationSchema = Yup.object({
     email: Yup.string()
       .email("Invalid email address")
@@ -61,14 +62,13 @@ function AdminLogin() {
       setLoading(false);
     }
   };
-
   return (
-    <div className=" min-h-screen flex items-center justify-center ">
+    <div className="main-container">
       <Helmet>
         <meta charSet="utf-8" />
         <title>Login</title>
       </Helmet>
-      <div className="loginContainer w-96 lg:w-450 md:w-450 sm:w-80 xs:w-450 s:w-80 bg-white rounded-lg">
+      <div className="loginContainer w-96 lg:w-450 md:w-450 sm:w-80 xs:w-450 s:w-80 bg-white rounded-md">
         <div className="flex justify-center">
           <img
             src="/assets/images/logo (2).png"
@@ -87,9 +87,7 @@ function AdminLogin() {
         <OAuth />
         <div className="flex items-center justify-center mt-8">
           <div className="border-t border-gray-300 flex-grow"></div>
-          <span className="mx-4 text-gray-400 font-bold text-sm">
-            OR With Email
-          </span>
+          <span className="mx-4 text-gray-400 font-bold text-sm">OR</span>
           <div className="border-t border-gray-300 flex-grow"></div>
         </div>
         <Formik
@@ -110,14 +108,14 @@ function AdminLogin() {
               <div className="flex items-center justify-between">
                 <Field
                   type="checkbox"
-                  className="me-2"
+                  className="me-2 w-4 h-4"
                   checked={rememberMe}
                   onChange={() => setRememberMe(!rememberMe)}
                 />
                 <p className="text-11 lg:text-14 text-gray-600">Remember Me</p>
               </div>
               <div
-                className="font-bold text-11 lg:text-14 cursor-pointer"
+                className="font-bold text-11 lg:text-13 cursor-pointer"
                 onClick={() => navigate("/ForgotPassword")}
               >
                 Forget your password?
@@ -125,7 +123,7 @@ function AdminLogin() {
             </div>
             <div className="mt-5">
               <MainBtn
-                text={loading ? <ClipLoader color="#fff" size={20}/> : "Login"}
+                text={loading ? <ClipLoader color="#fff" size={20} /> : "Login"}
                 btnType="submit"
                 disabled={loading}
               />

@@ -66,7 +66,7 @@ function UpdatePassword() {
         Update Password
       </button>
       <SuccessModal isOpen={showModal} onClose={() => setShowModal(false)}>
-        <h1 className="text-primary font-semibold text-2xl p-5">Update Password</h1>
+        <h1 className="text-primary font-semibold text-xl p-5">Update Password</h1>
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
