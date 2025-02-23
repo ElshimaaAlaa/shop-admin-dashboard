@@ -6,6 +6,7 @@ module.exports = {
       colors: {
         lightgray: "#F7F7F7",
         primary: "#E0A75E",
+        primatyOpacity:"#e0a75e80",
         customred: "#DC2626",
         burgandy:"#AF4B4B",
         lightBurgandy:"#F7EDED",
@@ -32,6 +33,7 @@ module.exports = {
       width: {
         1: "1px",
         "60px": "60px",
+        180:"180px",
         "300px": "300px",
         "360px": "360px",
         "460px": "460px",

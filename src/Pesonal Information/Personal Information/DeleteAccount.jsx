@@ -15,7 +15,7 @@ function DeleteAccount() {
         method: "GET",
         headers: {
           Authorization:
-            "Bearer 1K9elSZiyQKW2wIs5uWHOR1hfLVPBavnhHRCUnbF079f2990",
+            "Bearer ddBBMCtMD7nH4eD0IHGgBVAKEPWs6ROKzxJi3woYbee1a631",
           "Content-Type": "application/json",
           Accept: "application/json",
           "Accept-Language": "ar",

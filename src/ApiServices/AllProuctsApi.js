@@ -8,7 +8,7 @@ export const fetchProducts = async () => {
       headers: {
         "Accept-Language": "en",
         Authorization:
-          "Bearer 1K9elSZiyQKW2wIs5uWHOR1hfLVPBavnhHRCUnbF079f2990",
+          "Bearer ddBBMCtMD7nH4eD0IHGgBVAKEPWs6ROKzxJi3woYbee1a631",
       },
     });
     if (response.status === 200) {

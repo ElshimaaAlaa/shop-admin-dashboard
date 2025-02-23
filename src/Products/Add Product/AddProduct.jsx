@@ -121,7 +121,7 @@ function AddProduct() {
     }
   };
   return (
-    <div className="bg-gray-100 flex flex-col h-115vh relative">
+    <div className="bg-gray-100 flex flex-col h-full relative">
       <Helmet>
         <title>Add Product - VERTEX</title>
         <meta name="description" content="Add new product to VERTEX" />
@@ -140,7 +140,7 @@ function AddProduct() {
             <div className="flex gap-5 mx-10">
               <div className="bg-white p-5 rounded-md w-full">
                 <h2 className="font-bold mb-5">Basic Information</h2>
-                <div className="flex gap-5">
+                {/* <div className="flex gap-5">
                   <Field
                     name="name"
                     placeholder="Product Name"
@@ -178,7 +178,7 @@ function AddProduct() {
                       {errors.description}
                     </div>
                   )}
-                </div>
+                </div> */}
               </div>
               <div className="bg-white p-5 rounded-md w-2/4">
                 <h2 className="font-bold mb-5">Product Icon / Image</h2>
@@ -254,7 +254,7 @@ function AddProduct() {
             <div className="flex gap-5 mx-10 my-5">
               <div className="bg-white p-5 rounded-md w-full">
                 <h2 className="font-bold mb-5">Stock & Pricing</h2>
-                <div className="flex gap-5">
+                {/* <div className="flex gap-5">
                   <Field
                     name="stock"
                     placeholder="Stock"
@@ -271,8 +271,8 @@ function AddProduct() {
                   {errors.price && touched.price && (
                     <div className="text-red-500 text-sm">{errors.price}</div>
                   )}
-                </div>
-                <div className="flex gap-5 mt-3">
+                </div> */}
+                {/* <div className="flex gap-5 mt-3">
                   <Field
                     name="discount"
                     placeholder="Discount Percentage"
@@ -294,18 +294,18 @@ function AddProduct() {
                       {errors.discount_expire_at}
                     </div>
                   )}
-                </div>
+                </div> */}
               </div>
               {/* Sizes & Colors */}
             </div>
-            <Footer
+            {/* <Footer
               saveText={"Save"}
               cancelText={"Cancel"}
               cancelOnClick={() => navigate("/Home/products")}
               saveBtnType={"submit"}
               cancelBtnType={"button"}
               isLoading={isLoading}
-            />
+            /> */}
           </Form>
         )}
       </Formik>

@@ -60,12 +60,12 @@ function AllCategory() {
     let dotColor = "";
 
     if (typeName === "Main") {
-      bgColor = "bg-lightGreen"; 
-      textColor = "text-green"; 
+      bgColor = "bg-lightGreen";
+      textColor = "text-green";
       dotColor = "bg-green";
     } else if (typeName === "Both") {
-      bgColor = "bg-lightBurgandy"; 
-      textColor = "text-burgandy"; 
+      bgColor = "bg-lightBurgandy";
+      textColor = "text-burgandy";
       dotColor = "bg-burgandy";
     }
     return { bgColor, textColor, dotColor };
@@ -195,8 +195,8 @@ function AllCategory() {
               activeClassName="bg-customOrange-lightOrange text-primary"
               previousLabel={<ChevronLeft className="w-4 h-4 text-center" />}
               nextLabel={<ChevronRight className="w-4 h-4" />}
-              previousClassName="mx-1 px-3 py-1 rounded bg-gray-100"
-              nextClassName="mx-1 px-3 py-1 rounded bg-gray-100"
+              previousClassName="mx-1 px-3 py-1 font-bold text-primary text-18 "
+              nextClassName="mx-1 px-3 py-1 font-bold text-primary text-18"
             />
           </>
         )}

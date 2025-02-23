@@ -61,13 +61,13 @@ function AllProducts() {
       </h1>
       <div className="bg-white p-5 rounded-md">
         <SearchBar
-          // onclick={() => navigate("/Home/addProduct")}
+          onclick={() => navigate("/Home/addProduct")}
           value={searchQuery}
           onchange={(e) => setSearchQuery(e.target.value)}
           text={"Add New Product"}
         />
         {error ? (
-          <div className="text-red-500 text-center mt-10 font-bold">
+          <div className="text-red-500 text-center mt-10 ">
             Failed to fetch data. Please try again.
           </div>
         ) : isLoading ? (
@@ -178,8 +178,8 @@ function AllProducts() {
           activeClassName="bg-customOrange-lightOrange text-primary"
           previousLabel={<ChevronLeft className="w-4 h-4 text-center" />}
           nextLabel={<ChevronRight className="w-4 h-4" />}
-          previousClassName="mx-1 px-3 py-1 rounded bg-gray-100"
-          nextClassName="mx-1 px-3 py-1 rounded bg-gray-100"
+          previousClassName="mx-1 px-3 py-1 font-bold text-primary text-18"
+          nextClassName="mx-1 px-3 py-1 font-bold text-primary text-18"
         />
       </div>
     </div>

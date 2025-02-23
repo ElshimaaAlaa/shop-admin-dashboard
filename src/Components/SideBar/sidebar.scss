@@ -1,3 +1,50 @@
-.active-icon {
-  border-left: 5px solid #e0a75e;
+.sidebar {
+  transition: width 0.3s;
+  flex-direction: column;
+  align-items: center;
+  &.expanded {
+    align-items: start;
+  }
+  .dashbordItem {
+    display: none;
+  }
+  &.expanded .dashbordItem {
+    display: block;
+  }
+  &.expanded .bottom-items {
+    align-items: start;
+  }
+  div {
+    margin-left: 10px;
+  }
+  .selected {
+    color: #e0a75e;
+    .icon img {
+      filter: brightness(0) saturate(100%) invert(76%) sepia(30%) saturate(800%)
+        hue-rotate(340deg) brightness(90%) contrast(90%);
+    }
+  }
+  .selectedImg{
+    background-color: #e0a75e;
+    border-radius: 50%;
+  }
+  .selectedDiv:hover{
+    background-color: #e0a75e80;
+    padding: 5px;
+    border-radius: 10px;
+    width:150px;
+  }
+}
+.sidebar.expanded {
+  width: 200px;
+}
+.sidebar .text {
+  display: none;
+  margin-right: 10px;
+}
+.sidebar.expanded .text {
+  display: inline;
+}
+.sidebar.expanded .logo {
+  display: none;
 }
