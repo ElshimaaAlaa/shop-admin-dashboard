@@ -85,7 +85,7 @@ function AllCategory() {
         <title>All Categories - VERTEX</title>
       </Helmet>
       <div className="bg-white p-5 rounded-md mb-5">
-        <h1 className="font-bold text-xl">Categories</h1>
+        <h1 className="font-bold text-lg">Categories</h1>
       </div>
       <div className="bg-white p-5 rounded-md">
         <SearchBar

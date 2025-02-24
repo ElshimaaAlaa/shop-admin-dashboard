@@ -66,7 +66,7 @@ function EditCategory() {
         <title>Edit Category - VERTEX</title>
         <meta name="description" content="Edit category details in VERTEX" />
       </Helmet>
-      <h1 className="font-bold rounded-md p-5 text-xl mx-4 md:mx-10 bg-white mt-10 mb-5">
+      <h1 className="font-bold rounded-md p-5 text-lg mx-4 md:mx-10 bg-white mt-10 mb-5">
         Edit Category
       </h1>
       <Formik

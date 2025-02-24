@@ -6,8 +6,8 @@ import { Helmet } from "react-helmet";
 import { fetchCategories } from "../../ApiServices/AllCategoriesApi";
 import { addProduct } from "../../ApiServices/AddNewProductApi";
 import "./AddProduct.scss";
-import { ClipLoader } from "react-spinners";
 import Footer from "../../Components/Footer/Footer";
+import InputField from "../../Components/Input Field/InputField";
 
 function AddProduct() {
   const [isLoading, setIsLoading] = useState(false);
@@ -28,12 +28,11 @@ function AddProduct() {
     description: "",
     images: [],
     category_id: "",
-    price: "",
     discount: "",
-    discount_expire_at: "",
     stock: "",
-    sizes: [],
-    colors: [],
+    price: "",
+    const: "",
+    revenue: "",
   };
 
   const validationSchema = Yup.object({
@@ -55,61 +54,32 @@ function AddProduct() {
     stock: Yup.number()
       .positive("Stock must be a positive number")
       .required("Stock is required"),
-    sizes: Yup.array().of(Yup.string().required("Size is required")),
-    colors: Yup.array().of(
-      Yup.string()
-        .matches(
-          /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$|^[a-zA-Z]+$/,
-          "Color must be a valid name or hex code"
-        )
-        .required("Color is required")
-    ),
   });
 
   const handleSubmit = async (values) => {
     setIsLoading(true);
     const formData = new FormData();
-
     formData.append("name[ar]", values.name);
     formData.append("name[en]", values.name);
     formData.append("description[ar]", values.description);
     formData.append("description[en]", values.description);
-
     if (Array.isArray(values.images)) {
       values.images.forEach((image, index) => {
         if (index === mainImageIndex) {
-          formData.append("images[]", image); // Main image
+          formData.append("images[]", image);
         }
       });
       values.images.forEach((image, index) => {
         if (index !== mainImageIndex) {
-          formData.append("images[]", image); // Other images
+          formData.append("images[]", image);
         }
       });
     }
-
     formData.append("category_id", values.category_id);
     formData.append("price", values.price);
     formData.append("discount_percentage", values.discount);
     formData.append("discount_expire_at", values.discount_expire_at);
     formData.append("stock", values.stock);
-    // Append sizes array
-    if (Array.isArray(values.sizes)) {
-      values.sizes.forEach((size, index) => {
-        formData.append(`sizes[${index}]`, size);
-      });
-    }
-    // Append colors array
-    if (Array.isArray(values.colors)) {
-      values.colors.forEach((color, index) => {
-        formData.append(`colors[${index}]`, color);
-      });
-    }
-    // Debug: log all FormData entries
-    for (let [key, value] of formData.entries()) {
-      console.log(key, value);
-    }
-
     try {
       await addProduct(formData);
       console.log("Product added successfully");
@@ -126,7 +96,7 @@ function AddProduct() {
         <title>Add Product - VERTEX</title>
         <meta name="description" content="Add new product to VERTEX" />
       </Helmet>
-      <h1 className="font-bold rounded-md p-5 text-xl mx-10 bg-white mt-10 mb-5 ">
+      <h1 className="font-bold rounded-md p-5 mx-10 bg-white mt-10 mb-5 text-lg ">
         Add Product
       </h1>
       <Formik
@@ -138,51 +108,29 @@ function AddProduct() {
           <Form className="flex flex-col flex-grow">
             {/* Basic Information & Image Upload */}
             <div className="flex gap-5 mx-10">
-              <div className="bg-white p-5 rounded-md w-full">
-                <h2 className="font-bold mb-5">Basic Information</h2>
-                {/* <div className="flex gap-5">
-                  <Field
-                    name="name"
-                    placeholder="Product Name"
-                    className="w-full bg-transparent outline-none border border-gray-300 rounded-xl h-14 p-2"
-                  />
-                  {errors.name && touched.name && (
-                    <div className="text-red-500 text-sm">{errors.name}</div>
-                  )}
-                  <Field
-                    as="select"
-                    name="category_id"
-                    className="w-full bg-transparent outline-none border border-gray-300 rounded-xl h-14 p-2"
-                  >
-                    <option value="">Select Category</option>
-                    {categories.map((category) => (
-                      <option key={category.id} value={category.id}>
-                        {category.name}
-                      </option>
-                    ))}
-                  </Field>
-                  {errors.category_id && touched.category_id && (
-                    <div className="text-red-500 text-sm">
-                      {errors.category_id}
-                    </div>
-                  )}
+              <div className="bg-white p-5 rounded-md w-full flex flex-col gap-4">
+                <h2 className="font-bold">Basic Information</h2>
+                <div className="flex items-center gap-4">
+                  <InputField name={"name"} placeholder={"Name"} />
+                  <InputField name={"category"} placeholder={"Category"} />
                 </div>
-                <div className="flex gap-5 mt-3">
-                  <Field
-                    name="description"
-                    placeholder="Description"
-                    className="w-full bg-transparent outline-none border border-gray-300 rounded-xl p-2 h-32"
+                <div className="flex items-center gap-4">
+                  <InputField name={"tags"} placeholder={"Tag Number"} />
+                  <InputField name={"gender"} placeholder={"Gender"} />
+                </div>
+                <div className="flex items-center gap-4">
+                  <InputField
+                    name={"percentage"}
+                    placeholder={"percentage (upon return)"}
                   />
-                  {errors.description && touched.description && (
-                    <div className="text-red-500 text-sm">
-                      {errors.description}
-                    </div>
-                  )}
-                </div> */}
+                  <InputField name={"stock"} placeholder={"Stock"} />
+                </div>
+                <InputField name={"tags"} placeholder={"Tag"} />
+                <InputField name={"description"} placeholder={"Description"} />
               </div>
-              <div className="bg-white p-5 rounded-md w-2/4">
+              <div className="bg-white p-5 rounded-md w-2/4 h-72">
                 <h2 className="font-bold mb-5">Product Icon / Image</h2>
-                <div className="border-2 border-dotted border-gray-300 rounded-xl p-3 flex items-center justify-center h-52 overflow-y-scroll">
+                <div className="border-2 border-dashed border-gray-200 bg-gray-100 rounded-xl p-3 flex items-center justify-center h-52 ">
                   <input
                     type="file"
                     name="images"
@@ -238,7 +186,7 @@ function AddProduct() {
                           className="mb-2"
                         />
                         <p>Upload Your Product Image</p>
-                        <p className="text-sm text-gray-300 mt-2 w-60 text-center">
+                        <p className="text-sm text-gray-400 mt-1 w-60 text-center">
                           Only PNG, SVG Format Allowed. Size: 500KB Max.
                         </p>
                       </>
@@ -251,61 +199,32 @@ function AddProduct() {
               </div>
             </div>
             {/* Stock & Pricing */}
-            <div className="flex gap-5 mx-10 my-5">
-              <div className="bg-white p-5 rounded-md w-full">
-                <h2 className="font-bold mb-5">Stock & Pricing</h2>
-                {/* <div className="flex gap-5">
-                  <Field
-                    name="stock"
-                    placeholder="Stock"
-                    className="w-full bg-transparent outline-none border border-gray-300 rounded-xl h-14 p-2"
-                  />
-                  {errors.stock && touched.stock && (
-                    <div className="text-red-500 text-sm">{errors.stock}</div>
-                  )}
-                  <Field
-                    name="price"
-                    placeholder="Price"
-                    className="w-full bg-transparent outline-none border border-gray-300 rounded-xl h-14 p-2"
-                  />
-                  {errors.price && touched.price && (
-                    <div className="text-red-500 text-sm">{errors.price}</div>
-                  )}
-                </div> */}
-                {/* <div className="flex gap-5 mt-3">
-                  <Field
-                    name="discount"
-                    placeholder="Discount Percentage"
-                    className="w-full bg-transparent outline-none border border-gray-300 rounded-xl h-14 p-2"
-                  />
-                  {errors.discount && touched.discount && (
-                    <div className="text-red-500 text-sm">
-                      {errors.discount}
-                    </div>
-                  )}
-                  <Field
-                    name="discount_expire_at"
-                    type="date"
-                    placeholder="Discount Expiry Date"
-                    className="w-full bg-transparent outline-none border border-gray-300 rounded-xl h-14 p-2"
-                  />
-                  {errors.discount_expire_at && touched.discount_expire_at && (
-                    <div className="text-red-500 text-sm">
-                      {errors.discount_expire_at}
-                    </div>
-                  )}
-                </div> */}
+            <div className="mx-10 my-5">
+              <div className="bg-white p-5 rounded-md w-890 flex flex-col gap-4">
+                <h2 className="font-bold">Pricing</h2>
+                <div className="flex items-center gap-3">
+                  <InputField placeholder="Price (For Price)" name="price" />
+                  <InputField placeholder="Cost" name="cost" />
+                  <InputField placeholder="Revenue" name="revenue" />
+                </div>
+                <div className="flex items-center gap-2">
+                  <Field type="checkbox" className="h-4 w-4" />
+                  <p className="text-15 font-bold">Schedule a discount</p>
+                </div>
+                <div className="flex items-center gap-4">
+                  <InputField placeholder="Discount" name="discount" />
+                  <InputField placeholder="Date" type="date" name="date" />
+                </div>
               </div>
-              {/* Sizes & Colors */}
             </div>
-            {/* <Footer
+            <Footer
               saveText={"Save"}
               cancelText={"Cancel"}
               cancelOnClick={() => navigate("/Home/products")}
               saveBtnType={"submit"}
               cancelBtnType={"button"}
               isLoading={isLoading}
-            /> */}
+            />
           </Form>
         )}
       </Formik>

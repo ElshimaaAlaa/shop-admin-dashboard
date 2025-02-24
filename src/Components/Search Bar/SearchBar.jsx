@@ -24,7 +24,7 @@ function SearchBar({onclick , value ,onchange ,text}) {
         <div className=" text-white rounded-full border-2 border-white">
           <Plus className="font-bold" size={18}/>
         </div>
-        <p className="font-semibold">{text}</p>
+        <p className="font-semibold text-15">{text}</p>
       </div>
     </div>
   );
