@@ -67,6 +67,14 @@ function AllCategory() {
       bgColor = "bg-lightBurgandy";
       textColor = "text-burgandy";
       dotColor = "bg-burgandy";
+    } else if(typeName === "Size"){
+      bgColor = "bg-lightBlue";
+      textColor = "text-blue";
+      dotColor = "bg-blue";
+    }else if(typeName === "Color"){
+      bgColor = "bg-lightBurble";
+      textColor = "text-purble";
+      dotColor = "bg-purble";
     }
     return { bgColor, textColor, dotColor };
   };

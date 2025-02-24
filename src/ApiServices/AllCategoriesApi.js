@@ -6,7 +6,7 @@ export const fetchCategories = async () => {
       headers: {
         "Accept-Language": "en",
         Authorization:
-          "Bearer ddBBMCtMD7nH4eD0IHGgBVAKEPWs6ROKzxJi3woYbee1a631",
+          "Bearer tUSg6zZB0FFYWX0GyAL8WAprP9Iys96ZfgdB8h8K8162e194",
       },
     });
     if (response.status === 200) {

@@ -12,6 +12,10 @@ module.exports = {
         lightBurgandy:"#F7EDED",
         green:"#589E67",
         lightGreen:"#EEF5F0",
+        purble:"#954BAF",
+        lightBurble:"#F4EDF7",
+        blue:"#4976F4",
+        lightBlue:"#EDF2FE",
         customOrange: {
           lightOrange: "#FCEFDB",
           mediumOrange: "#EFD9A466",
@@ -106,6 +110,7 @@ module.exports = {
       },
       borderWidth: {
         1: "1px",
+        3:"3px",
       },
       fontSize: {
         8: "8px",

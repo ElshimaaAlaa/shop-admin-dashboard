@@ -8,7 +8,7 @@ export const updateCategory = async (formData, categoryId) => {
       data: formData,
       headers: {
         "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ddBBMCtMD7nH4eD0IHGgBVAKEPWs6ROKzxJi3woYbee1a631`,
+        Authorization: `Bearer tUSg6zZB0FFYWX0GyAL8WAprP9Iys96ZfgdB8h8K8162e194`,
         "Accept-Language": "en",
       },
     });

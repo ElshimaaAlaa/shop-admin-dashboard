@@ -11,7 +11,7 @@ export const addCategory = async (formData) => {
         headers: {
           "Accept-Language": "ar",
           Authorization:
-            "Bearer ddBBMCtMD7nH4eD0IHGgBVAKEPWs6ROKzxJi3woYbee1a631",
+            "Bearer tUSg6zZB0FFYWX0GyAL8WAprP9Iys96ZfgdB8h8K8162e194",
           "Content-Type": "multipart/form-data",
         },
       }
