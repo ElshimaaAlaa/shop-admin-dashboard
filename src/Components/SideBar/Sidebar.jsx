@@ -61,6 +61,7 @@ const Sidebar = () => {
       id: "support",
       label: "Support",
       icon: "/assets/Svgs/supports.svg",
+      onclick:()=>navigate('support')
     },
     { id: "help", label: "Help", icon: "/assets/Svgs/help.svg" },
   ];

@@ -6,7 +6,7 @@ import LanguageSelector from "../../Profile/UpdateLanguage";
 function Navbar() {
   return (
     <div className="">
-      <nav className="flex items-center justify-between px-4 py-2 bg-white">
+      <nav className="flex items-center justify-between px-4 py-2 bg-white border-b-2 border-gray-200">
         {/* Left section */}
         <div className="flex items-center gap-4">
           <button variant="ghost" className="p-2">

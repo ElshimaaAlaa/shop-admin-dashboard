@@ -6,7 +6,7 @@ export const addProduct = async (formData) => {
   try {
     const response = await axios.post(`${API_BASE_URL}/products/store`, formData, {
       headers: {
-        Authorization: `Bearer ddBBMCtMD7nH4eD0IHGgBVAKEPWs6ROKzxJi3woYbee1a631`,
+        Authorization: `Bearer tUSg6zZB0FFYWX0GyAL8WAprP9Iys96ZfgdB8h8K8162e194`,
         "Content-Type": "multipart/form-data",
       },
     });
