@@ -23,6 +23,7 @@ import MainInfo from "./Pesonal Information/Main For Personal Information/MainIn
 import EditInfo from "./Pesonal Information/Edit Personal Information/EditInfo";
 import Profile from "./Profile/Profile";
 import Support from "./Pages/Support/Support";
+import Faqs from "./Pages/Faqs/Faqs";
 
 function App() {
   return (
@@ -65,6 +66,7 @@ function App() {
           </Route>
           <Route path="/Home/Profile" element={<Profile/>}/>
           <Route path="support" element={<Support/>}/>
+          <Route path="Faqs" element={<Faqs/>}/>
         </Route>
         
       </Routes>

@@ -26,10 +26,17 @@ const Sidebar = () => {
       id: "categories",
       label: "Categories",
       icon: "/assets/Svgs/category.svg",
-      padding:"3px",
+      padding: "3px",
       onclick: () => navigate("categories"),
     },
-    { id: "products", label: "Products", icon: "/assets/Svgs/product.svg" , padding:"4px" , width:"32px" , onclick: () => navigate("products"),},
+    {
+      id: "products",
+      label: "Products",
+      icon: "/assets/Svgs/product.svg",
+      padding: "4px",
+      width: "32px",
+      onclick: () => navigate("products"),
+    },
     {
       id: "orders",
       label: "Orders",
@@ -40,7 +47,7 @@ const Sidebar = () => {
       label: "Clients",
       icon: "/assets/Svgs/clients.svg",
       height: "30px",
-      padding:"3px"
+      padding: "3px",
     },
     {
       id: "promotions",
@@ -61,9 +68,14 @@ const Sidebar = () => {
       id: "support",
       label: "Support",
       icon: "/assets/Svgs/supports.svg",
-      onclick:()=>navigate('support')
+      onclick: () => navigate("support"),
     },
-    { id: "help", label: "Help", icon: "/assets/Svgs/help.svg" },
+    {
+      id: "help",
+      label: "Help",
+      icon: "/assets/Svgs/help.svg",
+      onclick: () => navigate("Faqs"),
+    },
   ];
 
   return (
@@ -104,7 +116,7 @@ const Sidebar = () => {
               style={{
                 height: item.height,
                 width: item.width,
-                padding : item.padding,
+                padding: item.padding,
               }}
               className={`${selectedItem === item.id ? "selectedImg" : ""}`}
             />

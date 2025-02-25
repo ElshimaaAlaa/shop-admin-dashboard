@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import InputField from "../../Components/Input Field/InputField";
 import * as Yup from "yup";
 import { ClipLoader } from "react-spinners";
+import { Helmet } from "react-helmet";
 
 function Support() {
   const [isLoading, setIsLoading] = useState(false);
@@ -52,14 +53,27 @@ function Support() {
       <img src="/assets/svgs/arrow_forward.svg" alt="arrow" />
     </div>
   );
-
   return (
-    <section className="bg-white h-full">
+    <div className="bg-white h-full">
+      <Helmet>
+        <title>Support | Vertex</title>
+        <meta name="description" content="Support Page" />
+        <meta property="og:title" content="Support | Vertex" />
+        <meta property="og:description" content="Support Page" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="/assets/images/logo (2).png" />
+        <meta property="og:url" content="https://vertex.com/support" />
+        <meta property="og:site_name" content="Vertex" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Support | Vertex" />
+        <meta name="twitter:description" content="Support Page" />
+        <meta name="twitter:image" content="/assets/images/logo (2).png" />
+      </Helmet>
       <h1 className="font-bold text-center text-xl pt-10">
         Send us Your Problem and we are <br /> contact with you
       </h1>
       <div className="flex justify-center gap-5">
-        <div className="bg-white rounded-md drop-shadow-lg p-5 w-400 h-72 mt-10">
+        <section className="bg-white rounded-md drop-shadow-lg p-5 w-400 h-72 mt-10">
           <h2 className="font-bold text-lg mb-3 mt-2">Contact information</h2>
           <ContactCard
             icon="/assets/images/Frame 1984077276.png"
@@ -72,8 +86,8 @@ function Support() {
             value="Vertex@gmail.com"
             link="mailto:Vertex@gmail.com"
           />
-        </div>
-        <div className="bg-customOrange-mediumOrange p-7 mt-10 w-500px rounded-md">
+        </section>
+        <section className="bg-customOrange-mediumOrange p-7 mt-10 w-500px rounded-md">
           <div className="flex justify-center">
             <img src="/assets/svgs/chats.svg" alt="messages" className="w-16 mb-2" />
           </div>
@@ -123,9 +137,9 @@ function Support() {
               </div>
             </Form>
           </Formik>
-        </div>
+        </section>
       </div>
-    </section>
+    </div>
   );
 }
 export default Support;
