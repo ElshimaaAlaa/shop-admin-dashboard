@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { ChevronDown, ChevronRight, Eye, PenLine, Plus, Bell } from "lucide-react";
-import LogOut from "./LogOut";
+import LogOut from "../Auth/LogOut/LogOut";
 import { useNavigate } from "react-router-dom";
 
 export default function ProfileMenu() {

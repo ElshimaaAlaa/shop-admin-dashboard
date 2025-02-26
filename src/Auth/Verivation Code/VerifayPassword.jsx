@@ -38,9 +38,9 @@ function VerifayPassword() {
     } catch (error) {
       console.error("Error: OTP Verification", error);
       if (error.message.includes("404")) {
-        alert("Endpoint not found. Please contact support.");
+        console.log("Endpoint not found. Please contact support.");
       } else {
-        alert(error.message);
+        console.error(error.message);
       }
     } finally {
       setLoading(false);
@@ -107,7 +107,7 @@ function VerifayPassword() {
                 <ResendCode />
               </p>
               <MainBtn
-                text={loading ? <ClipLoader color="#fff" /> : "Verify"}
+                text={loading ? <ClipLoader color="#fff" size={22}/> : "Verify"}
                 btnType="submit"
               />
             </Form>

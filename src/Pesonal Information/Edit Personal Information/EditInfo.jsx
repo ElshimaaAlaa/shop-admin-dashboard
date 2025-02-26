@@ -39,14 +39,14 @@ function EditInfo() {
         formData.append("image", selectedImage);
       }
       const response = await axios.post(
-        "https://demo.vrtex.duckdns.org/api/update-profile",
+        "https://demo.vrtex.duckdns.org/api/shop/update-profile",
         formData,
         {
           headers: {
             Accept: "application/json",
             "Accept-Language": "ar",
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ddBBMCtMD7nH4eD0IHGgBVAKEPWs6ROKzxJi3woYbee1a631`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       );

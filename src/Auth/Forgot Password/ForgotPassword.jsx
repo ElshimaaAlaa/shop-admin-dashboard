@@ -28,7 +28,7 @@ function ForgotPassword() {
       console.log("OTP sent successfully!");
       navigate("/VerifayPassword");
     } catch (error) {
-      alert(error.message);
+      console.error(error.message);
     } finally {
       setIsLoading(false);
     }
@@ -56,7 +56,7 @@ function ForgotPassword() {
             <InputField name={"email"} placeholder={"Enter Your Email"} icon={Email}/>
             <div className="mt-5">
               <MainBtn
-                text={isLoading ? <ClipLoader color="#fff" /> : "Send Code"}
+                text={isLoading ? <ClipLoader color="#fff" size={22}/> : "Send Code"}
                 btnType={"submit"}
               />
             </div>

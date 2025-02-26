@@ -90,7 +90,7 @@ function CreateNewPassword() {
               <div className="mt-5">
                 <MainBtn
                   text={
-                    loading ? <ClipLoader color="#fff" size={20} /> : "Save"
+                    loading ? <ClipLoader color="#fff" size={22} /> : "Save"
                   }
                   btnType="submit"
                 />

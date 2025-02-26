@@ -1,18 +1,31 @@
 import React, { useState } from "react";
 import { MdOutlineLogout } from "react-icons/md";
-import FailedModal from "../Components/Modal/Failed Modal/FailedModal";
+import FailedModal from "../../Components/Modal/Failed Modal/FailedModal";
 import { ClipLoader } from "react-spinners";
-import { logOut } from "../ApiServices/LogOut";
+import { logOut } from "../../ApiServices/LogOut";
+import { useNavigate } from "react-router-dom";
 function LogOut() {
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const handelLogOut = async ()=>{
+  const navigate = useNavigate();
+  const handelLogOut = async () => {
     setIsLoading(true);
-    await logOut();
-  }
+    try {
+      await logOut();
+      // navigate("/");
+    } catch (error) {
+      setShowModal(true);
+      console.error("Logout failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   return (
     <div>
-      <p className="text-gray-500 flex items-center gap-3 p-2 text-17 hover:bg-gray-50 cursor-pointer" onClick={()=>setShowModal(true)}>
+      <p
+        className="text-gray-500 flex items-center gap-3 p-2 text-17 hover:bg-gray-50 cursor-pointer"
+        onClick={() => setShowModal(true)}
+      >
         <MdOutlineLogout className="text-red-600 h-6 w-6" />
         Log Out
       </p>

@@ -4,7 +4,7 @@ function ResendCode() {
   const resndCode = async () => {
     const email = localStorage.getItem("Email Admin");
     const response = await axios({
-      url:"https://vrtex.duckdns.org/api/admin/send-otp",
+      url:"https://demo.vrtex.duckdns.org/api/shop/send-otp",
         method: "POST",
         headers: {
           "Content-Type": "application/json",

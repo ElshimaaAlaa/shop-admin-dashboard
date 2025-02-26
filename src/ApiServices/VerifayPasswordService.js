@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "https://vrtex.duckdns.org/api/admin";
+const API_BASE_URL = "https://demo.vrtex.duckdns.org/api/shop";
 export const VerifayPasswordService = async (otp, email) => {
   try {
     const response = await axios({
