@@ -12,7 +12,7 @@ function LogOut() {
     setIsLoading(true);
     try {
       await logOut();
-      // navigate("/");
+      navigate("/");
     } catch (error) {
       setShowModal(true);
       console.error("Logout failed:", error);
