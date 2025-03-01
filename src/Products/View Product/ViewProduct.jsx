@@ -15,8 +15,7 @@ function ViewProduct() {
           url: `https://demo.vrtex.duckdns.org/api/shop/products/${productId}`,
           method: "GET",
           headers: {
-            Authorization:
-              "Bearer ddBBMCtMD7nH4eD0IHGgBVAKEPWs6ROKzxJi3woYbee1a631",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
         console.log("Product Data:", response.data.data);
@@ -33,10 +32,6 @@ function ViewProduct() {
     fetchProductDetails();
   }, [productId]);
 
-  // Retrieve sizes and colors from attributes (or fallback to top-level if needed)
-  const sizes = productData.attributes?.sizes || productData.sizes || [];
-  const colors = productData.attributes?.colors || productData.colors || [];
-
   return (
     <div className="bg-gray-100 flex flex-col min-h-screen">
       <Helmet>
@@ -49,25 +44,67 @@ function ViewProduct() {
           {/* Product Basic Information */}
           <div className="bg-white p-5 rounded-md w-full">
             <h2 className="font-bold mb-3">Basic Information</h2>
-            <div className="w-full bg-transparent border border-gray-300 h-56 rounded-md p-2 block">
-              <div className="flex items-center gap-96 p-3">
+            <div className="w-full bg-transparent border border-gray-200 rounded-md p-2 block">
+              <div className="flex items-center gap-360px p-3">
                 <div>
-                  <h2 className="text-gray-500">Product Name</h2>
+                  <h2 className="text-gray-400">Product Name</h2>
                   <p className="mt-1 text-14">{productData.name}</p>
                 </div>
                 <div>
-                  <h2 className="text-gray-500">Category</h2>
+                  <h2 className="text-gray-400">Category Name</h2>
                   <p className="text-14 mt-1">{productData.category?.name}</p>
                 </div>
               </div>
+              <div className="flex items-center gap-80 p-3">
+                <div>
+                  <h2 className="text-gray-400">Tag Number</h2>
+                  <p className="mt-1 text-14">
+                    {productData.tag_number || "no tag number available"}
+                  </p>
+                </div>
+                <div>
+                  <h2 className="text-gray-400">Gender</h2>
+                  <p className="text-14 mt-1">
+                    {productData.category?.gender || "no gender available"}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-56 p-3">
+                <div>
+                  <h2 className="text-gray-400">
+                    Amount percentage (upon return)
+                  </h2>
+                  <p className="mt-1 text-14">
+                    {productData.upon_return || "no upon return) available"}
+                  </p>
+                </div>
+                <div>
+                  <h2 className="text-gray-400">Stock</h2>
+                  <p className="text-14 mt-1">
+                    {productData.category?.stock || 0}
+                  </p>
+                </div>
+              </div>
+              <div className="p-3">
+                <h2 className="text-gray-500">Tags</h2>
+                <p className="mt-1 w-600px text-14">
+                  {productData?.tags?.length ? (
+                    productData.tags.map((tag) => <span key={tag}>{tag}</span>)
+                  ) : (
+                    <p>No tags available</p>
+                  )}
+                </p>
+              </div>
               <div className="p-3">
                 <h2 className="text-gray-500">Description</h2>
-                <p className="mt-1 w-600px text-14">{productData.description}</p>
+                <p className="mt-1 w-600px text-14">
+                  {productData.description}
+                </p>
               </div>
             </div>
           </div>
           {/* Product Image & Thumbnails */}
-          <div className="bg-white rounded-md w-2/4 p-5">
+          <div className="bg-white rounded-md w-2/4 p-5 h-72">
             <p className="font-bold">Product Image</p>
             <div className="image-section">
               {mainImage ? (
@@ -79,7 +116,7 @@ function ViewProduct() {
                   />
                 </div>
               ) : (
-                <p>No image available</p>
+                <p className="text-gray-400 my-5 text-15">No image available</p>
               )}
               {productData.images && productData.images.length > 0 && (
                 <div className="thumbnails flex gap-2 mt-3">
@@ -90,7 +127,9 @@ function ViewProduct() {
                       alt={`Thumbnail ${index + 1}`}
                       onClick={() => setMainImage(image.src)}
                       className={`h-12 w-12 object-cover cursor-pointer ${
-                        mainImage === image.src ? "border-2 border-blue-500" : ""
+                        mainImage === image.src
+                          ? "border-2 border-blue-500"
+                          : ""
                       }`}
                     />
                   ))}
@@ -101,65 +140,36 @@ function ViewProduct() {
         </div>
         {/* Stock & Pricing Information */}
         <div className="flex gap-5 my-10 mx-10">
-          <div className="bg-white p-5 rounded-md w-full">
-            <h2 className="font-bold mb-3">Stock & Pricing</h2>
-            <div className="w-full bg-transparent border border-gray-300 rounded-md p-2 block">
-              <div className="flex items-center gap-96 p-3">
+          <div className="w-900 bg-white p-5 rounded-md">
+            <h2 className="font-bold mb-3">Pricing</h2>
+            <div className="bg-transparent border border-gray-200 rounded-md p-2 block">
+              <div className="flex items-center gap-80 p-3">
                 <div>
-                  <h2 className="text-gray-500">Stock</h2>
-                  <p className="text-14 mt-1">{productData.stock}</p>
-                </div>
-                <div>
-                  <h2 className="text-gray-500">Price</h2>
+                  <h2 className="text-gray-500">Price (for piece)</h2>
                   <p className="text-14 mt-1">{productData.price}</p>
                 </div>
+                <div>
+                  <h2 className="text-gray-500">Cost</h2>
+                  <p className="text-14 mt-1">{productData.cost}</p>
+                </div>
               </div>
-              <div className="flex items-center gap-360px p-3">
+              <div className="flex items-center gap-96 p-3">
+                <div>
+                  <h2 className="text-gray-500">Revenue</h2>
+                  <p className="text-14 mt-1">{productData.revenue} $</p>
+                </div>
                 <div>
                   <h2 className="text-gray-500">Discount</h2>
-                  <p className="mt-1">{productData.discount_percentage} %</p>
+                  <p className="text-14 mt-1">
+                    {productData.discount_percentage}
+                  </p>
                 </div>
+              </div>
+              <div className="flex items-center p-3">
                 <div>
-                  <h2 className="text-gray-500">Expiration Date</h2>
+                  <h2 className="text-gray-500">Date</h2>
                   <p className="mt-1">{productData.discount_expire_at}</p>
                 </div>
-              </div>
-            </div>
-          </div>
-          {/* Sizes & Colors */}
-          <div className="bg-white rounded-md w-2/4 p-5 h-48">
-            <h2 className="font-bold">Sizes & Colors</h2>
-            <div className="mt-3 border-1 p-2 rounded-md flex justify-between items-center">
-              <p className="text-14">Sizes</p>
-              <div className="flex gap-2">
-                {sizes && sizes.length > 0 ? (
-                  sizes.map((size, index) => (
-                    <span
-                      key={index}
-                      className="text-customOrange-darkOrange bg-customOrange-mediumOrange p-2 h-9 w-8 text-center rounded"
-                    >
-                      {size}
-                    </span>
-                  ))
-                ) : (
-                  <span>No sizes available</span>
-                )}
-              </div>
-            </div>
-            <div className="mt-3 border-1 p-2 rounded-md flex justify-between items-center">
-              <p className="text-14">Colors</p>
-              <div className="flex gap-2">
-                {colors && colors.length > 0 ? (
-                  colors.map((color, index) => (
-                    <div
-                      key={index}
-                      className="w-7 h-7 rounded-md"
-                      style={{ backgroundColor: color }}
-                    />
-                  ))
-                ) : (
-                  <span>No colors available</span>
-                )}
               </div>
             </div>
           </div>
@@ -168,5 +178,4 @@ function ViewProduct() {
     </div>
   );
 }
-
 export default ViewProduct;

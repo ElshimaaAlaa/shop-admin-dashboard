@@ -15,7 +15,7 @@ function DeleteProduct({ id, onDelete }) {
         url: `https://demo.vrtex.duckdns.org/api/shop/products/delete/${id}`,
         headers: {
           Authorization:
-            "Bearer tUSg6zZB0FFYWX0GyAL8WAprP9Iys96ZfgdB8h8K8162e194",
+            `Bearer ${localStorage.getItem("token")}`,
         },
       });
       if (response.status === 200) {

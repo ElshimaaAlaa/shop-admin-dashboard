@@ -1,175 +1,215 @@
-import React, { useState } from "react";
-import { Formik, Form, Field } from "formik";
+import React from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import InputField from "../../Components/Input Field/InputField";
-import Footer from "../../Components/Footer/Footer";
-import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-function AddProduct() {
-  const [showDiscountFields, setShowDiscountFields] = useState(false);
-  const navigate = useNavigate();
+const AddProduct = () => {
   const initialValues = {
-    name: "",
-    category_id: "",
-    tagNumber: "",
-    gender: "",
-    percentage: "",
+    name_ar: "",
+    name_en: "",
+    description_ar: "",
+    description_en: "",
     stock: "",
-    tags: "",
-    description: "",
     price: "",
+    category_id: "",
+    tag_number: "",
+    gender: "",
+    discount_percentage: "",
     cost: "",
     revenue: "",
-    discount: "",
-    discountDate: "",
+    discount_expire_at: "",
+    tags: [],
+    images: [],
   };
+
   const validationSchema = Yup.object({
-    name: Yup.string().required("Product Name is required"),
-    category: Yup.string().required("Category is required"),
-    tagNumber: Yup.string().required("Tag Number is required"),
+    name_ar: Yup.string().required("الاسم باللغة العربية مطلوب"),
+    name_en: Yup.string().required("Name in English is required"),
+    description_ar: Yup.string().required("الوصف باللغة العربية مطلوب"),
+    description_en: Yup.string().required("Description in English is required"),
+    stock: Yup.number().required("Stock is required"),
+    price: Yup.number().required("Price is required"),
+    category_id: Yup.number().required("Category is required"),
+    tag_number: Yup.string().required("Tag number is required"),
     gender: Yup.string().required("Gender is required"),
-    percentage: Yup.string().required("Percentage is required"),
-    stock: Yup.number()
-      .positive("Stock must be a positive number")
-      .required("Stock is required"),
-    tags: Yup.string().required("Tags are required"),
-    description: Yup.string().required("Description is required"),
-    price: Yup.number()
-      .positive("Price must be a positive number")
-      .required("Price is required"),
-    cost: Yup.number()
-      .positive("Cost must be a positive number")
-      .required("Cost is required"),
-    revenue: Yup.number()
-      .positive("Revenue must be a positive number")
-      .required("Revenue is required"),
-    discount: showDiscountFields
-      ? Yup.number()
-          .positive("Discount must be a positive number")
-          .required("Discount is required")
-      : Yup.number(),
-    discountDate: showDiscountFields
-      ? Yup.string().required("Discount Date is required")
-      : Yup.string(),
+    discount_percentage: Yup.number().required("Discount is required"),
+    cost: Yup.number().required("Cost is required"),
+    revenue: Yup.number().required("Revenue is required"),
+    discount_expire_at: Yup.date().required("Discount expiry date is required"),
   });
 
-  const handleSubmit = (values) => {
-    console.log("Form Values:", values);
+  const handleSubmit = async (values, { setSubmitting, setErrors }) => {
+    try {
+      const formData = new FormData();
+      formData.append("name[ar]", values.name_ar);
+      formData.append("name[en]", values.name_en);
+      formData.append("description[ar]", values.description_ar);
+      formData.append("description[en]", values.description_en);
+      formData.append("stock", values.stock);
+      formData.append("price", values.price);
+      formData.append("category_id", values.category_id);
+      formData.append("tag_number", values.tag_number);
+      formData.append("gender", values.gender);
+      formData.append("discount_percentage", values.discount_percentage);
+      formData.append("cost", values.cost);
+      formData.append("revenue", values.revenue);
+      formData.append("discount_expire_at", values.discount_expire_at);
+  
+      // ✅ Fix: Convert tags string to array
+      const tagsArray = typeof values.tags === "string" ? values.tags.split(",").map(tag => tag.trim()) : values.tags;
+      tagsArray.forEach((tag, index) => {
+        formData.append(`tags[${index}]`, tag);
+      });
+  
+      // ✅ Handling images properly
+      values.images.forEach((image, index) => {
+        formData.append(`images[${index}]`, image);
+      });
+  
+      console.log("Submitting data:", Object.fromEntries(formData.entries())); // Debugging the request
+  
+      const response = await axios.post(
+        "https://demo.vrtex.duckdns.org/api/shop/products/store",
+        formData,
+        {
+          headers:{
+          "Accept-Language": "ar", // Assuming the form is in Arabic
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+          }, // Assuming token is stored in localStorage
+        }
+      );
+  
+      console.log("Response:", response.data);
+      alert("Product added successfully!");
+    } catch (error) {
+      console.error("Error submitting form:", error.response?.data || error);
+      setErrors({ submit: error.response?.data?.message || "Submission failed" });
+    } finally {
+      setSubmitting(false);
+    }
   };
-
+  
   return (
-    <div className="bg-gray-100 flex flex-col h-full relative">
-      <h1 className="font-bold rounded-md p-5 mx-10 bg-white mt-10 mb-5 text-lg">
-        Add Product
-      </h1>
+    <div>
+      <h2>Add New Product</h2>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ setFieldValue, values }) => (
+        {({ setFieldValue, isSubmitting, errors }) => (
           <Form>
-            {/* Basic Information */}
-            <div className="h-78vh overflow-hidden overflow-y-auto">
-              <div className="flex gap-5 mx-9">
-                <div className="bg-white p-5 rounded-md w-full flex flex-col gap-4">
-                  <h2 className="font-bold">Basic Information</h2>
-                  <div className="flex items-center gap-4">
-                    <InputField name="name" placeholder="Product Name" />
-                    <InputField name="category" placeholder="Category" />
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <InputField name="tagNumber" placeholder="Tag Number" />
-                    <InputField name="gender" placeholder="Gender" />
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <InputField
-                      name="percentage"
-                      placeholder="Percentage (upon return)"
-                    />
-                    <InputField name="stock" placeholder="Stock" />
-                  </div>
-                  <InputField name="tags" placeholder="Tags" />
-                  <InputField name="description" placeholder="Description" />
-                </div>
-
-                {/* Product Icon / Image */}
-                <div className="">
-                  <div className="bg-white p-5 rounded-md   flex- gap-4 w-450">
-                    <h2 className="font-bold">Product Icon / Image</h2>
-                    <div className="border-2 border-dashed border-gray-200 bg-gray-100 rounded-xl p-3 flex items-center justify-center h-52">
-                      <input
-                        type="file"
-                        name="images"
-                        onChange={(event) => {
-                          const files = Array.from(event.currentTarget.files);
-                          setFieldValue("images", files);
-                        }}
-                        className="hidden"
-                        id="image-upload"
-                        multiple
-                      />
-                      <label
-                        htmlFor="image-upload"
-                        className="text-gray-500 cursor-pointer flex flex-col items-center gap-2"
-                      >
-                        <img
-                          src="/assets/images/upload-file_svgrepo.com.png"
-                          alt="upload-image-file"
-                          className="mb-2"
-                        />
-                        <p>Upload Your Product Image</p>
-                        <p className="text-sm text-gray-400 mt-1 w-60 text-center">
-                          Only PNG, SVG Format Allowed. Size: 500KB Max.
-                        </p>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {/* Pricing */}
-              <div className="mx-8 my-5">
-                <div className="bg-white p-5 rounded-md flex flex-col gap-4 w-890">
-                  <h2 className="font-bold">Pricing</h2>
-                  <div className="flex items-center gap-3">
-                    <InputField name="price" placeholder="Price (For piece)" />
-                    <InputField name="cost" placeholder="Cost" />
-                    <InputField name="revenue" placeholder="Revenue" />
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Field
-                      type="checkbox"
-                      className="h-4 w-4"
-                      onClick={() => setShowDiscountFields(!showDiscountFields)}
-                    />
-                    <p className="text-15 font-bold">Schedule a discount</p>
-                  </div>
-                  {showDiscountFields && (
-                    <div className="flex items-center gap-4">
-                      <InputField name="discount" placeholder="Discount" />
-                      <InputField
-                        name="discountDate"
-                        placeholder="Date"
-                        type="date"
-                      />
-                    </div>
-                  )}
-                </div>
-              </div>
+            <div>
+              <label>Name (Arabic)</label>
+              <Field type="text" name="name_ar" />
+              <ErrorMessage name="name_ar" component="div" className="error" />
             </div>
-            {/* Footer */}
-            <Footer
-              saveText={"Save"}
-              cancelText={"Cancel"}
-              cancelOnClick={() => navigate("/Home/products")}
-              saveBtnType={"submit"}
-              cancelBtnType={"button"}
-            />
+
+            <div>
+              <label>Name (English)</label>
+              <Field type="text" name="name_en" />
+              <ErrorMessage name="name_en" component="div" className="error" />
+            </div>
+
+            <div>
+              <label>Description (Arabic)</label>
+              <Field as="textarea" name="description_ar" />
+              <ErrorMessage name="description_ar" component="div" className="error" />
+            </div>
+
+            <div>
+              <label>Description (English)</label>
+              <Field as="textarea" name="description_en" />
+              <ErrorMessage name="description_en" component="div" className="error" />
+            </div>
+
+            <div>
+              <label>Stock</label>
+              <Field type="number" name="stock" />
+              <ErrorMessage name="stock" component="div" className="error" />
+            </div>
+
+            <div>
+              <label>Price</label>
+              <Field type="number" name="price" />
+              <ErrorMessage name="price" component="div" className="error" />
+            </div>
+
+            <div>
+              <label>Category ID</label>
+              <Field type="number" name="category_id" />
+              <ErrorMessage name="category_id" component="div" className="error" />
+            </div>
+
+            <div>
+              <label>Tag Number</label>
+              <Field type="text" name="tag_number" />
+              <ErrorMessage name="tag_number" component="div" className="error" />
+            </div>
+
+            <div>
+              <label>Gender</label>
+              <Field as="select" name="gender">
+                <option value="">Select</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </Field>
+              <ErrorMessage name="gender" component="div" className="error" />
+            </div>
+
+            <div>
+              <label>Discount (%)</label>
+              <Field type="number" name="discount_percentage" />
+              <ErrorMessage name="discount_percentage" component="div" className="error" />
+            </div>
+
+            <div>
+              <label>Cost</label>
+              <Field type="number" name="cost" />
+              <ErrorMessage name="cost" component="div" className="error" />
+            </div>
+
+            <div>
+              <label>Revenue</label>
+              <Field type="number" name="revenue" />
+              <ErrorMessage name="revenue" component="div" className="error" />
+            </div>
+
+            <div>
+              <label>Discount Expiry Date</label>
+              <Field type="date" name="discount_expire_at" />
+              <ErrorMessage name="discount_expire_at" component="div" className="error" />
+            </div>
+
+            <div>
+              <label>Tags</label>
+              <Field type="text" name="tags" placeholder="Comma separated tags" />
+              <ErrorMessage name="tags" component="div" className="error" />
+            </div>
+
+            <div>
+              <label>Images</label>
+              <input
+                type="file"
+                multiple
+                onChange={(event) => {
+                  const files = Array.from(event.currentTarget.files);
+                  setFieldValue("images", files);
+                }}
+              />
+              <ErrorMessage name="images" component="div" className="error" />
+            </div>
+
+            {errors.submit && <div className="error">{errors.submit}</div>}
+
+            <button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Submitting..." : "Add Product"}
+            </button>
           </Form>
         )}
       </Formik>
     </div>
   );
-}
+};
 
 export default AddProduct;

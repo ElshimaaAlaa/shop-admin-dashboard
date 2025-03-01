@@ -8,7 +8,7 @@ export const fetchProducts = async () => {
       headers: {
         "Accept-Language": "en",
         Authorization:
-          "Bearer tUSg6zZB0FFYWX0GyAL8WAprP9Iys96ZfgdB8h8K8162e194",
+          `Bearer ${localStorage.getItem("token")}`,
       },
     });
     if (response.status === 200) {
