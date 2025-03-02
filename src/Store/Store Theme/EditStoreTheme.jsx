@@ -36,7 +36,7 @@ function EditStoreTheme() {
         </div>
         <div className="flex flex-col lg:flex-row md:flex-row items-end justify-between border border-gray-200 rounded-md mt-6 p-5">
           <div>
-            <p className="text-lg font-bold mb-3 mt-5">Logo</p>
+            <p className="text-1xl font-bold mb-3 mt-5">Logo</p>
             <img
               src="/assets/svgs/Frame 1984077803.svg"
               alt="upload-file"

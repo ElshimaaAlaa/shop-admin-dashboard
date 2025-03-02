@@ -21,6 +21,8 @@ import Support from "./Pages/Support/Support";
 import Faqs from "./Pages/Faqs/Faqs";
 import StoreTheme from "./Store/Store Theme/StoreTheme";
 import EditStoreTheme from "./Store/Store Theme/EditStoreTheme";
+import StoreInformation from "./Store/Store Information/StoreInformation";
+import EditStoreInformation from "./Store/Store Information/EditStoreInformation";
 
 function App() {
   return (
@@ -54,6 +56,8 @@ function App() {
             <Route path="EditInfo" element={<EditInfo />} />
             <Route path="StoreTheme" element={<StoreTheme />} />
             <Route path="EditStoreTheme" element={<EditStoreTheme />} />
+            <Route path="StoreInformation" element={<StoreInformation/>}/>
+            <Route path="EditStoreInformation" element={<EditStoreInformation/>}/>
           </Route>
 
           {/* Other Routes */}
@@ -65,5 +69,4 @@ function App() {
     </BrowserRouter>
   );
 }
-
 export default App;

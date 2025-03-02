@@ -22,6 +22,7 @@ function InfoSideBar() {
       icon: "/assets/svgs/store-1_svgrepo.com.svg",
       alt: "Store Information Icon",
       label: "Store Information",
+      onClick: () => navigate("StoreInformation"),
     },
     {
       icon: "/assets/svgs/pricetag2_svgrepo.com.svg",
@@ -42,13 +43,9 @@ function InfoSideBar() {
           key={index}
           className="flex items-center gap-3 w-full text-left hover:bg-gray-100 p-2 rounded-md transition-colors"
           aria-label={item.label}
-          onClick={item.onClick} 
+          onClick={item.onClick}
         >
-          <img
-            src={item.icon}
-            alt={item.alt}
-            className="w-6 h-6"
-          />
+          <img src={item.icon} alt={item.alt} className="w-6 h-6" />
           <p className={`font-semibold text-15 mt-1 ${item.className || ""}`}>
             {item.label}
           </p>

@@ -43,7 +43,7 @@ function PersonalInformation() {
             className="text-white font-semibold flex items-center justify-center gap-3 bg-primary p-3 w-24 rounded-md"
             aria-label="Edit personal information"
           >
-            <img src="/assets/images/edit-3_svgrepo.com.png" alt="Edit icon" />
+             <img src="/assets/svgs/edit.svg" alt="Edit icon"  className="w-6"/>
             Edit
           </button>
         </div>
