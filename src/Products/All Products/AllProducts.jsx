@@ -10,7 +10,7 @@ import { AiFillEdit } from "react-icons/ai";
 import SearchBar from "../../Components/Search Bar/SearchBar";
 
 function AllProducts() {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState([]); 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -80,7 +80,7 @@ function AllProducts() {
             <table className="bg-white min-w-full table ">
               <thead>
                 <tr>
-                  <th className="flex items-center gap-4 px-3 py-3 text-left border-r w-250">
+                  <th className="flex items-center gap-4 px-3 py-3 text-left border-r w-300">
                     <input
                       type="checkbox"
                       className="form-checkbox h-4 w-4 me-3"
@@ -92,7 +92,7 @@ function AllProducts() {
                     Price
                   </th>
                   <th className="px-6 py-3 text-left border-r w-250">Stock</th>
-                  <th className="px-6 py-3  text-left border-r w-250">
+                  <th className="px-6 py-3  text-left border-r w-32">
                     Colors
                   </th>
                   <th className="px-6 py-3  border-gray-200 text-left w-5">

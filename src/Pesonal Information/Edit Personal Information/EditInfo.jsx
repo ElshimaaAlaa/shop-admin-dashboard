@@ -1,9 +1,6 @@
 import { Form, Formik } from "formik";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet";
-import Name from "../../Svgs/Name";
-import Email from "../../Svgs/Email";
-import Phone from "../../Svgs/Phone";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 import axios from "axios";
@@ -128,11 +125,11 @@ function EditInfo() {
               </div>
               <div className="border p-5 rounded-md bg-gray-100 w-full mt-4">
                 <div className="flex flex-col md:flex-row gap-4">
-                  <InputField icon={Name} placeholder="Name" name="name" />
-                  <InputField icon={Email} placeholder="Email" name="email" />
+                  <InputField placeholder="Name" name="name" />
+                  <InputField placeholder="Email" name="email" />
                 </div>
                 <div className="mt-4">
-                  <InputField icon={Phone} placeholder="Phone" name="phone" />
+                  <InputField placeholder="Phone" name="phone" />
                 </div>
               </div>
               <div className="mt-5 flex items-center justify-end gap-3">

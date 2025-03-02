@@ -5,7 +5,6 @@ import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 import { ClipLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
 import InputField from "../../Components/Input Field/InputField";
-import Name from "../../Svgs/Name";
 
 function EditStoreInformation() {
   const [showModal, setShowModal] = useState(false);
