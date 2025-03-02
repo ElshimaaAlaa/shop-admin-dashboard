@@ -8,12 +8,7 @@ import AllProducts from "./Products/All Products/AllProducts";
 import AddProduct from "./Products/Add Product/AddProduct";
 import EditProduct from "./Products/Edit Product/EditProduct";
 import ViewProduct from "./Products/View Product/ViewProduct";
-import Dashboard from "./Pages/Main/Main";
 import AllDiscounts from "./DisCounts and Promotions/All Discounts/AllDiscounts";
-import AddDiscounts from "./DisCounts and Promotions/Add Discounts/AddDiscounts";
-import Orders from "./Orders/Orders";
-import ViewOrder from "./Orders/ViewOrder";
-import Shipping from "./Settings/Shipping";
 import AdminLogin from "./Auth/Login/AdminLogin";
 import ForgotPassword from "./Auth/Forgot Password/ForgotPassword";
 import VerifayPassword from "./Auth/Verivation Code/VerifayPassword";
@@ -24,6 +19,8 @@ import EditInfo from "./Pesonal Information/Edit Personal Information/EditInfo";
 import Profile from "./Profile/Profile";
 import Support from "./Pages/Support/Support";
 import Faqs from "./Pages/Faqs/Faqs";
+import StoreTheme from "./Store/Store Theme/StoreTheme";
+import EditStoreTheme from "./Store/Store Theme/EditStoreTheme";
 
 function App() {
   return (
@@ -50,27 +47,23 @@ function App() {
 
           {/* Discounts */}
           <Route path="allDiscounts" element={<AllDiscounts />} />
-          {/* <Route path="addDiscounts" element={<AddDiscounts />} /> */}
-
-          {/* Orders */}
-          {/* <Route path="orders" element={<Orders />} /> */}
-          {/* <Route path="viewOrder/:id" element={<ViewOrder />} /> */}
-
-          {/* Settings */}
-          {/* <Route path="shipping" element={<Shipping />} /> */}
 
           {/* Personal Information */}
           <Route path="MainInfo" element={<MainInfo />}>
             <Route index element={<PersonalInformation />} />
             <Route path="EditInfo" element={<EditInfo />} />
+            <Route path="StoreTheme" element={<StoreTheme />} />
+            <Route path="EditStoreTheme" element={<EditStoreTheme />} />
           </Route>
-          <Route path="/Home/Profile" element={<Profile/>}/>
-          <Route path="support" element={<Support/>}/>
-          <Route path="Faqs" element={<Faqs/>}/>
+
+          {/* Other Routes */}
+          <Route path="/Home/Profile" element={<Profile />} />
+          <Route path="support" element={<Support />} />
+          <Route path="Faqs" element={<Faqs />} />
         </Route>
-        
       </Routes>
     </BrowserRouter>
   );
 }
+
 export default App;

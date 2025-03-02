@@ -1,7 +1,10 @@
 import React from "react";
 import DeleteAccount from "../Personal Information/DeleteAccount";
+import { useNavigate } from "react-router-dom";
 
 function InfoSideBar() {
+  const navigate = useNavigate();
+
   const menuItems = [
     {
       icon: "/assets/images/profile_svgrepo.com.png",
@@ -13,6 +16,7 @@ function InfoSideBar() {
       icon: "/assets/svgs/Vector.svg",
       alt: "Store Theme Icon",
       label: "Store Theme",
+      onClick: () => navigate("StoreTheme"),
     },
     {
       icon: "/assets/svgs/store-1_svgrepo.com.svg",
@@ -38,6 +42,7 @@ function InfoSideBar() {
           key={index}
           className="flex items-center gap-3 w-full text-left hover:bg-gray-100 p-2 rounded-md transition-colors"
           aria-label={item.label}
+          onClick={item.onClick} 
         >
           <img
             src={item.icon}
@@ -53,4 +58,5 @@ function InfoSideBar() {
     </section>
   );
 }
+
 export default InfoSideBar;

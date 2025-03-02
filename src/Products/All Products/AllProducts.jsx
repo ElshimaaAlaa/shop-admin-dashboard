@@ -52,7 +52,7 @@ function AllProducts() {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <div className="bg-gray-100 p-10 ">
+    <div className="bg-gray-100 h-150vh p-10 ">
       <Helmet>
         <title>All Products | VERTEX</title>
       </Helmet>

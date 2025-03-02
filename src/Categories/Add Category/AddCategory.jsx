@@ -62,7 +62,7 @@ function AddCategory() {
   };
 
   return (
-    <div className="bg-gray-100 h-full relative">
+    <div className="bg-gray-100 h-150vh relative">
       <Helmet>
         <title>Add Category | Vertex Dashboard</title>
       </Helmet>
@@ -78,7 +78,7 @@ function AddCategory() {
                 Add Category
               </h1>
               <div className="flex gap-5 mx-10 ">
-                <div className="bg-white p-5 rounded-xl w-full">
+                <div className="bg-white p-5 rounded-md w-full">
                   <h2 className="font-bold mb-5">Basic Information</h2>
                   <div className="flex items-center gap-4">
                     <Field

@@ -78,7 +78,7 @@ function EditProduct() {
   };
 
   return (
-    <div className="bg-gray-100 flex flex-col min-h-screen relative">
+    <div className="bg-gray-100 flex flex-col h-150vh relative">
       <Helmet>
         <title>Edit Product - VERTEX</title>
         <meta name="description" content="Edit product details in VERTEX" />

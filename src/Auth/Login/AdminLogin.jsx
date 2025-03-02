@@ -71,7 +71,7 @@ function AdminLogin() {
       <div className="loginContainer w-96 lg:w-450 md:w-450 sm:w-80 xs:w-450 s:w-80 bg-white rounded-md">
         <div className="flex justify-center">
           <img
-            src="/assets/images/logo (2).png"
+            src="/assets/svgs/Frame 13.svg"
             alt="logo"
             className="mb-10 w-36"
           />

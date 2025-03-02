@@ -61,7 +61,7 @@ function EditCategory() {
   };
 
   return (
-    <div className="bg-gray-100 h-full flex flex-col relative">
+    <div className="bg-gray-100 h-150vh flex flex-col relative">
       <Helmet>
         <title>Edit Category - VERTEX</title>
         <meta name="description" content="Edit category details in VERTEX" />

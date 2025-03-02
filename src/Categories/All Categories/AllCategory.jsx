@@ -80,7 +80,7 @@ function AllCategory() {
   };
 
   return (
-    <div className="bg-gray-100 p-4 md:p-10">
+    <div className="bg-gray-100 p-4 h-150vh md:p-10">
       <Helmet>
         <title>All Categories - VERTEX</title>
       </Helmet>
