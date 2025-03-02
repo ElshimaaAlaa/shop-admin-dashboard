@@ -1,0 +1,7 @@
+input[type="checkbox"]:checked + span {
+    border-color: #E0A75E;
+  }
+  
+  input[type="checkbox"]:checked + span svg {
+    opacity: 1;
+  }

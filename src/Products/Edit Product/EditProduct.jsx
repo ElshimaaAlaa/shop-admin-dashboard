@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { Formik, Form, Field, FieldArray } from "formik";
+import { Formik, Form, Field } from "formik";
 import { Helmet } from "react-helmet";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 import { updateProduct } from "../../ApiServices/updateProduct";
+import InputField from "../../Components/Input Field/InputField";
 
 function EditProduct() {
+  const [isDiscountScheduled, setIsDiscountScheduled] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { state } = useLocation();
   const [previewImages, setPreviewImages] = useState(
@@ -13,10 +15,14 @@ function EditProduct() {
   );
   const navigate = useNavigate();
   const product = state || {};
-
   const initialValues = {
     name: product.name || "",
+    cost: product.cost || "",
+    revenue: product.revenue || "",
     description: product.description || "",
+    tag_number: product.tag_number || "",
+    gender: product.gender || "",
+    tags: product.tags || [],
     images: product.images || [],
     category_id: product.category_id || "",
     price: product.price || 0,
@@ -27,17 +33,6 @@ function EditProduct() {
     colors: product.colors || [],
   };
 
-  const handleImageChange = (event, setFieldValue) => {
-    const files = event.currentTarget.files;
-    if (files && files.length > 0) {
-      const newImages = Array.from(files).map((file) =>
-        URL.createObjectURL(file)
-      );
-      setPreviewImages((prev) => [...prev, ...newImages]);
-      setFieldValue("images", files); // Update Formik's values
-    }
-  };
-
   const handleSubmit = async (values) => {
     setIsLoading(true);
     const formData = new FormData();
@@ -45,6 +40,9 @@ function EditProduct() {
     formData.append("name[en]", values.name);
     formData.append("description[ar]", values.description);
     formData.append("description[en]", values.description);
+    formData.append("cost", values.cost);
+    formData.append("revenue", values.revenue);
+    formData.append("tag_number", values.tag_number);
 
     if (values.images && values.images.length > 0) {
       values.images.forEach((image) => {
@@ -83,7 +81,9 @@ function EditProduct() {
         <title>Edit Product - VERTEX</title>
         <meta name="description" content="Edit product details in VERTEX" />
       </Helmet>
-      <h1 className="font-bold mb-3 mx-10 mt-5 p-2 text-xl">Edit Product</h1>
+      <h1 className="font-bold rounded-md p-5 text-lg mx-10 bg-white my-4">
+        Edit Product
+      </h1>
       <Formik
         initialValues={initialValues}
         enableReinitialize
@@ -94,27 +94,50 @@ function EditProduct() {
             <div className="flex gap-5 mx-10">
               <div className="bg-white p-5 rounded-md w-full">
                 <h2 className="font-bold mb-5">Basic Information</h2>
-                <div className="flex gap-5">
-                  <Field
-                    placeholder="Product Name"
-                    name="name"
-                    className="w-full bg-transparent outline-none border border-gray-300 rounded-xl h-14 p-2"
-                  />
+                <div className="flex gap-4">
+                  <InputField placeholder="Product Name" name="name" />
                   <Field
                     placeholder="Category"
                     name="category_id"
-                    className="w-full bg-transparent outline-none border border-gray-300 rounded-xl h-14 p-2"
+                    className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md h-14 p-2 placeholder:text-14 focus:border-primary"
                   />
                 </div>
+                <div className="flex items-center gap-4 mt-3">
+                  <InputField name={"tag_number"} placeholder={"Tag Number"} />
+                  <Field
+                    name="gender"
+                    as="select"
+                    className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md h-14 p-2 placeholder:text-14 focus:border-primary"
+                  >
+                    <option value="">Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                  </Field>
+                </div>
+                <div className="flex gap-4 mt-3 mb-3">
+                  <div className="flex items-center w-full border-2 h-14 bg-transparent border-gray-200 rounded-lg outline-none placeholder:text-14 focus-within:border-primary">
+                    <span className="text-lg h-full w-10 text-center pt-3 font-bold text-gray-600 bg-gray-200">
+                      %
+                    </span>
+                    <Field
+                      name="upon_return"
+                      placeholder="percentage (upon return)"
+                      className="outline-none ms-2"
+                    />
+                  </div>
+                  <InputField name="stock" placeholder="Stock" />
+                </div>
+                <InputField name={"tags"} placeholder={"Tags"} />
                 <Field
+                  as="textarea"
                   placeholder="Description"
                   name="description"
-                  className="w-full bg-transparent outline-none border border-gray-300 rounded-xl p-2 h-32 mt-3"
+                  className="w-full bg-transparent outline-none border-2 border-gray-300 rounded-md p-2 h-20 mt-3 placeholder:text-14 focus:border-primary"
                 />
               </div>
-              <div className="bg-white p-5 rounded-md w-2/4">
-                <h2 className="font-bold mb-4">Category Icon / Image</h2>
-                <div className="bg-transparent w-full border-2 border-dotted outline-none h-48 p-3 rounded-xl overflow-y-scroll">
+              <div className="bg-white p-5 rounded-md w-2/4 h-80">
+                <h2 className="font-bold mb-3">Category Icon / Image</h2>
+                <div className="bg-transparent w-full border-2 border-dashed outline-none h-48 p-1 rounded-md">
                   <input
                     type="file"
                     name="images"
@@ -129,7 +152,7 @@ function EditProduct() {
                   />
                   <label
                     htmlFor="image-upload"
-                    className="text-gray-500 cursor-pointer flex flex-col items-center gap-2"
+                    className="text-gray-500 cursor-pointer flex flex-col gap-2"
                   >
                     {previewImages.length > 0 ? (
                       <>
@@ -137,7 +160,7 @@ function EditProduct() {
                         <img
                           src={previewImages[0]}
                           alt="main-product-image"
-                          className="object-contain rounded-md"
+                          className="w-full h-44 rounded-md mt-1"
                         />
                         {/* Thumbnails */}
                         <div className="flex gap-2 mt-2">
@@ -147,7 +170,7 @@ function EditProduct() {
                               className={`thumbnail-container ${
                                 index === 0 ? "border-2 border-blue-500" : ""
                               }`}
-                              onClick={() => setPreviewImages([image])} 
+                              onClick={() => setPreviewImages([image])}
                             >
                               <img
                                 src={image}
@@ -175,96 +198,55 @@ function EditProduct() {
                 </div>
               </div>
             </div>
-            <div className="flex gap-5 mx-10 my-5">
-              <div className="bg-white p-5 rounded-md w-full">
-                <h2 className="font-bold mb-5">Stock & Pricing</h2>
-                <div className="flex gap-5">
+            {/* Pricing Section */}
+            <div className="bg-white p-5 rounded-md mt-5 mx-10 w-890">
+              <h2 className="font-bold mb-5">Pricing</h2>
+              <div className="flex gap-4">
+                <InputField name="price" placeholder="Price (For Piece)" />
+                <InputField name="cost" placeholder="Cost" />
+                <InputField
+                  name="revenue"
+                  placeholder="Revenue"
+                  readOnly={true}
+                />
+              </div>
+              <div className="flex items-center gap-3 mt-3 mb-3">
+                <label className="inline-flex items-center cursor-pointer">
                   <Field
-                    name="stock"
-                    placeholder="Stock"
-                    className="w-full bg-transparent outline-none border border-gray-300 rounded-xl h-14 p-2"
+                    as="input"
+                    type="checkbox"
+                    name="schedule_discount"
+                    className="hidden"
+                    onChange={(e) => {
+                      setIsDiscountScheduled(e.target.checked);
+                      setFieldValue("schedule_discount", e.target.checked);
+                    }}
                   />
-                  <Field
-                    name="price"
-                    placeholder="Price"
-                    className="w-full bg-transparent outline-none border border-gray-300 rounded-xl h-14 p-2"
-                  />
-                </div>
-                <div className="flex gap-5 mt-3">
-                  <Field
+                  <span className="w-4 h-4 border-2 border-gray-300 rounded flex items-center justify-center transition-all duration-200 peer-checked:border-orange-500">
+                    <svg
+                      className="w-3 h-3 text-primary opacity-0 transition-all duration-200 peer-checked:opacity-100"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
+                    </svg>
+                  </span>
+                </label>
+                <p className="font-bold text-15">Schedule a discount</p>
+              </div>
+              {isDiscountScheduled && (
+                <div className="flex gap-4">
+                  <InputField
                     name="discount_percentage"
                     placeholder="Discount"
-                    className="w-full bg-transparent outline-none border border-gray-300 rounded-xl p-2 h-14"
                   />
-                  <Field
-                    type="date"
+                  <InputField
                     name="discount_expire_at"
-                    placeholder="Date"
-                    className="w-full bg-transparent outline-none border border-gray-300 rounded-xl h-14 p-2"
+                    type="date"
+                    placeholder="Discount Expiry Date"
                   />
                 </div>
-              </div>
-              <div className=" rounded-md w-2/4 p-5 h-44">
-                {/* <h2 className="font-bold mb-3">Sizes & Colors</h2>
-                <FieldArray name="sizes">
-                  {({ push, remove, form }) => (
-                    <div className="mb-3">
-                      {form.values.sizes.map((size, index) => (
-                        <div key={index} className="flex gap-2 mb-2">
-                          <Field
-                            name={`sizes[${index}]`}
-                            placeholder="Size"
-                            className="w-full bg-transparent outline-none border border-gray-300 rounded-xl p-2 placeholder:text-black"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => remove(index)}
-                            className="bg-red-500 text-white p-2 rounded"
-                          >
-                            Remove
-                          </button>
-                        </div>
-                      ))}
-                      <button
-                        type="button"
-                        onClick={() => push("")}
-                        className="bg-blue-500 text-white p-2 rounded"
-                      >
-                        Add Size
-                      </button>
-                    </div>
-                  )}
-                </FieldArray>
-                <FieldArray name="colors">
-                  {({ push, remove, form }) => (
-                    <div>
-                      {form.values.colors.map((color, index) => (
-                        <div key={index} className="flex gap-2 mb-2">
-                          <Field
-                            name={`colors[${index}]`}
-                            placeholder="Color"
-                            className="w-full bg-transparent outline-none border border-gray-300 rounded-xl p-2 placeholder:text-black"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => remove(index)}
-                            className="bg-red-500 text-white p-2 rounded"
-                          >
-                            Remove
-                          </button>
-                        </div>
-                      ))}
-                      <button
-                        type="button"
-                        onClick={() => push("")}
-                        className="bg-blue-500 text-white p-2 rounded"
-                      >
-                        Add Color
-                      </button>
-                    </div>
-                  )}
-                </FieldArray> */}
-              </div>
+              )}
             </div>
             <div className="flex gap-5 items-center border-t justify-end bg-white rounded p-5 w-full mt-5 absolute bottom-0">
               <button

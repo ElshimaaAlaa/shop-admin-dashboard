@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Formik, Form, Field } from "formik";
-import * as Yup from "yup";
 import { Helmet } from "react-helmet";
 import InputField from "../../Components/Input Field/InputField";
 import { fetchCategories } from "../../ApiServices/AllCategoriesApi";
@@ -8,15 +7,14 @@ import Footer from "../../Components/Footer/Footer";
 import { useNavigate } from "react-router-dom";
 import { addProduct } from "../../ApiServices/AddNewProductApi";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
-import UploadProductImages from "../../Components/Upload Image/UploadProductImages";
+import "./style.scss";
 
 const AddProduct = () => {
   const [categories, setCategories] = useState([]);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [previewImage, setPreviewImage] = useState([]);
+  const [previewImages, setPreviewImages] = useState([]); // Changed to handle multiple images
   const [isDiscountScheduled, setIsDiscountScheduled] = useState(false);
-  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
   const initialValues = {
@@ -31,30 +29,10 @@ const AddProduct = () => {
     cost: "",
     revenue: "",
     discount_expire_at: "",
-    tags: [], //is an array of tags
-    images: [], // is an array of images
+    tags: [],
+    images: [], // This will now be an array of files
     upon_return: "",
   };
-
-  const validationSchema = Yup.object({
-    name: Yup.string().required("Name is required"),
-    description: Yup.string().required("Description is required"),
-    stock: Yup.number().required("Stock is required"),
-    price: Yup.number().required("Price is required"),
-    category_id: Yup.number().required("Category is required"),
-    tag_number: Yup.string().required("Tag number is required"),
-    gender: Yup.string().required("Gender is required"),
-    discount_percentage: Yup.number().required("Discount is required"),
-    cost: Yup.number().required("Cost is required"),
-    revenue: Yup.number().required("Revenue is required"),
-    discount_expire_at: Yup.date().required("Discount expiry date is required"),
-    tags: Yup.array()
-      .of(Yup.string().required("Tag is required"))
-      .min(1, "At least one tag is required"),
-    images: Yup.array()
-      .of(Yup.mixed().required("At least one image is required"))
-      .min(1, "At least one image is required"),
-  });
 
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
     setIsLoading(true);
@@ -73,19 +51,15 @@ const AddProduct = () => {
       formData.append("cost", values.cost);
       formData.append("revenue", values.revenue);
       formData.append("discount_expire_at", values.discount_expire_at);
-      values.tags.forEach((tag, index) => {
-        formData.append(`tags[${index}]`, tag);
-      });
+      formData.append("tags", values.tags);
 
-      if (values.images && values.images.length > 0) {
-        values.images.forEach((image, index) => {
-          formData.append("images[]", image);
-        });
-      }
+      // Append each image file to the FormData
+      values.images.forEach((image, index) => {
+        formData.append(`images[${index}]`, image);
+      });
 
       console.log("Submitting data:", Object.fromEntries(formData.entries()));
 
-      // end point to add the product
       const productData = await addProduct(formData);
       console.log("Response:", productData);
       setShowModal(true);
@@ -100,7 +74,6 @@ const AddProduct = () => {
     }
   };
 
-  // Fetch categories
   useEffect(() => {
     const getCategories = async () => {
       try {
@@ -113,23 +86,6 @@ const AddProduct = () => {
     getCategories();
   }, []);
 
-  // Handle image selection
-  const handleImageChange = (event, setFieldValue) => {
-    const files = Array.from(event.currentTarget.files);
-    setFieldValue("images", files); // Update Formik's images field
-
-    // Create URLs for preview
-    const imageUrls = files.map((file) => URL.createObjectURL(file));
-    setPreviewImage(imageUrls); // Update preview images
-  };
-
-  // Handle category selection
-  const handleCategoryChange = (e, setFieldValue) => {
-    const categoryId = e.target.value;
-    setSelectedCategoryId(categoryId); // Update selected category ID
-    setFieldValue("category_id", categoryId); // Update Formik value
-  };
-
   return (
     <div className="bg-gray-100 h-150vh relative">
       <Helmet>
@@ -138,7 +94,6 @@ const AddProduct = () => {
       </Helmet>
       <Formik
         initialValues={initialValues}
-        validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
         {({ setFieldValue, isSubmitting, errors, values }) => (
@@ -156,7 +111,6 @@ const AddProduct = () => {
                     name="category_id"
                     as="select"
                     className="w-full p-3 border-2 h-14 bg-transparent border-gray-200 rounded-lg outline-none placeholder:text-14 focus:border-2 focus:border-primary"
-                    onChange={(e) => handleCategoryChange(e, setFieldValue)}
                   >
                     <option value="">Category</option>
                     {categories.map((category) => (
@@ -178,8 +132,8 @@ const AddProduct = () => {
                     <option value="female">Female</option>
                   </Field>
                 </div>
-                <div className="flex gap-4 mt-3">
-                  <div className="flex items-center w-full border-2 h-14 bg-transparent border-gray-200 rounded-lg outline-none placeholder:text-14 focus:border-2 focus-within:border-primary">
+                <div className="flex gap-4 mt-3 mb-3">
+                  <div className="flex items-center w-full border-2 h-14 bg-transparent border-gray-200 rounded-lg outline-none placeholder:text-14 focus-within:border-primary">
                     <span className="text-lg h-full w-10 text-center pt-3 font-bold text-gray-600 bg-gray-200">
                       %
                     </span>
@@ -191,17 +145,7 @@ const AddProduct = () => {
                   </div>
                   <InputField name="stock" placeholder="Stock" />
                 </div>
-                    <Field
-                      as="select"
-                      className="flex gap-3 mt-2 border-2 border-gray-200 w-full rounded-md p-3 h-14 text-gray-600 text-15"
-                    >
-                      <option>Tags</option>
-                      {categories.map((category) => (
-                        <option key={category.id} value={category.tags}>
-                          {category.tags}
-                        </option>
-                      ))}
-                    </Field>
+                <InputField name={"tags"} placeholder={"Tags"} />
                 <Field
                   as="textarea"
                   placeholder="Description"
@@ -209,13 +153,55 @@ const AddProduct = () => {
                   className="w-full p-3 border-2 h-20 mt-3 bg-transparent border-gray-200 rounded-lg outline-none placeholder:text-14 focus:border-2 focus:border-primary"
                 />
               </div>
-              <div className="bg-white p-4 rounded-md w-2/4 h-80">
-                <UploadProductImages
-                  previewImage={previewImage}
-                  onImageChange={(event) =>
-                    handleImageChange(event, setFieldValue)
-                  }
-                />
+              <div className="bg-white p-4 rounded-md w-2/4 h-72">
+                <h2 className="font-bold mb-3">Product Icon / Image</h2>
+                <div className="border-2 w-full border-dashed border-gray-200 rounded-md p-1 h-52 flex items-center justify-center">
+                  <input
+                    type="file"
+                    name="images"
+                    multiple // Allow multiple files
+                    onChange={(event) => {
+                      const files = Array.from(event.currentTarget.files);
+                      if (files) {
+                        setFieldValue("images", files);
+                        const previewUrls = files.map(file => URL.createObjectURL(file));
+                        setPreviewImages(previewUrls);
+                      }
+                    }}
+                    className="hidden"
+                    id="image-upload"
+                    aria-label="Upload category image"
+                  />
+                  <label
+                    htmlFor="image-upload"
+                    className="text-gray-500 cursor-pointer flex flex-col items-center gap-2"
+                  >
+                    {previewImages.length > 0 ? (
+                      <div className="flex flex-wrap gap-2">
+                        {previewImages.map((preview, index) => (
+                          <img
+                            key={index}
+                            src={preview}
+                            alt={`preview-${index}`}
+                            className="w-24 h-24 object-cover rounded-md"
+                          />
+                        ))}
+                      </div>
+                    ) : (
+                      <>
+                        <img
+                          src="/assets/images/upload-file_svgrepo.com.png"
+                          alt="upload-image-file"
+                          className="mb-2"
+                        />
+                        <p className="">Upload Your Category Image</p>
+                        <p className="text-sm text-gray-300 mt-2 w-60 text-center">
+                          Only PNG, SVG Format Allowed. Size: 500KB Max.
+                        </p>
+                      </>
+                    )}
+                  </label>
+                </div>
               </div>
             </div>
             {/* Pricing Section */}
@@ -227,16 +213,27 @@ const AddProduct = () => {
                 <InputField name="revenue" placeholder="Revenue" />
               </div>
               <div className="flex items-center gap-3 mt-3 mb-3">
-                <Field
-                  as="input"
-                  type="checkbox"
-                  name="schedule_discount"
-                  className="w-4 h-4 border-2"
-                  onChange={(e) => {
-                    setIsDiscountScheduled(e.target.checked);
-                    setFieldValue("schedule_discount", e.target.checked);
-                  }}
-                />
+                <label className="inline-flex items-center cursor-pointer">
+                  <Field
+                    as="input"
+                    type="checkbox"
+                    name="schedule_discount"
+                    className="hidden"
+                    onChange={(e) => {
+                      setIsDiscountScheduled(e.target.checked);
+                      setFieldValue("schedule_discount", e.target.checked);
+                    }}
+                  />
+                  <span className="w-4 h-4 border-2 border-gray-300 rounded flex items-center justify-center transition-all duration-200 peer-checked:border-orange-500">
+                    <svg
+                      className="w-3 h-3 text-primary opacity-0 transition-all duration-200 peer-checked:opacity-100"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
+                    </svg>
+                  </span>
+                </label>
                 <p className="font-bold text-15">Schedule a discount</p>
               </div>
               {isDiscountScheduled && (
@@ -284,4 +281,5 @@ const AddProduct = () => {
     </div>
   );
 };
+
 export default AddProduct;

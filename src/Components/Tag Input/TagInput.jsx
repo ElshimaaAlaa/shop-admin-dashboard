@@ -1,10 +1,23 @@
 import { useState } from "react";
+
 export const TagsInput = ({ setFieldValue, values }) => {
   const [inputValue, setInputValue] = useState("");
+
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && inputValue.trim()) {
       e.preventDefault();
-      const newTags = [...(values.tags || []), inputValue.trim()];
+      const trimmedValue = inputValue.trim();
+      console.log("Input Value:", trimmedValue);
+
+      // Check for duplicate tags
+      if (values.tags && values.tags.includes(trimmedValue)) {
+        console.log("Tag already exists:", trimmedValue); 
+        return;
+      }
+
+      const newTags = [...(values.tags || []), trimmedValue];
+      console.log("New Tags:", newTags); 
+
       setFieldValue("tags", newTags);
       setInputValue(""); // Clear the input
     }
@@ -12,6 +25,7 @@ export const TagsInput = ({ setFieldValue, values }) => {
 
   const removeTag = (index) => {
     const newTags = (values.tags || []).filter((_, i) => i !== index);
+    console.log("Removing Tag at Index:", index);
     setFieldValue("tags", newTags);
   };
 
@@ -21,7 +35,7 @@ export const TagsInput = ({ setFieldValue, values }) => {
         {(values.tags || []).map((tag, index) => (
           <div
             key={index}
-            className="bg-customOrange-mediumOrange  rounded-md px-3 py-1 flex items-center justify-between gap-2"
+            className="bg-customOrange-mediumOrange rounded-md px-3 py-1 flex items-center justify-between gap-2"
           >
             <span className="text-15 text-primary mt-1">{tag}</span>
             <button

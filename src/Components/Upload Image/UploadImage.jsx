@@ -1,9 +1,9 @@
-export const ImageUpload = ({ previewImage, onImageChange }) => {
+export const ImageUpload = ({ previewImage, onImageChange , name }) => {
   return (
-    <div className="border-2 border-dashed border-gray-200 rounded-md p-3 h-52 flex items-center justify-center">
+    <div className="border-2 w-full border-dashed border-gray-200 rounded-md p-1 h-52 flex items-center justify-center">
       <input
         type="file"
-        name="image"
+        name={name}
         onChange={onImageChange}
         className="hidden"
         id="image-upload"

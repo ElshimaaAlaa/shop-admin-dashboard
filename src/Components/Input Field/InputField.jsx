@@ -1,6 +1,6 @@
 import React from "react";
 import { Field } from "formik";
-function InputField({ placeholder, name, type = "text" }) {
+function InputField({ placeholder, name, type = "text" , readOnly = false }) {
   return (
     <div className="relative w-full">
       <Field
@@ -9,6 +9,7 @@ function InputField({ placeholder, name, type = "text" }) {
         placeholder={placeholder}
         className="w-full p-3 border-2 h-14 border-gray-200 rounded-lg outline-none placeholder:text-14 focus:border-2 focus:border-primary"
         aria-label={placeholder}
+        readOnly={readOnly}
       />
     </div>
   );

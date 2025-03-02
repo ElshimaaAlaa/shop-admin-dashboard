@@ -35,9 +35,14 @@ function AllCategory() {
   }, []);
 
   const handleDeleteCategory = (categoryId) => {
-    setCategories((prevCategories) =>
-      prevCategories.filter((category) => category.id !== categoryId)
-    );
+    setCategories((prevCategories) => {
+      const updatedCategories = prevCategories.filter((category) => category.id !== categoryId);
+      // Check if the current page is empty after deletion
+      if (updatedCategories.length <= (currentPage - 1) * itemsPerPage && currentPage > 1) {
+        setCurrentPage(currentPage - 1); // Move to the previous page
+      }
+      return updatedCategories;
+    });
   };
 
   const filteredCategories = useMemo(() => {
@@ -67,11 +72,11 @@ function AllCategory() {
       bgColor = "bg-lightBurgandy";
       textColor = "text-burgandy";
       dotColor = "bg-burgandy";
-    } else if(typeName === "Size"){
+    } else if (typeName === "Size") {
       bgColor = "bg-lightBlue";
       textColor = "text-blue";
       dotColor = "bg-blue";
-    }else if(typeName === "Color"){
+    } else if (typeName === "Color") {
       bgColor = "bg-lightBurble";
       textColor = "text-purble";
       dotColor = "bg-purble";
@@ -99,9 +104,13 @@ function AllCategory() {
             Failed to fetch data. Please try again.
           </div>
         ) : isLoading ? (
-          <div className="text-gray-400 text-center  mt-10">
+          <div className="text-gray-400 text-center mt-10">
             <ClipLoader color="#E0A75E" />
             <p className="mt-2">Loading categories...</p>
+          </div>
+        ) : filteredCategories.length === 0 ? (
+          <div className="text-gray-400 text-center mt-10">
+            No data found.
           </div>
         ) : (
           <>
@@ -212,4 +221,5 @@ function AllCategory() {
     </div>
   );
 }
+
 export default AllCategory;

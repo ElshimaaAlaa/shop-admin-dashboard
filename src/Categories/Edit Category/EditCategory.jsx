@@ -35,6 +35,7 @@ function EditCategory() {
   });
 
   const handleSubmit = async (values) => {
+    console.log(values);
     setIsLoading(true);
     setError(null);
     try {
@@ -96,7 +97,7 @@ function EditCategory() {
                     as="select"
                     className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md h-14 p-2 block"
                     aria-label="Category type"
-                    value={values.type} 
+                    value={values.type}
                   >
                     <option value="">Choose Type</option>
                     <option value="1">Standard</option>
@@ -105,6 +106,7 @@ function EditCategory() {
                     <option value="4">Color & Size</option>
                   </Field>
                 </div>
+                {/* Pass `values` instead of `values.tags` */}
                 <TagsInput setFieldValue={setFieldValue} values={values} />
                 <Field
                   as="textarea"

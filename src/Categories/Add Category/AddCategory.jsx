@@ -10,6 +10,46 @@ import Footer from "../../Components/Footer/Footer";
 import { ImageUpload } from "../../Components/Upload Image/UploadImage";
 import { TagsInput } from "../../Components/Tag Input/TagInput";
 
+const NameField = () => (
+  <Field
+    placeholder="Category Name"
+    name="name"
+    className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md h-14 p-2 block placeholder:text-14 focus:border-primary"
+  />
+);
+
+const TypeField = () => (
+  <Field
+    placeholder="Type"
+    as="select"
+    name="type"
+    className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md h-14 p-2 block focus:border-2 focus:border-primary"
+  >
+    <option className="option text-14">Type</option>
+    <option value="1" className="option">
+      Standard
+    </option>
+    <option value="2" className="option">
+      Color-Only
+    </option>
+    <option value="3" className="option">
+      Size-Only
+    </option>
+    <option value="4" className="option">
+      Color & Size
+    </option>
+  </Field>
+);
+
+const DescriptionField = () => (
+  <Field
+    as="textarea"
+    placeholder="Description"
+    name="description"
+    className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md p-2 h-32 mt-5 block placeholder:text-14 focus:border-primary"
+  />
+);
+
 function AddCategory() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -30,13 +70,14 @@ function AddCategory() {
     image: Yup.mixed().required("Image is required"),
     type: Yup.string().required("Type is required"),
     tags: Yup.array()
-      .of(Yup.string())
+      .of(Yup.string().min(2, "Tag must be at least 2 characters"))
       .min(1, "At least one tag is required")
       .required("Tags are required"),
   });
 
   const handleSubmit = async (values) => {
     setIsLoading(true);
+    console.log("Form Values:", values);
     const formData = new FormData();
     formData.append("name[ar]", values.name);
     formData.append("name[en]", values.name);
@@ -51,11 +92,14 @@ function AddCategory() {
     }
     try {
       const data = await addCategory(formData);
-      console.log("Category added successfully");
-      console.log(data);
+      console.log("Backend Response:", data);
       setShowModal(true);
     } catch (error) {
       console.error("Failed to add category", error);
+      alert(
+        error.response?.data?.message ||
+          "Failed to add category. Please try again."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -71,80 +115,51 @@ function AddCategory() {
         onSubmit={handleSubmit}
         validationSchema={validationSchema}
       >
-        {({ setFieldValue, values }) => {
-          return (
-            <Form className="flex flex-col ">
-              <h1 className="font-bold rounded-md p-5 text-lg mx-10 bg-white mt-10 mb-5 ">
-                Add Category
-              </h1>
-              <div className="flex gap-5 mx-10 ">
-                <div className="bg-white p-5 rounded-md w-full">
-                  <h2 className="font-bold mb-5">Basic Information</h2>
-                  <div className="flex items-center gap-4">
-                    <Field
-                      placeholder="Category Name"
-                      name="name"
-                      className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md h-14 p-2 block placeholder:text-14 focus:border-primary"
-                    />
-                    <Field
-                      placeholder="Type"
-                      as="select"
-                      name="type"
-                      className="w-full bg-transparent outline-none  border-2 border-gray-200 rounded-md h-14 p-2 block focus:border-2 focus:border-primary"
-                    >
-                      <option className="option text-14">Type</option>
-                      <option value="1" className="option">
-                        Standard
-                      </option>
-                      <option value="2" className="option">
-                        Color-Only
-                      </option>
-                      <option value="3" className="option">
-                        Size-Only
-                      </option>
-                      <option value="4" className="option">
-                        Color & Size
-                      </option>
-                    </Field>
-                  </div>
-                  <TagsInput setFieldValue={setFieldValue} values={values} />
-                  <ErrorMessage
-                    name="tags"
-                    component="div"
-                    className="text-red-500 text-sm"
-                  />
-                  <Field
-                    as="textarea"
-                    placeholder="Description"
-                    name="description"
-                    className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md p-2 h-32 mt-5 block placeholder:text-14 focus:border-primary"
-                  />
+        {({ setFieldValue, values }) => (
+          <Form className="flex flex-col">
+            <h1 className="font-bold rounded-md p-5 text-lg mx-10 bg-white mt-10 mb-5">
+              Add Category
+            </h1>
+            <div className="flex gap-5 mx-10">
+              <div className="bg-white p-5 rounded-md w-full">
+                <h2 className="font-bold mb-5">Basic Information</h2>
+                <div className="flex items-center gap-4">
+                  <NameField />
+                  <TypeField />
                 </div>
-                <div className="bg-white p-4 rounded-md w-2/4 h-72">
-                  <h2 className="font-bold mb-5">Category Icon / Image</h2>
-                  <ImageUpload
-                    previewImage={previewImage}
-                    onImageChange={(event) => {
-                      const file = event.currentTarget.files[0];
-                      if (file) {
-                        setPreviewImage(URL.createObjectURL(file));
-                        setFieldValue("image", file);
-                      }
-                    }}
-                  />
-                </div>
+                <TagsInput setFieldValue={setFieldValue} values={values} />
+                <ErrorMessage
+                  name="tags"
+                  component="div"
+                  className="text-red-500 text-sm"
+                />
+                <DescriptionField />
               </div>
-              <Footer
-                saveText={"Save"}
-                cancelText={"Cancel"}
-                cancelOnClick={() => navigate("/Home/categories")}
-                saveBtnType={"submit"}
-                cancelBtnType={"button"}
-                isLoading={isLoading}
-              />
-            </Form>
-          );
-        }}
+              <div className="bg-white p-4 rounded-md w-2/4 h-72">
+                <h2 className="font-bold mb-3">Category Icon / Image</h2>
+                <ImageUpload
+                  name={"image"}
+                  previewImage={previewImage}
+                  onImageChange={(event) => {
+                    const file = event.currentTarget.files[0];
+                    if (file) {
+                      setPreviewImage(URL.createObjectURL(file));
+                      setFieldValue("image", file);
+                    }
+                  }}
+                />
+              </div>
+            </div>
+            <Footer
+              saveText={"Save"}
+              cancelText={"Cancel"}
+              cancelOnClick={() => navigate("/Home/categories")}
+              saveBtnType={"submit"}
+              cancelBtnType={"button"}
+              isLoading={isLoading}
+            />
+          </Form>
+        )}
       </Formik>
       {/* Success Modal */}
       <SuccessModal isOpen={showModal} onClose={() => setShowModal(false)}>
