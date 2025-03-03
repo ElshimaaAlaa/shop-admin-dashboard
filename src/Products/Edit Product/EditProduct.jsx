@@ -104,7 +104,7 @@ function EditProduct() {
                 </div>
                 <div className="flex items-center gap-4 mt-3">
                   <InputField name={"tag_number"} placeholder={"Tag Number"} />
-                  <Field
+                  {/* <Field
                     name="gender"
                     as="select"
                     className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md h-14 p-2 placeholder:text-14 focus:border-primary"
@@ -112,10 +112,10 @@ function EditProduct() {
                     <option value="">Gender</option>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
-                  </Field>
+                  </Field> */}
                 </div>
                 <div className="flex gap-4 mt-3 mb-3">
-                  <div className="flex items-center w-full border-2 h-14 bg-transparent border-gray-200 rounded-lg outline-none placeholder:text-14 focus-within:border-primary">
+                  {/* <div className="flex items-center w-full border-2 h-14 bg-transparent border-gray-200 rounded-lg outline-none placeholder:text-14 focus-within:border-primary">
                     <span className="text-lg h-full w-10 text-center pt-3 font-bold text-gray-600 bg-gray-200">
                       %
                     </span>
@@ -124,10 +124,10 @@ function EditProduct() {
                       placeholder="percentage (upon return)"
                       className="outline-none ms-2"
                     />
-                  </div>
+                  </div> */}
                   <InputField name="stock" placeholder="Stock" />
                 </div>
-                <InputField name={"tags"} placeholder={"Tags"} />
+                {/* <InputField name={"tags"} placeholder={"Tags"} /> */}
                 <Field
                   as="textarea"
                   placeholder="Description"

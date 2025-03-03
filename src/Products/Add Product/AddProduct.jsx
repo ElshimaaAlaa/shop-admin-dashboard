@@ -7,13 +7,15 @@ import Footer from "../../Components/Footer/Footer";
 import { useNavigate } from "react-router-dom";
 import { addProduct } from "../../ApiServices/AddNewProductApi";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
+import { UploadProductImage } from "../../Components/Upload Image/UploadProductImages";
 import "./style.scss";
 
 const AddProduct = () => {
   const [categories, setCategories] = useState([]);
+  const [tags, setTags] = useState([]);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [previewImages, setPreviewImages] = useState([]); // Changed to handle multiple images
+  const [previewImages, setPreviewImages] = useState([]);
   const [isDiscountScheduled, setIsDiscountScheduled] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
@@ -29,9 +31,8 @@ const AddProduct = () => {
     cost: "",
     revenue: "",
     discount_expire_at: "",
-    tags: [],
-    images: [], // This will now be an array of files
-    upon_return: "",
+    images: [],
+    // tags: [],
   };
 
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
@@ -51,9 +52,13 @@ const AddProduct = () => {
       formData.append("cost", values.cost);
       formData.append("revenue", values.revenue);
       formData.append("discount_expire_at", values.discount_expire_at);
-      formData.append("tags", values.tags);
 
-      // Append each image file to the FormData
+      // if (values.tags && values.tags.length > 0) {
+      //   values.tags.forEach((tag, index) => {
+      //     formData.append(`tags[${index}]`, tag);
+      //   });
+      // }
+
       values.images.forEach((image, index) => {
         formData.append(`images[${index}]`, image);
       });
@@ -86,23 +91,36 @@ const AddProduct = () => {
     getCategories();
   }, []);
 
+  const handleImageChange = (event, setFieldValue) => {
+    const files = Array.from(event.currentTarget.files);
+    const imageUrls = files.map((file) => URL.createObjectURL(file));
+    setPreviewImages(imageUrls);
+    setFieldValue("images", files);
+  };
+
+  const handleCategoryChange = (categoryId, setFieldValue) => {
+    const selectedCategory = categories.find(category => category.id === categoryId);
+    if (selectedCategory && selectedCategory.tags) {
+      setTags(selectedCategory.tags);
+    } else {
+      setTags([]);
+    }
+    setFieldValue("category_id", categoryId);
+  };
+
   return (
     <div className="bg-gray-100 h-150vh relative">
       <Helmet>
         <title>Add New Product - VERTEX</title>
         <meta name="description" content="Add a new product to VERTEX" />
       </Helmet>
-      <Formik
-        initialValues={initialValues}
-        onSubmit={handleSubmit}
-      >
+      <Formik initialValues={initialValues} onSubmit={handleSubmit}>
         {({ setFieldValue, isSubmitting, errors, values }) => (
           <Form className="flex flex-col">
             <h1 className="font-bold rounded-md p-5 text-lg mx-10 bg-white my-5">
               Add Product
             </h1>
             <div className="flex gap-5 mx-10">
-              {/* Basic Information Section */}
               <div className="bg-white p-5 rounded-md w-full">
                 <h2 className="font-bold mb-5">Basic Information</h2>
                 <div className="flex gap-4">
@@ -111,6 +129,7 @@ const AddProduct = () => {
                     name="category_id"
                     as="select"
                     className="w-full p-3 border-2 h-14 bg-transparent border-gray-200 rounded-lg outline-none placeholder:text-14 focus:border-2 focus:border-primary"
+                    onChange={(e) => handleCategoryChange(e.target.value, setFieldValue)}
                   >
                     <option value="">Category</option>
                     {categories.map((category) => (
@@ -145,7 +164,25 @@ const AddProduct = () => {
                   </div>
                   <InputField name="stock" placeholder="Stock" />
                 </div>
-                <InputField name={"tags"} placeholder={"Tags"} />
+                {/* <Field
+                  as="select"
+                  name="tags"
+                  placeholder="Tags"
+                  className="w-full p-3 border-2 h-14 bg-transparent border-gray-200 rounded-lg outline-none placeholder:text-14 focus:border-2 focus:border-primary"
+                >
+                  <option value="">Tags</option>
+                  {tags.length > 0 ? (
+                    categories.map((tag, index) => (
+                      <option key={index} value={tag}>
+                        {tags}
+                      </option>
+                    ))
+                  ) : (
+                    <option value="" disabled>
+                      No tags available
+                    </option>
+                  )}
+                </Field> */}
                 <Field
                   as="textarea"
                   placeholder="Description"
@@ -153,58 +190,15 @@ const AddProduct = () => {
                   className="w-full p-3 border-2 h-20 mt-3 bg-transparent border-gray-200 rounded-lg outline-none placeholder:text-14 focus:border-2 focus:border-primary"
                 />
               </div>
-              <div className="bg-white p-4 rounded-md w-2/4 h-72">
-                <h2 className="font-bold mb-3">Product Icon / Image</h2>
-                <div className="border-2 w-full border-dashed border-gray-200 rounded-md p-1 h-52 flex items-center justify-center">
-                  <input
-                    type="file"
-                    name="images"
-                    multiple // Allow multiple files
-                    onChange={(event) => {
-                      const files = Array.from(event.currentTarget.files);
-                      if (files) {
-                        setFieldValue("images", files);
-                        const previewUrls = files.map(file => URL.createObjectURL(file));
-                        setPreviewImages(previewUrls);
-                      }
-                    }}
-                    className="hidden"
-                    id="image-upload"
-                    aria-label="Upload category image"
-                  />
-                  <label
-                    htmlFor="image-upload"
-                    className="text-gray-500 cursor-pointer flex flex-col items-center gap-2"
-                  >
-                    {previewImages.length > 0 ? (
-                      <div className="flex flex-wrap gap-2">
-                        {previewImages.map((preview, index) => (
-                          <img
-                            key={index}
-                            src={preview}
-                            alt={`preview-${index}`}
-                            className="w-24 h-24 object-cover rounded-md"
-                          />
-                        ))}
-                      </div>
-                    ) : (
-                      <>
-                        <img
-                          src="/assets/images/upload-file_svgrepo.com.png"
-                          alt="upload-image-file"
-                          className="mb-2"
-                        />
-                        <p className="">Upload Your Category Image</p>
-                        <p className="text-sm text-gray-300 mt-2 w-60 text-center">
-                          Only PNG, SVG Format Allowed. Size: 500KB Max.
-                        </p>
-                      </>
-                    )}
-                  </label>
-                </div>
+              <div className=" bg-white p-5 rounded-md w-2/4 h-80">
+                <UploadProductImage
+                  previewImages={previewImages}
+                  onImageChange={(event) =>
+                    handleImageChange(event, setFieldValue)
+                  }
+                />
               </div>
             </div>
-            {/* Pricing Section */}
             <div className="bg-white p-5 rounded-md mt-5 mx-10 w-890">
               <h2 className="font-bold mb-5">Pricing</h2>
               <div className="flex gap-4">
@@ -261,7 +255,6 @@ const AddProduct = () => {
           </Form>
         )}
       </Formik>
-      {/* Success Modal */}
       <SuccessModal isOpen={showModal} onClose={() => setShowModal(false)}>
         <div className="flex flex-col items-center justify-center w-400">
           <img
@@ -271,7 +264,7 @@ const AddProduct = () => {
           />
           <p className="font-bold mt-5">Product added successfully!</p>
           <button
-            className="bg-primary text-white rounded-md p-2 text-14 font-semibold mt-4"
+            className="bg-primary text-white rounded-md p-2 text-14 w-40 mt-4"
             onClick={() => navigate("/Home/products")}
           >
             Back to products
@@ -281,5 +274,4 @@ const AddProduct = () => {
     </div>
   );
 };
-
 export default AddProduct;

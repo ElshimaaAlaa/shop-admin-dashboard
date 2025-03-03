@@ -10,7 +10,7 @@ import { AiFillEdit } from "react-icons/ai";
 import SearchBar from "../../Components/Search Bar/SearchBar";
 
 function AllProducts() {
-  const [products, setProducts] = useState([]); 
+  const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -34,9 +34,19 @@ function AllProducts() {
     getProducts();
   }, []);
   const handleDeleteProduct = (productId) => {
-    setProducts((prevCategories) =>
-      prevCategories.filter((product) => product.id !== productId)
-    );
+    setProducts((prevProduct) => {
+      const updateProduct = prevProduct.filter(
+        (product) => product.id !== productId
+      );
+      // Check if the current page is empty after deletion
+      if (
+        updateProduct.length <= (currentPage - 1) * itemsPerPage &&
+        currentPage > 1
+      ) {
+        setCurrentPage(currentPage - 1); // Move to the previous page
+      }
+      return updateProduct;
+    });
   };
   const filteredProducts = useMemo(() => {
     return products.filter((product) =>
@@ -75,6 +85,8 @@ function AllProducts() {
             <ClipLoader color="#E0A75E" />
             <p className="mt-2">Loading Products...</p>
           </div>
+        ) : filteredProducts.length === 0 ? (
+          <div className="text-gray-400 text-center mt-10">No data found.</div>
         ) : (
           <div className="border overflow-hidden rounded-md mt-5">
             <table className="bg-white min-w-full table ">
@@ -92,9 +104,7 @@ function AllProducts() {
                     Price
                   </th>
                   <th className="px-6 py-3 text-left border-r w-250">Stock</th>
-                  <th className="px-6 py-3  text-left border-r w-32">
-                    Colors
-                  </th>
+                  <th className="px-6 py-3  text-left border-r w-32">Colors</th>
                   <th className="px-6 py-3  border-gray-200 text-left w-5">
                     Actions
                   </th>
@@ -114,12 +124,14 @@ function AllProducts() {
                         />
                         <img
                           src={
-                            product.images.src ||
-                            "/assets/images/product.png"
+                            product.images.length > 0
+                              ? product.images[0].src
+                              : "fallback-image-url"
                           }
                           alt={product.name}
                           className="w-7 h-7 object-cover rounded-full"
                         />
+
                         {product.name}
                       </p>
                     </td>

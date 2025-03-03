@@ -8,6 +8,7 @@ import { Helmet } from "react-helmet";
 import { VerifayPasswordService } from "../../ApiServices/VerifayPasswordService";
 import ResendCode from "../Resend Code/ResendCode";
 import { useNavigate } from "react-router-dom";
+
 function VerifayPassword() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ function VerifayPassword() {
     otp5: "",
     otp6: "",
   };
+
   const handleSubmit = async (values) => {
     setLoading(true);
     const email = localStorage.getItem("Email Admin");
@@ -64,6 +66,7 @@ function VerifayPassword() {
       }
     }
   };
+
   return (
     <div className="main-container min-h-screen flex items-center justify-center">
       <Helmet>
@@ -71,11 +74,11 @@ function VerifayPassword() {
         <title>Verifay Password</title>
       </Helmet>
       <div className="verivayContainer lg:w-450 md:w-450 sm:w-450 xs:w-450 s:w-450 bg-white rounded-md">
-        <div className="flex justify-center">
-          <img src="/assets/images/logo (2).png" alt="logo" />
+        <div>
+          <img src="/assets/svgs/vertex.svg" alt="logo"  className="w-44"/>
         </div>
-        <h1 className="font-bold text-xl mt-10">Verification Code</h1>
-        <p className="text-secondary mt-3 text-16">
+        <h1 className="font-bold text-xl mt-5">Verification Code</h1>
+        <p className="text-secondary mt-3 text-15">
           Enter the verification code we just sent on your email address.
         </p>
         <Formik
@@ -102,12 +105,12 @@ function VerifayPassword() {
                     />
                   ))}
               </div>
-              <p className="text-black mt-5 mb-5 flex text-16 ">
-                Didn’t Get Code ?
+              <div className="text-black mt-5 mb-5 flex text-16">
+                <p className="me-2">Didn’t Get Code?</p>
                 <ResendCode />
-              </p>
+              </div>
               <MainBtn
-                text={loading ? <ClipLoader color="#fff" size={22}/> : "Verify"}
+                text={loading ? <ClipLoader color="#fff" size={22} /> : "Verify"}
                 btnType="submit"
               />
             </Form>

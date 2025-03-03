@@ -1,4 +1,4 @@
-import { Formik, Form} from "formik";
+import { Formik, Form } from "formik";
 import React, { useState } from "react";
 import MainBtn from "../../Components/Main Button/MainBtn";
 import Email from "../../Svgs/Email";
@@ -40,11 +40,11 @@ function ForgotPassword() {
         <title>Forgot Password</title>
       </Helmet>
       <div className="forgotpasswordContainer w-96 lg:w-450 md:w-450 sm:w-450 xs:w-450 s:w-450 bg-white rounded-lg">
-        <div className="flex justify-center">
-          <img src="/assets/images/logo (2).png" alt="logo" />
+        <div className="">
+          <img src="/assets/svgs/vertex.svg" alt="logo" className="w-44" />
         </div>
-        <h1 className="font-bold text-xl mt-10">Forget Password</h1>
-        <p className="text-secondary mt-3 text-16">
+        <h1 className="font-bold text-xl mt-5">Forget Password</h1>
+        <p className="text-secondary mt-3 text-15">
           Please enter the email address linked with your account.
         </p>
         <Formik
@@ -53,10 +53,20 @@ function ForgotPassword() {
           validationSchema={validationSchema}
         >
           <Form className="mt-5 flex  flex-col items-center">
-            <InputField name={"email"} placeholder={"Enter Your Email"} icon={Email}/>
+            <InputField
+              name={"email"}
+              placeholder={"Enter Your Email"}
+              icon={Email}
+            />
             <div className="mt-5">
               <MainBtn
-                text={isLoading ? <ClipLoader color="#fff" size={22}/> : "Send Code"}
+                text={
+                  isLoading ? (
+                    <ClipLoader color="#fff" size={22} />
+                  ) : (
+                    "Send Code"
+                  )
+                }
                 btnType={"submit"}
               />
             </div>

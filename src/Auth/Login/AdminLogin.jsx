@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet";
+import { ClipLoader } from "react-spinners";
 import "./login.scss";
 import OAuth from "../OAuth/OAuth";
 import Email from "../../Svgs/Email";
 import MainBtn from "../../Components/Main Button/MainBtn";
-import { ClipLoader } from "react-spinners";
-import { Helmet } from "react-helmet";
 import { loginService } from "../../ApiServices/LoginService";
 import InputField from "../../Components/Input Field/InputField";
 import PasswordInput from "../../Components/Password Input/PasswordInput";
@@ -62,6 +62,11 @@ function AdminLogin() {
       setLoading(false);
     }
   };
+
+  const togglePasswordVisibility = useCallback(() => {
+    setShowPassword((prev) => !prev);
+  }, []);
+
   return (
     <div className="main-container">
       <Helmet>
@@ -69,26 +74,20 @@ function AdminLogin() {
         <title>Login</title>
       </Helmet>
       <div className="loginContainer w-96 lg:w-450 md:w-450 sm:w-80 xs:w-450 s:w-80 bg-white rounded-md">
-        <div className="flex justify-center">
+        <div className="flex">
           <img
-            src="/assets/svgs/Frame 13.svg"
+            src="/assets/svgs/vertex.svg"
             alt="logo"
-            className="mb-10 w-36"
+            className="w-44 mb-5"
           />
         </div>
         <div className="flex items-center">
-          <h1 className="font-bold me-2 text-2xl">Welcome Back</h1>
+          <h1 className="font-bold me-3 text-2xl">Welcome Back</h1>
           <img
             src="/assets/images/waving-hand_svgrepo.com.png"
             alt="welcome-back"
             className="w-8"
           />
-        </div>
-        <OAuth />
-        <div className="flex items-center justify-center mt-8">
-          <div className="border-t border-gray-300 flex-grow"></div>
-          <span className="mx-4 text-gray-400 text-14 text-sm">OR</span>
-          <div className="border-t border-gray-300 flex-grow"></div>
         </div>
         <Formik
           initialValues={initialValues}
@@ -101,13 +100,14 @@ function AdminLogin() {
               name={"password"}
               placeholder={"Password"}
               showPassword={showPassword}
-              togglePasswordVisibility={() => setShowPassword(!showPassword)}
+              togglePasswordVisibility={togglePasswordVisibility}
             />
             {error && <p className="text-red-500 text-sm mt-3">{error}</p>}
             <div className="flex items-center justify-between mt-5">
               <div className="flex items-center justify-between">
                 <Field
                   type="checkbox"
+                  name="rememberMe"
                   className="me-2 w-4 h-4"
                   checked={rememberMe}
                   onChange={() => setRememberMe(!rememberMe)}
@@ -115,6 +115,8 @@ function AdminLogin() {
                 <p className="text-11 lg:text-14 text-gray-600">Remember Me</p>
               </div>
               <div
+                role="button"
+                tabIndex={0}
                 className="font-bold text-11 lg:text-13 cursor-pointer"
                 onClick={() => navigate("/ForgotPassword")}
               >
@@ -130,6 +132,12 @@ function AdminLogin() {
             </div>
           </Form>
         </Formik>
+        <div className="flex items-center justify-center mt-8">
+          <div className="border-t border-gray-300 flex-grow"></div>
+          <span className="mx-4 text-gray-400 text-14 text-sm">OR</span>
+          <div className="border-t border-gray-300 flex-grow"></div>
+        </div>
+        <OAuth />
       </div>
     </div>
   );

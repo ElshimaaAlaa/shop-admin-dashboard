@@ -1,7 +1,6 @@
 import axios from "axios";
 
 const API_BASE_URL = "https://demo.vrtex.duckdns.org/api/shop";
-
 export const CreateNewPasswordService = async (
   password,
   password_confirmation,

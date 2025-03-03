@@ -57,10 +57,10 @@ function CreateNewPassword() {
         <title>Create New Password</title>
       </Helmet>
       <div className="CreateNewPasswordContainer lg:w-450 md:w-450 sm:w-450 xs:w-450 s:w-450 bg-white">
-        <div className="flex justify-center">
-          <img src="/assets/images/logo (2).png" alt="logo" />
+        <div>
+          <img src="/assets/svgs/vertex.svg" alt="logo" className="w-44"/>
         </div>
-        <h1 className="font-bold mt-10" style={{ fontSize: "22px" }}>
+        <h1 className="font-bold mt-5 text-xl">
           Create New Password
         </h1>
         <Formik
@@ -69,7 +69,7 @@ function CreateNewPassword() {
           validationSchema={validationSchema}
         >
           {({ errors, touched }) => (
-            <Form className="mt-5 flex flex-col justify-center ">
+            <Form className="flex flex-col justify-center ">
               <PasswordInput
                 name={"password"}
                 placeholder={"Password"}
