@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
+import { FaCircleCheck } from "react-icons/fa6";
 
 function EditStoreTheme() {
-    const [isLoading , setIsLoading] = useState(false);
-    const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
   return (
     <div>
       <Helmet>
@@ -57,16 +58,22 @@ function EditStoreTheme() {
         <div className="mt-5 flex items-center justify-end gap-3">
           <button
             type="button"
-            className="bg-gray-200 text-gray-500 font-semibold p-3 w-32 rounded-md"
+            className="bg-gray-200 text-gray-500 p-3 w-32 rounded-md"
             onClick={() => navigate("")}
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="bg-primary text-white font-semibold rounded-md p-3 w-32"
+            className="bg-primary text-white flex items-center gap-2 justify-center rounded-md p-3 w-32"
           >
-            {isLoading ? <ClipLoader color="#fff" size={22} /> : "Save"}
+            {isLoading ? (
+              <ClipLoader color="#fff" size={22} />
+            ) : (
+              <>
+                <FaCircleCheck /> Save
+              </>
+            )}
           </button>
         </div>
       </section>

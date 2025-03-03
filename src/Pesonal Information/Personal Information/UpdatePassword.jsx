@@ -54,14 +54,14 @@ function UpdatePassword() {
   return (
     <div>
       <button
-        className="flex items-center gap-4 border border-primary rounded-md p-3 text-primary font-bold mt-10"
+        className="flex items-center gap-2 border border-primary rounded-lg p-3 text-primary mt-5"
         onClick={() => setShowModal(true)}
         aria-label="Update password"
       >
         <img
           src="/assets/images/password_svgrepo.com.png"
           alt="update-password"
-          className="w-6 h-6"
+          className="w-5 h-5"
         />
         Update Password
       </button>

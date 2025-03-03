@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 
 function InfoSideBar() {
   const navigate = useNavigate();
-
   const menuItems = [
     {
       icon: "/assets/images/profile_svgrepo.com.png",
@@ -55,5 +54,4 @@ function InfoSideBar() {
     </section>
   );
 }
-
 export default InfoSideBar;
