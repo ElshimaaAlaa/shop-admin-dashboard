@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field } from "formik";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { addCategory } from "../../ApiServices/AddNewCategoryApi";
@@ -9,14 +9,7 @@ import "./style.scss";
 import Footer from "../../Components/Footer/Footer";
 import { ImageUpload } from "../../Components/Upload Image/UploadImage";
 import { TagsInput } from "../../Components/Tag Input/TagInput";
-
-const NameField = () => (
-  <Field
-    placeholder="Category Name"
-    name="name"
-    className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md h-14 p-2 block placeholder:text-14 focus:border-primary"
-  />
-);
+import InputField from "../../Components/Input Field/InputField";
 
 const TypeField = () => (
   <Field
@@ -41,15 +34,6 @@ const TypeField = () => (
   </Field>
 );
 
-const DescriptionField = () => (
-  <Field
-    as="textarea"
-    placeholder="Description"
-    name="description"
-    className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md p-2 h-32 mt-5 block placeholder:text-14 focus:border-primary"
-  />
-);
-
 function AddCategory() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -61,7 +45,10 @@ function AddCategory() {
     description: "",
     image: null,
     type: "",
-    tags: [],
+    tags: {
+      en: [],
+      ar: [],
+    },
   };
 
   const validationSchema = Yup.object({
@@ -69,24 +56,31 @@ function AddCategory() {
     description: Yup.string().required("Description is required"),
     image: Yup.mixed().required("Image is required"),
     type: Yup.string().required("Type is required"),
-    tags: Yup.array()
-      .of(Yup.string().min(2, "Tag must be at least 2 characters"))
-      .min(1, "At least one tag is required")
-      .required("Tags are required"),
+    tags: Yup.object({
+      ar: Yup.array()
+        .of(Yup.string().min(2, "Arabic tag must be at least 2 characters")),
+      en: Yup.array()
+        .of(Yup.string().min(2, "English tag must be at least 2 characters"))
+        .min(1, "At least one French tag is required"),
+    }),
   });
 
   const handleSubmit = async (values) => {
+    console.log("Formik values:", values);
     setIsLoading(true);
-    console.log("Form Values:", values);
     const formData = new FormData();
     formData.append("name[ar]", values.name);
     formData.append("name[en]", values.name);
     formData.append("description[ar]", values.description);
     formData.append("description[en]", values.description);
     formData.append("type", values.type);
-    values.tags.forEach((tag) => {
-      formData.append("tags[]", tag);
+    values.tags.en.forEach((tag) => {
+      formData.append("tags[en][]", tag);
     });
+    values.tags.ar.forEach((tag) => {
+      formData.append("tags[ar][]", tag);
+    });
+
     if (values.image) {
       formData.append("image", values.image);
     }
@@ -124,16 +118,16 @@ function AddCategory() {
               <div className="bg-white p-5 rounded-md w-full">
                 <h2 className="font-bold mb-5">Basic Information</h2>
                 <div className="flex items-center gap-4">
-                  <NameField />
+                  <InputField placeholder="Category Name" name="name" />
                   <TypeField />
                 </div>
                 <TagsInput setFieldValue={setFieldValue} values={values} />
-                <ErrorMessage
-                  name="tags"
-                  component="div"
-                  className="text-red-500 text-sm"
+                <Field
+                  as="textarea"
+                  placeholder="Description"
+                  name="description"
+                  className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md p-2 h-24 mt-3 block placeholder:text-14 focus:border-primary"
                 />
-                <DescriptionField />
               </div>
               <div className="bg-white p-4 rounded-md w-2/4 h-72">
                 <h2 className="font-bold mb-3">Category Icon / Image</h2>
@@ -171,7 +165,7 @@ function AddCategory() {
           />
           <p className="font-bold mt-5">Category added successfully!</p>
           <button
-            className="bg-primary text-white rounded-md p-2 text-14 font-semibold mt-4"
+            className="bg-primary text-white rounded-md p-2 text-14 w-48 mt-4"
             onClick={() => navigate("/Home/categories")}
           >
             Back to Categories

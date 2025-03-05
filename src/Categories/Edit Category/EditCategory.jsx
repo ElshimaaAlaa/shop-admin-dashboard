@@ -2,12 +2,11 @@ import React, { useState } from "react";
 import { Formik, Form, Field } from "formik";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import * as Yup from "yup";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 import { updateCategory } from "../../ApiServices/updateCategory";
 import Footer from "../../Components/Footer/Footer";
-import { TagsInput } from "../../Components/Tag Input/TagInput";
 import { ImageUpload } from "../../Components/Upload Image/UploadUpdatedImage";
+import InputField from "../../Components/Input Field/InputField";
 
 function EditCategory() {
   const navigate = useNavigate();
@@ -23,19 +22,11 @@ function EditCategory() {
     description: category?.description || "",
     type: category?.type || "",
     image: null,
-    tags: category?.tags || [],
+    tags: category.tags,
   };
 
-  const validationSchema = Yup.object({
-    name: Yup.string().required("Category name is required"),
-    description: Yup.string().required("Description is required"),
-    type: Yup.string().required("Type is required"),
-    image: Yup.mixed().nullable(),
-    tags: Yup.array().of(Yup.string().required("At least one tag is required")),
-  });
-
   const handleSubmit = async (values) => {
-    console.log(values);
+    console.log("Form submitted with values:", values);
     setIsLoading(true);
     setError(null);
     try {
@@ -45,12 +36,20 @@ function EditCategory() {
       formData.append("description[ar]", values.description);
       formData.append("description[en]", values.description);
       formData.append("type", values.type);
-      values.tags.forEach((tag) => {
-        formData.append("tags[]", tag);
+
+      const tagsArray = values.tags
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter((tag) => tag !== "");
+
+      tagsArray.forEach((tag, index) => {
+        formData.append(`tags[en][${index}]`, tag);
       });
+
       if (values.image) {
         formData.append("image", values.image);
       }
+
       await updateCategory(formData, category.id);
       setIsLoading(false);
       setShowModal(true);
@@ -73,7 +72,6 @@ function EditCategory() {
       <Formik
         initialValues={initialValues}
         enableReinitialize
-        validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
         {({ setFieldValue, errors, touched, values }) => (
@@ -82,20 +80,16 @@ function EditCategory() {
               {/* Basic Information Section */}
               <div className="bg-white p-5 rounded-md w-full">
                 <h2 className="font-bold mb-5">Basic Information</h2>
-                <div className="flex flex-col md:flex-row items-center gap-4">
-                  <Field
+                <div className="flex flex-col md:flex-row items-center gap-4 mb-3">
+                  <InputField
                     name="name"
                     placeholder="Category Name"
-                    className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md h-14 p-2 block"
                     aria-label="Category name"
                   />
-                  {errors.name && touched.name && (
-                    <div className="text-red-500 text-sm">{errors.name}</div>
-                  )}
                   <Field
                     name="type"
                     as="select"
-                    className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md h-14 p-2 block"
+                    className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md h-14 p-2 block placeholder:text-14 focus:border-primary"
                     aria-label="Category type"
                     value={values.type}
                   >
@@ -106,20 +100,22 @@ function EditCategory() {
                     <option value="4">Color & Size</option>
                   </Field>
                 </div>
-                {/* Pass `values` instead of `values.tags` */}
-                <TagsInput setFieldValue={setFieldValue} values={values} />
+                {/* Tags Input */}
+                <InputField
+                  name="tags"
+                  placeholder="Tag"
+                  value={values.tags}
+                  onChange={(e) => {
+                    setFieldValue("tags.en", e.target.value);
+                  }}
+                />
                 <Field
                   as="textarea"
                   name="description"
                   placeholder="Description"
-                  className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md p-2 h-36 mt-5"
+                  className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md p-2 h-36 mt-3 placeholder:text-14 focus:border-primary"
                   aria-label="Category description"
                 />
-                {errors.description && touched.description && (
-                  <div className="text-red-500 text-sm">
-                    {errors.description}
-                  </div>
-                )}
               </div>
               {/* Image Upload Section */}
               <div className="bg-white p-5 rounded-md w-full md:w-1/2 h-80">
@@ -162,7 +158,7 @@ function EditCategory() {
             Category updated successfully!
           </p>
           <button
-            className="bg-primary text-white rounded-md p-2 text-14 font-semibold mt-4 w-64"
+            className="bg-primary text-white rounded-md p-2 text-14 mt-4 w-64"
             onClick={() => navigate("/Home/categories")}
             aria-label="Back to categories"
           >
@@ -173,5 +169,4 @@ function EditCategory() {
     </div>
   );
 }
-
 export default EditCategory;

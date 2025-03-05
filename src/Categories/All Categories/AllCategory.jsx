@@ -6,7 +6,6 @@ import DeleteCategory from "../Delete Category/DeleteCategory";
 import { ClipLoader } from "react-spinners";
 import { fetchCategories } from "../../ApiServices/AllCategoriesApi";
 import { Helmet } from "react-helmet";
-import { AiFillEdit } from "react-icons/ai";
 import SearchBar from "../../Components/Search Bar/SearchBar";
 
 function AllCategory() {
@@ -24,6 +23,7 @@ function AllCategory() {
       try {
         const data = await fetchCategories();
         setCategories(data);
+        console.log(data[0].tags);
       } catch (error) {
         setError(true);
         console.error("API call failed: ", error.message);
@@ -114,7 +114,7 @@ function AllCategory() {
           </div>
         ) : (
           <>
-            <div className="border border-gray-200 rounded-md overflow-hidden">
+            <div className="border border-gray-200 rounded-lg overflow-hidden">
               <table className="bg-white min-w-full table">
                 <thead>
                   <tr>
@@ -177,7 +177,7 @@ function AllCategory() {
                         <td className="px-6 py-3 w-10 border-t border-l">
                           <div className="flex items-center gap-1">
                             <button
-                              className="h-6 w-6 p-1 me-2"
+                              className="p-1 me-2"
                               aria-label={`Edit ${category.name}`}
                               onClick={() =>
                                 navigate(`/Home/editCategory/${category.id}`, {
@@ -185,10 +185,7 @@ function AllCategory() {
                                 })
                               }
                             >
-                              <AiFillEdit
-                                size={23}
-                                className="text-[#E6A86C]"
-                              />
+                              <img src="/assets/svgs/editIcon.svg" alt="update-icon" className="w-6"/>
                             </button>
                             <DeleteCategory
                               categoryId={category.id}
@@ -221,5 +218,4 @@ function AllCategory() {
     </div>
   );
 }
-
 export default AllCategory;
