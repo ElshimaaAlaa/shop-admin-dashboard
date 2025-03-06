@@ -23,7 +23,6 @@ function AllCategory() {
       try {
         const data = await fetchCategories();
         setCategories(data);
-        console.log(data[0].tags);
       } catch (error) {
         setError(true);
         console.error("API call failed: ", error.message);
@@ -33,6 +32,7 @@ function AllCategory() {
     };
     getCategories();
   }, []);
+
 
   const handleDeleteCategory = (categoryId) => {
     setCategories((prevCategories) => {
@@ -175,9 +175,8 @@ function AllCategory() {
                           </div>
                         </td>
                         <td className="px-6 py-3 w-10 border-t border-l">
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center">
                             <button
-                              className="p-1 me-2"
                               aria-label={`Edit ${category.name}`}
                               onClick={() =>
                                 navigate(`/Home/editCategory/${category.id}`, {
@@ -185,7 +184,7 @@ function AllCategory() {
                                 })
                               }
                             >
-                              <img src="/assets/svgs/editIcon.svg" alt="update-icon" className="w-6"/>
+                              <img src="/assets/svgs/editIcon.svg" alt="edit category" className="w-6"/>
                             </button>
                             <DeleteCategory
                               categoryId={category.id}

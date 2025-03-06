@@ -17,12 +17,14 @@ function EditCategory() {
   const [error, setError] = useState(null);
   const category = state || {};
 
+  const initialTags = category?.tags?.en?.join(", ") || "";
+
   const initialValues = {
     name: category?.name || "",
     description: category?.description || "",
     type: category?.type || "",
     image: null,
-    tags: category.tags,
+    tags: initialTags,
   };
 
   const handleSubmit = async (values) => {
@@ -37,11 +39,13 @@ function EditCategory() {
       formData.append("description[en]", values.description);
       formData.append("type", values.type);
 
+      // Convert comma-separated tags string back to an array
       const tagsArray = values.tags
         .split(",")
         .map((tag) => tag.trim())
         .filter((tag) => tag !== "");
 
+      // Append English tags to FormData
       tagsArray.forEach((tag, index) => {
         formData.append(`tags[en][${index}]`, tag);
       });
@@ -101,14 +105,22 @@ function EditCategory() {
                   </Field>
                 </div>
                 {/* Tags Input */}
-                <InputField
-                  name="tags"
-                  placeholder="Tag"
-                  value={values.tags}
-                  onChange={(e) => {
-                    setFieldValue("tags.en", e.target.value);
-                  }}
-                />
+                {values.tags ? (
+                  <InputField
+                    name="tags"
+                    placeholder="Tags"
+                    value={values.tags}
+                    onChange={(e) => {
+                      setFieldValue("tags", e.target.value);
+                    }}
+                  />
+                ) : (
+                  <InputField
+                    name="tags"
+                    placeholder="No tags available"
+                    value={values.tags}
+                  />
+                )}
                 <Field
                   as="textarea"
                   name="description"
@@ -169,4 +181,5 @@ function EditCategory() {
     </div>
   );
 }
+
 export default EditCategory;

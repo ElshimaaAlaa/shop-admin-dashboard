@@ -9,7 +9,7 @@ export const addCategory = async (formData) => {
       formData,
       {
         headers: {
-          "Accept-Language": "ar",
+          "Accept-Language": "en",
           Authorization:
             `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "multipart/form-data",

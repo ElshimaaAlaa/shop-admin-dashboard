@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import axios from "axios";
 import FailedModal from "../../Components/Modal/Failed Modal/FailedModal";
 import { ClipLoader } from "react-spinners";
-import { RiDeleteBin6Line } from "react-icons/ri";
 
 function DeleteProduct({ id, onDelete }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -34,8 +33,8 @@ function DeleteProduct({ id, onDelete }) {
   };
   return (
     <div>
-      <button className="h-6 w-6 p-1" onClick={()=>setShowModal(true)}>
-        <RiDeleteBin6Line color="red" size={19} />
+      <button onClick={()=>setShowModal(true)}>
+        <img src="/assets/svgs/deleteIcon.svg" alt="delete product" className="w-5 ms-2"/>
       </button>
       <FailedModal isOpen={showModal} onClose={() => setShowModal(false)}>
         <div className="p-5">

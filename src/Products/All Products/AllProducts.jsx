@@ -6,7 +6,6 @@ import DeleteProduct from "../Delete Product/DeleteProduct";
 import { ClipLoader } from "react-spinners";
 import { fetchProducts } from "../../ApiServices/AllProuctsApi";
 import { Helmet } from "react-helmet";
-import { AiFillEdit } from "react-icons/ai";
 import SearchBar from "../../Components/Search Bar/SearchBar";
 
 function AllProducts() {
@@ -24,6 +23,8 @@ function AllProducts() {
       try {
         const data = await fetchProducts();
         setProducts(data);
+        // console.log(data[3].category.tags)
+
       } catch (error) {
         setError(true);
         console.error("API call failed: ", error.message);
@@ -160,14 +161,14 @@ function AllProducts() {
                       ))}
                     </td>
                     <td className="px-6 py-3 border-t ">
-                      <div className="flex gap-4">
+                      <div className="flex items-center">
                         <button
-                          className="h-6 w-6 p-1"
+                          className="p-1"
                           onClick={() =>
                             navigate(`/Home/EditProduct`, { state: product })
                           }
                         >
-                          <AiFillEdit size={23} className="text-[#E6A86C]" />
+                          <img src="/assets/svgs/editIcon.svg" alt="edit product" className="w-7"/>
                         </button>
                         <DeleteProduct
                           id={product.id}

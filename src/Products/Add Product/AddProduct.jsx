@@ -12,7 +12,6 @@ import "./style.scss";
 
 const AddProduct = () => {
   const [categories, setCategories] = useState([]);
-  const [tags, setTags] = useState([]);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [previewImages, setPreviewImages] = useState([]);
@@ -21,18 +20,19 @@ const AddProduct = () => {
 
   const initialValues = {
     name: "",
-    description: "",
-    stock: "",
-    price: "",
     category_id: "",
     tag_number: "",
     gender: "",
-    discount_percentage: "",
+    upon_return: "",
+    stock: "",
+    // tags: [],
+    description: "",
+    price: "",
     cost: "",
     revenue: "",
+    discount_percentage: "",
     discount_expire_at: "",
     images: [],
-    // tags: [],
   };
 
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
@@ -41,23 +41,19 @@ const AddProduct = () => {
       const formData = new FormData();
       formData.append("name[ar]", values.name);
       formData.append("name[en]", values.name);
-      formData.append("description[ar]", values.description);
-      formData.append("description[en]", values.description);
-      formData.append("stock", values.stock);
-      formData.append("price", values.price);
       formData.append("category_id", values.category_id);
       formData.append("tag_number", values.tag_number);
       formData.append("gender", values.gender);
-      formData.append("discount_percentage", values.discount_percentage);
+      formData.append("upon_return", values.upon_return);
+      formData.append("stock", values.stock);
+      // formData.append("tags", values.tags);
+      formData.append("description[ar]", values.description);
+      formData.append("description[en]", values.description);
+      formData.append("price", values.price);
       formData.append("cost", values.cost);
       formData.append("revenue", values.revenue);
+      formData.append("discount_percentage", values.discount_percentage);
       formData.append("discount_expire_at", values.discount_expire_at);
-
-      // if (values.tags && values.tags.length > 0) {
-      //   values.tags.forEach((tag, index) => {
-      //     formData.append(`tags[${index}]`, tag);
-      //   });
-      // }
 
       values.images.forEach((image, index) => {
         formData.append(`images[${index}]`, image);
@@ -78,7 +74,7 @@ const AddProduct = () => {
       setIsLoading(false);
     }
   };
-
+  //to fetch categories to get gategory id
   useEffect(() => {
     const getCategories = async () => {
       try {
@@ -98,16 +94,6 @@ const AddProduct = () => {
     setFieldValue("images", files);
   };
 
-  const handleCategoryChange = (categoryId, setFieldValue) => {
-    const selectedCategory = categories.find(category => category.id === categoryId);
-    if (selectedCategory && selectedCategory.tags) {
-      setTags(selectedCategory.tags);
-    } else {
-      setTags([]);
-    }
-    setFieldValue("category_id", categoryId);
-  };
-
   return (
     <div className="bg-gray-100 h-150vh relative">
       <Helmet>
@@ -125,11 +111,10 @@ const AddProduct = () => {
                 <h2 className="font-bold mb-5">Basic Information</h2>
                 <div className="flex gap-4">
                   <InputField name="name" placeholder="Product Name" />
-                  <Field
+                  {/* <Field
                     name="category_id"
                     as="select"
                     className="w-full p-3 border-2 h-14 bg-transparent border-gray-200 rounded-lg outline-none placeholder:text-14 focus:border-2 focus:border-primary"
-                    onChange={(e) => handleCategoryChange(e.target.value, setFieldValue)}
                   >
                     <option value="">Category</option>
                     {categories.map((category) => (
@@ -137,7 +122,7 @@ const AddProduct = () => {
                         {category.name}
                       </option>
                     ))}
-                  </Field>
+                  </Field> */}
                 </div>
                 <div className="flex gap-4 mt-3">
                   <InputField name="tag_number" placeholder="Tag Number" />
@@ -149,6 +134,7 @@ const AddProduct = () => {
                     <option value="">Gender</option>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
+                    <option value="children">Children</option>
                   </Field>
                 </div>
                 <div className="flex gap-4 mt-3 mb-3">
@@ -165,24 +151,10 @@ const AddProduct = () => {
                   <InputField name="stock" placeholder="Stock" />
                 </div>
                 {/* <Field
-                  as="select"
                   name="tags"
                   placeholder="Tags"
                   className="w-full p-3 border-2 h-14 bg-transparent border-gray-200 rounded-lg outline-none placeholder:text-14 focus:border-2 focus:border-primary"
-                >
-                  <option value="">Tags</option>
-                  {tags.length > 0 ? (
-                    categories.map((tag, index) => (
-                      <option key={index} value={tag}>
-                        {tags}
-                      </option>
-                    ))
-                  ) : (
-                    <option value="" disabled>
-                      No tags available
-                    </option>
-                  )}
-                </Field> */}
+                ></Field> */}
                 <Field
                   as="textarea"
                   placeholder="Description"

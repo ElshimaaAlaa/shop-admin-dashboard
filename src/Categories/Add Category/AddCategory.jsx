@@ -68,22 +68,28 @@ function AddCategory() {
   const handleSubmit = async (values) => {
     console.log("Formik values:", values);
     setIsLoading(true);
+  
     const formData = new FormData();
     formData.append("name[ar]", values.name);
     formData.append("name[en]", values.name);
     formData.append("description[ar]", values.description);
     formData.append("description[en]", values.description);
     formData.append("type", values.type);
+  
+    // Append English tags (even if empty)
     values.tags.en.forEach((tag) => {
       formData.append("tags[en][]", tag);
     });
+  
+    // Append Arabic tags (even if empty)
     values.tags.ar.forEach((tag) => {
       formData.append("tags[ar][]", tag);
     });
-
+  
     if (values.image) {
       formData.append("image", values.image);
     }
+  
     try {
       const data = await addCategory(formData);
       console.log("Backend Response:", data);

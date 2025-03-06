@@ -41,7 +41,7 @@ function DeleteCategory({ id, onDelete }) {
     <div>
       {/* Delete Category Button */}
       <button className=" p-1" onClick={() => setShowModal(true)}>
-        <img src="/assets/svgs/deleteIcon.svg" alt="delete-Icon" className="w-5"/>
+        <img src="/assets/svgs/deleteIcon.svg" alt="delete category" className="w-5 ms-2"/>
       </button>
       <FailedModal isOpen={showModal} onClose={() => setShowModal(false)}>
         <div className="p-5">
