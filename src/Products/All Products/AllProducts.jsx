@@ -23,8 +23,6 @@ function AllProducts() {
       try {
         const data = await fetchProducts();
         setProducts(data);
-        // console.log(data[3].category.tags)
-
       } catch (error) {
         setError(true);
         console.error("API call failed: ", error.message);
@@ -39,7 +37,6 @@ function AllProducts() {
       const updateProduct = prevProduct.filter(
         (product) => product.id !== productId
       );
-      // Check if the current page is empty after deletion
       if (
         updateProduct.length <= (currentPage - 1) * itemsPerPage &&
         currentPage > 1
@@ -165,7 +162,7 @@ function AllProducts() {
                         <button
                           className="p-1"
                           onClick={() =>
-                            navigate(`/Home/EditProduct`, { state: product })
+                            navigate(`/Home/EditProduct/${product.id}`, { state: product })
                           }
                         >
                           <img src="/assets/svgs/editIcon.svg" alt="edit product" className="w-7"/>

@@ -1,13 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Formik, Form, Field } from "formik";
 import { Helmet } from "react-helmet";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 import { updateProduct } from "../../ApiServices/updateProduct";
 import InputField from "../../Components/Input Field/InputField";
+import UploadUpdatedProductImages from "../../Components/Upload Image/UploadUpdatedProductImages";
+import Footer from "../../Components/Footer/Footer";
+import { fetchCategories } from "../../ApiServices/AllCategoriesApi";
 
 function EditProduct() {
   const [isDiscountScheduled, setIsDiscountScheduled] = useState(false);
+  const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const { state } = useLocation();
   const [previewImages, setPreviewImages] = useState(
@@ -15,16 +19,17 @@ function EditProduct() {
   );
   const navigate = useNavigate();
   const product = state || {};
+
   const initialValues = {
     name: product.name || "",
     cost: product.cost || "",
     revenue: product.revenue || "",
-    description: product.description || "",
+    description: product.description || "", // Ensure this matches the API response
     tag_number: product.tag_number || "",
     gender: product.gender || "",
     tags: product.tags || [],
     images: product.images || [],
-    category_id: product.category_id || "",
+    category_id: product.category_id || "", // Ensure this is set correctly
     price: product.price || 0,
     discount_percentage: product.discount_percentage || 0,
     discount_expire_at: product.discount_expire_at || "",
@@ -33,28 +38,44 @@ function EditProduct() {
     colors: product.colors || [],
   };
 
+  useEffect(() => {
+    console.log("Product from API:", product); // Debugging
+    if (product.images && product.images.length > 0) {
+      const imageUrls = product.images.map((img) => img.src);
+      console.log("Initializing previewImages:", imageUrls); // Debugging
+      setPreviewImages(imageUrls);
+    }
+  }, [product]);
+
   const handleSubmit = async (values) => {
     setIsLoading(true);
     const formData = new FormData();
+
+    // Append fields to formData
     formData.append("name[ar]", values.name);
     formData.append("name[en]", values.name);
-    formData.append("description[ar]", values.description);
-    formData.append("description[en]", values.description);
-    formData.append("cost", values.cost);
-    formData.append("revenue", values.revenue);
-    formData.append("tag_number", values.tag_number);
+    formData.append("description[ar]", values.description || ""); // Ensure description is not undefined
+    formData.append("description[en]", values.description || ""); // Ensure description is not undefined
+    formData.append("cost", values.cost || "");
+    formData.append("revenue", values.revenue || "");
+    formData.append("tag_number", values.tag_number || "");
+    formData.append("category_id", values.category_id || "");
 
     if (values.images && values.images.length > 0) {
-      values.images.forEach((image) => {
-        formData.append("images[]", image);
+      values.images.forEach((image, index) => {
+        if (image instanceof File) {
+          formData.append(`images[${index}]`, image); // Append File objects directly
+        } else if (image.src) {
+          // If the image is an object with a `src` property, append the URL
+          formData.append(`images[${index}]`, image.src);
+        }
       });
     }
 
-    formData.append("category_id", values.category_id);
-    formData.append("price", values.price);
-    formData.append("discount_percentage", values.discount_percentage);
-    formData.append("discount_expire_at", values.discount_expire_at);
-    formData.append("stock", values.stock);
+    formData.append("price", values.price || "");
+    formData.append("discount_percentage", values.discount_percentage || "");
+    formData.append("discount_expire_at", values.discount_expire_at || "");
+    formData.append("stock", values.stock || "");
 
     values.sizes.forEach((size, index) => {
       formData.append(`sizes[${index}]`, size);
@@ -63,6 +84,11 @@ function EditProduct() {
     values.colors.forEach((color, index) => {
       formData.append(`colors[${index}]`, color);
     });
+
+    // Debugging: Log the formData
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
 
     try {
       await updateProduct(product.id, formData);
@@ -74,6 +100,24 @@ function EditProduct() {
       setIsLoading(false);
     }
   };
+
+  const handleImageChange = (files) => {
+    const imageUrls = files.map((file) => URL.createObjectURL(file));
+    setPreviewImages(imageUrls);
+  };
+
+  // Fetch categories
+  useEffect(() => {
+    const getCategories = async () => {
+      try {
+        const data = await fetchCategories();
+        setCategories(data);
+      } catch (error) {
+        console.error("Failed to fetch categories", error);
+      }
+    };
+    getCategories();
+  }, []);
 
   return (
     <div className="bg-gray-100 flex flex-col h-150vh relative">
@@ -97,37 +141,24 @@ function EditProduct() {
                 <div className="flex gap-4">
                   <InputField placeholder="Product Name" name="name" />
                   <Field
-                    placeholder="Category"
                     name="category_id"
-                    className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md h-14 p-2 placeholder:text-14 focus:border-primary"
-                  />
+                    as="select"
+                    className="w-full p-3 border-2 h-14 bg-transparent border-gray-200 rounded-lg outline-none placeholder:text-14 focus:border-2 focus:border-primary"
+                  >
+                    {/* <option value="">Category</option>
+                    {categories.map((category) => (
+                      <option key={category.id} value={category.id}>
+                        {category.name}
+                      </option>
+                    ))} */}
+                  </Field>
                 </div>
                 <div className="flex items-center gap-4 mt-3">
                   <InputField name={"tag_number"} placeholder={"Tag Number"} />
-                  {/* <Field
-                    name="gender"
-                    as="select"
-                    className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md h-14 p-2 placeholder:text-14 focus:border-primary"
-                  >
-                    <option value="">Gender</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                  </Field> */}
                 </div>
                 <div className="flex gap-4 mt-3 mb-3">
-                  {/* <div className="flex items-center w-full border-2 h-14 bg-transparent border-gray-200 rounded-lg outline-none placeholder:text-14 focus-within:border-primary">
-                    <span className="text-lg h-full w-10 text-center pt-3 font-bold text-gray-600 bg-gray-200">
-                      %
-                    </span>
-                    <Field
-                      name="upon_return"
-                      placeholder="percentage (upon return)"
-                      className="outline-none ms-2"
-                    />
-                  </div> */}
                   <InputField name="stock" placeholder="Stock" />
                 </div>
-                {/* <InputField name={"tags"} placeholder={"Tags"} /> */}
                 <Field
                   as="textarea"
                   placeholder="Description"
@@ -135,68 +166,11 @@ function EditProduct() {
                   className="w-full bg-transparent outline-none border-2 border-gray-300 rounded-md p-2 h-20 mt-3 placeholder:text-14 focus:border-primary"
                 />
               </div>
-              <div className="bg-white p-5 rounded-md w-2/4 h-80">
-                <h2 className="font-bold mb-3">Category Icon / Image</h2>
-                <div className="bg-transparent w-full border-2 border-dashed outline-none h-48 p-1 rounded-md">
-                  <input
-                    type="file"
-                    name="images"
-                    onChange={(event) => {
-                      const files = Array.from(event.currentTarget.files);
-                      setFieldValue("images", files);
-                      setPreviewImages(0);
-                    }}
-                    className="hidden"
-                    id="image-upload"
-                    multiple
-                  />
-                  <label
-                    htmlFor="image-upload"
-                    className="text-gray-500 cursor-pointer flex flex-col gap-2"
-                  >
-                    {previewImages.length > 0 ? (
-                      <>
-                        {/* Main Image Preview */}
-                        <img
-                          src={previewImages[0]}
-                          alt="main-product-image"
-                          className="w-full h-44 rounded-md mt-1"
-                        />
-                        {/* Thumbnails */}
-                        <div className="flex gap-2 mt-2">
-                          {previewImages.map((image, index) => (
-                            <div
-                              key={index}
-                              className={`thumbnail-container ${
-                                index === 0 ? "border-2 border-blue-500" : ""
-                              }`}
-                              onClick={() => setPreviewImages([image])}
-                            >
-                              <img
-                                src={image}
-                                alt={`thumbnail-${index}`}
-                                className="h-12 w-12 object-cover rounded-md cursor-pointer"
-                              />
-                            </div>
-                          ))}
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <img
-                          src="/assets/images/upload-file_svgrepo.com.png"
-                          alt="upload-image-file"
-                          className="mb-2"
-                        />
-                        <p>Upload Your Product Image</p>
-                        <p className="text-sm text-gray-300 mt-2 w-60 text-center">
-                          Only PNG, SVG Format Allowed. Size: 500KB Max.
-                        </p>
-                      </>
-                    )}
-                  </label>
-                </div>
-              </div>
+              <UploadUpdatedProductImages
+                previewImages={previewImages}
+                onImageChange={handleImageChange}
+                setFieldValue={setFieldValue}
+              />
             </div>
             {/* Pricing Section */}
             <div className="bg-white p-5 rounded-md mt-5 mx-10 w-890">
@@ -248,29 +222,19 @@ function EditProduct() {
                 </div>
               )}
             </div>
-            <div className="flex gap-5 items-center border-t justify-end bg-white rounded p-5 w-full mt-5 absolute bottom-0">
-              <button
-                type="button"
-                className="bg-gray-200 text-gray-500 font-bold p-3 w-40 rounded-md"
-                onClick={() => navigate("/Home/products")}
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="bg-primary text-white font-bold rounded-md p-3 w-40"
-              >
-                {isLoading ? (
-                  <ClipLoader color="#fff" size={22} />
-                ) : (
-                  "Save Changes"
-                )}
-              </button>
-            </div>
+            <Footer
+              saveText={"Save Changes"}
+              cancelText={"Cancel"}
+              cancelOnClick={() => navigate("/Home/products")}
+              cancelBtnType={"button"}
+              saveBtnType={"submit"}
+              isLoading={isLoading}
+            />
           </Form>
         )}
       </Formik>
     </div>
   );
 }
+
 export default EditProduct;

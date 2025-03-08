@@ -3,6 +3,34 @@ import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { useParams } from "react-router-dom";
 
+const FALLBACK_TEXT = "__";
+
+const InventoryItem = ({ label, value }) => (
+  <div>
+    <h2 className="text-gray-400">{label}</h2>
+    <p className="text-14 mt-1">{value || FALLBACK_TEXT}</p>
+  </div>
+);
+
+const ColorItem = React.memo(({ color }) => (
+  <div className="flex gap-10 items-center">
+    <div>
+      <img
+        src={color.image || "/assets/images/product.png"}
+        alt={`Color: ${color.name}`}
+        className="h-20 w-20 object-cover rounded-xl"
+      />
+    </div>
+    <div>
+      <h2 className="text-gray-400">Color</h2>
+      <div
+        className="w-16 h-8 mt-1 rounded-md"
+        style={{ backgroundColor: color.code }}
+      ></div>
+    </div>
+  </div>
+));
+
 function ViewProduct() {
   const [productData, setProductData] = useState({});
   const { productId } = useParams();
@@ -18,10 +46,9 @@ function ViewProduct() {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
-        console.log("Product Data:", response.data.data);
         if (response.status === 200) {
           setProductData(response.data.data);
-          setMainImage(response.data.data.images[0]?.src);
+          setMainImage(response.data.data.images?.[0]?.src);
         } else {
           console.error("Failed to fetch data");
         }
@@ -32,8 +59,11 @@ function ViewProduct() {
     fetchProductDetails();
   }, [productId]);
 
+  const hasColors = productData.colors && productData.colors.length > 0;
+  const hasSizes = productData.sizes && productData.sizes.length > 0;
+
   return (
-    <div className="bg-gray-100 flex flex-col h-150vh">
+    <div className="bg-gray-100 flex flex-col h-">
       <Helmet>
         <title>View Product - VERTEX</title>
         <meta name="description" content="View product details in VERTEX" />
@@ -45,51 +75,23 @@ function ViewProduct() {
         <div className="flex gap-5 mx-10">
           {/* Product Basic Information */}
           <div className="bg-white p-5 rounded-md w-full">
-            <h2 className="font-bold mb-3">Basic Information</h2>
-            <div className="w-full bg-transparent border border-gray-200 rounded-md ps-2 pt-2 pb-2  block">
-              <div className="flex items-center gap-x-96 p-3">
-                <div>
-                  <h2 className="text-gray-400">Product Name</h2>
-                  <p className="mt-1 text-14">{productData.name}</p>
-                </div>
-                <div>
-                  <h2 className="text-gray-400">Category Name</h2>
-                  <p className="text-14 mt-1">{productData.category?.name}</p>
-                </div>
+            <h2 className="font-bold mb-3 text-xl">Basic Information</h2>
+            <div className="w-full bg-transparent border border-gray-200 rounded-md ps-2 pt-2 pb-2 block">
+              <div className="flex items-center p-3 w-560px justify-between">
+                <InventoryItem label="Product Name" value={productData.name} />
+                <InventoryItem label="Category Name" value={productData.category?.name} />
               </div>
-              <div className="flex items-center gap-x-400 p-3">
-                <div>
-                  <h2 className="text-gray-400">Tag Number</h2>
-                  <p className="mt-1 text-14">
-                    {productData.tag_number || "no tag number available"}
-                  </p>
-                </div>
-                <div>
-                  <h2 className="text-gray-400">Gender</h2>
-                  <p className="text-14 mt-1">
-                    {productData?.gender || "no gender available"}
-                  </p>
-                </div>
+              <div className="flex items-center w-500px justify-between p-3">
+                <InventoryItem label="Tag Number" value={productData.tag_number} />
+                <InventoryItem label="Gender" value={productData.gender} />
               </div>
-              <div className="flex items-center gap-x-60 p-3">
-                <div>
-                  <h2 className="text-gray-400">
-                    Amount percentage (upon return)
-                  </h2>
-                  <p className="mt-1 text-14">
-                    {productData.upon_return || "no upon return) available"}
-                  </p>
-                </div>
-                <div>
-                  <h2 className="text-gray-400">Stock</h2>
-                  <p className="text-14 mt-1">
-                    {productData?.stock || 0}
-                  </p>
-                </div>
+              <div className="flex items-center justify-between w-485px p-3">
+                <InventoryItem label="Amount percentage (upon return)" value={productData.upon_return} />
+                <InventoryItem label="Stock" value={productData.stock} />
               </div>
               <div className="p-3">
                 <h2 className="text-gray-500">Tags</h2>
-                <p className="mt-1 w-600px text-14">
+                <p className="flex items-center gap-2 mt-1 w text-14 bg-customOrange-mediumOrange text-primary w-40 text-center p-2 rounded-md">
                   {productData.category?.tags?.length ? (
                     productData.tags.map((tag) => <span key={tag}>{tag}</span>)
                   ) : (
@@ -98,16 +100,13 @@ function ViewProduct() {
                 </p>
               </div>
               <div className="p-3">
-                <h2 className="text-gray-400">Description</h2>
-                <p className="mt-1 w-600px text-14">
-                  {productData.description}
-                </p>
+                <InventoryItem label="Description" value={productData.description} />
               </div>
             </div>
           </div>
           {/* Product Image & Thumbnails */}
           <div className="bg-white rounded-md w-2/4 p-5 h-72">
-            <p className="font-bold">Product Icons / Images</p>
+            <p className="font-bold text-lg">Product Icons / Images</p>
             <div className="image-section">
               {mainImage ? (
                 <div className="main-image">
@@ -118,7 +117,9 @@ function ViewProduct() {
                   />
                 </div>
               ) : (
-                <p className="text-gray-400 my-5 text-15">No images available</p>
+                <p className="text-gray-400 my-5 text-15">
+                  No images available
+                </p>
               )}
               {productData.images && productData.images.length > 0 && (
                 <div className="thumbnails flex gap-2 mt-3">
@@ -141,43 +142,57 @@ function ViewProduct() {
           </div>
         </div>
         {/* Stock & Pricing Information */}
-        <div className="flex gap-5 my-10 mx-10">
+        <div className="flex gap-5 my-5 mx-10">
           <div className="w-900 bg-white p-5 rounded-md">
-            <h2 className="font-bold mb-3">Pricing</h2>
+            <h2 className="font-bold mb-3 text-xl">Pricing</h2>
             <div className="bg-transparent border border-gray-200 rounded-md ps-2 pt-2 pb-2 pe-80 block">
               <div className="flex items-center gap-x-96 p-3">
-                <div>
-                  <h2 className="text-gray-400">Price (for piece)</h2>
-                  <p className="text-14 mt-1">{productData.price}</p>
-                </div>
-                <div>
-                  <h2 className="text-gray-400">Cost</h2>
-                  <p className="text-14 mt-1">{productData.cost}</p>
-                </div>
+                <InventoryItem label="Price (for piece)" value={productData.price} />
+                <InventoryItem label="Cost" value={productData.cost} />
               </div>
               <div className="flex items-center gap-x-400 p-3">
-                <div>
-                  <h2 className="text-gray-400">Revenue</h2>
-                  <p className="text-14 mt-1">{productData.revenue} $</p>
-                </div>
-                <div>
-                  <h2 className="text-gray-400">Discount</h2>
-                  <p className="text-14 mt-1">
-                    {productData.discount_percentage}
-                  </p>
-                </div>
+                <InventoryItem label="Revenue" value={`${productData.revenue} $`} />
+                <InventoryItem label="Discount" value={productData.discount_percentage} />
               </div>
               <div className="flex items-center p-3">
-                <div>
-                  <h2 className="text-gray-400">Date</h2>
-                  <p className="mt-1">{productData.discount_expire_at}</p>
-                </div>
+                <InventoryItem label="Date" value={productData.discount_expire_at} />
               </div>
             </div>
           </div>
         </div>
+        {(hasColors || hasSizes) && (
+          <div className="w-900 p-5 mb-7 mx-10 bg-white rounded-md">
+            <h2 className="font-bold mb-8 text-xl">Inventory</h2>
+            {hasColors && (
+              <div className="">
+                <div className="">
+                  {productData.colors.map((color, index) => (
+                    <ColorItem key={index} color={color} />
+                  ))}
+                </div>
+              </div>
+            )}
+            {hasSizes && (
+              <div className="mt-7">
+                {productData.sizes.map((size, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center border-2 border-gray-200 rounded-md mb-4 p-3 justify-between"
+                  >
+                    <InventoryItem label="Size" value={size.name} />
+                    <InventoryItem label="Stock" value={size.stock} />
+                    <InventoryItem label="Price" value={size.price} />
+                    <InventoryItem label="Discount" value={size.discount_percentage} />
+                    <InventoryItem label="Date" value={size.discount_expire_at} />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
 }
+
 export default ViewProduct;

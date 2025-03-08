@@ -10,7 +10,7 @@ export const updateProduct = async (productId, formData) => {
       data: formData,
       headers: {
         "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${localStorage.getItem("token")}}`,
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     });
     if (response.status === 200) {

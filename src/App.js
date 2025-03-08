@@ -44,7 +44,7 @@ function App() {
           {/* Products */}
           <Route path="products" element={<AllProducts />} />
           <Route path="addProduct" element={<AddProduct />} />
-          <Route path="/Home/EditProduct" element={<EditProduct />} />
+          <Route path="/Home/EditProduct/:productId" element={<EditProduct />} />
           <Route path="/Home/products/:productId" element={<ViewProduct />} />
 
           {/* Discounts */}

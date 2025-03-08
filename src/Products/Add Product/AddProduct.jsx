@@ -9,6 +9,7 @@ import { addProduct } from "../../ApiServices/AddNewProductApi";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 import { UploadProductImage } from "../../Components/Upload Image/UploadProductImages";
 import "./style.scss";
+import { TagsInput } from "../../Components/Tag Input/TagInput";
 
 const AddProduct = () => {
   const [categories, setCategories] = useState([]);
@@ -25,7 +26,10 @@ const AddProduct = () => {
     gender: "",
     upon_return: "",
     stock: "",
-    // tags: [],
+    tags: {
+      en: [],
+      ar: [],
+    },
     description: "",
     price: "",
     cost: "",
@@ -57,6 +61,14 @@ const AddProduct = () => {
 
       values.images.forEach((image, index) => {
         formData.append(`images[${index}]`, image);
+      });
+      values.tags.en.forEach((tag) => {
+        formData.append("tags[en][]", tag);
+      });
+
+      // Append Arabic tags (even if empty)
+      values.tags.ar.forEach((tag) => {
+        formData.append("tags[ar][]", tag);
       });
 
       console.log("Submitting data:", Object.fromEntries(formData.entries()));
@@ -111,7 +123,7 @@ const AddProduct = () => {
                 <h2 className="font-bold mb-5">Basic Information</h2>
                 <div className="flex gap-4">
                   <InputField name="name" placeholder="Product Name" />
-                  {/* <Field
+                  <Field
                     name="category_id"
                     as="select"
                     className="w-full p-3 border-2 h-14 bg-transparent border-gray-200 rounded-lg outline-none placeholder:text-14 focus:border-2 focus:border-primary"
@@ -122,7 +134,7 @@ const AddProduct = () => {
                         {category.name}
                       </option>
                     ))}
-                  </Field> */}
+                  </Field>
                 </div>
                 <div className="flex gap-4 mt-3">
                   <InputField name="tag_number" placeholder="Tag Number" />
@@ -150,11 +162,8 @@ const AddProduct = () => {
                   </div>
                   <InputField name="stock" placeholder="Stock" />
                 </div>
-                {/* <Field
-                  name="tags"
-                  placeholder="Tags"
-                  className="w-full p-3 border-2 h-14 bg-transparent border-gray-200 rounded-lg outline-none placeholder:text-14 focus:border-2 focus:border-primary"
-                ></Field> */}
+                <TagsInput setFieldValue={setFieldValue} values={values} />
+
                 <Field
                   as="textarea"
                   placeholder="Description"
