@@ -52,7 +52,7 @@ function ForgotPassword() {
           onSubmit={handleSubmit}
           validationSchema={validationSchema}
         >
-          <Form className="mt-5 flex  flex-col items-center">
+          <Form className="mt-5 flex flex-col items-center">
             <InputField
               name={"email"}
               placeholder={"Enter Your Email"}

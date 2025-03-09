@@ -71,10 +71,8 @@ export const TagsInput = ({ setFieldValue, values }) => {
           />
         </div>
       </div>
-
       {/* Arabic Tags Input */}
-      {/* <div className="mt-3">
-        <label className="block text-sm font-medium mb-1">Arabic Tags</label>
+      <div className="mt-3">
         <div className="flex flex-grow h-14 gap-2 bg-transparent outline-none border-2 border-gray-200 rounded-md p-2 focus-within:border-primary">
           {values.tags.ar.map((tag, index) => (
             <div
@@ -96,11 +94,11 @@ export const TagsInput = ({ setFieldValue, values }) => {
             value={inputValueAr}
             onChange={(e) => setInputValueAr(e.target.value)}
             onKeyDown={(e) => handleKeyDown(e, "ar")}
-            placeholder="Add Arabic tags"
+            placeholder="Arabic Tags"
             className="outline-none placeholder:text-14"
           />
         </div>
-      </div> */}
+      </div>
     </div>
   );
 };

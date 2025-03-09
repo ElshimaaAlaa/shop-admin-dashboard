@@ -8,7 +8,7 @@ function PasswordInput({ name, placeholder, showPassword, togglePasswordVisibili
         name={name}
         type={showPassword ? "text" : "password"}
         placeholder={placeholder}
-        className="passwordInput border p-3 w-full placeholder:text-14 focus:border-2 focus:border-primary "
+        className="border-2 border-gray-200 outline-none rounded-md p-3 w-full placeholder:text-14 focus:border-2 focus:border-primary "
       />
       <button
         type="button"

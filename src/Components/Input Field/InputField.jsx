@@ -7,7 +7,7 @@ function InputField({ placeholder, name, type = "text" , readOnly = false }) {
         name={name}
         type={type}
         placeholder={placeholder}
-        className="w-full p-3 border-2 h-14 border-gray-200 rounded-lg outline-none placeholder:text-14 focus:border-2 focus:border-primary"
+        className="w-full p-3 border-2 border-gray-200 rounded-md outline-none placeholder:text-14 focus:border-2 focus:border-primary"
         aria-label={placeholder}
         readOnly={readOnly}
       />

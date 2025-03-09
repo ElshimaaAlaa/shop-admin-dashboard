@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
@@ -17,6 +17,17 @@ function UpdatePassword() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (showModal || showSuccessModal) {
+      document.body.classList.add("no-scroll");
+    } else {
+      document.body.classList.remove("no-scroll");
+    }
+    return () => {
+      document.body.classList.remove("no-scroll");
+    };
+  }, [showModal, showSuccessModal]);
 
   const initialValues = {
     password: "",
@@ -66,7 +77,9 @@ function UpdatePassword() {
         Update Password
       </button>
       <SuccessModal isOpen={showModal} onClose={() => setShowModal(false)}>
-        <h1 className="text-primary font-semibold text-xl p-5">Update Password</h1>
+        <h1 className="text-primary font-semibold text-xl p-5">
+          Update Password
+        </h1>
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -77,19 +90,22 @@ function UpdatePassword() {
               name="password"
               placeholder="New Password"
               showPassword={showNewPassword}
-              togglePasswordVisibility={() => setShowNewPassword(!showNewPassword)}
+              togglePasswordVisibility={() =>
+                setShowNewPassword(!showNewPassword)
+              }
             />
             <PasswordInput
               name="password_confirmation"
               placeholder="Confirm New Password"
               showPassword={showConfirmPassword}
-              togglePasswordVisibility={() => setShowConfirmPassword(!showConfirmPassword)}
+              togglePasswordVisibility={() =>
+                setShowConfirmPassword(!showConfirmPassword)
+              }
             />
-            {error && (
-              <div className="text-red-600 text-sm mt-3">{error}</div>
-            )}
+            {error && <div className="text-red-600 text-sm mt-3">{error}</div>}
             <div className="mt-5">
               <MainBtn
+                btnType={"submit"}
                 text={
                   isLoading ? <ClipLoader color="#fff" size={22} /> : "Save"
                 }
@@ -99,7 +115,10 @@ function UpdatePassword() {
         </Formik>
       </SuccessModal>
       {/* Success Modal */}
-      <SuccessModal isOpen={showSuccessModal} onClose={() => setShowSuccessModal(false)}>
+      <SuccessModal
+        isOpen={showSuccessModal}
+        onClose={() => setShowSuccessModal(false)}
+      >
         <div className="flex flex-col items-center justify-center gap-3 w-350 p-5">
           <img
             src="/assets/images/success.png"

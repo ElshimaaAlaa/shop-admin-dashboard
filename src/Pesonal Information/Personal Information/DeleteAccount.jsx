@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FailedModal from "../../Components/Modal/Failed Modal/FailedModal";
 import { ClipLoader } from "react-spinners";
 import axios from "axios";
 import { RiDeleteBin6Line } from "react-icons/ri";
-
+import './UpdatePassword.scss'
 function DeleteAccount() {
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  useEffect(()=>{
+    document.body.classList.add("no-scroll");
+  })
   const handelDeleteAccount = async () => {
     setIsLoading(true);
     try {

@@ -96,7 +96,7 @@ function VerifayPassword() {
                       key={index}
                       name={`otp${index + 1}`}
                       maxLength="1"
-                      className={`enterCode text-center font-bold w-12 lg:w-14 md:w-14 ${
+                      className={`h-14 border-2 border-gray-200 rounded-md text-center font-bold w-12 lg:w-14 md:w-14 ${
                         errors[`otp${index + 1}`] && touched[`otp${index + 1}`]
                           ? "border-red-500"
                           : ""
