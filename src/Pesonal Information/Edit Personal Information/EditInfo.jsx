@@ -24,6 +24,7 @@ function EditInfo() {
     image: null,
   };
 
+
   const handleSubmit = async (values) => {
     setIsLoading(true);
     setError(null);
@@ -71,7 +72,7 @@ function EditInfo() {
         >
           {({ setFieldValue }) => (
             <Form>
-              <div className="my-10 gap-3">
+              <div className="my-5 gap-3">
                 {selectedImage || personalInfo?.image ? (
                   <div className="flex flex-col md:flex-row justify-between items-center gap-4 border rounded-md p-5">
                     <img
@@ -123,7 +124,7 @@ function EditInfo() {
                   <p className="text-gray-500">No image available</p>
                 )}
               </div>
-              <div className="border p-5 rounded-md bg-gray-100 w-full mt-4">
+              <div className="border p-5 rounded-md bg-gray-100 w-full">
                 <div className="flex flex-col md:flex-row gap-4">
                   <InputField placeholder="Name" name="name" />
                   <InputField placeholder="Email" name="email" />

@@ -43,7 +43,7 @@ function PersonalInformation() {
             className="text-white font-semibold flex items-center justify-center gap-3 bg-primary p-3 w-24 rounded-md"
             aria-label="Edit personal information"
           >
-             <img src="/assets/svgs/edit.svg" alt="Edit icon"  className="w-6"/>
+             <img src="/assets/svgs/edit.svg" alt="Edit icon" className="w-6"/>
             Edit
           </button>
         </div>
@@ -52,7 +52,7 @@ function PersonalInformation() {
             {error}
           </div>
         )}
-        <div className="flex flex-col md:flex-row items-center gap-5 my-10 border rounded-md p-5 w-full">
+        <div className="flex flex-col md:flex-row items-center gap-5 my-5 border rounded-md p-5 w-full">
           <img
             src={personalInfo.image || "/assets/images/default-profile.png"}
             alt="User profile"
