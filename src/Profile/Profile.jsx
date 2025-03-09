@@ -1,8 +1,15 @@
 import { useState, useEffect, useRef } from "react";
-import { ChevronDown, ChevronRight, Eye, PenLine, Plus, Bell } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronRight,
+  Eye,
+  PenLine,
+  Plus,
+  Bell,
+} from "lucide-react";
 import LogOut from "../Auth/LogOut/LogOut";
 import { useNavigate } from "react-router-dom";
-
+import { GetPersonalInfo } from "../ApiServices/GetPersonalInfo";
 export default function ProfileMenu() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
@@ -11,7 +18,19 @@ export default function ProfileMenu() {
   const userName = localStorage.getItem("User Name");
   const dropdownRef = useRef(null);
   const triggerRef = useRef(null);
+  const [personalInfo, setPersonalInfo] = useState({});
 
+  useEffect(() => {
+    const getInfo = async () => {
+      try {
+        const data = await GetPersonalInfo();
+        setPersonalInfo(data);
+      } catch (error) {
+        console.error("Failed to fetch personal info:", error);
+      }
+    };
+    getInfo();
+  }, []);
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -83,7 +102,9 @@ export default function ProfileMenu() {
 
           <button
             className="w-full flex items-center gap-3 p-2 hover:bg-gray-50"
-            onClick={() => navigate("/Home/MainInfo/EditInfo")}
+            onClick={() =>
+              navigate("/Home/MainInfo/EditInfo", { state: personalInfo })
+            }
           >
             <PenLine className="w-6 h-6" />
             <span className="flex-grow text-left text-gray-600 text-17">
