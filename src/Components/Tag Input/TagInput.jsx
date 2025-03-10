@@ -44,7 +44,6 @@ export const TagsInput = ({ setFieldValue, values }) => {
     <div className="w-full">
       {/* English Tags Input */}
       <div className="mt-3">
-        {/* <label className="block text-sm font-medium mb-1">English Tags</label> */}
         <div className="flex flex-grow h-14 gap-2 bg-transparent outline-none border-2 border-gray-200 rounded-md p-2 focus-within:border-primary">
           {values.tags.en.map((tag, index) => (
             <div
@@ -66,7 +65,7 @@ export const TagsInput = ({ setFieldValue, values }) => {
             value={inputValueEn}
             onChange={(e) => setInputValueEn(e.target.value)}
             onKeyDown={(e) => handleKeyDown(e, "en")}
-            placeholder="Tags"
+            placeholder="English Tags"
             className="outline-none placeholder:text-14"
           />
         </div>

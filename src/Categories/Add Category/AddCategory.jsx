@@ -76,12 +76,10 @@ function AddCategory() {
     formData.append("description[en]", values.description);
     formData.append("type", values.type);
   
-    // Append English tags (even if empty)
     values.tags.en.forEach((tag) => {
       formData.append("tags[en][]", tag);
     });
   
-    // Append Arabic tags (even if empty)
     values.tags.ar.forEach((tag) => {
       formData.append("tags[ar][]", tag);
     });
@@ -117,7 +115,7 @@ function AddCategory() {
       >
         {({ setFieldValue, values }) => (
           <Form className="flex flex-col">
-            <h1 className="font-bold rounded-md p-5 text-lg mx-10 bg-white mt-10 mb-5">
+            <h1 className="font-bold rounded-md p-5 text-lg mx-10 bg-white mt-5 mb-5">
               Add Category
             </h1>
             <div className="flex gap-5 mx-10">

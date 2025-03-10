@@ -17,18 +17,21 @@ function EditCategory() {
   const [error, setError] = useState(null);
   const category = state || {};
 
-  const initialTags = category?.tags?.en?.join(", ") || "";
+  const initialTagsEn = category?.tags?.en || [];
+  const initialTagsAr = category?.tags?.ar || [];
 
   const initialValues = {
     name: category?.name || "",
     description: category?.description || "",
     type: category?.type || "",
     image: null,
-    tags: initialTags,
+    tagsEn: initialTagsEn,
+    tagsAr: initialTagsAr, // Old Arabic tags
+    newTagEn: "", // For adding new English tags
+    newTagAr: "", // For adding new Arabic tags
   };
 
   const handleSubmit = async (values) => {
-    console.log("Form submitted with values:", values);
     setIsLoading(true);
     setError(null);
     try {
@@ -39,15 +42,18 @@ function EditCategory() {
       formData.append("description[en]", values.description);
       formData.append("type", values.type);
 
-      // Convert comma-separated tags string back to an array
-      const tagsArray = values.tags
-        .split(",")
-        .map((tag) => tag.trim())
-        .filter((tag) => tag !== "");
+      // Combine old and new tags for submission
+      const allTagsEn = values.tagsEn;
+      const allTagsAr = values.tagsAr;
 
       // Append English tags to FormData
-      tagsArray.forEach((tag, index) => {
+      allTagsEn.forEach((tag, index) => {
         formData.append(`tags[en][${index}]`, tag);
+      });
+
+      // Append Arabic tags to FormData
+      allTagsAr.forEach((tag, index) => {
+        formData.append(`tags[ar][${index}]`, tag);
       });
 
       if (values.image) {
@@ -64,13 +70,28 @@ function EditCategory() {
     }
   };
 
+  // Tag Component
+  const Tag = ({ tag, onDelete }) => (
+    <div className="flex items-center bg-customOrange-mediumOrange text-primary rounded-md px-3 py-1 m-1">
+      <span>{tag}</span>
+      <button
+        type="button"
+        onClick={onDelete}
+        className="ml-2 text-lg text-red-600"
+        aria-label="Delete tag"
+      >
+        ×
+      </button>
+    </div>
+  );
+
   return (
     <div className="bg-gray-100 h-150vh flex flex-col relative">
       <Helmet>
         <title>Edit Category - VERTEX</title>
         <meta name="description" content="Edit category details in VERTEX" />
       </Helmet>
-      <h1 className="font-bold rounded-md p-5 text-lg mx-4 md:mx-10 bg-white mt-10 mb-5">
+      <h1 className="font-bold rounded-md p-5 text-lg mx-4 md:mx-10 bg-white mt-5 mb-5">
         Edit Category
       </h1>
       <Formik
@@ -78,7 +99,7 @@ function EditCategory() {
         enableReinitialize
         onSubmit={handleSubmit}
       >
-        {({ setFieldValue, errors, touched, values }) => (
+        {({ setFieldValue, values }) => (
           <Form className="flex flex-col">
             <div className="flex flex-col md:flex-row gap-5 mx-4 md:mx-10">
               {/* Basic Information Section */}
@@ -104,23 +125,77 @@ function EditCategory() {
                     <option value="4">Color & Size</option>
                   </Field>
                 </div>
-                {/* Tags Input */}
-                {values.tags ? (
-                  <InputField
-                    name="tags"
-                    placeholder="Tags"
-                    value={values.tags}
-                    onChange={(e) => {
-                      setFieldValue("tags", e.target.value);
+                {/* English Tags */}
+                <div className="mb-3 p-2 flex w-full bg-transparent outline-none border-2 border-gray-200 rounded-md placeholder:text-14 focus:border-primary">
+                  <div className="flex">
+                    {values.tagsEn.map((tag, index) => (
+                      <Tag
+                        key={`en-${index}`}
+                        tag={tag}
+                        onDelete={() => {
+                          const updatedTags = values.tagsEn.filter(
+                            (_, i) => i !== index
+                          );
+                          setFieldValue("tagsEn", updatedTags);
+                        }}
+                      />
+                    ))}
+                  </div>
+                  <input
+                    type="text"
+                    name="newTagEn"
+                    placeholder="Enter Tag Name"
+                    value={values.newTagEn}
+                    onChange={(e) => setFieldValue("newTagEn", e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && values.newTagEn.trim()) {
+                        e.preventDefault();
+                        setFieldValue("tagsEn", [
+                          ...values.tagsEn,
+                          values.newTagEn.trim(),
+                        ]);
+                        setFieldValue("newTagEn", "");
+                      }
                     }}
+                    className="w-full bg-transparent outline-none placeholder:text-14"
                   />
-                ) : (
-                  <InputField
-                    name="tags"
-                    placeholder="No tags available"
-                    value={values.tags}
+                </div>
+                {/* Arabic Tags */}
+                <div className="mb-3 p-2 flex w-full bg-transparent outline-none border-2 border-gray-200 rounded-md placeholder:text-14 focus:border-primary">
+                  <div className="flex ">
+                    {/* Display old and new Arabic tags together */}
+                    {values.tagsAr.map((tag, index) => (
+                      <Tag
+                        key={`ar-${index}`}
+                        tag={tag}
+                        onDelete={() => {
+                          const updatedTags = values.tagsAr.filter(
+                            (_, i) => i !== index
+                          );
+                          setFieldValue("tagsAr", updatedTags);
+                        }}
+                      />
+                    ))}
+                  </div>
+                  <input
+                    type="text"
+                    name="newTagAr"
+                    placeholder="Enter Tag Name"
+                    value={values.newTagAr}
+                    onChange={(e) => setFieldValue("newTagAr", e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && values.newTagAr.trim()) {
+                        e.preventDefault();
+                        setFieldValue("tagsAr", [
+                          ...values.tagsAr,
+                          values.newTagAr.trim(),
+                        ]);
+                        setFieldValue("newTagAr", "");
+                      }
+                    }}
+                    className="w-full bg-transparent outline-none placeholder:text-14"
                   />
-                )}
+                </div>
                 <Field
                   as="textarea"
                   name="description"
@@ -181,5 +256,4 @@ function EditCategory() {
     </div>
   );
 }
-
 export default EditCategory;
