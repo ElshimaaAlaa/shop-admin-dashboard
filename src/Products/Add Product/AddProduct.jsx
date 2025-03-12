@@ -9,10 +9,11 @@ import { addProduct } from "../../ApiServices/AddNewProductApi";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 import { UploadProductImage } from "../../Components/Upload Image/UploadProductImages";
 import "./style.scss";
-import { TagsInput } from "../../Components/Tag Input/TagInput";
 
 const AddProduct = () => {
   const [categories, setCategories] = useState([]);
+  const [selectedCategoryTags, setSelectedCategoryTags] = useState([]);
+  const [categoryType, setCategoryType] = useState(null); // Add this state
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [previewImages, setPreviewImages] = useState([]);
@@ -24,12 +25,9 @@ const AddProduct = () => {
     category_id: "",
     tag_number: "",
     gender: "",
-    upon_return: "",
+    return_percentage: "",
     stock: "",
-    tags: {
-      en: [],
-      ar: [],
-    },
+    tags_ids: [],
     description: "",
     price: "",
     cost: "",
@@ -37,6 +35,12 @@ const AddProduct = () => {
     discount_percentage: "",
     discount_expire_at: "",
     images: [],
+    color_name: "", // Add color fields
+    color_code: "",
+    color_stock: "",
+    color_price: "",
+    color_discount_percentage: "",
+    color_discount_expire_at: "",
   };
 
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
@@ -48,9 +52,8 @@ const AddProduct = () => {
       formData.append("category_id", values.category_id);
       formData.append("tag_number", values.tag_number);
       formData.append("gender", values.gender);
-      formData.append("upon_return", values.upon_return);
+      formData.append("return_percentage", values.return_percentage);
       formData.append("stock", values.stock);
-      // formData.append("tags", values.tags);
       formData.append("description[ar]", values.description);
       formData.append("description[en]", values.description);
       formData.append("price", values.price);
@@ -59,22 +62,26 @@ const AddProduct = () => {
       formData.append("discount_percentage", values.discount_percentage);
       formData.append("discount_expire_at", values.discount_expire_at);
 
+      // Append color fields if category type is "Color"
+      if (categoryType === "Color") {
+        formData.append("color_name", values.color_name);
+        formData.append("color_code", values.color_code);
+        formData.append("color_stock", values.color_stock);
+        formData.append("color_price", values.color_price);
+        formData.append("color_discount_percentage", values.color_discount_percentage);
+        formData.append("color_discount_expire_at", values.color_discount_expire_at);
+      }
+
       values.images.forEach((image, index) => {
         formData.append(`images[${index}]`, image);
       });
-      values.tags.en.forEach((tag) => {
-        formData.append("tags[en][]", tag);
+
+      values.tags_ids.forEach((tagId, index) => {
+        formData.append(`tags_ids[${index}]`, tagId);
       });
 
-      // Append Arabic tags (even if empty)
-      values.tags.ar.forEach((tag) => {
-        formData.append("tags[ar][]", tag);
-      });
-
-      console.log("Submitting data:", Object.fromEntries(formData.entries()));
-
+      console.log("Submitted data:", Object.fromEntries(formData.entries()));
       const productData = await addProduct(formData);
-      console.log("Response:", productData);
       setShowModal(true);
     } catch (error) {
       console.error("Error submitting form:", error.response?.data || error);
@@ -86,7 +93,7 @@ const AddProduct = () => {
       setIsLoading(false);
     }
   };
-  //to fetch categories to get gategory id
+
   useEffect(() => {
     const getCategories = async () => {
       try {
@@ -99,6 +106,27 @@ const AddProduct = () => {
     getCategories();
   }, []);
 
+  const handleCategoryChange = (categoryId, setFieldValue) => {
+    const selectedCategory = categories.find(
+      (cat) => cat.id === Number(categoryId)
+    );
+    if (selectedCategory) {
+      // Combine Arabic and English tags into a single array
+      const arabicTags = selectedCategory.tags?.ar || [];
+      const englishTags = selectedCategory.tags?.en || [];
+      const combinedTags = [...arabicTags, ...englishTags]; // Combine both sets of tags
+      setSelectedCategoryTags(combinedTags);
+      setFieldValue("category_id", categoryId);
+
+      // Set the category type based on the selected category's type_name
+      setCategoryType(selectedCategory.type_name); // Use type_name instead of type
+    } else {
+      setSelectedCategoryTags([]);
+      setFieldValue("category_id", "");
+      setCategoryType(null); // Reset category type if no category is selected
+    }
+  };
+
   const handleImageChange = (event, setFieldValue) => {
     const files = Array.from(event.currentTarget.files);
     const imageUrls = files.map((file) => URL.createObjectURL(file));
@@ -106,8 +134,16 @@ const AddProduct = () => {
     setFieldValue("images", files);
   };
 
+  const handleTagChange = (tagId, setFieldValue, values) => {
+    const selectedTags = values.tags_ids.includes(tagId)
+      ? values.tags_ids.filter((id) => id !== tagId) // Remove tag if already selected
+      : [...values.tags_ids, tagId]; // Add tag if not selected
+
+    setFieldValue("tags_ids", selectedTags);
+  };
+
   return (
-    <div className="bg-gray-100 h-150vh relative">
+    <div className="bg-gray-100 overflow-y-auto h-150vh relative">
       <Helmet>
         <title>Add New Product - VERTEX</title>
         <meta name="description" content="Add a new product to VERTEX" />
@@ -127,6 +163,10 @@ const AddProduct = () => {
                     name="category_id"
                     as="select"
                     className="w-full p-3 border-2 h-14 bg-transparent border-gray-200 rounded-lg outline-none placeholder:text-14 focus:border-2 focus:border-primary"
+                    onChange={(e) => {
+                      const categoryId = e.target.value;
+                      handleCategoryChange(categoryId, setFieldValue);
+                    }}
                   >
                     <option value="">Category</option>
                     {categories.map((category) => (
@@ -155,15 +195,33 @@ const AddProduct = () => {
                       %
                     </span>
                     <Field
-                      name="upon_return"
+                      name="return_percentage"
                       placeholder="percentage (upon return)"
                       className="outline-none ms-2"
                     />
                   </div>
                   <InputField name="stock" placeholder="Stock" />
                 </div>
-                <TagsInput setFieldValue={setFieldValue} values={values} />
-
+                <div className="mt-3">
+                  <label>Tags</label>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedCategoryTags.map((tag, index) => (
+                      <label key={index} className="flex items-center">
+                        <input
+                          type="checkbox"
+                          name="tags_ids"
+                          value={index}
+                          checked={values.tags_ids.includes(index)}
+                          onChange={() =>
+                            handleTagChange(index, setFieldValue, values)
+                          }
+                          className="mr-2"
+                        />
+                        {tag}
+                      </label>
+                    ))}
+                  </div>
+                </div>
                 <Field
                   as="textarea"
                   placeholder="Description"
@@ -209,7 +267,7 @@ const AddProduct = () => {
                     </svg>
                   </span>
                 </label>
-                <p className="font-bold text-15">Schedule a discount</p>
+                <div>Schedule a discount</div>
               </div>
               {isDiscountScheduled && (
                 <div className="flex gap-4">
@@ -225,6 +283,59 @@ const AddProduct = () => {
                 </div>
               )}
             </div>
+            {/* Inventory Fields for Colors */}
+            {categoryType === "Color" && (
+              <div className="bg-white p-5 rounded-md mt-5 mx-10 w-890">
+                <h2 className="font-bold mb-5">Inventory</h2>
+                <div className="flex flex-col gap-4">
+                  <div className="flex gap-4">
+                    <InputField name="color_name" placeholder="Color Name" />
+                    <InputField name="color_code" placeholder="Color Code (e.g., #FFFFFF)" />
+                  </div>
+                  <div className="flex gap-4">
+                    <InputField name="color_stock" placeholder="Stock" />
+                    <InputField name="color_price" placeholder="Price" />
+                  </div>
+                  <div className="flex items-center gap-3 mt-3 mb-3">
+                    <label className="inline-flex items-center cursor-pointer">
+                      <Field
+                        as="input"
+                        type="checkbox"
+                        name="schedule_discount"
+                        className="hidden"
+                        onChange={(e) => {
+                          setIsDiscountScheduled(e.target.checked);
+                          setFieldValue("schedule_discount", e.target.checked);
+                        }}
+                      />
+                      <span className="w-4 h-4 border-2 border-gray-300 rounded flex items-center justify-center transition-all duration-200 peer-checked:border-orange-500">
+                        <svg
+                          className="w-3 h-3 text-primary opacity-0 transition-all duration-200 peer-checked:opacity-100"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
+                        </svg>
+                      </span>
+                    </label>
+                    <div>Schedule a discount</div>
+                  </div>
+                  {isDiscountScheduled && (
+                    <div className="flex gap-4">
+                      <InputField
+                        name="color_discount_percentage"
+                        placeholder="Discount"
+                      />
+                      <InputField
+                        name="color_discount_expire_at"
+                        type="date"
+                        placeholder="Discount Expiry Date"
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
             <Footer
               saveText="Save"
               cancelText="Cancel"

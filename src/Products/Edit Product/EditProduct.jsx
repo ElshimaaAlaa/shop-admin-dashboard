@@ -23,6 +23,7 @@ function EditProduct() {
   const initialValues = {
     name: product.name || "",
     cost: product.cost || "",
+    return_percentage:product.return_percentage || "",
     revenue: product.revenue || "",
     description: product.description || "", // Ensure this matches the API response
     tag_number: product.tag_number || "",
@@ -77,13 +78,13 @@ function EditProduct() {
     formData.append("discount_expire_at", values.discount_expire_at || "");
     formData.append("stock", values.stock || "");
 
-    values.sizes.forEach((size, index) => {
-      formData.append(`sizes[${index}]`, size);
-    });
+    // values.sizes.forEach((size, index) => {
+    //   formData.append(`sizes[${index}]`, size);
+    // });
 
-    values.colors.forEach((color, index) => {
-      formData.append(`colors[${index}]`, color);
-    });
+    // values.colors.forEach((color, index) => {
+    //   formData.append(`colors[${index}]`, color);
+    // });
 
     // Debugging: Log the formData
     for (let [key, value] of formData.entries()) {
@@ -145,20 +146,41 @@ function EditProduct() {
                     as="select"
                     className="w-full p-3 border-2 h-14 bg-transparent border-gray-200 rounded-lg outline-none placeholder:text-14 focus:border-2 focus:border-primary"
                   >
-                    {/* <option value="">Category</option>
+                    <option value="">Category</option>
                     {categories.map((category) => (
                       <option key={category.id} value={category.id}>
                         {category.name}
                       </option>
-                    ))} */}
+                    ))}
                   </Field>
                 </div>
                 <div className="flex items-center gap-4 mt-3">
                   <InputField name={"tag_number"} placeholder={"Tag Number"} />
+                  <Field
+                    as="select"
+                    name="gender"
+                    className="w-full p-3 border-2 h-14 bg-transparent border-gray-200 rounded-lg outline-none placeholder:text-14 focus:border-2 focus:border-primary"
+                  >
+                    <option value="">Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="children">Children</option>
+                  </Field>
                 </div>
                 <div className="flex gap-4 mt-3 mb-3">
+                  <div className="flex items-center w-full border-2 bg-transparent border-gray-200 rounded-lg outline-none placeholder:text-14 focus-within:border-primary">
+                    <span className="text-lg h-full w-10 text-center pt-3 font-bold text-gray-600 bg-gray-200">
+                      %
+                    </span>
+                    <Field
+                      name="return_percentage"
+                      placeholder="percentage (upon return)"
+                      className="outline-none ms-2"
+                    />
+                  </div>
                   <InputField name="stock" placeholder="Stock" />
                 </div>
+                <InputField name={"tags"} placeholder={'Tags'}/>
                 <Field
                   as="textarea"
                   placeholder="Description"

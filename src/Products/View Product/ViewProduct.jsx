@@ -7,7 +7,7 @@ const FALLBACK_TEXT = "__";
 
 const InventoryItem = ({ label, value }) => (
   <div>
-    <h2 className="text-gray-400">{label}</h2>
+    <h2 className="text-gray-400 text-16">{label}</h2>
     <p className="text-14 mt-1">{value || FALLBACK_TEXT}</p>
   </div>
 );
@@ -63,7 +63,7 @@ function ViewProduct() {
   const hasSizes = productData.sizes && productData.sizes.length > 0;
 
   return (
-    <div className="bg-gray-100 flex flex-col h-">
+    <div className="bg-gray-100 flex flex-col h-150vh">
       <Helmet>
         <title>View Product - VERTEX</title>
         <meta name="description" content="View product details in VERTEX" />
@@ -75,38 +75,56 @@ function ViewProduct() {
         <div className="flex gap-5 mx-10">
           {/* Product Basic Information */}
           <div className="bg-white p-5 rounded-md w-full">
-            <h2 className="font-bold mb-3 text-xl">Basic Information</h2>
+            <h2 className="font-bold mb-3 text-17">Basic Information</h2>
             <div className="w-full bg-transparent border border-gray-200 rounded-md ps-2 pt-2 pb-2 block">
               <div className="flex items-center p-3 w-560px justify-between">
                 <InventoryItem label="Product Name" value={productData.name} />
-                <InventoryItem label="Category Name" value={productData.category?.name} />
+                <InventoryItem
+                  label="Category Name"
+                  value={productData.category?.name}
+                />
               </div>
               <div className="flex items-center w-500px justify-between p-3">
-                <InventoryItem label="Tag Number" value={productData.tag_number} />
+                <InventoryItem
+                  label="Tag Number"
+                  value={productData.tag_number}
+                />
                 <InventoryItem label="Gender" value={productData.gender} />
               </div>
               <div className="flex items-center justify-between w-485px p-3">
-                <InventoryItem label="Amount percentage (upon return)" value={productData.upon_return} />
+                <InventoryItem
+                  label="Amount percentage (upon return)"
+                  value={productData.return_percentage}
+                />
                 <InventoryItem label="Stock" value={productData.stock} />
               </div>
               <div className="p-3">
                 <h2 className="text-gray-500">Tags</h2>
-                <p className="flex items-center gap-2 mt-1 w text-14 bg-customOrange-mediumOrange text-primary w-40 text-center p-2 rounded-md">
-                  {productData.category?.tags?.length ? (
-                    productData.tags.map((tag) => <span key={tag}>{tag}</span>)
+                <div className="flex items-center gap-2 mt-1 text-14 bg-customOrange-mediumOrange text-primary w-fit text-center p-2 rounded-md">
+                  {productData.tags?.length ? (
+                    productData.tags.map((tag, index) => (
+                      <span key={index} className="inline-block">
+                        {tag}
+                      </span>
+                    ))
                   ) : (
-                    <p>No tags available</p>
+                    <span>
+                      No tags available
+                    </span>
                   )}
-                </p>
+                </div>
               </div>
               <div className="p-3">
-                <InventoryItem label="Description" value={productData.description} />
+                <InventoryItem
+                  label="Description"
+                  value={productData.description}
+                />
               </div>
             </div>
           </div>
           {/* Product Image & Thumbnails */}
           <div className="bg-white rounded-md w-2/4 p-5 h-72">
-            <p className="font-bold text-lg">Product Icons / Images</p>
+            <p className="font-bold text-17">Product Icons / Images</p>
             <div className="image-section">
               {mainImage ? (
                 <div className="main-image">
@@ -144,25 +162,37 @@ function ViewProduct() {
         {/* Stock & Pricing Information */}
         <div className="flex gap-5 my-5 mx-10">
           <div className="w-900 bg-white p-5 rounded-md">
-            <h2 className="font-bold mb-3 text-xl">Pricing</h2>
-            <div className="bg-transparent border border-gray-200 rounded-md ps-2 pt-2 pb-2 pe-80 block">
-              <div className="flex items-center gap-x-96 p-3">
-                <InventoryItem label="Price (for piece)" value={productData.price} />
+            <h2 className="font-bold mb-3 text-17">Pricing</h2>
+            <div className="bg-transparent border border-gray-200 rounded-md ps-2 pt-2 pb-2  block">
+              <div className="flex items-center p-3 w-500px justify-between">
+                <InventoryItem
+                  label="Price(for piece)"
+                  value={productData.price}
+                />
                 <InventoryItem label="Cost" value={productData.cost} />
               </div>
-              <div className="flex items-center gap-x-400 p-3">
-                <InventoryItem label="Revenue" value={`${productData.revenue} $`} />
-                <InventoryItem label="Discount" value={productData.discount_percentage} />
+              <div className="flex items-center gap p-3 w-530px justify-between">
+                <InventoryItem
+                  label="Revenue"
+                  value={`${productData.revenue} $`}
+                />
+                <InventoryItem
+                  label="Discount"
+                  value={productData.discount_percentage}
+                />
               </div>
               <div className="flex items-center p-3">
-                <InventoryItem label="Date" value={productData.discount_expire_at} />
+                <InventoryItem
+                  label="Date"
+                  value={productData.discount_expire_at}
+                />
               </div>
             </div>
           </div>
         </div>
         {(hasColors || hasSizes) && (
           <div className="w-900 p-5 mb-7 mx-10 bg-white rounded-md">
-            <h2 className="font-bold mb-8 text-xl">Inventory</h2>
+            <h2 className="font-bold mb-8 text-17">Inventory</h2>
             {hasColors && (
               <div className="">
                 <div className="">
@@ -182,8 +212,14 @@ function ViewProduct() {
                     <InventoryItem label="Size" value={size.name} />
                     <InventoryItem label="Stock" value={size.stock} />
                     <InventoryItem label="Price" value={size.price} />
-                    <InventoryItem label="Discount" value={size.discount_percentage} />
-                    <InventoryItem label="Date" value={size.discount_expire_at} />
+                    <InventoryItem
+                      label="Discount"
+                      value={size.discount_percentage}
+                    />
+                    <InventoryItem
+                      label="Date"
+                      value={size.discount_expire_at}
+                    />
                   </div>
                 ))}
               </div>
@@ -194,5 +230,4 @@ function ViewProduct() {
     </div>
   );
 }
-
 export default ViewProduct;
