@@ -147,25 +147,41 @@ function AllProducts() {
                     <td className="px-6 py-3 border-t border-r w-250 text-customGray-grayText">
                       {product.stock}
                     </td>
-                    <td className="px-6 py-3 border-t border-r w-250 ">
-                      {product.colors.map((color) => (
-                        <div key={color.id} className="flex items-center gap-2">
+                    <td
+                      className="px-6 py-3 border-t border-r w-250 cursor-pointer"
+                      onClick={() => navigate(`/Home/products/${product.id}`)}
+                    >
+                      <div className="flex items-center gap-1">
+                        {product.colors.slice(0, 4).map((color) => (
                           <div
-                            className="w-6 h-6 rounded-full"
+                            key={color.id}
+                            className="w-7 h-7 rounded-full -ms-4"
                             style={{ backgroundColor: color.code }}
                           />
-                        </div>
-                      ))}
+                        ))}
+                        {product.colors.length > 4 && (
+                          <div className="w-7 h-7 font-bold flex items-center justify-center rounded-full bg-gray-200 text-13 -ms-4">
+                            +{product.colors.length - 4}
+                          </div>
+                        )}
+                      </div>
                     </td>
+
                     <td className="px-6 py-3 border-t ">
                       <div className="flex items-center">
                         <button
                           className="p-1"
                           onClick={() =>
-                            navigate(`/Home/EditProduct/${product.id}`, { state: product })
+                            navigate(`/Home/EditProduct/${product.id}`, {
+                              state: product,
+                            })
                           }
                         >
-                          <img src="/assets/svgs/editIcon.svg" alt="edit product" className="w-7"/>
+                          <img
+                            src="/assets/svgs/editIcon.svg"
+                            alt="edit product"
+                            className="w-7"
+                          />
                         </button>
                         <DeleteProduct
                           id={product.id}

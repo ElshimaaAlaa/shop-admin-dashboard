@@ -31,7 +31,7 @@ export const ImageUpload = ({ previewImage, onImageChange }) => {
                 aria-label="Upload another image"
               >
                 <img
-                  src="/assets/images/upload-minimalistic_svgrepo.com.png"
+                  src="/assets/svgs/upload-file.svg"
                   alt="Upload another-image"
                   className="h-5"
                 />

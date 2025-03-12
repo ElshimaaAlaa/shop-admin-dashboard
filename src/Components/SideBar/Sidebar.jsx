@@ -80,7 +80,7 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`sidebar bg-black overflow-hidden h-150vh w-20 flex flex-col gap-7 ${
+      className={`sidebar bg-black overflow-hidden h-150vh w-20 flex flex-col gap-5 ${
         expanded ? "expanded" : ""
       }`}
       onMouseEnter={toggleSidebar}

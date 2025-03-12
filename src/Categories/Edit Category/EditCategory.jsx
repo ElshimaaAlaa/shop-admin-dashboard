@@ -84,6 +84,11 @@ function EditCategory() {
       </button>
     </div>
   );
+  if (showModal) {
+    document.body.classList.add("no-scroll");
+  } else {
+    document.body.classList.remove("no-scroll");
+  }
 
   return (
     <div className="bg-gray-100 h-150vh flex flex-col relative">
@@ -114,7 +119,7 @@ function EditCategory() {
                   <Field
                     name="type"
                     as="select"
-                    className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md h-14 p-2 block placeholder:text-14 focus:border-primary"
+                    className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md h-51px p-2 block placeholder:text-14 focus:border-primary"
                     aria-label="Category type"
                     value={values.type}
                   >
@@ -144,7 +149,7 @@ function EditCategory() {
                   <input
                     type="text"
                     name="newTagEn"
-                    placeholder="Enter Tag Name"
+                    placeholder="Enter English Tags Name"
                     value={values.newTagEn}
                     onChange={(e) => setFieldValue("newTagEn", e.target.value)}
                     onKeyDown={(e) => {
@@ -180,7 +185,7 @@ function EditCategory() {
                   <input
                     type="text"
                     name="newTagAr"
-                    placeholder="Enter Tag Name"
+                    placeholder="Enter Arabic Tags Name"
                     value={values.newTagAr}
                     onChange={(e) => setFieldValue("newTagAr", e.target.value)}
                     onKeyDown={(e) => {

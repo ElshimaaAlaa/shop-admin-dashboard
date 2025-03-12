@@ -16,7 +16,7 @@ const TypeField = () => (
     placeholder="Type"
     as="select"
     name="type"
-    className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md h-14 p-2 block focus:border-2 focus:border-primary"
+    className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md h-51px p-2 block focus:border-2 focus:border-primary"
   >
     <option className="option text-14">Type</option>
     <option value="1" className="option">
@@ -57,8 +57,9 @@ function AddCategory() {
     image: Yup.mixed().required("Image is required"),
     type: Yup.string().required("Type is required"),
     tags: Yup.object({
-      ar: Yup.array()
-        .of(Yup.string().min(2, "Arabic tag must be at least 2 characters")),
+      ar: Yup.array().of(
+        Yup.string().min(2, "Arabic tag must be at least 2 characters")
+      ),
       en: Yup.array()
         .of(Yup.string().min(2, "English tag must be at least 2 characters"))
         .min(1, "At least one French tag is required"),
@@ -68,26 +69,26 @@ function AddCategory() {
   const handleSubmit = async (values) => {
     console.log("Formik values:", values);
     setIsLoading(true);
-  
+
     const formData = new FormData();
     formData.append("name[ar]", values.name);
     formData.append("name[en]", values.name);
     formData.append("description[ar]", values.description);
     formData.append("description[en]", values.description);
     formData.append("type", values.type);
-  
+
     values.tags.en.forEach((tag) => {
       formData.append("tags[en][]", tag);
     });
-  
+
     values.tags.ar.forEach((tag) => {
       formData.append("tags[ar][]", tag);
     });
-  
+
     if (values.image) {
       formData.append("image", values.image);
     }
-  
+
     try {
       const data = await addCategory(formData);
       console.log("Backend Response:", data);
@@ -102,7 +103,11 @@ function AddCategory() {
       setIsLoading(false);
     }
   };
-
+  if (showModal) {
+    document.body.classList.add("no-scroll");
+  } else {
+    document.body.classList.remove("no-scroll");
+  }
   return (
     <div className="bg-gray-100 h-150vh relative">
       <Helmet>
