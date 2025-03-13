@@ -18,7 +18,7 @@ const ColorItem = React.memo(({ color }) => (
       <img
         src={color.image || "/assets/images/product.png"}
         alt={`Color: ${color.name}`}
-        className="h-20 w-20 object-cover rounded-xl"
+        className="h-16 w-16 object-cover rounded-xl"
       />
     </div>
     <div>
@@ -47,6 +47,7 @@ function ViewProduct() {
           },
         });
         if (response.status === 200) {
+          console.log("API Response:", response.data); // Log the response
           setProductData(response.data.data);
           setMainImage(response.data.data.images?.[0]?.src);
         } else {
@@ -63,7 +64,7 @@ function ViewProduct() {
   const hasSizes = productData.sizes && productData.sizes.length > 0;
 
   return (
-    <div className="bg-gray-100 flex flex-col h-150vh">
+    <div className="bg-gray-100 flex flex-col">
       <Helmet>
         <title>View Product - VERTEX</title>
         <meta name="description" content="View product details in VERTEX" />
@@ -108,9 +109,7 @@ function ViewProduct() {
                       </span>
                     ))
                   ) : (
-                    <span>
-                      No tags available
-                    </span>
+                    <span>No tags available</span>
                   )}
                 </div>
               </div>
@@ -192,12 +191,24 @@ function ViewProduct() {
         </div>
         {(hasColors || hasSizes) && (
           <div className="w-900 p-5 mb-7 mx-10 bg-white rounded-md">
-            <h2 className="font-bold mb-8 text-17">Inventory</h2>
+            <h2 className="font-bold mb-5 text-17">Inventory</h2>
             {hasColors && (
               <div className="">
                 <div className="">
                   {productData.colors.map((color, index) => (
-                    <ColorItem key={index} color={color} />
+                    <div className="flex items-center justify-between mb-3 border-2 border-gray-200 rounded-lg p-3">
+                      <ColorItem key={index} color={color} />
+                      <InventoryItem label="Stock" value={color.stock} />
+                      <InventoryItem label="Price" value={color.price} />
+                      <InventoryItem
+                      label="Discount"
+                      value={color.discount_percentage}
+                    />
+                    <InventoryItem
+                      label="Date"
+                      value={color.discount_expire_at}
+                    />
+                    </div>
                   ))}
                 </div>
               </div>
@@ -207,7 +218,7 @@ function ViewProduct() {
                 {productData.sizes.map((size, index) => (
                   <div
                     key={index}
-                    className="flex items-center border-2 border-gray-200 rounded-md mb-4 p-3 justify-between"
+                    className="flex items-center border-2 border-gray-200 rounded-lg mb-4 p-3 justify-between"
                   >
                     <InventoryItem label="Size" value={size.name} />
                     <InventoryItem label="Stock" value={size.stock} />

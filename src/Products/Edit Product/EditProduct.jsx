@@ -20,17 +20,22 @@ function EditProduct() {
   const navigate = useNavigate();
   const product = state || {};
 
+  // Log the product object for debugging
+  useEffect(() => {
+    console.log("Product from API:", product);
+  }, [product]);
+
   const initialValues = {
     name: product.name || "",
     cost: product.cost || "",
-    return_percentage:product.return_percentage || "",
+    return_percentage: product.return_percentage || "",
     revenue: product.revenue || "",
-    description: product.description || "", // Ensure this matches the API response
+    description: product.description || "",
     tag_number: product.tag_number || "",
     gender: product.gender || "",
-    tags: product.tags || [],
+    tags_id: product.tags_id || [], // Ensure tags are initialized
     images: product.images || [],
-    category_id: product.category_id || "", // Ensure this is set correctly
+    category_id: product.category?.id || "", // Ensure category_id is initialized
     price: product.price || 0,
     discount_percentage: product.discount_percentage || 0,
     discount_expire_at: product.discount_expire_at || "",
@@ -39,15 +44,6 @@ function EditProduct() {
     colors: product.colors || [],
   };
 
-  useEffect(() => {
-    console.log("Product from API:", product); // Debugging
-    if (product.images && product.images.length > 0) {
-      const imageUrls = product.images.map((img) => img.src);
-      console.log("Initializing previewImages:", imageUrls); // Debugging
-      setPreviewImages(imageUrls);
-    }
-  }, [product]);
-
   const handleSubmit = async (values) => {
     setIsLoading(true);
     const formData = new FormData();
@@ -55,8 +51,8 @@ function EditProduct() {
     // Append fields to formData
     formData.append("name[ar]", values.name);
     formData.append("name[en]", values.name);
-    formData.append("description[ar]", values.description || ""); // Ensure description is not undefined
-    formData.append("description[en]", values.description || ""); // Ensure description is not undefined
+    formData.append("description[ar]", values.description || "");
+    formData.append("description[en]", values.description || "");
     formData.append("cost", values.cost || "");
     formData.append("revenue", values.revenue || "");
     formData.append("tag_number", values.tag_number || "");
@@ -65,9 +61,8 @@ function EditProduct() {
     if (values.images && values.images.length > 0) {
       values.images.forEach((image, index) => {
         if (image instanceof File) {
-          formData.append(`images[${index}]`, image); // Append File objects directly
+          formData.append(`images[${index}]`, image);
         } else if (image.src) {
-          // If the image is an object with a `src` property, append the URL
           formData.append(`images[${index}]`, image.src);
         }
       });
@@ -77,14 +72,7 @@ function EditProduct() {
     formData.append("discount_percentage", values.discount_percentage || "");
     formData.append("discount_expire_at", values.discount_expire_at || "");
     formData.append("stock", values.stock || "");
-
-    // values.sizes.forEach((size, index) => {
-    //   formData.append(`sizes[${index}]`, size);
-    // });
-
-    // values.colors.forEach((color, index) => {
-    //   formData.append(`colors[${index}]`, color);
-    // });
+    formData.append("tags_id", values.tags_id || "");
 
     // Debugging: Log the formData
     for (let [key, value] of formData.entries()) {
@@ -145,6 +133,7 @@ function EditProduct() {
                     name="category_id"
                     as="select"
                     className="w-full p-3 border-2 h-14 bg-transparent border-gray-200 rounded-lg outline-none placeholder:text-14 focus:border-2 focus:border-primary"
+                    value={values.category_id} // Use the value prop to control the selected option
                   >
                     <option value="">Category</option>
                     {categories.map((category) => (
@@ -180,7 +169,15 @@ function EditProduct() {
                   </div>
                   <InputField name="stock" placeholder="Stock" />
                 </div>
-                <InputField name={"tags"} placeholder={'Tags'}/>
+                <InputField
+                  name={"tags_id"}
+                  placeholder={"Tags"}
+                  value={values.tags?.join(", ")} // Display tags as a comma-separated string
+                  onChange={(e) => {
+                    const tagsArray = e.target.value.split(",").map((tag) => tag.trim());
+                    setFieldValue("tags_id", tagsArray);
+                  }}
+                />
                 <Field
                   as="textarea"
                   placeholder="Description"

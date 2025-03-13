@@ -103,11 +103,11 @@ function AddCategory() {
       setIsLoading(false);
     }
   };
-  if (showModal) {
-    document.body.classList.add("no-scroll");
-  } else {
-    document.body.classList.remove("no-scroll");
-  }
+  // if (showModal) {
+  //   document.body.classList.add("no-scroll");
+  // } else {
+  //   document.body.classList.remove("no-scroll");
+  // }
   return (
     <div className="bg-gray-100 h-150vh relative">
       <Helmet>

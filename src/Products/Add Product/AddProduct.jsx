@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form, Field, FieldArray } from "formik";
 import { Helmet } from "react-helmet";
 import InputField from "../../Components/Input Field/InputField";
 import { fetchCategories } from "../../ApiServices/AllCategoriesApi";
@@ -9,6 +9,8 @@ import { addProduct } from "../../ApiServices/AddNewProductApi";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 import { UploadProductImage } from "../../Components/Upload Image/UploadProductImages";
 import "./style.scss";
+import { ImageUpload } from "../../Components/Upload Image/UploadImage";
+import { AiOutlineClose } from "react-icons/ai";
 
 const AddProduct = () => {
   const [categories, setCategories] = useState([]);
@@ -19,8 +21,6 @@ const AddProduct = () => {
   const [previewImages, setPreviewImages] = useState([]);
   const [isDiscountScheduled, setIsDiscountScheduled] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [colors, setColors] = useState([]);
-  const [sizes, setSizes] = useState([]);
 
   const initialValues = {
     name: "",
@@ -37,12 +37,8 @@ const AddProduct = () => {
     discount_percentage: "",
     discount_expire_at: "",
     images: [],
-    color_name: "",
-    color_code: "",
-    color_stock: "",
-    color_price: "",
-    color_discount_percentage: "",
-    color_discount_expire_at: "",
+    colors: [], // Add colors to initialValues
+    sizes: [], // Add sizes to initialValues
   };
 
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
@@ -66,7 +62,7 @@ const AddProduct = () => {
 
       // Append colors if category type is "Color" or "Both"
       if (categoryType === "Color" || categoryType === "Both") {
-        colors.forEach((color, index) => {
+        values.colors.forEach((color, index) => {
           formData.append(`colors[${index}][name]`, color.name);
           formData.append(`colors[${index}][code]`, color.code);
           formData.append(`colors[${index}][stock]`, color.stock);
@@ -84,7 +80,7 @@ const AddProduct = () => {
 
       // Append sizes if category type is "Size" or "Both"
       if (categoryType === "Size" || categoryType === "Both") {
-        sizes.forEach((size, index) => {
+        values.sizes.forEach((size, index) => {
           formData.append(`sizes[${index}][name]`, size.name);
           formData.append(`sizes[${index}][stock]`, size.stock);
           formData.append(`sizes[${index}][price]`, size.price);
@@ -99,16 +95,18 @@ const AddProduct = () => {
         });
       }
 
+      // Append images
       values.images.forEach((image, index) => {
         formData.append(`images[${index}]`, image);
       });
 
+      // Append tags
       values.tags_ids.forEach((tagId, index) => {
         formData.append(`tags_ids[${index}]`, tagId);
       });
 
       console.log("Submitted data:", Object.fromEntries(formData.entries()));
-      const productData = await addProduct(formData);
+      await addProduct(formData);
       setShowModal(true);
     } catch (error) {
       console.error("Error submitting form:", error.response?.data || error);
@@ -143,7 +141,7 @@ const AddProduct = () => {
       const combinedTags = [...arabicTags, ...englishTags];
       setSelectedCategoryTags(combinedTags);
       setFieldValue("category_id", categoryId);
-      setCategoryType(selectedCategory.type_name); // Ensure this is set correctly
+      setCategoryType(selectedCategory.type_name);
     } else {
       setSelectedCategoryTags([]);
       setFieldValue("category_id", "");
@@ -160,53 +158,13 @@ const AddProduct = () => {
 
   const handleTagChange = (tagId, setFieldValue, values) => {
     const selectedTags = values.tags_ids.includes(tagId)
-      ? values.tags_ids.filter((id) => id !== tagId) // Remove tag if already selected
-      : [...values.tags_ids, tagId]; // Add tag if not selected
-
+      ? values.tags_ids.filter((id) => id !== tagId)
+      : [...values.tags_ids, tagId];
     setFieldValue("tags_ids", selectedTags);
   };
 
-  const addColor = () => {
-    setColors([
-      ...colors,
-      {
-        name: "",
-        code: "",
-        stock: "",
-        price: "",
-        discount_percentage: "",
-        discount_expire_at: "",
-      },
-    ]);
-  };
-
-  const removeColor = (index) => {
-    const newColors = [...colors];
-    newColors.splice(index, 1);
-    setColors(newColors);
-  };
-
-  const addSize = () => {
-    setSizes([
-      ...sizes,
-      {
-        name: "",
-        stock: "",
-        price: "",
-        discount_percentage: "",
-        discount_expire_at: "",
-      },
-    ]);
-  };
-
-  const removeSize = (index) => {
-    const newSizes = [...sizes];
-    newSizes.splice(index, 1);
-    setSizes(newSizes);
-  };
-
   return (
-    <div className="bg-gray-100 overflow-y-auto h-150vh relative">
+    <div className="bg-gray-100 h-200vh relative">
       <Helmet>
         <title>Add New Product - VERTEX</title>
         <meta name="description" content="Add a new product to VERTEX" />
@@ -352,431 +310,376 @@ const AddProduct = () => {
             {categoryType === "Color" && (
               <div className="bg-white p-5 rounded-md mt-5 mx-10 w-890">
                 <h2 className="font-bold mb-5">Inventory</h2>
-                {colors.map((color, index) => (
-                  <div key={index} className="flex flex-col gap-4 mb-4">
-                    <button onClick={() => removeColor(index)}>x</button>
-                    <div className="flex gap-4">
-                      <InputField
-                        name={`colors[${index}].name`}
-                        placeholder="Color Name"
-                        value={color.name}
-                        onChange={(e) => {
-                          const newColors = [...colors];
-                          newColors[index].name = e.target.value;
-                          setColors(newColors);
-                        }}
-                      />
-                      <InputField
-                        name={`colors[${index}].code`}
-                        placeholder="Color Code (e.g., #FFFFFF)"
-                        value={color.code}
-                        onChange={(e) => {
-                          const newColors = [...colors];
-                          newColors[index].code = e.target.value;
-                          setColors(newColors);
-                        }}
-                      />
-                    </div>
-                    <div className="flex gap-4">
-                      <InputField
-                        name={`colors[${index}].stock`}
-                        placeholder="Stock"
-                        value={color.stock}
-                        onChange={(e) => {
-                          const newColors = [...colors];
-                          newColors[index].stock = e.target.value;
-                          setColors(newColors);
-                        }}
-                      />
-                      <InputField
-                        name={`colors[${index}].price`}
-                        placeholder="Price"
-                        value={color.price}
-                        onChange={(e) => {
-                          const newColors = [...colors];
-                          newColors[index].price = e.target.value;
-                          setColors(newColors);
-                        }}
-                      />
-                    </div>
-                    <div className="flex items-center gap-3 mt-3 mb-3">
-                      <label className="inline-flex items-center cursor-pointer">
-                        <input
-                          type="checkbox"
-                          name="schedule_discount"
-                          className="hidden"
-                          onChange={(e) => {
-                            setIsDiscountScheduled(e.target.checked);
-                            setFieldValue(
-                              "schedule_discount",
-                              e.target.checked
-                            );
-                          }}
-                        />
-                        <span className="w-4 h-4 border-2 border-gray-300 rounded flex items-center justify-center transition-all duration-200 peer-checked:border-orange-500">
-                          <svg
-                            className="w-3 h-3 text-primary opacity-0 transition-all duration-200 peer-checked:opacity-100"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                          >
-                            <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
-                          </svg>
-                        </span>
-                      </label>
-                      <div>Schedule a discount</div>
-                    </div>
-                    {isDiscountScheduled && (
-                      <div className="flex gap-4">
-                        <InputField
-                          name={`colors[${index}].discount_percentage`}
-                          placeholder="Discount"
-                          value={color.discount_percentage}
-                          onChange={(e) => {
-                            const newColors = [...colors];
-                            newColors[index].discount_percentage =
-                              e.target.value;
-                            setColors(newColors);
-                          }}
-                        />
-                        <InputField
-                          name={`colors[${index}].discount_expire_at`}
-                          type="date"
-                          placeholder="Discount Expiry Date"
-                          value={color.discount_expire_at}
-                          onChange={(e) => {
-                            const newColors = [...colors];
-                            newColors[index].discount_expire_at =
-                              e.target.value;
-                            setColors(newColors);
-                          }}
-                        />
-                      </div>
-                    )}
-                  </div>
-                ))}
-                <button
-                  className="bg-primary text-white rounded-md p-2 text-14 w-40 mt-4"
-                  onClick={addColor}
-                >
-                  Add Color
-                </button>
+                <FieldArray name="colors">
+                  {({ push, remove }) => (
+                    <>
+                      {values.colors.map((color, index) => (
+                        <div
+                          key={index}
+                          className=" flex- gap-4 mb-4 bg-gray-100 rounded-md p-5"
+                        >
+                          {/* <button type="button" onClick={() => remove(index)}>
+                            x
+                          </button> */}
+                          <div className="flex items-center">
+                            {/* <div className="flex"> */}
+                              {/* <ImageUpload/> */}
+                              <InputField
+                                name={`colors[${index}].name`}
+                                placeholder="Color Name"
+                              />
+                              <InputField
+                                name={`colors[${index}].code`}
+                                placeholder="Color Code (e.g., #FFFFFF)"
+                              />
+                            {/* </div> */}
+                            {/* <div className="flex gap-4"> */}
+                              <InputField
+                                name={`colors[${index}].stock`}
+                                placeholder="Stock"
+                              />
+                              <InputField
+                                name={`colors[${index}].price`}
+                                placeholder="Price"
+                              />
+                              <button
+                                type="button"
+                                className="text-3xl font-light text-red-500 ms-3"
+                                onClick={() => remove(index)}
+                              >
+                                <AiOutlineClose/>
+                              </button>
+                            {/* </div> */}
+                          </div>
+
+                          <div className="flex items-center gap-3 mt-3 mb-3">
+                            <label className="inline-flex items-center cursor-pointer">
+                              <input
+                                type="checkbox"
+                                name="schedule_discount"
+                                className="hidden"
+                                onChange={(e) => {
+                                  setIsDiscountScheduled(e.target.checked);
+                                  setFieldValue(
+                                    "schedule_discount",
+                                    e.target.checked
+                                  );
+                                }}
+                              />
+                              <span className="w-4 h-4 border-2 border-gray-300 rounded flex items-center justify-center transition-all duration-200 peer-checked:border-orange-500">
+                                <svg
+                                  className="w-3 h-3 text-primary opacity-0 transition-all duration-200 peer-checked:opacity-100"
+                                  viewBox="0 0 20 20"
+                                  fill="currentColor"
+                                >
+                                  <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
+                                </svg>
+                              </span>
+                            </label>
+                            <div>Schedule a discount</div>
+                          </div>
+                          {isDiscountScheduled && (
+                            <div className="flex">
+                              <InputField
+                                name={`colors[${index}].discount_percentage`}
+                                placeholder="Discount"
+                              />
+                              <InputField
+                                name={`colors[${index}].discount_expire_at`}
+                                type="date"
+                                placeholder="Discount Expiry Date"
+                              />
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                      <button
+                        className="bg-primary text-white rounded-md p-2 text-16 w-40"
+                        onClick={() =>
+                          push({
+                            name: "",
+                            code: "",
+                            stock: "",
+                            price: "",
+                            discount_percentage: "",
+                            discount_expire_at: "",
+                          })
+                        }
+                        type="button"
+                      >
+                        Add Color
+                      </button>
+                    </>
+                  )}
+                </FieldArray>
               </div>
             )}
             {categoryType === "Size" && (
               <div className="bg-white p-5 rounded-md mt-5 mx-10 w-890">
                 <h2 className="font-bold mb-5">Inventory</h2>
-                {sizes.map((size, index) => (
-                  <div key={index} className="flex flex-col gap-4 mb-4">
-                    <button onClick={() => removeSize(index)}>x</button>
-                    <div className="flex gap-4">
-                      <InputField
-                        name={`sizes[${index}].name`}
-                        placeholder="Size Name"
-                        value={size.name}
-                        onChange={(e) => {
-                          const newSizes = [...sizes];
-                          newSizes[index].name = e.target.value;
-                          setSizes(newSizes);
-                        }}
-                      />
-                      <InputField
-                        name={`sizes[${index}].stock`}
-                        placeholder="Stock"
-                        value={size.stock}
-                        onChange={(e) => {
-                          const newSizes = [...sizes];
-                          newSizes[index].stock = e.target.value;
-                          setSizes(newSizes);
-                        }}
-                      />
-                    </div>
-                    <div className="flex gap-4">
-                      <InputField
-                        name={`sizes[${index}].price`}
-                        placeholder="Price"
-                        value={size.price}
-                        onChange={(e) => {
-                          const newSizes = [...sizes];
-                          newSizes[index].price = e.target.value;
-                          setSizes(newSizes);
-                        }}
-                      />
-                    </div>
-                    <div className="flex items-center gap-3 mt-3 mb-3">
-                      <label className="inline-flex items-center cursor-pointer">
-                        <input
-                          type="checkbox"
-                          name="schedule_discount"
-                          className="hidden"
-                          onChange={(e) => {
-                            setIsDiscountScheduled(e.target.checked);
-                            setFieldValue(
-                              "schedule_discount",
-                              e.target.checked
-                            );
-                          }}
-                        />
-                        <span className="w-4 h-4 border-2 border-gray-300 rounded flex items-center justify-center transition-all duration-200 peer-checked:border-orange-500">
-                          <svg
-                            className="w-3 h-3 text-primary opacity-0 transition-all duration-200 peer-checked:opacity-100"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                          >
-                            <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
-                          </svg>
-                        </span>
-                      </label>
-                      <div>Schedule a discount</div>
-                    </div>
-                    {isDiscountScheduled && (
-                      <div className="flex gap-4">
-                        <InputField
-                          name={`sizes[${index}].discount_percentage`}
-                          placeholder="Discount"
-                          value={size.discount_percentage}
-                          onChange={(e) => {
-                            const newSizes = [...sizes];
-                            newSizes[index].discount_percentage =
-                              e.target.value;
-                            setSizes(newSizes);
-                          }}
-                        />
-                        <InputField
-                          name={`sizes[${index}].discount_expire_at`}
-                          type="date"
-                          placeholder="Discount Expiry Date"
-                          value={size.discount_expire_at}
-                          onChange={(e) => {
-                            const newSizes = [...sizes];
-                            newSizes[index].discount_expire_at = e.target.value;
-                            setSizes(newSizes);
-                          }}
-                        />
-                      </div>
-                    )}
-                  </div>
-                ))}
-                <button
-                  className="bg-primary text-white rounded-md p-2 text-14 w-40 mt-4"
-                  onClick={addSize}
-                >
-                  Add Size
-                </button>
+                <FieldArray name="sizes">
+                  {({ push, remove }) => (
+                    <>
+                      {values.sizes.map((size, index) => (
+                        <div key={index} className="flex flex-col gap-4 mb-4">
+                          <button type="button" onClick={() => remove(index)}>
+                            x
+                          </button>
+                          <div className="flex gap-4">
+                            <InputField
+                              name={`sizes[${index}].name`}
+                              placeholder="Size Name"
+                            />
+                            <InputField
+                              name={`sizes[${index}].stock`}
+                              placeholder="Stock"
+                            />
+                          </div>
+                          <div className="flex gap-4">
+                            <InputField
+                              name={`sizes[${index}].price`}
+                              placeholder="Price"
+                            />
+                          </div>
+                          <div className="flex items-center gap-3 mt-3 mb-3">
+                            <label className="inline-flex items-center cursor-pointer">
+                              <input
+                                type="checkbox"
+                                name="schedule_discount"
+                                className="hidden"
+                                onChange={(e) => {
+                                  setIsDiscountScheduled(e.target.checked);
+                                  setFieldValue(
+                                    "schedule_discount",
+                                    e.target.checked
+                                  );
+                                }}
+                              />
+                              <span className="w-4 h-4 border-2 border-gray-300 rounded flex items-center justify-center transition-all duration-200 peer-checked:border-orange-500">
+                                <svg
+                                  className="w-3 h-3 text-primary opacity-0 transition-all duration-200 peer-checked:opacity-100"
+                                  viewBox="0 0 20 20"
+                                  fill="currentColor"
+                                >
+                                  <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
+                                </svg>
+                              </span>
+                            </label>
+                            <div>Schedule a discount</div>
+                          </div>
+                          {isDiscountScheduled && (
+                            <div className="flex gap-4">
+                              <InputField
+                                name={`sizes[${index}].discount_percentage`}
+                                placeholder="Discount"
+                              />
+                              <InputField
+                                name={`sizes[${index}].discount_expire_at`}
+                                type="date"
+                                placeholder="Discount Expiry Date"
+                              />
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                      <button
+                        className="bg-primary text-white rounded-md p-2 text-14 w-40 mt-4"
+                        onClick={() =>
+                          push({
+                            name: "",
+                            stock: "",
+                            price: "",
+                            discount_percentage: "",
+                            discount_expire_at: "",
+                          })
+                        }
+                        type="button"
+                      >
+                        Add Size
+                      </button>
+                    </>
+                  )}
+                </FieldArray>
               </div>
             )}
             {categoryType === "Both" && (
               <>
                 <div className="bg-white p-5 rounded-md mt-5 mx-10 w-890">
                   <h2 className="font-bold mb-5">Colors</h2>
-                  {colors.map((color, index) => (
-                    <div key={index} className="flex flex-col gap-4 mb-4">
-                      <button onClick={() => removeColor(index)}>x</button>
-                      <div className="flex gap-4">
-                        <InputField
-                          name={`colors[${index}].name`}
-                          placeholder="Color Name"
-                          value={color.name}
-                          onChange={(e) => {
-                            const newColors = [...colors];
-                            newColors[index].name = e.target.value;
-                            setColors(newColors);
-                          }}
-                        />
-                        <InputField
-                          name={`colors[${index}].code`}
-                          placeholder="Color Code (e.g., #FFFFFF)"
-                          value={color.code}
-                          onChange={(e) => {
-                            const newColors = [...colors];
-                            newColors[index].code = e.target.value;
-                            setColors(newColors);
-                          }}
-                        />
-                      </div>
-                      <div className="flex gap-4">
-                        <InputField
-                          name={`colors[${index}].stock`}
-                          placeholder="Stock"
-                          value={color.stock}
-                          onChange={(e) => {
-                            const newColors = [...colors];
-                            newColors[index].stock = e.target.value;
-                            setColors(newColors);
-                          }}
-                        />
-                        <InputField
-                          name={`colors[${index}].price`}
-                          placeholder="Price"
-                          value={color.price}
-                          onChange={(e) => {
-                            const newColors = [...colors];
-                            newColors[index].price = e.target.value;
-                            setColors(newColors);
-                          }}
-                        />
-                      </div>
-                      <div className="flex items-center gap-3 mt-3 mb-3">
-                        <label className="inline-flex items-center cursor-pointer">
-                          <input
-                            type="checkbox"
-                            name="schedule_discount"
-                            className="hidden"
-                            onChange={(e) => {
-                              setIsDiscountScheduled(e.target.checked);
-                              setFieldValue(
-                                "schedule_discount",
-                                e.target.checked
-                              );
-                            }}
-                          />
-                          <span className="w-4 h-4 border-2 border-gray-300 rounded flex items-center justify-center transition-all duration-200 peer-checked:border-orange-500">
-                            <svg
-                              className="w-3 h-3 text-primary opacity-0 transition-all duration-200 peer-checked:opacity-100"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
-                            </svg>
-                          </span>
-                        </label>
-                        <div>Schedule a discount</div>
-                      </div>
-                      {isDiscountScheduled && (
-                        <div className="flex gap-4">
-                          <InputField
-                            name={`colors[${index}].discount_percentage`}
-                            placeholder="Discount"
-                            value={color.discount_percentage}
-                            onChange={(e) => {
-                              const newColors = [...colors];
-                              newColors[index].discount_percentage =
-                                e.target.value;
-                              setColors(newColors);
-                            }}
-                          />
-                          <InputField
-                            name={`colors[${index}].discount_expire_at`}
-                            type="date"
-                            placeholder="Discount Expiry Date"
-                            value={color.discount_expire_at}
-                            onChange={(e) => {
-                              const newColors = [...colors];
-                              newColors[index].discount_expire_at =
-                                e.target.value;
-                              setColors(newColors);
-                            }}
-                          />
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                  <button
-                    className="bg-primary text-white rounded-md p-2 text-14 w-40 mt-4"
-                    onClick={addColor}
-                  >
-                    Add Color
-                  </button>
+                  <FieldArray name="colors">
+                    {({ push, remove }) => (
+                      <>
+                        {values.colors.map((color, index) => (
+                          <div key={index} className="flex flex-col gap-4 mb-4">
+                            <button type="button" onClick={() => remove(index)}>
+                              x
+                            </button>
+                            <div className="flex gap-4">
+                              <InputField
+                                name={`colors[${index}].name`}
+                                placeholder="Color Name"
+                              />
+                              <InputField
+                                name={`colors[${index}].code`}
+                                placeholder="Color Code (e.g., #FFFFFF)"
+                              />
+                            </div>
+                            <div className="flex gap-4">
+                              <InputField
+                                name={`colors[${index}].stock`}
+                                placeholder="Stock"
+                              />
+                              <InputField
+                                name={`colors[${index}].price`}
+                                placeholder="Price"
+                              />
+                            </div>
+                            <div className="flex items-center gap-3 mt-3 mb-3">
+                              <label className="inline-flex items-center cursor-pointer">
+                                <input
+                                  type="checkbox"
+                                  name="schedule_discount"
+                                  className="hidden"
+                                  onChange={(e) => {
+                                    setIsDiscountScheduled(e.target.checked);
+                                    setFieldValue(
+                                      "schedule_discount",
+                                      e.target.checked
+                                    );
+                                  }}
+                                />
+                                <span className="w-4 h-4 border-2 border-gray-300 rounded flex items-center justify-center transition-all duration-200 peer-checked:border-orange-500">
+                                  <svg
+                                    className="w-3 h-3 text-primary opacity-0 transition-all duration-200 peer-checked:opacity-100"
+                                    viewBox="0 0 20 20"
+                                    fill="currentColor"
+                                  >
+                                    <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
+                                  </svg>
+                                </span>
+                              </label>
+                              <div>Schedule a discount</div>
+                            </div>
+                            {isDiscountScheduled && (
+                              <div className="flex gap-4">
+                                <InputField
+                                  name={`colors[${index}].discount_percentage`}
+                                  placeholder="Discount"
+                                />
+                                <InputField
+                                  name={`colors[${index}].discount_expire_at`}
+                                  type="date"
+                                  placeholder="Discount Expiry Date"
+                                />
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                        <button
+                          className="bg-primary text-white rounded-md p-2 text-14 w-40 mt-4"
+                          onClick={() =>
+                            push({
+                              name: "",
+                              code: "",
+                              stock: "",
+                              price: "",
+                              discount_percentage: "",
+                              discount_expire_at: "",
+                            })
+                          }
+                          type="button"
+                        >
+                          Add Color
+                        </button>
+                      </>
+                    )}
+                  </FieldArray>
                 </div>
                 <div className="bg-white p-5 rounded-md mt-5 mx-10 w-890">
                   <h2 className="font-bold mb-5">Sizes</h2>
-                  {sizes.map((size, index) => (
-                    <div key={index} className="flex flex-col gap-4 mb-4">
-                      <button onClick={() => removeSize(index)}>x</button>
-                      <div className="flex gap-4">
-                        <InputField
-                          name={`sizes[${index}].name`}
-                          placeholder="Size Name"
-                          value={size.name}
-                          onChange={(e) => {
-                            const newSizes = [...sizes];
-                            newSizes[index].name = e.target.value;
-                            setSizes(newSizes);
-                          }}
-                        />
-                        <InputField
-                          name={`sizes[${index}].stock`}
-                          placeholder="Stock"
-                          value={size.stock}
-                          onChange={(e) => {
-                            const newSizes = [...sizes];
-                            newSizes[index].stock = e.target.value;
-                            setSizes(newSizes);
-                          }}
-                        />
-                      </div>
-                      <div className="flex gap-4">
-                        <InputField
-                          name={`sizes[${index}].price`}
-                          placeholder="Price"
-                          value={size.price}
-                          onChange={(e) => {
-                            const newSizes = [...sizes];
-                            newSizes[index].price = e.target.value;
-                            setSizes(newSizes);
-                          }}
-                        />
-                      </div>
-                      <div className="flex items-center gap-3 mt-3 mb-3">
-                        <label className="inline-flex items-center cursor-pointer">
-                          <input
-                            type="checkbox"
-                            name="schedule_discount"
-                            className="hidden"
-                            onChange={(e) => {
-                              setIsDiscountScheduled(e.target.checked);
-                              setFieldValue(
-                                "schedule_discount",
-                                e.target.checked
-                              );
-                            }}
-                          />
-                          <span className="w-4 h-4 border-2 border-gray-300 rounded flex items-center justify-center transition-all duration-200 peer-checked:border-orange-500">
-                            <svg
-                              className="w-3 h-3 text-primary opacity-0 transition-all duration-200 peer-checked:opacity-100"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
-                            </svg>
-                          </span>
-                        </label>
-                        <div>Schedule a discount</div>
-                      </div>
-                      {isDiscountScheduled && (
-                        <div className="flex gap-4">
-                          <InputField
-                            name={`sizes[${index}].discount_percentage`}
-                            placeholder="Discount"
-                            value={size.discount_percentage}
-                            onChange={(e) => {
-                              const newSizes = [...sizes];
-                              newSizes[index].discount_percentage =
-                                e.target.value;
-                              setSizes(newSizes);
-                            }}
-                          />
-                          <InputField
-                            name={`sizes[${index}].discount_expire_at`}
-                            type="date"
-                            placeholder="Discount Expiry Date"
-                            value={size.discount_expire_at}
-                            onChange={(e) => {
-                              const newSizes = [...sizes];
-                              newSizes[index].discount_expire_at =
-                                e.target.value;
-                              setSizes(newSizes);
-                            }}
-                          />
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                  <button
-                    className="bg-primary text-white rounded-md p-2 text-14 w-40 mt-4"
-                    onClick={addSize}
-                  >
-                    Add Size
-                  </button>
+                  <FieldArray name="sizes">
+                    {({ push, remove }) => (
+                      <>
+                        {values.sizes.map((size, index) => (
+                          <div key={index} className="flex flex-col gap-4 mb-4">
+                            <button type="button" onClick={() => remove(index)}>
+                              x
+                            </button>
+                            <div className="flex gap-4">
+                              <InputField
+                                name={`sizes[${index}].name`}
+                                placeholder="Size Name"
+                              />
+                              <InputField
+                                name={`sizes[${index}].stock`}
+                                placeholder="Stock"
+                              />
+                            </div>
+                            <div className="flex gap-4">
+                              <InputField
+                                name={`sizes[${index}].price`}
+                                placeholder="Price"
+                              />
+                            </div>
+                            <div className="flex items-center gap-3 mt-3 mb-3">
+                              <label className="inline-flex items-center cursor-pointer">
+                                <input
+                                  type="checkbox"
+                                  name="schedule_discount"
+                                  className="hidden"
+                                  onChange={(e) => {
+                                    setIsDiscountScheduled(e.target.checked);
+                                    setFieldValue(
+                                      "schedule_discount",
+                                      e.target.checked
+                                    );
+                                  }}
+                                />
+                                <span className="w-4 h-4 border-2 border-gray-300 rounded flex items-center justify-center transition-all duration-200 peer-checked:border-orange-500">
+                                  <svg
+                                    className="w-3 h-3 text-primary opacity-0 transition-all duration-200 peer-checked:opacity-100"
+                                    viewBox="0 0 20 20"
+                                    fill="currentColor"
+                                  >
+                                    <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
+                                  </svg>
+                                </span>
+                              </label>
+                              <div>Schedule a discount</div>
+                            </div>
+                            {isDiscountScheduled && (
+                              <div className="flex gap-4">
+                                <InputField
+                                  name={`sizes[${index}].discount_percentage`}
+                                  placeholder="Discount"
+                                />
+                                <InputField
+                                  name={`sizes[${index}].discount_expire_at`}
+                                  type="date"
+                                  placeholder="Discount Expiry Date"
+                                />
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                        <button
+                          className="bg-primary text-white rounded-md p-2 text-14 w-40 mt-4"
+                          onClick={() =>
+                            push({
+                              name: "",
+                              stock: "",
+                              price: "",
+                              discount_percentage: "",
+                              discount_expire_at: "",
+                            })
+                          }
+                          type="button"
+                        >
+                          Add Size
+                        </button>
+                      </>
+                    )}
+                  </FieldArray>
                 </div>
               </>
             )}
