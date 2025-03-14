@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import FailedModal from "../../Components/Modal/Failed Modal/FailedModal";
 import { ClipLoader } from "react-spinners";
-
+import "./DeleteModal.scss";
 function DeleteProduct({ id, onDelete }) {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -13,8 +13,7 @@ function DeleteProduct({ id, onDelete }) {
         method: "GET",
         url: `https://demo.vrtex.duckdns.org/api/shop/products/delete/${id}`,
         headers: {
-          Authorization:
-            `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
       if (response.status === 200) {
@@ -27,14 +26,23 @@ function DeleteProduct({ id, onDelete }) {
         console.error("Failed to delete product");
       }
     } catch (error) {
-        setIsLoading(false);
+      setIsLoading(false);
       console.error("Failed to delete product", error);
     }
   };
+  if (showModal) {
+    document.body.classList.add("no-scroll");
+  } else {
+    document.body.classList.remove("no-scroll");
+  }
   return (
     <div>
-      <button onClick={()=>setShowModal(true)}>
-        <img src="/assets/svgs/deleteIcon.svg" alt="delete product" className="w-5 ms-2"/>
+      <button onClick={() => setShowModal(true)}>
+        <img
+          src="/assets/svgs/deleteIcon.svg"
+          alt="delete product"
+          className="w-5 ms-2"
+        />
       </button>
       <FailedModal isOpen={showModal} onClose={() => setShowModal(false)}>
         <div className="p-5">
@@ -49,7 +57,7 @@ function DeleteProduct({ id, onDelete }) {
         </p>
         <div className="flex gap-3 mt-5 mb-3">
           <button
-            className="rounded p-3 bg-gray-100 text-gray-400 font-bold w-32"
+            className="rounded p-3 bg-gray-100 text-gray-500 font-bold w-32"
             onClick={() => setShowModal(false)}
           >
             Cancel

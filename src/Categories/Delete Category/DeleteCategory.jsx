@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import FailedModal from "../../Components/Modal/Failed Modal/FailedModal";
 import axios from "axios";
 import { ClipLoader } from "react-spinners";
-
+import './DeleteModal.scss';
 function DeleteCategory({ id, onDelete }) {
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -17,8 +17,7 @@ function DeleteCategory({ id, onDelete }) {
         method: "GET",
         url: `https://demo.vrtex.duckdns.org/api/shop/categories/delete/${id}`,
         headers: {
-          Authorization:
-            `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
       if (response.status === 200) {
@@ -37,11 +36,20 @@ function DeleteCategory({ id, onDelete }) {
       setIsLoading(false);
     }
   };
+  if (showModal) {
+    document.body.classList.add("no-scroll");
+  } else {
+    document.body.classList.remove("no-scroll");
+  }
   return (
     <div>
       {/* Delete Category Button */}
       <button className=" p-1" onClick={() => setShowModal(true)}>
-        <img src="/assets/svgs/deleteIcon.svg" alt="delete category" className="w-5 ms-2"/>
+        <img
+          src="/assets/svgs/deleteIcon.svg"
+          alt="delete category"
+          className="w-5 ms-2"
+        />
       </button>
       <FailedModal isOpen={showModal} onClose={() => setShowModal(false)}>
         <div className="p-5">
@@ -56,7 +64,7 @@ function DeleteCategory({ id, onDelete }) {
         </p>
         <div className="flex gap-3 mt-5 mb-3">
           <button
-            className="rounded p-3 bg-gray-100 text-gray-400 font-bold w-32"
+            className="rounded p-3 bg-gray-100 text-gray-500 font-bold w-32"
             onClick={() => setShowModal(false)}
           >
             Cancel
@@ -65,7 +73,11 @@ function DeleteCategory({ id, onDelete }) {
             className="rounded text-white bg-customred font-bold p-3 w-32"
             onClick={handleDeleteCategory}
           >
-            {isLoading ? <ClipLoader color="#fff" size={"22px"} className="text-center" /> : "Delete"}
+            {isLoading ? (
+              <ClipLoader color="#fff" size={"22px"} className="text-center" />
+            ) : (
+              "Delete"
+            )}
           </button>
         </div>
       </FailedModal>

@@ -4,7 +4,7 @@ export const UploadProductImage = ({ previewImages, onImageChange }) => {
   return (
     <>
       <h2 className="font-bold mb-3">Product Icon / Image</h2>
-      <div className="bg-gray-100 w-full border-2 border-dashed outline-none h-48 p-1 rounded-md ">
+      <div className="bg-gray-100 w-full border-2 border-gray-400 border-dashed outline-none h-48 p-1 rounded-md ">
         <input
           type="file"
           name="images"

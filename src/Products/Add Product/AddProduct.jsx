@@ -9,9 +9,9 @@ import { addProduct } from "../../ApiServices/AddNewProductApi";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 import { UploadProductImage } from "../../Components/Upload Image/UploadProductImages";
 import "./style.scss";
-import { ImageUpload } from "../../Components/Upload Image/UploadImage";
 import { AiOutlineClose } from "react-icons/ai";
-
+import { VscPercentage } from "react-icons/vsc";
+import { Plus } from "lucide-react";
 const AddProduct = () => {
   const [categories, setCategories] = useState([]);
   const [selectedCategoryTags, setSelectedCategoryTags] = useState([]);
@@ -20,7 +20,11 @@ const AddProduct = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [previewImages, setPreviewImages] = useState([]);
   const [isDiscountScheduled, setIsDiscountScheduled] = useState(false);
+  const [isDiscountSizeScheduled, setIsDiscountSizeScheduled] = useState(false);
+  const [isDiscountColorScheduled, setIsDiscountColorScheduled] =
+    useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [dynamicHeight, setDynamicHeight] = useState("h-auto"); // State for dynamic height
 
   const initialValues = {
     name: "",
@@ -162,9 +166,18 @@ const AddProduct = () => {
       : [...values.tags_ids, tagId];
     setFieldValue("tags_ids", selectedTags);
   };
-
+  // Update height based on categoryType
+  useEffect(() => {
+    if (categoryType === "Both") {
+      setDynamicHeight("h-400vh");
+    } else if (categoryType === "Color" || categoryType === "Size") {
+      setDynamicHeight("h-400vh");
+    } else {
+      setDynamicHeight("h-150vh");
+    }
+  }, [categoryType]);
   return (
-    <div className="bg-gray-100 h-200vh relative">
+    <div className={`bg-gray-100 ${dynamicHeight} relative`}>
       <Helmet>
         <title>Add New Product - VERTEX</title>
         <meta name="description" content="Add a new product to VERTEX" />
@@ -172,7 +185,7 @@ const AddProduct = () => {
       <Formik initialValues={initialValues} onSubmit={handleSubmit}>
         {({ setFieldValue, isSubmitting, errors, values }) => (
           <Form className="flex flex-col">
-            <h1 className="font-bold rounded-md p-5 text-lg mx-10 bg-white my-5">
+            <h1 className="font-bold rounded-md p-5 text-17 mx-10 bg-white my-5">
               Add Product
             </h1>
             <div className="flex gap-5 mx-10">
@@ -211,17 +224,19 @@ const AddProduct = () => {
                   </Field>
                 </div>
                 <div className="flex gap-4 mt-3 mb-3">
-                  <div className="flex items-center w-full border-2 bg-transparent border-gray-200 rounded-md outline-none placeholder:text-14 focus-within:border-primary">
-                    <span className="text-lg h-full w-10 text-center pt-3 font-bold text-gray-600 bg-gray-200">
-                      %
+                  <div className=" relative flex items-center w-full border-2 bg-transparent border-gray-200 rounded-md placeholder:text-14 focus-within:border-primary">
+                    <span className="h-full w-12 text-center pt-5 ps-3 bg-gray-100 absolute rounded-tl-md rounded-bl-md">
+                      <VscPercentage className="text-xl text-gray-600 font-bold" />
                     </span>
                     <Field
                       name="return_percentage"
                       placeholder="percentage (upon return)"
-                      className="outline-none ms-2"
+                      className="outline-none ms-14"
                     />
                   </div>
-                  <InputField name="stock" placeholder="Stock" />
+                  <div className="w-full">
+                    <InputField name="stock" placeholder="Stock" />
+                  </div>
                 </div>
                 <div className="mt-3">
                   <div className="flex flex-wrap gap-2 w-full h-14 p-3 border-2 bg-transparent border-gray-200 rounded-md outline-none placeholder:text-14 focus:border-2 focus:border-primary">
@@ -268,7 +283,7 @@ const AddProduct = () => {
                 <InputField name="cost" placeholder="Cost" />
                 <InputField name="revenue" placeholder="Revenue" />
               </div>
-              <div className="flex items-center gap-3 mt-3 mb-3">
+              <div className="flex items-center gap-2 mt-3 mb-3">
                 <label className="inline-flex items-center cursor-pointer">
                   <Field
                     as="input"
@@ -290,7 +305,7 @@ const AddProduct = () => {
                     </svg>
                   </span>
                 </label>
-                <div>Schedule a discount</div>
+                <div className="font-bold text-15">Schedule a discount</div>
               </div>
               {isDiscountScheduled && (
                 <div className="flex gap-4">
@@ -318,55 +333,47 @@ const AddProduct = () => {
                           key={index}
                           className=" flex- gap-4 mb-4 bg-gray-100 rounded-md p-5"
                         >
-                          {/* <button type="button" onClick={() => remove(index)}>
-                            x
-                          </button> */}
-                          <div className="flex items-center">
-                            {/* <div className="flex"> */}
-                              {/* <ImageUpload/> */}
-                              <InputField
-                                name={`colors[${index}].name`}
-                                placeholder="Color Name"
-                              />
-                              <InputField
-                                name={`colors[${index}].code`}
-                                placeholder="Color Code (e.g., #FFFFFF)"
-                              />
-                            {/* </div> */}
-                            {/* <div className="flex gap-4"> */}
-                              <InputField
-                                name={`colors[${index}].stock`}
-                                placeholder="Stock"
-                              />
-                              <InputField
-                                name={`colors[${index}].price`}
-                                placeholder="Price"
-                              />
-                              <button
-                                type="button"
-                                className="text-3xl font-light text-red-500 ms-3"
-                                onClick={() => remove(index)}
-                              >
-                                <AiOutlineClose/>
-                              </button>
-                            {/* </div> */}
+                          <div className="flex items-center gap-2">
+                            <InputField
+                              name={`colors[${index}].name`}
+                              placeholder="Color Name"
+                            />
+                            <InputField
+                              name={`colors[${index}].code`}
+                              placeholder="Color Code (e.g., #FFFFFF)"
+                            />
+                            <InputField
+                              name={`colors[${index}].stock`}
+                              placeholder="Stock"
+                            />
+                            <InputField
+                              name={`colors[${index}].price`}
+                              placeholder="Price"
+                            />
+                            <button
+                              type="button"
+                              className="text-2xl font-light text-red-500 ms-3"
+                              onClick={() => remove(index)}
+                            >
+                              <AiOutlineClose />
+                            </button>
                           </div>
 
-                          <div className="flex items-center gap-3 mt-3 mb-3">
+                          <div className="flex items-center gap-2 mt-3 mb-3">
                             <label className="inline-flex items-center cursor-pointer">
                               <input
                                 type="checkbox"
-                                name="schedule_discount"
+                                name={`colors[${index}].schedule_discount`}
                                 className="hidden"
                                 onChange={(e) => {
-                                  setIsDiscountScheduled(e.target.checked);
+                                  setIsDiscountColorScheduled(e.target.checked);
                                   setFieldValue(
-                                    "schedule_discount",
+                                    `colors[${index}].schedule_discount`,
                                     e.target.checked
                                   );
                                 }}
                               />
-                              <span className="w-4 h-4 border-2 border-gray-300 rounded flex items-center justify-center transition-all duration-200 peer-checked:border-orange-500">
+                              <span className="w-4 h-4 border-2 bg-white border-gray-300 rounded flex items-center justify-center transition-all duration-200 peer-checked:border-orange-500">
                                 <svg
                                   className="w-3 h-3 text-primary opacity-0 transition-all duration-200 peer-checked:opacity-100"
                                   viewBox="0 0 20 20"
@@ -376,10 +383,12 @@ const AddProduct = () => {
                                 </svg>
                               </span>
                             </label>
-                            <div>Schedule a discount</div>
+                            <div className="font-bold text-15">
+                              Schedule a discount
+                            </div>
                           </div>
-                          {isDiscountScheduled && (
-                            <div className="flex">
+                          {isDiscountColorScheduled && (
+                            <div className="flex gap-2">
                               <InputField
                                 name={`colors[${index}].discount_percentage`}
                                 placeholder="Discount"
@@ -393,22 +402,28 @@ const AddProduct = () => {
                           )}
                         </div>
                       ))}
-                      <button
-                        className="bg-primary text-white rounded-md p-2 text-16 w-40"
-                        onClick={() =>
-                          push({
-                            name: "",
-                            code: "",
-                            stock: "",
-                            price: "",
-                            discount_percentage: "",
-                            discount_expire_at: "",
-                          })
-                        }
-                        type="button"
-                      >
-                        Add Color
-                      </button>
+                      <div className="flex justify-end">
+                        <button
+                          className="text-primary rounded-md p-2 text-16 font-bold flex items-center gap-2"
+                          onClick={() =>
+                            push({
+                              name: "",
+                              code: "",
+                              stock: "",
+                              price: "",
+                              discount_percentage: "",
+                              discount_expire_at: "",
+                            })
+                          }
+                          type="button"
+                        >
+                          <Plus
+                            className="font-bold border-2 border-primary rounded-full"
+                            size={18}
+                          />
+                          Add Color
+                        </button>
+                      </div>
                     </>
                   )}
                 </FieldArray>
@@ -421,11 +436,11 @@ const AddProduct = () => {
                   {({ push, remove }) => (
                     <>
                       {values.sizes.map((size, index) => (
-                        <div key={index} className="flex flex-col gap-4 mb-4">
-                          <button type="button" onClick={() => remove(index)}>
-                            x
-                          </button>
-                          <div className="flex gap-4">
+                        <div
+                          key={index}
+                          className="flex flex-col ite gap-4 mb-4 bg-gray-100 p-5 rounded-md"
+                        >
+                          <div className="flex gap-2">
                             <InputField
                               name={`sizes[${index}].name`}
                               placeholder="Size Name"
@@ -434,28 +449,34 @@ const AddProduct = () => {
                               name={`sizes[${index}].stock`}
                               placeholder="Stock"
                             />
-                          </div>
-                          <div className="flex gap-4">
                             <InputField
                               name={`sizes[${index}].price`}
                               placeholder="Price"
                             />
+                            <button
+                              type="button"
+                              className="text-2xl font-light text-red-500 ms-3"
+                              onClick={() => remove(index)}
+                            >
+                              <AiOutlineClose />
+                            </button>
                           </div>
-                          <div className="flex items-center gap-3 mt-3 mb-3">
+
+                          <div className="flex items-center gap-2">
                             <label className="inline-flex items-center cursor-pointer">
                               <input
                                 type="checkbox"
-                                name="schedule_discount"
+                                name={`sizes[${index}].schedule_discount`}
                                 className="hidden"
                                 onChange={(e) => {
-                                  setIsDiscountScheduled(e.target.checked);
+                                  setIsDiscountSizeScheduled(e.target.checked);
                                   setFieldValue(
-                                    "schedule_discount",
+                                    `sizes[${index}].schedule_discount`,
                                     e.target.checked
                                   );
                                 }}
                               />
-                              <span className="w-4 h-4 border-2 border-gray-300 rounded flex items-center justify-center transition-all duration-200 peer-checked:border-orange-500">
+                              <span className="w-4 h-4 border- bg-white border-2 border-gray-200 rounded flex items-center justify-center transition-all duration-200 peer-checked:border-orange-500">
                                 <svg
                                   className="w-3 h-3 text-primary opacity-0 transition-all duration-200 peer-checked:opacity-100"
                                   viewBox="0 0 20 20"
@@ -465,10 +486,12 @@ const AddProduct = () => {
                                 </svg>
                               </span>
                             </label>
-                            <div>Schedule a discount</div>
+                            <div className="font-bold text-15">
+                              Schedule a discount
+                            </div>
                           </div>
-                          {isDiscountScheduled && (
-                            <div className="flex gap-4">
+                          {isDiscountSizeScheduled && (
+                            <div className="flex gap-2">
                               <InputField
                                 name={`sizes[${index}].discount_percentage`}
                                 placeholder="Discount"
@@ -482,21 +505,27 @@ const AddProduct = () => {
                           )}
                         </div>
                       ))}
-                      <button
-                        className="bg-primary text-white rounded-md p-2 text-14 w-40 mt-4"
-                        onClick={() =>
-                          push({
-                            name: "",
-                            stock: "",
-                            price: "",
-                            discount_percentage: "",
-                            discount_expire_at: "",
-                          })
-                        }
-                        type="button"
-                      >
-                        Add Size
-                      </button>
+                      <div className="flex justify-end">
+                        <button
+                          className="text-primary rounded-md p-2 text-16 font-bold flex items-center gap-2"
+                          onClick={() =>
+                            push({
+                              name: "",
+                              stock: "",
+                              price: "",
+                              discount_percentage: "",
+                              discount_expire_at: "",
+                            })
+                          }
+                          type="button"
+                        >
+                          <Plus
+                            className="font-bold border-2 border-primary rounded-full"
+                            size={18}
+                          />
+                          Add Size
+                        </button>
+                      </div>
                     </>
                   )}
                 </FieldArray>
@@ -511,10 +540,7 @@ const AddProduct = () => {
                       <>
                         {values.colors.map((color, index) => (
                           <div key={index} className="flex flex-col gap-4 mb-4">
-                            <button type="button" onClick={() => remove(index)}>
-                              x
-                            </button>
-                            <div className="flex gap-4">
+                            <div className="flex gap-2">
                               <InputField
                                 name={`colors[${index}].name`}
                                 placeholder="Color Name"
@@ -523,8 +549,6 @@ const AddProduct = () => {
                                 name={`colors[${index}].code`}
                                 placeholder="Color Code (e.g., #FFFFFF)"
                               />
-                            </div>
-                            <div className="flex gap-4">
                               <InputField
                                 name={`colors[${index}].stock`}
                                 placeholder="Stock"
@@ -533,24 +557,34 @@ const AddProduct = () => {
                                 name={`colors[${index}].price`}
                                 placeholder="Price"
                               />
+                              <button
+                                type="button"
+                                className="text-2xl font-light text-red-500 ms-3"
+                                onClick={() => remove(index)}
+                              >
+                                <AiOutlineClose />
+                              </button>
                             </div>
-                            <div className="flex items-center gap-3 mt-3 mb-3">
+
+                            <div className="flex items-center gap-2">
                               <label className="inline-flex items-center cursor-pointer">
                                 <input
                                   type="checkbox"
-                                  name="schedule_discount"
+                                  name={`colors[${index}].schedule_discount`}
                                   className="hidden"
                                   onChange={(e) => {
-                                    setIsDiscountScheduled(e.target.checked);
+                                    setIsDiscountColorScheduled(
+                                      e.target.checked
+                                    );
                                     setFieldValue(
-                                      "schedule_discount",
+                                      `colors[${index}].schedule_discount`,
                                       e.target.checked
                                     );
                                   }}
                                 />
                                 <span className="w-4 h-4 border-2 border-gray-300 rounded flex items-center justify-center transition-all duration-200 peer-checked:border-orange-500">
                                   <svg
-                                    className="w-3 h-3 text-primary opacity-0 transition-all duration-200 peer-checked:opacity-100"
+                                    className="w-3 h-3 bg-white text-primary opacity-0 transition-all duration-200 peer-checked:opacity-100"
                                     viewBox="0 0 20 20"
                                     fill="currentColor"
                                   >
@@ -558,10 +592,12 @@ const AddProduct = () => {
                                   </svg>
                                 </span>
                               </label>
-                              <div>Schedule a discount</div>
+                              <div className="font-bold text-15">
+                                Schedule a discount
+                              </div>
                             </div>
-                            {isDiscountScheduled && (
-                              <div className="flex gap-4">
+                            {isDiscountColorScheduled && (
+                              <div className="flex gap-2">
                                 <InputField
                                   name={`colors[${index}].discount_percentage`}
                                   placeholder="Discount"
@@ -575,22 +611,28 @@ const AddProduct = () => {
                             )}
                           </div>
                         ))}
-                        <button
-                          className="bg-primary text-white rounded-md p-2 text-14 w-40 mt-4"
-                          onClick={() =>
-                            push({
-                              name: "",
-                              code: "",
-                              stock: "",
-                              price: "",
-                              discount_percentage: "",
-                              discount_expire_at: "",
-                            })
-                          }
-                          type="button"
-                        >
-                          Add Color
-                        </button>
+                        <div className="flex justify-end">
+                          <button
+                            className="text-primary rounded-md p-2 text-16 font-bold flex items-center gap-2"
+                            onClick={() =>
+                              push({
+                                name: "",
+                                code: "",
+                                stock: "",
+                                price: "",
+                                discount_percentage: "",
+                                discount_expire_at: "",
+                              })
+                            }
+                            type="button"
+                          >
+                            <Plus
+                              className="font-bold border-2 border-primary rounded-full"
+                              size={18}
+                            />
+                            Add Color
+                          </button>
+                        </div>
                       </>
                     )}
                   </FieldArray>
@@ -602,10 +644,7 @@ const AddProduct = () => {
                       <>
                         {values.sizes.map((size, index) => (
                           <div key={index} className="flex flex-col gap-4 mb-4">
-                            <button type="button" onClick={() => remove(index)}>
-                              x
-                            </button>
-                            <div className="flex gap-4">
+                            <div className="flex gap-2">
                               <InputField
                                 name={`sizes[${index}].name`}
                                 placeholder="Size Name"
@@ -614,23 +653,31 @@ const AddProduct = () => {
                                 name={`sizes[${index}].stock`}
                                 placeholder="Stock"
                               />
-                            </div>
-                            <div className="flex gap-4">
                               <InputField
                                 name={`sizes[${index}].price`}
                                 placeholder="Price"
                               />
+                              <button
+                                type="button"
+                                className="text-2xl font-light text-red-500 ms-3"
+                                onClick={() => remove(index)}
+                              >
+                                <AiOutlineClose />
+                              </button>
                             </div>
-                            <div className="flex items-center gap-3 mt-3 mb-3">
+
+                            <div className="flex items-center gap-2">
                               <label className="inline-flex items-center cursor-pointer">
                                 <input
                                   type="checkbox"
-                                  name="schedule_discount"
+                                  name={`sizes[${index}].schedule_discount`}
                                   className="hidden"
                                   onChange={(e) => {
-                                    setIsDiscountScheduled(e.target.checked);
+                                    setIsDiscountSizeScheduled(
+                                      e.target.checked
+                                    );
                                     setFieldValue(
-                                      "schedule_discount",
+                                      `sizes[${index}].schedule_discount`,
                                       e.target.checked
                                     );
                                   }}
@@ -645,10 +692,12 @@ const AddProduct = () => {
                                   </svg>
                                 </span>
                               </label>
-                              <div>Schedule a discount</div>
+                              <div className="font-bold text-15">
+                                Schedule a discount
+                              </div>
                             </div>
-                            {isDiscountScheduled && (
-                              <div className="flex gap-4">
+                            {isDiscountSizeScheduled && (
+                              <div className="flex gap-2">
                                 <InputField
                                   name={`sizes[${index}].discount_percentage`}
                                   placeholder="Discount"
@@ -662,21 +711,27 @@ const AddProduct = () => {
                             )}
                           </div>
                         ))}
-                        <button
-                          className="bg-primary text-white rounded-md p-2 text-14 w-40 mt-4"
-                          onClick={() =>
-                            push({
-                              name: "",
-                              stock: "",
-                              price: "",
-                              discount_percentage: "",
-                              discount_expire_at: "",
-                            })
-                          }
-                          type="button"
-                        >
-                          Add Size
-                        </button>
+                        <div className="flex justify-end">
+                          <button
+                            className=" text-primary rounded-md p-2 text-16 font-bold flex items-center gap-2"
+                            onClick={() =>
+                              push({
+                                name: "",
+                                stock: "",
+                                price: "",
+                                discount_percentage: "",
+                                discount_expire_at: "",
+                              })
+                            }
+                            type="button"
+                          >
+                            <Plus
+                              className="font-bold border-2 border-primary rounded-full"
+                              size={18}
+                            />
+                            Add Size
+                          </button>
+                        </div>
                       </>
                     )}
                   </FieldArray>

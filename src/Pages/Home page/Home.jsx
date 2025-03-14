@@ -14,7 +14,7 @@ function Home() {
         <Sidebar />
         <div className="flex-1 ml-0">
           <Navbar />
-          <div className="mt-0 bg-gray-100 h-150vh">
+          <div className="mt-0 bg-gray-100 min-h-screen overflow-y-auto">
             <Outlet />
           </div>
         </div>
@@ -22,4 +22,5 @@ function Home() {
     </>
   );
 }
+
 export default Home;

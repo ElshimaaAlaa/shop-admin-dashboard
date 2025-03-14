@@ -60,7 +60,7 @@ function AllProducts() {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <div className="bg-gray-100 h-150vh p-10 ">
+    <div className="bg-gray-100 h-150vh mx-10 pt-5 ">
       <Helmet>
         <title>All Products | VERTEX</title>
       </Helmet>
@@ -155,12 +155,12 @@ function AllProducts() {
                         {product.colors.slice(0, 4).map((color) => (
                           <div
                             key={color.id}
-                            className="w-7 h-7 rounded-full -ms-4"
+                            className="w-8 h-8 rounded-full -ms-4"
                             style={{ backgroundColor: color.code }}
                           />
                         ))}
                         {product.colors.length > 4 && (
-                          <div className="w-7 h-7 font-bold flex items-center justify-center rounded-full bg-gray-200 text-13 -ms-4">
+                          <div className="w-8 h-8 font-bold flex items-center justify-center rounded-full bg-gray-200 text-13 -ms-4">
                             +{product.colors.length - 4}
                           </div>
                         )}

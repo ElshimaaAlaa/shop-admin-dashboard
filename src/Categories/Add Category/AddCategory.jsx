@@ -16,7 +16,7 @@ const TypeField = () => (
     placeholder="Type"
     as="select"
     name="type"
-    className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md h-51px p-2 block focus:border-2 focus:border-primary"
+    className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md h-16 p-2 block focus:border-2 focus:border-primary"
   >
     <option className="option text-14">Type</option>
     <option value="1" className="option">
@@ -103,11 +103,6 @@ function AddCategory() {
       setIsLoading(false);
     }
   };
-  // if (showModal) {
-  //   document.body.classList.add("no-scroll");
-  // } else {
-  //   document.body.classList.remove("no-scroll");
-  // }
   return (
     <div className="bg-gray-100 h-150vh relative">
       <Helmet>
