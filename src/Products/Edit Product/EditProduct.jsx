@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Formik, Form, Field } from "formik";
 import { Helmet } from "react-helmet";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ClipLoader } from "react-spinners";
 import { updateProduct } from "../../ApiServices/updateProduct";
 import InputField from "../../Components/Input Field/InputField";
 import UploadUpdatedProductImages from "../../Components/Upload Image/UploadUpdatedProductImages";
 import Footer from "../../Components/Footer/Footer";
 import { fetchCategories } from "../../ApiServices/AllCategoriesApi";
-
+import ColorFieldArray from "../Add Product/ColorFieldArray"
+import SizeFieldArray from "../Add Product/SizeFieldArray";
 function EditProduct() {
   const [isDiscountScheduled, setIsDiscountScheduled] = useState(false);
   const [categories, setCategories] = useState([]);
@@ -19,11 +19,24 @@ function EditProduct() {
   );
   const navigate = useNavigate();
   const product = state || {};
+  const [categoryType, setCategoryType] = useState(null); // State to track category type
 
   // Log the product object for debugging
   useEffect(() => {
     console.log("Product from API:", product);
   }, [product]);
+
+  // Determine category type based on the selected category
+  useEffect(() => {
+    if (product.category_id) {
+      const selectedCategory = categories.find(
+        (cat) => cat.id === product.category_id
+      );
+      if (selectedCategory) {
+        setCategoryType(selectedCategory.type_name); // Set category type
+      }
+    }
+  }, [product.category_id, categories]);
 
   const initialValues = {
     name: product.name || "",
@@ -48,16 +61,19 @@ function EditProduct() {
     setIsLoading(true);
     const formData = new FormData();
 
-    // Append fields to formData
-    formData.append("name[ar]", values.name);
-    formData.append("name[en]", values.name);
-    formData.append("description[ar]", values.description || "");
-    formData.append("description[en]", values.description || "");
+    // Append name and description fields (ensure they are not empty)
+    formData.append("name[ar]", values.name || "Default Arabic Name");
+    formData.append("name[en]", values.name || "Default English Name");
+    formData.append("description[ar]", values.description || "Default Arabic Description");
+    formData.append("description[en]", values.description || "Default English Description");
+
+    // Append other fields
     formData.append("cost", values.cost || "");
     formData.append("revenue", values.revenue || "");
     formData.append("tag_number", values.tag_number || "");
     formData.append("category_id", values.category_id || "");
 
+    // Append images
     if (values.images && values.images.length > 0) {
       values.images.forEach((image, index) => {
         if (image instanceof File) {
@@ -72,7 +88,31 @@ function EditProduct() {
     formData.append("discount_percentage", values.discount_percentage || "");
     formData.append("discount_expire_at", values.discount_expire_at || "");
     formData.append("stock", values.stock || "");
-    formData.append("tags_id", values.tags_id || "");
+
+    // Append tags_id as a JSON array (if required by the backend)
+    if (values.tags_id && values.tags_id.length > 0) {
+      formData.append("tags_id", JSON.stringify(values.tags_id));
+    } else {
+      formData.append("tags_id", "[]"); // Send an empty array if no tags are provided
+    }
+
+    // Append colors
+    if (categoryType === "Color" || categoryType === "Both") {
+      values.colors.forEach((color, index) => {
+        Object.entries(color).forEach(([field, fieldValue]) => {
+          formData.append(`colors[${index}][${field}]`, fieldValue);
+        });
+      });
+    }
+
+    // Append sizes
+    if (categoryType === "Size" || categoryType === "Both") {
+      values.sizes.forEach((size, index) => {
+        Object.entries(size).forEach(([field, fieldValue]) => {
+          formData.append(`sizes[${index}][${field}]`, fieldValue);
+        });
+      });
+    }
 
     // Debugging: Log the formData
     for (let [key, value] of formData.entries()) {
@@ -83,8 +123,10 @@ function EditProduct() {
       await updateProduct(product.id, formData);
       navigate("/Home/products", { replace: true });
     } catch (error) {
-      console.error("Failed to update product:", error);
-      alert("Failed to update product. Please try again.");
+      console.error("Failed to update product:", error.response?.data || error);
+      alert(
+        `Failed to update product: ${error.response?.data?.message || "Unknown error"}`
+      );
     } finally {
       setIsLoading(false);
     }
@@ -134,6 +176,18 @@ function EditProduct() {
                     as="select"
                     className="w-full p-3 border-2 h-14 bg-transparent border-gray-200 rounded-lg outline-none placeholder:text-14 focus:border-2 focus:border-primary"
                     value={values.category_id} // Use the value prop to control the selected option
+                    onChange={(e) => {
+                      const categoryId = e.target.value;
+                      setFieldValue("category_id", categoryId);
+                      const selectedCategory = categories.find(
+                        (cat) => cat.id === Number(categoryId)
+                      );
+                      if (selectedCategory) {
+                        setCategoryType(selectedCategory.type_name);
+                      } else {
+                        setCategoryType(null);
+                      }
+                    }}
                   >
                     <option value="">Category</option>
                     {categories.map((category) => (
@@ -241,6 +295,33 @@ function EditProduct() {
                 </div>
               )}
             </div>
+
+            {/* Conditional Rendering for Colors and Sizes */}
+            {categoryType === "Color" && (
+              <ColorFieldArray
+                values={values}
+                setFieldValue={setFieldValue}
+              />
+            )}
+            {categoryType === "Size" && (
+              <SizeFieldArray
+                values={values}
+                setFieldValue={setFieldValue}
+              />
+            )}
+            {categoryType === "Both" && (
+              <>
+                <ColorFieldArray
+                  values={values}
+                  setFieldValue={setFieldValue}
+                />
+                <SizeFieldArray
+                  values={values}
+                  setFieldValue={setFieldValue}
+                />
+              </>
+            )}
+
             <Footer
               saveText={"Save Changes"}
               cancelText={"Cancel"}
