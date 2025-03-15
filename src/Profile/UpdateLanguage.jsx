@@ -93,10 +93,10 @@ export default function LanguageSelector() {
 
   return (
     <div className="flex gap-4">
-      <div className="relative">
+      <div className="relative z-10">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex h-22 w-48 text-17 items-center justify-center gap-5  px-3 py-3 bg-primary text-white rounded-lg shadow-sm hover:bg-[#E5A853]/90 transition-colors"
+          className="flex h-22 w-48 text-17 items-center justify-center gap-5  px-3 py-3 bg-gray-100 text-black rounded-lg shadow-sm hover:bg-[#E5A853]/90 transition-colors hover:text-white"
         >
           <GlobeIcon size={22}/>
           <span>{language}</span>

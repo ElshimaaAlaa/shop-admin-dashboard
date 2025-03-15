@@ -24,22 +24,22 @@ function Navbar() {
             <input
               type="text"
               placeholder="Search Something Here"
-              className="w-[400px] pl-10 pr-4 py-3 bg-muted/50 rounded-xl text-sm focus:outline-none border border-gray-200 bg-lightgray"
+              className="w-[400px] pl-10 pr-4 py-3 bg-muted/50 rounded-md text-sm focus:outline-none border border-gray-200 bg-lightgray"
             />
           </div>
         </div>
         {/* Right section */}
         <div className="flex items-center gap-5">
-          {/* <LanguageSelector /> */}
+          <LanguageSelector />
           {/* Notifications */}
-          {/* <button
+          <button
             variant="ghost"
             size="icon"
             className="relative bg-gray-100 rounded-md p-3"
           >
             <Bell className="w-5 h-5" />
             <span className="absolute top-2 right-3 w-2 h-2 bg-red-600 text-white text-11 rounded-full flex items-center justify-center"></span>
-          </button> */}
+          </button>
           <ProfileMenu />
         </div>
       </nav>

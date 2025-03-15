@@ -15,13 +15,6 @@ const InventoryItem = ({ label, value }) => (
 const ColorItem = React.memo(({ color }) => (
   <div className="flex gap-10 items-center">
     <div>
-      <img
-        src={color.image || "/assets/images/product.png"}
-        alt={`Color: ${color.name}`}
-        className="h-16 w-16 object-cover rounded-xl"
-      />
-    </div>
-    <div>
       <h2 className="text-gray-400">Color</h2>
       <div
         className="w-16 h-8 mt-1 rounded-md"
@@ -47,7 +40,7 @@ function ViewProduct() {
           },
         });
         if (response.status === 200) {
-          console.log("API Response:", response.data); // Log the response
+          // console.log("API Response:", response.data); // Log the response
           setProductData(response.data.data);
           setMainImage(response.data.data.images?.[0]?.src);
         } else {
@@ -193,34 +186,48 @@ function ViewProduct() {
           <div className="w-900 p-5 mb-7 mx-10 bg-white rounded-md">
             <h2 className="font-bold mb-5 text-17">Inventory</h2>
             {hasColors && (
-              <div className="">
-                <div className="">
+              <div>
+                <div>
                   {productData.colors.map((color, index) => (
-                    <div className="flex items-center justify-between mb-3 border-2 border-gray-200 rounded-lg p-3">
-                      <ColorItem key={index} color={color} />
-                      <InventoryItem label="Stock" value={color.stock} />
-                      <InventoryItem label="Price" value={color.price} />
-                      <InventoryItem
-                      label="Discount"
-                      value={color.discount_percentage}
-                    />
-                    <InventoryItem
-                      label="Date"
-                      value={color.discount_expire_at}
-                    />
+                    <div key={color.id || index} className="flex gap-3">
+                      <div className="mt-1">
+                        <img
+                          src={color.image || "/assets/images/product.png"}
+                          alt={`Color: ${color.name}`}
+                          className="h-20 w-20 object-cover rounded-xl"
+                        />
+                      </div>
+                      <div className="flex w-full items-center justify-between mb-3 border-2 border-gray-200 rounded-md p-3">
+                        <ColorItem color={color} />
+                        <InventoryItem label="Stock" value={color.stock} />
+                        <InventoryItem label="Price" value={color.price} />
+                        <InventoryItem
+                          label="Discount"
+                          value={color.discount_percentage}
+                        />
+                        <InventoryItem
+                          label="Date"
+                          value={color.discount_expire_at}
+                        />
+                      </div>
                     </div>
                   ))}
                 </div>
               </div>
             )}
             {hasSizes && (
-              <div className="mt-7">
+              <div>
                 {productData.sizes.map((size, index) => (
                   <div
-                    key={index}
+                    key={size.id || index}
                     className="flex items-center border-2 border-gray-200 rounded-lg mb-4 p-3 justify-between"
                   >
-                    <InventoryItem label="Size" value={size.name} />
+                    <div>
+                      <h3 className="text-gray-400 text-16">Size</h3>
+                      <p className="text-14 mt-1 bg-customOrange-mediumOrange rounded-md p-2 text-primary">
+                        {size.name}
+                      </p>
+                    </div>
                     <InventoryItem label="Stock" value={size.stock} />
                     <InventoryItem label="Price" value={size.price} />
                     <InventoryItem

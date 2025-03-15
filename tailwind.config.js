@@ -111,6 +111,7 @@ module.exports = {
         "130vh": "130vh",
         "140vh": "140vh",
         "150vh": "150vh",
+        "300vh": "300vh",
         "400vh": "400vh",
       },
       borderWidth: {
