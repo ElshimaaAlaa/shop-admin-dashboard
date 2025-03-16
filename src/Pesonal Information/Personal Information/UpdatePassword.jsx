@@ -3,11 +3,11 @@ import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import "./UpdatePassword.scss";
-import MainBtn from "../../Components/Main Button/MainBtn";
 import { ClipLoader } from "react-spinners";
 import { handleUpdatePassword } from "../../ApiServices/UpdatePassword";
 import { useNavigate } from "react-router-dom";
 import PasswordInput from "../../Components/Password Input/PasswordInput";
+import { FaCircleCheck } from "react-icons/fa6";
 
 function UpdatePassword() {
   const [showModal, setShowModal] = useState(false);
@@ -77,42 +77,53 @@ function UpdatePassword() {
         Update Password
       </button>
       <SuccessModal isOpen={showModal} onClose={() => setShowModal(false)}>
-        <h1 className="text-primary font-semibold text-xl p-5">
-          Update Password
-        </h1>
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={handleSubmit}
-        >
-          <Form className="pe-5 ps-5 pb-5">
-            <PasswordInput
-              name="password"
-              placeholder="New Password"
-              showPassword={showNewPassword}
-              togglePasswordVisibility={() =>
-                setShowNewPassword(!showNewPassword)
-              }
-            />
-            <PasswordInput
-              name="password_confirmation"
-              placeholder="Confirm New Password"
-              showPassword={showConfirmPassword}
-              togglePasswordVisibility={() =>
-                setShowConfirmPassword(!showConfirmPassword)
-              }
-            />
-            {error && <div className="text-red-600 text-sm mt-3">{error}</div>}
-            <div className="mt-5">
-              <MainBtn
-                btnType={"submit"}
-                text={
-                  isLoading ? <ClipLoader color="#fff" size={22} /> : "Save"
+        <div className="w-400">
+          <h1 className="text-primary text-center font-semibold text-xl p-5">
+            Update Password
+          </h1>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={handleSubmit}
+          >
+            <Form className="pe-5 ps-5 pb-5">
+              <PasswordInput
+                name="password"
+                placeholder="New Password"
+                showPassword={showNewPassword}
+                togglePasswordVisibility={() =>
+                  setShowNewPassword(!showNewPassword)
                 }
               />
-            </div>
-          </Form>
-        </Formik>
+              <PasswordInput
+                name="password_confirmation"
+                placeholder="Confirm New Password"
+                showPassword={showConfirmPassword}
+                togglePasswordVisibility={() =>
+                  setShowConfirmPassword(!showConfirmPassword)
+                }
+              />
+              {error && (
+                <div className="text-red-600 text-sm mt-3">{error}</div>
+              )}
+              <div className="mt-5 flex gap-3">
+                <button 
+                  className="flex items-center justify-center gap-2 w-full bg-primary text-white rounded-md font-bold"
+                  type="submit"
+                >
+                  {isLoading ? <ClipLoader color="#fff" size={22} /> : <><FaCircleCheck />Save</>}
+                </button>
+                <button
+                  type="button"
+                  className="bg-gray-100 text-gray-400 p-3 rounded-md font-bold w-full"
+                  onClick={() => setShowModal(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </Form>
+          </Formik>
+        </div>
       </SuccessModal>
       {/* Success Modal */}
       <SuccessModal

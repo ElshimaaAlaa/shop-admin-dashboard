@@ -1,14 +1,26 @@
 import React, { useState } from "react";
 import "./sidebar.scss";
 import { useNavigate } from "react-router-dom";
-
+import Home from "../../Svgs/Home";
+import Cat from "../../Svgs/Cat";
+import Products from "../../Svgs/product";
+import Orders from "../../Svgs/Orders";
+import Clients from "../../Svgs/Clients";
+import Reports from "../../Svgs/reports";
+import Settings from "../../Svgs/Settings";
+import Support from "../../Svgs/Support";
+import Help from "../../Svgs/Help";
+import Logo from "../../Svgs/logo";
+import Text from "../../Svgs/text";
 const Sidebar = () => {
   const [expanded, setExpanded] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const navigate = useNavigate();
+
   const toggleSidebar = () => {
     setExpanded(!expanded);
   };
+
   const handleItemClick = (item) => {
     setSelectedItem(item.id);
     if (item.onclick) {
@@ -20,19 +32,19 @@ const Sidebar = () => {
     {
       id: "dashboard",
       label: "Dashboard",
-      icon: "/assets/Svgs/home.svg",
+      icon: <Home />,
     },
     {
       id: "categories",
       label: "Categories",
-      icon: "/assets/Svgs/category.svg",
+      icon: <Cat />,
       padding: "3px",
       onclick: () => navigate("categories"),
     },
     {
       id: "products",
       label: "Products",
-      icon: "/assets/Svgs/product.svg",
+      icon: <Products />,
       padding: "4px",
       width: "32px",
       onclick: () => navigate("products"),
@@ -40,67 +52,59 @@ const Sidebar = () => {
     {
       id: "orders",
       label: "Orders",
-      icon: "/assets/Svgs/orders.svg",
+      icon: <Orders />,
     },
     {
       id: "clients",
       label: "Clients",
-      icon: "/assets/Svgs/clients.svg",
+      icon: <Clients />,
       height: "30px",
       padding: "3px",
     },
     {
       id: "promotions",
       label: "Promotions & Disc",
-      icon: "/assets/Svgs/home.svg",
+      icon: <Home />,
     },
     {
       id: "reports",
       label: "Reports",
-      icon: "/assets/Svgs/reports.svg",
+      icon: <Reports />,
     },
     {
       id: "settings",
       label: "Settings",
-      icon: "/assets/Svgs/settings.svg",
+      icon: <Settings />,
     },
     {
       id: "support",
       label: "Support",
-      icon: "/assets/Svgs/supports.svg",
+      icon: <Support />,
       onclick: () => navigate("support"),
     },
     {
       id: "help",
       label: "Help",
-      icon: "/assets/Svgs/help.svg",
+      icon: <Help />,
       onclick: () => navigate("Faqs"),
     },
   ];
 
   return (
     <div
-      className={`sidebar bg-black overflow-hidden h-150vh w-20 flex flex-col gap-5 ${
+      className={`sidebar bg-black overflow-hidden h-150vh w-20 flex flex-col gap-4 ${
         expanded ? "expanded" : ""
       }`}
       onMouseEnter={toggleSidebar}
       onMouseLeave={toggleSidebar}
     >
       <div>
-        <span className="logo">
-          <img
-            src="/assets/Svgs/Group 10.svg"
-            alt="vertex-logo"
-            className="h-10 w-12 mt-5"
-          />
-        </span>
-        <span className="text">
-          <img
-            src="/assets/Svgs/Frame 13.svg"
-            alt="vertex-logo"
-            className="h-16 mt-5"
-          />
-        </span>
+        <div className="logo mt-5 mb-5">
+          <Logo/>
+        </div>
+        <div className="text">
+          <Text/>
+        </div>
       </div>
       {menuItems.map((item) => (
         <div
@@ -109,17 +113,28 @@ const Sidebar = () => {
           onClick={() => handleItemClick(item)}
         >
           <span className="icon">
-            <img
-              src={item.icon}
-              alt={item.label}
-              aria-label={item.label}
-              style={{
-                height: item.height,
-                width: item.width,
-                padding: item.padding,
-              }}
-              className={`${selectedItem === item.id ? "selectedImg" : ""}`}
-            />
+            {typeof item.icon === "string" ? (
+              <img
+                src={item.icon}
+                alt={item.label}
+                aria-label={item.label}
+                style={{
+                  height: item.height,
+                  width: item.width,
+                  padding: item.padding,
+                }}
+                className={`${selectedItem === item.id ? "selectedImg" : ""}`}
+              />
+            ) : (
+              React.cloneElement(item.icon, {
+                style: {
+                  height: item.height,
+                  width: item.width,
+                  padding: item.padding,
+                },
+                className: `${selectedItem === item.id ? "selectedImg" : ""}`,
+              })
+            )}
           </span>
           <span
             className={`text-white text-14 dashbordItem ${
