@@ -44,7 +44,7 @@ export const TagsInput = ({ setFieldValue, values }) => {
     <div className="w-full">
       {/* English Tags Input */}
       <div className="mt-3">
-        <div className="flex flex-grow h-16 gap-2 bg-transparent outline-none border-2 border-gray-200 rounded-md p-2 focus-within:border-primary">
+        <div className="flex flex-grow h-14 gap-2 bg-transparent outline-none border-2 border-gray-200 rounded-md p-2 focus-within:border-primary">
           {values.tags.en.map((tag, index) => (
             <div
               key={index}

@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 import axios from "axios";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
-import InputField from "../../Components/Input Field/InputField";
+import AuthInputField from "../../Components/AuthInput Field/AuthInputField";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FaCircleCheck } from "react-icons/fa6";
 function EditInfo() {
@@ -126,11 +126,11 @@ function EditInfo() {
               </div>
               <div className="border p-5 rounded-md bg-gray-100 w-full">
                 <div className="flex flex-col md:flex-row gap-4">
-                  <InputField placeholder="Name" name="name" />
-                  <InputField placeholder="Email" name="email" />
+                  <AuthInputField placeholder="Name" name="name" />
+                  <AuthInputField placeholder="Email" name="email" />
                 </div>
                 <div className="mt-4">
-                  <InputField placeholder="Phone" name="phone" />
+                  <AuthInputField placeholder="Phone" name="phone" />
                 </div>
               </div>
               <div className="mt-5 flex items-center justify-end gap-3">

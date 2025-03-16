@@ -3,7 +3,7 @@ import { Formik, Form, Field } from "formik";
 import { Helmet } from "react-helmet";
 import { useLocation, useNavigate } from "react-router-dom";
 import { updateProduct } from "../../ApiServices/updateProduct";
-import InputField from "../../Components/Input Field/InputField";
+import InputField from "../../Components/InputFields/InputField";
 import UploadUpdatedProductImages from "../../Components/Upload Image/UploadUpdatedProductImages";
 import Footer from "../../Components/Footer/Footer";
 import { fetchCategories } from "../../ApiServices/AllCategoriesApi";

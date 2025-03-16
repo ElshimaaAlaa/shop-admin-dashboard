@@ -1,7 +1,6 @@
 import React from "react";
-import InputField from "../../Components/Input Field/InputField";
 import { Field, useFormikContext } from "formik";
-
+import InputField from "../../Components/InputFields/InputField";
 const PricingSection = ({ isDiscountScheduled, setIsDiscountScheduled }) => {
   const { setFieldValue } = useFormikContext(); 
 

@@ -1,5 +1,5 @@
 import React from "react";
-import InputField from "../../Components/Input Field/InputField";
+import InputField from "../../Components/InputFields/InputField";
 import { VscPercentage } from "react-icons/vsc";
 import { Field } from "formik";
 const BasicInformationSection = ({

@@ -6,10 +6,9 @@ import { Helmet } from "react-helmet";
 import { ClipLoader } from "react-spinners";
 import "./login.scss";
 import OAuth from "../OAuth/OAuth";
-import Email from "../../Svgs/Email";
 import MainBtn from "../../Components/Main Button/MainBtn";
 import { loginService } from "../../ApiServices/LoginService";
-import InputField from "../../Components/Input Field/InputField";
+import AuthInputField from "../../Components/AuthInput Field/AuthInputField";
 import PasswordInput from "../../Components/Password Input/PasswordInput";
 
 function AdminLogin() {
@@ -75,11 +74,7 @@ function AdminLogin() {
       </Helmet>
       <div className="loginContainer w-96 lg:w-450 md:w-450 sm:w-80 xs:w-450 s:w-80 bg-white rounded-md">
         <div className="flex">
-          <img
-            src="/assets/svgs/vertex.svg"
-            alt="logo"
-            className="w-44 mb-5"
-          />
+          <img src="/assets/svgs/vertex.svg" alt="logo" className="w-44 mb-5" />
         </div>
         <div className="flex items-center">
           <h1 className="font-bold me-3 text-2xl">Welcome Back</h1>
@@ -94,43 +89,68 @@ function AdminLogin() {
           onSubmit={handleSubmit}
           validationSchema={validationSchema}
         >
-          <Form className="loginForm mt-8">
-            <InputField name={"email"} placeholder={"Email"} icon={Email} />
-            <PasswordInput
-              name={"password"}
-              placeholder={"Password"}
-              showPassword={showPassword}
-              togglePasswordVisibility={togglePasswordVisibility}
-            />
-            {error && <p className="text-red-500 text-sm mt-3">{error}</p>}
-            <div className="flex items-center justify-between mt-5">
-              <div className="flex items-center justify-between">
-                <Field
-                  type="checkbox"
-                  name="rememberMe"
-                  className="me-2 w-4 h-4"
-                  checked={rememberMe}
-                  onChange={() => setRememberMe(!rememberMe)}
-                />
-                <p className="text-11 lg:text-14 text-gray-600">Remember Me</p>
-              </div>
-              <div
-                role="button"
-                tabIndex={0}
-                className="font-bold text-11 lg:text-13 cursor-pointer"
-                onClick={() => navigate("/ForgotPassword")}
-              >
-                Forget your password?
-              </div>
-            </div>
-            <div className="mt-5">
-              <MainBtn
-                text={loading ? <ClipLoader color="#fff" size={20} /> : "Login"}
-                btnType="submit"
-                disabled={loading}
+          {({ errors, touched }) => (
+            <Form className="loginForm mt-8">
+              <AuthInputField
+                name={"email"}
+                placeholder={"Email"}
+                error={touched.email && errors.email}
+                active={touched.email}
               />
-            </div>
-          </Form>
+              <PasswordInput
+                name={"password"}
+                placeholder={"Password"}
+                showPassword={showPassword}
+                togglePasswordVisibility={togglePasswordVisibility}
+                error={touched.password && errors.password}
+                active={touched.password}
+              />
+              {error && <p className="text-red-500 text-sm mt-3">{error}</p>}
+              <div className="flex items-center justify-between mt-5">
+                <div className="flex items-center justify-between">
+                  <label className="inline-flex items-center cursor-pointer">
+                    <Field
+                      as="input"
+                      type="checkbox"
+                      name="rememberMe"
+                      className="hidden peer"
+                      checked={rememberMe}
+                      onChange={() => setRememberMe(!rememberMe)}
+                    />
+                    <span className="w-4 h-4 border-2 border-gray-300 rounded flex items-center justify-center transition-all duration-200 ">
+                      <svg
+                        className="w-3 h-3 text-primary opacity-0 transition-all duration-200 peer-checked:opacity-100"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
+                      </svg>
+                    </span>
+                    <span className="text-11 lg:text-14 text-gray-600 ms-2">
+                      Remember Me
+                    </span>
+                  </label>
+                </div>
+                <div
+                  role="button"
+                  tabIndex={0}
+                  className="font-bold text-11 lg:text-13 cursor-pointer"
+                  onClick={() => navigate("/ForgotPassword")}
+                >
+                  Forget your password?
+                </div>
+              </div>
+              <div className="mt-5">
+                <MainBtn
+                  text={
+                    loading ? <ClipLoader color="#fff" size={20} /> : "Login"
+                  }
+                  btnType="submit"
+                  disabled={loading}
+                />
+              </div>
+            </Form>
+          )}
         </Formik>
         <div className="flex items-center justify-center mt-8">
           <div className="border-t border-gray-300 flex-grow"></div>

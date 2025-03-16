@@ -1,6 +1,6 @@
 import { Formik, Form, Field } from "formik";
 import React, { useEffect, useState } from "react";
-import InputField from "../../Components/Input Field/InputField";
+import AuthInputField from "../../Components/AuthInput Field/AuthInputField";
 import * as Yup from "yup";
 import { ClipLoader } from "react-spinners";
 import { Helmet } from "react-helmet";
@@ -86,7 +86,7 @@ function Support() {
   );
 
   return (
-    <div className="bg-white h-full">
+    <div className="bg-white min-h-screen">
       <Helmet>
         <title>Support | Vertex</title>
         <meta name="description" content="Support Page" />
@@ -133,40 +133,52 @@ function Support() {
             onSubmit={handleSubmit}
             validationSchema={validationSchema}
           >
-            <Form className="flex flex-col gap-3">
-              <InputField name="name" placeholder="Name" />
-              <InputField name="email" placeholder="Email" />
-              <InputField name="phone" placeholder="Phone Number" />
-              <Field
-                as="textarea"
-                placeholder="Your Message"
-                name="message"
-                className="w-full outline-none border-2 border-gray-200 rounded-md p-2 h-32 placeholder:text-14 focus:border-primary"
-              />
-              {error && (
-                <p className="text-red-500 text-center mt-2">{error}</p>
-              )}
-              <div>
-                <button
-                  aria-label="Send message"
-                  className="bg-primary w-full text-white flex items-center justify-center gap-3 p-3 rounded-md text-17"
-                  type="submit"
-                >
-                  {isLoading ? (
-                    <ClipLoader color="#fff" size={22} />
-                  ) : (
-                    <>
-                      <img
-                        src="/assets/svgs/send message.svg"
-                        alt="send-message"
-                        className="w-5 h-5"
-                      />
-                      Send Message
-                    </>
-                  )}
-                </button>
-              </div>
-            </Form>
+            {({ errors, touched }) => (
+              <Form className="flex flex-col gap-3">
+                <AuthInputField name="name" placeholder="Name" />
+                <AuthInputField name="email" placeholder="Email" />
+                <AuthInputField name="phone" placeholder="Phone Number" />
+
+                <Field
+                  as="textarea"
+                  placeholder="Description"
+                  name="message"
+                  className={`w-full bg-white outline-none border-2 rounded-md p-2 h-24 mt-3 block placeholder:text-14 
+          ${
+            errors.message && touched.message
+              ? "border-red-500 focus:border-red-500"
+              : touched.message
+              ? "border-green-500 focus:border-green-500"
+              : "border-gray-200 focus:border-primary"
+          }`}
+                />
+
+                {error && (
+                  <p className="text-red-500 text-center mt-2">{error}</p>
+                )}
+
+                <div>
+                  <button
+                    aria-label="Send message"
+                    className="bg-primary w-full text-white flex items-center justify-center gap-3 p-3 rounded-md text-17"
+                    type="submit"
+                  >
+                    {isLoading ? (
+                      <ClipLoader color="#fff" size={22} />
+                    ) : (
+                      <>
+                        <img
+                          src="/assets/svgs/send message.svg"
+                          alt="send-message"
+                          className="w-5 h-5"
+                        />
+                        Send Message
+                      </>
+                    )}
+                  </button>
+                </div>
+              </Form>
+            )}
           </Formik>
         </section>
       </div>

@@ -4,7 +4,7 @@ import { Field, Form, Formik } from "formik";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 import { ClipLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
-import InputField from "../../Components/Input Field/InputField";
+import InputField from "../../Components/InputFields/InputField";
 import { FaCircleCheck } from "react-icons/fa6";
 
 function EditStoreInformation() {

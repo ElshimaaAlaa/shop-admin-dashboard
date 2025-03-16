@@ -1,9 +1,8 @@
 import React from "react";
 import { FieldArray, Field } from "formik";
-import InputField from "../../Components/Input Field/InputField";
 import { AiOutlineClose } from "react-icons/ai";
 import { Plus } from "lucide-react";
-
+import InputField from "../../Components/InputFields/InputField";
 const SizeFieldArray = ({ values, setFieldValue }) => (
   <div className="bg-white p-5 rounded-md mt-5 mx-10 w-890">
     <h2 className="font-bold mb-5">Inventory</h2>

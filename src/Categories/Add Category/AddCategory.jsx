@@ -9,14 +9,14 @@ import "./style.scss";
 import Footer from "../../Components/Footer/Footer";
 import { ImageUpload } from "../../Components/Upload Image/UploadImage";
 import { TagsInput } from "../../Components/Tag Input/TagInput";
-import InputField from "../../Components/Input Field/InputField";
+import InputField from "../../Components/InputFields/InputField";
 
 const TypeField = () => (
   <Field
     placeholder="Type"
     as="select"
     name="type"
-    className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md h-16 p-2 block focus:border-2 focus:border-primary"
+    className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md h-51px p-2 block focus:border-2 focus:border-primary"
   >
     <option className="option text-14">Type</option>
     <option value="1" className="option">
@@ -52,7 +52,7 @@ function AddCategory() {
   };
 
   const validationSchema = Yup.object({
-    name: Yup.string().required("Name is required"),
+    name: Yup.string().required("Category name is required"),
     description: Yup.string().required("Description is required"),
     image: Yup.mixed().required("Image is required"),
     type: Yup.string().required("Type is required"),
@@ -62,7 +62,7 @@ function AddCategory() {
       ),
       en: Yup.array()
         .of(Yup.string().min(2, "English tag must be at least 2 characters"))
-        .min(1, "At least one French tag is required"),
+        .min(1, "At least one English tag is required"),
     }),
   });
 
@@ -103,6 +103,7 @@ function AddCategory() {
       setIsLoading(false);
     }
   };
+
   return (
     <div className="bg-gray-100 h-150vh relative">
       <Helmet>
@@ -113,7 +114,7 @@ function AddCategory() {
         onSubmit={handleSubmit}
         validationSchema={validationSchema}
       >
-        {({ setFieldValue, values }) => (
+        {({ setFieldValue, values, errors, touched }) => (
           <Form className="flex flex-col">
             <h1 className="font-bold rounded-md p-5 text-lg mx-10 bg-white mt-5 mb-5">
               Add Category
@@ -130,7 +131,14 @@ function AddCategory() {
                   as="textarea"
                   placeholder="Description"
                   name="description"
-                  className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md p-2 h-24 mt-3 block placeholder:text-14 focus:border-primary"
+                  className={`w-full bg-transparent outline-none border-2 rounded-md p-2 h-24 mt-3 block placeholder:text-14 
+                    ${
+                      errors.description && touched.description
+                        ? "border-red-500 focus:border-red-500"
+                        : touched.description
+                        ? "border-green-500 focus:border-green-500"
+                        : "border-gray-200 focus:border-primary"
+                    }`}
                 />
               </div>
               <div className="bg-white p-4 rounded-md w-2/4 h-72">
@@ -179,4 +187,5 @@ function AddCategory() {
     </div>
   );
 }
+
 export default AddCategory;

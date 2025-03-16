@@ -6,8 +6,7 @@ import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 import { updateCategory } from "../../ApiServices/updateCategory";
 import Footer from "../../Components/Footer/Footer";
 import { ImageUpload } from "../../Components/Upload Image/UploadUpdatedImage";
-import InputField from "../../Components/Input Field/InputField";
-
+import InputField from "../../Components/InputFields/InputField";
 function EditCategory() {
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -72,7 +71,7 @@ function EditCategory() {
 
   // Tag Component
   const Tag = ({ tag, onDelete }) => (
-    <div className="flex items-center bg-customOrange-mediumOrange text-primary rounded-md px-3 py-1 m-1">
+    <div className="flex items-center bg-customOrange-mediumOrange text-primary rounded-md p-4 m-1">
       <span>{tag}</span>
       <button
         type="button"
@@ -84,12 +83,6 @@ function EditCategory() {
       </button>
     </div>
   );
-  // if (showModal) {
-  //   document.body.classList.add("no-scroll");
-  // } else {
-  //   document.body.classList.remove("no-scroll");
-  // }
-
   return (
     <div className="bg-gray-100 h-150vh flex flex-col relative">
       <Helmet>
@@ -131,7 +124,7 @@ function EditCategory() {
                   </Field>
                 </div>
                 {/* English Tags */}
-                <div className="mb-3 p-2 flex w-full bg-transparent outline-none border-2 border-gray-200 rounded-md placeholder:text-14 focus:border-primary">
+                <div className="mb-3 p-2 flex w-full h-14 bg-transparent outline-none border-2 border-gray-200 rounded-md placeholder:text-14 focus:border-primary">
                   <div className="flex">
                     {values.tagsEn.map((tag, index) => (
                       <Tag
@@ -166,7 +159,7 @@ function EditCategory() {
                   />
                 </div>
                 {/* Arabic Tags */}
-                <div className="mb-3 p-2 flex w-full bg-transparent outline-none border-2 border-gray-200 rounded-md placeholder:text-14 focus:border-primary">
+                <div className="p-2 h-14 flex w-full bg-transparent outline-none border-2 border-gray-200 rounded-md placeholder:text-14 focus:border-primary">
                   <div className="flex ">
                     {/* Display old and new Arabic tags together */}
                     {values.tagsAr.map((tag, index) => (
