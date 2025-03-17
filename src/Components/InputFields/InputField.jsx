@@ -1,6 +1,6 @@
 import React from "react";
 import { Field } from "formik";
-function AuthInputField({ placeholder, name, type = "text", readOnly = false }) {
+function InputField({ placeholder, name, type = "text", readOnly = false }) {
   return (
     <div className="relative w-full">
       <Field name={name}>
@@ -29,4 +29,4 @@ function AuthInputField({ placeholder, name, type = "text", readOnly = false }) 
     </div>
   );
 }
-export default AuthInputField;
+export default InputField;

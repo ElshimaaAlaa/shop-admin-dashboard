@@ -43,7 +43,7 @@ function Faqs() {
   };
 
   return (
-    <div className="bg-white h-full">
+    <div className="bg-white min-h-screen">
         <Helmet>
             <title>Frequently Asked Questions | VERTEX</title>
             <meta name="description" content="Frequently asked questions about VERTEX" />

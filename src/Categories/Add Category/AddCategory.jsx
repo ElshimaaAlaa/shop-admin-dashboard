@@ -10,7 +10,6 @@ import Footer from "../../Components/Footer/Footer";
 import { ImageUpload } from "../../Components/Upload Image/UploadImage";
 import { TagsInput } from "../../Components/Tag Input/TagInput";
 import InputField from "../../Components/InputFields/InputField";
-
 const TypeField = () => (
   <Field
     placeholder="Type"
