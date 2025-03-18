@@ -12,6 +12,7 @@ import ColorFieldArray from "./ColorFieldArray";
 import PricingSection from "./PricingSection";
 import BasicInformationSection from "./BasicInformationSection";
 import SizeFieldArray from "./SizeFieldArray";
+import * as Yup from "yup";
 
 const AddProduct = () => {
   const [categories, setCategories] = useState([]);
@@ -42,7 +43,22 @@ const AddProduct = () => {
     colors: [],
     sizes: [],
   };
-
+  const validationSchema = Yup.object({
+    name: Yup.string().required("Product name is required"),
+    category_id: Yup.string().required("Category is required"),
+    tag_number: Yup.string().required("Tag number is required"),
+    gender: Yup.string().required("Gender is required"),
+    return_percentage: Yup.number().required("Return percentage is required"),
+    stock: Yup.number().required("Stock is required"),
+    description: Yup.string().required("Description is required"),
+    price: Yup.number().required("Price is required"),
+    cost: Yup.number().required("Cost is required"),
+    revenue: Yup.number().required("Revenue is required"),
+    discount_percentage: Yup.number().when("isDiscountScheduled", {
+      is: true,
+      then: Yup.number().required("Discount percentage is required"),
+    }),
+  })
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
     setIsLoading(true);
     try {
@@ -155,7 +171,7 @@ const AddProduct = () => {
     } else if (categoryType === "Color" || categoryType === "Size") {
       setDynamicHeight("h-300vh");
     } else {
-      setDynamicHeight("h-140vh");
+      setDynamicHeight("h-150vh");
     }
   }, [categoryType]);
 
@@ -165,7 +181,7 @@ const AddProduct = () => {
         <title>Add New Product - VERTEX</title>
         <meta name="description" content="Add a new product to VERTEX" />
       </Helmet>
-      <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+      <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
         {({ setFieldValue, isSubmitting, errors, values }) => (
           <Form className="flex flex-col">
             <h1 className="font-bold rounded-md p-5 text-17 mx-10 bg-white my-5">

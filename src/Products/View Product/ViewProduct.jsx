@@ -57,7 +57,7 @@ function ViewProduct() {
   const hasSizes = productData.sizes && productData.sizes.length > 0;
 
   return (
-    <div className="bg-gray-100 flex flex-col">
+    <div className="bg-gray-100 min-h-screen flex flex-col">
       <Helmet>
         <title>View Product - VERTEX</title>
         <meta name="description" content="View product details in VERTEX" />

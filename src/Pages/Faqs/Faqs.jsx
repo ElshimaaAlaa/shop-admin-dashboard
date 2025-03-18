@@ -1,61 +1,66 @@
-import { Formik, Form, Field } from "formik";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { ClipLoader } from "react-spinners";
+import { Formik, Form, Field } from "formik";
+import { getFaqs } from "../../ApiServices/AllFaqs";
+import { LuSend } from "react-icons/lu";
 import * as Yup from "yup";
-const faqData = [
-  {
-    question: "Can users promote items offline ?",
-    answer:
-      "You can return any item within 30 days of purchase for a full refund.",
-  },
-  {
-    question: "Can users promote items offline ?",
-    answer:
-      "Yes, after the successful payment, admin will approve and your item will be promoted.",
-  },
-  {
-    question: "Can users promote items offline ?",
-    answer:
-      "Once your order is shipped, you will receive a tracking number via email.",
-  },
-  {
-    question: "Can users promote items offline ?",
-    answer:
-      "Once your order is shipped, you will receive a tracking number via email.",
-  },
-];
+import { addFaqs } from "../../ApiServices/AddFags";
+import InputField from "../../Components/InputFields/InputField";
+import MainBtn from "../../Components/Main Button/MainBtn";
+
 function Faqs() {
   const [isLoading, setIsLoading] = useState(false);
   const [openIndex, setOpenIndex] = useState(null);
+  const [faqsData, setFaqsData] = useState([]);
   const initialValues = {
-    message: "",
+    question: "",
+    answer: "",
   };
   const validationSchema = Yup.object({
-    message: Yup.string().required("Message is required"),
+    question: Yup.string().required("Question is required"),
+    answer: Yup.string().required("Answer is required"),
   });
-  const handleSubmit = async (values) => {
+
+  const handleSubmit = async (values, { resetForm }) => {
     setIsLoading(true);
+    try {
+      const questionData = await addFaqs(values.question, values.answer);
+      if (questionData && questionData.data) {
+        // Update state with new FAQ from API response
+        setFaqsData((prevFaqs) => [questionData.data, ...prevFaqs]);
+        resetForm(); // Reset the form after submission
+      }
+    } catch (error) {
+      console.error("Failed to add FAQ:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  useEffect(() => {
+    const fetchFaqs = async () => {
+      try {
+        const data = await getFaqs();
+        setFaqsData(data);
+      } catch (error) {
+        console.error("Failed to fetch FAQs:", error);
+        setFaqsData([]);
+      }
+    };
+    fetchFaqs();
+  }, []);
+
   const toggleFaq = (index) => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
   return (
-    <div className="bg-white min-h-screen">
-        <Helmet>
-            <title>Frequently Asked Questions | VERTEX</title>
-            <meta name="description" content="Frequently asked questions about VERTEX" />
-            <meta name="robots" content="index, follow" />
-            <meta property="og:title" content="Frequently Asked Questions | VERTEX" />
-            <meta property="og:description" content="Frequently asked questions about VERTEX" />
-            <meta property="og:type" content="website" />
-            <meta property="og:url" content="https://www.vertex.io/faq" />
-            <meta property="og:image" content="https://www.vertex.io/og-image.jpg" />
-            <meta name="twitter:card" content="summary_large_image" />
-            <meta name="twitter:title" content="Frequently Asked Questions | VERTEX" />
-        </Helmet>
+    <div className="bg-white min-h-screen pb-10">
+      <Helmet>
+        <title>Frequently Asked Questions | VERTEX</title>
+      </Helmet>
       <h2 className="font-bold text-center text-xl pt-10">
         Frequently Asked Questions
       </h2>
@@ -64,25 +69,28 @@ function Faqs() {
         <br /> and supported features.
       </p>
       <div className="flex justify-center gap-5">
-        <section className="h-96 mt-5 w-500px">
-          {faqData.map((item, index) => (
+        {/* FAQ Section */}
+        <section className=" mt-5 w-500px">
+          {faqsData.map((item, index) => (
             <div
               key={index}
-              className="border-2 border-gray-200 bg-customGray-grayLine mt-6 p-5 rounded-md"
+              className={`border-2 mt-5 p-5 rounded-lg transition-all duration-300 ${
+                openIndex === index
+                  ? "border-2 border-primary"
+                  : "border-2 border-gray-200 bg-customGray-grayLine"
+              }`}
             >
               <div
                 onClick={() => toggleFaq(index)}
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  cursor: "pointer",
-                  color: openIndex === index ? "black" : "black",
-                }}
+                className="flex justify-between items-center cursor-pointer"
               >
-                <h1 className="font-bold text-lg">{item.question}</h1>
+                <h1 className="font-bold text-17">{item.question}</h1>
                 <span>
-                  {openIndex === index ? <IoIosArrowUp color="#E0A75E"/> : <IoIosArrowDown color="#E0A75E" />}
+                  {openIndex === index ? (
+                    <IoIosArrowUp color="#E0A75E" />
+                  ) : (
+                    <IoIosArrowDown color="#E0A75E" />
+                  )}
                 </span>
               </div>
               {openIndex === index && (
@@ -93,7 +101,8 @@ function Faqs() {
             </div>
           ))}
         </section>
-        <section className="bg-customOrange-mediumOrange rounded-md p-5 w-450 h-full mt-10">
+        {/* Add Question Section */}
+        <section className="bg-customOrange-mediumOrange rounded-md p-5 w-430 h-full mt-10">
           <div className="flex justify-center">
             <img
               src="/assets/svgs/chat-round-dots_svgrepo.com.svg"
@@ -112,30 +121,29 @@ function Faqs() {
             onSubmit={handleSubmit}
             validationSchema={validationSchema}
           >
-            <Form>
-              <Field
-                as="textarea"
-                name="message"
-                placeholder="Your Message"
-                className="w-full outline-none border-2 border-gray-200 rounded-md p-2 h-24 placeholder:text-14 focus:border-primary"
-              />
-              <button
-                aria-label="Send message"
-                className=" mt-2 bg-primary w-full text-white flex items-center justify-center gap-3 p-3 rounded-md text-lg font-semibold"
-                type="submit"
-              >
-                <img
-                  src="/assets/svgs/send message.svg"
-                  alt="send-message"
-                  className="w-5 h-5"
+            {({ isSubmitting }) => (
+              <Form>
+                <InputField name="question" placeholder="Question" />
+                <Field
+                  as="textarea"
+                  name="answer"
+                  placeholder="Your Answer"
+                  className="w-full mt-2 mb-1 outline-none border-2 border-gray-200 rounded-md p-2 h-24 placeholder:text-14 focus:border-primary"
                 />
-                {isLoading ? (
-                  <ClipLoader color="#E0A75E" size={22} />
-                ) : (
-                  " Send Message"
-                )}
-              </button>
-            </Form>
+                <MainBtn
+                  btnType={"submit"}
+                  text={
+                    isLoading ? (
+                      <ClipLoader color="#fff" size={22} />
+                    ) : (
+                      <div className="flex items-center gap-2 justify-center">
+                        <LuSend /> Send Question
+                      </div>
+                    )
+                  }
+                />
+              </Form>
+            )}
           </Formik>
         </section>
       </div>

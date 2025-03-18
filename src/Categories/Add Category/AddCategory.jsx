@@ -130,14 +130,7 @@ function AddCategory() {
                   as="textarea"
                   placeholder="Description"
                   name="description"
-                  className={`w-full bg-transparent outline-none border-2 rounded-md p-2 h-24 mt-3 block placeholder:text-14 
-                    ${
-                      errors.description && touched.description
-                        ? "border-red-500 focus:border-red-500"
-                        : touched.description
-                        ? "border-green-500 focus:border-green-500"
-                        : "border-gray-200 focus:border-primary"
-                    }`}
+                  className={`w-full bg-transparent outline-none border-2 rounded-md p-2 h-24 mt-3 block placeholder:text-14 focus:border-primary`}
                 />
               </div>
               <div className="bg-white p-4 rounded-md w-2/4 h-72">

@@ -7,7 +7,8 @@ import { Helmet } from "react-helmet";
 import { sendSupport } from "../../ApiServices/Support";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 import "./support.scss";
-
+import { LuSend } from "react-icons/lu";
+import MainBtn from "../../Components/Main Button/MainBtn";
 function Support() {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -114,7 +115,7 @@ function Support() {
             link="mailto:Vertex@gmail.com"
           />
         </section>
-        <section className="bg-customOrange-mediumOrange p-7 mt-10 w-400 md:w-500px lg:w-500px  rounded-md">
+        <section className="bg-customOrange-mediumOrange p-7 mt-10 w-400 md:w-500px lg:w-460px  rounded-md">
           <div className="flex justify-center">
             <img
               src="/assets/svgs/chats.svg"
@@ -138,12 +139,11 @@ function Support() {
                 <AuthInputField name="name" placeholder="Name" />
                 <AuthInputField name="email" placeholder="Email" />
                 <AuthInputField name="phone" placeholder="Phone Number" />
-
                 <Field
                   as="textarea"
                   placeholder="Description"
                   name="message"
-                  className={`w-full bg-white outline-none border-2 rounded-md p-2 h-24 mt-3 block placeholder:text-14 
+                  className={`w-full bg-white outline-none border-2 rounded-md p-2 h-24 block placeholder:text-14 
           ${
             errors.message && touched.message
               ? "border-red-500 focus:border-red-500"
@@ -158,24 +158,19 @@ function Support() {
                 )}
 
                 <div>
-                  <button
-                    aria-label="Send message"
-                    className="bg-primary w-full text-white flex items-center justify-center gap-3 p-3 rounded-md text-17"
-                    type="submit"
-                  >
-                    {isLoading ? (
-                      <ClipLoader color="#fff" size={22} />
-                    ) : (
-                      <>
-                        <img
-                          src="/assets/svgs/send message.svg"
-                          alt="send-message"
-                          className="w-5 h-5"
-                        />
-                        Send Message
-                      </>
-                    )}
-                  </button>
+                  <MainBtn
+                  btnType={'submit'}
+                    text={
+                      isLoading ? (
+                        <ClipLoader color="#fff" size={22} />
+                      ) : (
+                        <div className="flex justify-center items-center gap-2">
+                          <LuSend />
+                          Send Message
+                        </div>
+                      )
+                    }
+                  />
                 </div>
               </Form>
             )}
@@ -203,5 +198,4 @@ function Support() {
     </div>
   );
 }
-
 export default Support;
