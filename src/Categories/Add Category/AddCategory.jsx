@@ -179,5 +179,4 @@ function AddCategory() {
     </div>
   );
 }
-
 export default AddCategory;

@@ -19,7 +19,7 @@ const UploadUpdatedProductImages = ({ previewImages, onImageChange, setFieldValu
         />
         <label
           htmlFor="image-upload"
-          className="text-gray-500 cursor-pointer flex flex-col gap-2"
+          className="text-gray-400 cursor-pointer flex flex-col gap-2"
         >
           {previewImages.length > 0 ? (
             <>
@@ -35,7 +35,7 @@ const UploadUpdatedProductImages = ({ previewImages, onImageChange, setFieldValu
                   <div
                     key={index}
                     className={`thumbnail-container ${
-                      index === 0 ? "border-2 border-blue-500" : ""
+                      index === 0 ? "border-2 rounded-md border-blue-500" : ""
                     }`}
                     onClick={() => onImageChange([image])}
                   >
@@ -66,5 +66,4 @@ const UploadUpdatedProductImages = ({ previewImages, onImageChange, setFieldValu
     </div>
   );
 };
-
 export default UploadUpdatedProductImages;

@@ -4,7 +4,6 @@ import { Helmet } from "react-helmet";
 import { useParams } from "react-router-dom";
 
 const FALLBACK_TEXT = "__";
-
 const InventoryItem = ({ label, value }) => (
   <div>
     <h2 className="text-gray-400 text-16">{label}</h2>
@@ -40,9 +39,9 @@ function ViewProduct() {
           },
         });
         if (response.status === 200) {
-          // console.log("API Response:", response.data); // Log the response
           setProductData(response.data.data);
           setMainImage(response.data.data.images?.[0]?.src);
+          console.log("Product Data:", response.data.data);
         } else {
           console.error("Failed to fetch data");
         }
@@ -94,10 +93,13 @@ function ViewProduct() {
               </div>
               <div className="p-3">
                 <h2 className="text-gray-500">Tags</h2>
-                <div className="flex items-center gap-2 mt-1 text-14 bg-customOrange-mediumOrange text-primary w-fit text-center p-2 rounded-md">
+                <div className="flex flex-wrap items-center gap-2 mt-1 text-14 bg-customOrange-mediumOrange text-primary w-fit text-center p-2 rounded-md">
                   {productData.tags?.length ? (
                     productData.tags.map((tag, index) => (
-                      <span key={index} className="inline-block">
+                      <span
+                        key={index}
+                        className="inline-block bg-white text-gray-700 px-2 py-1 rounded-md"
+                      >
                         {tag}
                       </span>
                     ))
@@ -153,7 +155,7 @@ function ViewProduct() {
         </div>
         {/* Stock & Pricing Information */}
         <div className="flex gap-5 my-5 mx-10">
-          <div className="w-900 bg-white p-5 rounded-md">
+          <div className="w-full bg-white p-5 rounded-md">
             <h2 className="font-bold mb-3 text-17">Pricing</h2>
             <div className="bg-transparent border border-gray-200 rounded-md ps-2 pt-2 pb-2  block">
               <div className="flex items-center p-3 w-500px justify-between">
@@ -181,9 +183,10 @@ function ViewProduct() {
               </div>
             </div>
           </div>
+          <div className="w-2/4 h-72"></div>
         </div>
         {(hasColors || hasSizes) && (
-          <div className="w-900 p-5 mb-7 mx-10 bg-white rounded-md">
+          <div className="w-890 p-5 mb-7 mx-10 bg-white rounded-md">
             <h2 className="font-bold mb-5 text-17">Inventory</h2>
             {hasColors && (
               <div>
@@ -224,7 +227,7 @@ function ViewProduct() {
                   >
                     <div>
                       <h3 className="text-gray-400 text-16">Size</h3>
-                      <p className="text-14 mt-1 bg-customOrange-mediumOrange rounded-md p-2 text-primary">
+                      <p className="text-17 mt-1 bg-customOrange-mediumOrange rounded-md p-1 text-primary">
                         {size.name}
                       </p>
                     </div>

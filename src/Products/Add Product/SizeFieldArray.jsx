@@ -14,7 +14,7 @@ const SizeFieldArray = ({ values, setFieldValue }) => (
               <div className="flex gap-2">
                 <InputField
                   name={`sizes[${index}].name`}
-                  placeholder="Size Name"
+                  placeholder="Size "
                 />
                 <InputField
                   name={`sizes[${index}].stock`}

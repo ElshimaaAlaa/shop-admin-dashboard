@@ -156,8 +156,6 @@ function Support() {
                 {error && (
                   <p className="text-red-500 text-center mt-2">{error}</p>
                 )}
-
-                <div>
                   <MainBtn
                   btnType={'submit'}
                     text={
@@ -171,7 +169,6 @@ function Support() {
                       )
                     }
                   />
-                </div>
               </Form>
             )}
           </Formik>
