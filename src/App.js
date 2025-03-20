@@ -23,13 +23,14 @@ import StoreTheme from "./Store/Store Theme/StoreTheme";
 import EditStoreTheme from "./Store/Store Theme/EditStoreTheme";
 import StoreInformation from "./Store/Store Information/StoreInformation";
 import EditStoreInformation from "./Store/Store Information/EditStoreInformation";
+import Main from "./Pages/Main/Main";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         {/* Auth Routes */}
-        <Route path="/" element={<AdminLogin />} />
+        <Route path="/" element={<Main />} />
         <Route path="/ForgotPassword" element={<ForgotPassword />} />
         <Route path="/VerifayPassword" element={<VerifayPassword />} />
         <Route path="/CreateNewPassword" element={<CreateNewPassword />} />

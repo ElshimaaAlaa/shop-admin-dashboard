@@ -1,0 +1,13 @@
+.nameInput,
+.emailInput,
+.phoneInput,
+.messageInput {
+  border: 1px solid #d3d3d3;
+  outline: none;
+  height: 52px;
+  border-radius: 10px;
+  background-color: #fff;
+}
+.messageInput {
+  height: 100px !important;
+}

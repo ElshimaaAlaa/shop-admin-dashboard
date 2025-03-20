@@ -1,35 +1,23 @@
 import React from "react";
-
-const Facebook = ({ width = 22, height = 26, fill = "#3E67C6", ...props }) => {
+const Facebook = ({ width = 32, height = 32, fill = "#3E67C6", ...props }) => {
   return (
     <svg
+      xmlns="http://www.w3.org/2000/svg"
+      x="0px"
+      y="0px"
       width={width}
       height={height}
-      viewBox="0 0 26 26"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}
+      viewBox="0 0 48 48"
     >
-      <g clipPath="url(#clip0_1577_1406)">
-        <path
-          fillRule="evenodd"
-          clipRule="evenodd"
-          d="M14.1033 25.5H2.12981C1.36754 25.5 0.75 24.8821 0.75 24.1201V1.8798C0.75 1.11763 1.36763 0.5 2.12981 0.5H24.3703C25.1323 0.5 25.75 1.11763 25.75 1.8798V24.1201C25.75 24.8822 25.1322 25.5 24.3703 25.5H17.9996V15.8186H21.2492L21.7358 12.0456H17.9996V9.6368C17.9996 8.54442 18.303 7.8 19.8694 7.8L21.8674 7.79913V4.42453C21.5218 4.37855 20.3358 4.27582 18.956 4.27582C16.0754 4.27582 14.1033 6.03413 14.1033 9.26313V12.0456H10.8454V15.8186H14.1033V25.5Z"
-          fill={fill}
-        />
-      </g>
-      <defs>
-        <clipPath id="clip0_1577_1406">
-          <rect
-            width="25"
-            height="25"
-            fill="white"
-            transform="translate(0.75 0.5)"
-          />
-        </clipPath>
-      </defs>
+      <path
+        fill="#3F51B5"
+        d="M42,37c0,2.762-2.238,5-5,5H11c-2.761,0-5-2.238-5-5V11c0-2.762,2.239-5,5-5h26c2.762,0,5,2.238,5,5V37z"
+      ></path>
+      <path
+        fill="#FFF"
+        d="M34.368,25H31v13h-5V25h-3v-4h3v-2.41c0.002-3.508,1.459-5.59,5.592-5.59H35v4h-2.287C31.104,17,31,17.6,31,18.723V21h4L34.368,25z"
+      ></path>
     </svg>
   );
 };
-
 export default Facebook;

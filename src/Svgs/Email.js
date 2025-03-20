@@ -39,5 +39,4 @@ const Email = ({ width = 22, height = 26, fill = "#3E67C6", ...props }) => {
     </svg>
   );
 };
-
 export default Email;
