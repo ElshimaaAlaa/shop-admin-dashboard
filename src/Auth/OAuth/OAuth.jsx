@@ -16,19 +16,18 @@ function OAuth() {
   };
   return (
     <div>
-      {/* login with google & facebook */}
       <div
-        className="flex items-center justify-center gap-4 mt-5"
+        className="flex justify-center gap-4 mt-5"
       >
         <button
-          className="text-10 md:text-11 lg:text-11 w-200 flex items-center gap-4 bg-lightGray p-3 rounded-md text-darkGray font-bold border-2 border-borderColor cursor-pointer"
+          className="text-10 md:text-11 lg:text-11 w-200 flex items-center gap-2 bg-white p-3 rounded-lg text-darkGray font-bold border-1 border-borderColor cursor-pointer"
           onClick={() => handleOnClick(facebookProvider)}
         >
           <Facebook />
           Sign in With Facebook
         </button>
         <button
-          className="text-10 md:text-11 lg:text-11 flex w-200 items-center gap-4 bg-lightGray p-3 rounded-md text-darkGray font-bold border-2 border-borderColor cursor-pointer"
+          className="text-10 md:text-11 lg:text-11 flex w-200 items-center gap-4 bg-white p-3 rounded-lg text-darkGray font-bold border-1 border-borderColor cursor-pointer"
           onClick={() => handleOnClick(googleProvider)}
         >
           <Google />

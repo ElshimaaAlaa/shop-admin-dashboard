@@ -1,28 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import HamburgerMenu from "./HamburgerMenu";
 import DesktopButtons from "./DesktopButtons";
-import NavbarModal from "./NavbarModal";
-
+import { useNavigate } from "react-router-dom";
 function Navbar() {
-  const [showLogin, setShowLogin] = useState(false);
-  const [showRegister, setShowRegister] = useState(false);
-
-  useEffect(() => {
-    if (showLogin || showRegister) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [showLogin, showRegister]);
-
-  const closeModal = () => {
-    setShowLogin(false);
-    setShowRegister(false);
-  };
-
+  const navigate = useNavigate();
   return (
     <section className="fixed w-full z-10">
       {/* Top item of navbar */}
@@ -48,21 +29,15 @@ function Navbar() {
           <img src="/assets/svgs/vertex.svg" alt="logo" className="w-36" />
         </div>
         <HamburgerMenu
-          onLoginClick={() => setShowLogin(true)}
-          onRegisterClick={() => setShowRegister(true)}
+          onLoginClick={() =>navigate('/AdminLogin')}
+          onRegisterClick={() =>navigate('/Register')}
         />
         <DesktopButtons
-          onLoginClick={() => setShowLogin(true)}
-          onRegisterClick={() => setShowRegister(true)}
+          onLoginClick={() =>navigate('/AdminLogin')}
+          onRegisterClick={() =>navigate('/Register')}
         />
       </div>
-      <NavbarModal
-        showLogin={showLogin}
-        showRegister={showRegister}
-        onClose={closeModal}
-      />
     </section>
   );
 }
-
 export default Navbar;

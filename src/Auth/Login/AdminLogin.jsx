@@ -143,7 +143,7 @@ function AdminLogin() {
               <div className="mt-5">
                 <MainBtn
                   text={
-                    loading ? <ClipLoader color="#fff" size={20} /> : "Login"
+                    loading ? <ClipLoader color="#fff" size={22} /> : "Login"
                   }
                   btnType="submit"
                   disabled={loading}
@@ -158,6 +158,9 @@ function AdminLogin() {
           <div className="border-t border-gray-300 flex-grow"></div>
         </div>
         <OAuth />
+        <p className="text-center text-gray-400 mt-3 text-15">
+          Don’t Have An Account ? <span className="ms-1 text-primary font-bold text-17 cursor-pointer" onClick={()=>navigate('/Register')}>Register</span>
+        </p>
       </div>
     </div>
   );

@@ -115,7 +115,7 @@ function AddCategory() {
       >
         {({ setFieldValue, values, errors, touched }) => (
           <Form className="flex flex-col">
-            <h1 className="font-bold rounded-md p-5 text-lg mx-10 bg-white mt-5 mb-5">
+            <h1 className="font-bold rounded-md p-5 text-17 mx-10 bg-white mt-5 mb-3">
               Add Category
             </h1>
             <div className="flex gap-5 mx-10">

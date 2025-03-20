@@ -89,7 +89,7 @@ function EditCategory() {
         <title>Edit Category - VERTEX</title>
         <meta name="description" content="Edit category details in VERTEX" />
       </Helmet>
-      <h1 className="font-bold rounded-md p-5 text-lg mx-4 md:mx-10 bg-white mt-5 mb-5">
+      <h1 className="font-bold rounded-md p-5 text-17 mx-4 md:mx-10 bg-white mt-5 mb-3">
         Edit Category
       </h1>
       <Formik
@@ -198,7 +198,7 @@ function EditCategory() {
                   as="textarea"
                   name="description"
                   placeholder="Description"
-                  className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md p-2 h-36 mt-3 placeholder:text-14 focus:border-primary"
+                  className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md p-2 h-24 mt-3 placeholder:text-14 focus:border-primary"
                   aria-label="Category description"
                 />
               </div>

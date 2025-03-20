@@ -24,6 +24,7 @@ import EditStoreTheme from "./Store/Store Theme/EditStoreTheme";
 import StoreInformation from "./Store/Store Information/StoreInformation";
 import EditStoreInformation from "./Store/Store Information/EditStoreInformation";
 import Main from "./Pages/Main/Main";
+import Register from "./Auth/Register/Register";
 
 function App() {
   return (
@@ -31,6 +32,8 @@ function App() {
       <Routes>
         {/* Auth Routes */}
         <Route path="/" element={<Main />} />
+        <Route path="/Register" element={<Register />} />
+        <Route path="/AdminLogin" element={<AdminLogin />} />
         <Route path="/ForgotPassword" element={<ForgotPassword />} />
         <Route path="/VerifayPassword" element={<VerifayPassword />} />
         <Route path="/CreateNewPassword" element={<CreateNewPassword />} />
@@ -45,7 +48,10 @@ function App() {
           {/* Products */}
           <Route path="products" element={<AllProducts />} />
           <Route path="addProduct" element={<AddProduct />} />
-          <Route path="/Home/EditProduct/:productId" element={<EditProduct />} />
+          <Route
+            path="/Home/EditProduct/:productId"
+            element={<EditProduct />}
+          />
           <Route path="/Home/products/:productId" element={<ViewProduct />} />
 
           {/* Discounts */}
@@ -57,8 +63,11 @@ function App() {
             <Route path="EditInfo" element={<EditInfo />} />
             <Route path="StoreTheme" element={<StoreTheme />} />
             <Route path="EditStoreTheme" element={<EditStoreTheme />} />
-            <Route path="StoreInformation" element={<StoreInformation/>}/>
-            <Route path="EditStoreInformation" element={<EditStoreInformation/>}/>
+            <Route path="StoreInformation" element={<StoreInformation />} />
+            <Route
+              path="EditStoreInformation"
+              element={<EditStoreInformation />}
+            />
           </Route>
 
           {/* Other Routes */}
