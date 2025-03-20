@@ -13,9 +13,10 @@ function AllProducts() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5);
+  const [itemsPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+
   // Fetch data from API
   useEffect(() => {
     const getProducts = async () => {
@@ -32,32 +33,35 @@ function AllProducts() {
     };
     getProducts();
   }, []);
+
   const handleDeleteProduct = (productId) => {
-    setProducts((prevProduct) => {
-      const updateProduct = prevProduct.filter(
+    setProducts((prevProducts) => {
+      const updatedProducts = prevProducts.filter(
         (product) => product.id !== productId
       );
-      if (
-        updateProduct.length <= (currentPage - 1) * itemsPerPage &&
-        currentPage > 1
-      ) {
-        setCurrentPage(currentPage - 1); // Move to the previous page
+
+      // Check if the current page becomes empty after deletion
+      const newTotalPages = Math.ceil(updatedProducts.length / itemsPerPage);
+      if (currentPage > newTotalPages) {
+        setCurrentPage(newTotalPages); // Move to the last page
       }
-      return updateProduct;
+
+      return updatedProducts;
     });
   };
+
   const filteredProducts = useMemo(() => {
     return products.filter((product) =>
       product.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [products, searchQuery]);
+
   // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = useMemo(() => {
     return filteredProducts.slice(indexOfFirstItem, indexOfLastItem);
   }, [filteredProducts, indexOfFirstItem, indexOfLastItem]);
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <div className="bg-gray-100 h-150vh mx-10 pt-5 ">
@@ -198,9 +202,10 @@ function AllProducts() {
         {/* Pagination */}
         <ReactPaginate
           pageCount={Math.ceil(filteredProducts.length / itemsPerPage)}
-          onPageChange={({ selected }) => paginate(selected + 1)}
+          onPageChange={({ selected }) => setCurrentPage(selected + 1)}
+          forcePage={currentPage - 1} // Force the current page to stay in sync
           containerClassName="flex items-center justify-end mt-5 text-gray-500"
-          pageClassName="mx-1 px-3 py-1 rounded "
+          pageClassName="mx-1 px-3 py-1 rounded"
           activeClassName="bg-customOrange-lightOrange text-primary"
           previousLabel={<ChevronLeft className="w-4 h-4 text-center" />}
           nextLabel={<ChevronRight className="w-4 h-4" />}
@@ -211,4 +216,5 @@ function AllProducts() {
     </div>
   );
 }
+
 export default AllProducts;

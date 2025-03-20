@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 const FALLBACK_TEXT = "__";
 const InventoryItem = ({ label, value }) => (
   <div>
-    <h2 className="text-gray-400 text-16">{label}</h2>
+    <h2 className="text-gray-400 text-15">{label}</h2>
     <p className="text-14 mt-1">{value || FALLBACK_TEXT}</p>
   </div>
 );
@@ -36,6 +36,9 @@ function ViewProduct() {
           method: "GET",
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "Accept-Language": "en",
           },
         });
         if (response.status === 200) {
@@ -93,18 +96,18 @@ function ViewProduct() {
               </div>
               <div className="p-3">
                 <h2 className="text-gray-500">Tags</h2>
-                <div className="flex flex-wrap items-center gap-2 mt-1 text-14 bg-customOrange-mediumOrange text-primary w-fit text-center p-2 rounded-md">
+                <div className="flex flex-wrap items-center gap-2 ">
                   {productData.tags?.length ? (
                     productData.tags.map((tag, index) => (
                       <span
                         key={index}
-                        className="inline-block bg-white text-gray-700 px-2 py-1 rounded-md"
+                        className="bg-customOrange-mediumOrange text-primary rounded-md px-3 py-1 mt-2 text-14"
                       >
                         {tag}
                       </span>
                     ))
                   ) : (
-                    <span>No tags available</span>
+                    <span className="bg-customOrange-mediumOrange text-primary mt-1 text-14 w-fit text-center p-2 rounded-md">No tags available</span>
                   )}
                 </div>
               </div>
@@ -186,21 +189,21 @@ function ViewProduct() {
           <div className="w-2/4 h-72"></div>
         </div>
         {(hasColors || hasSizes) && (
-          <div className="w-890 p-5 mb-7 mx-10 bg-white rounded-md">
+          <div className="w-900 p-5 mb-7 mx-10 bg-white rounded-md">
             <h2 className="font-bold mb-5 text-17">Inventory</h2>
             {hasColors && (
               <div>
                 <div>
                   {productData.colors.map((color, index) => (
                     <div key={color.id || index} className="flex gap-3">
-                      <div className="mt-1">
+                      <div>
                         <img
                           src={color.image || "/assets/images/product.png"}
                           alt={`Color: ${color.name}`}
-                          className="h-20 w-20 object-cover rounded-xl"
+                          className="h-20 w-24 object-cover rounded-xl"
                         />
                       </div>
-                      <div className="flex w-full items-center justify-between mb-3 border-2 border-gray-200 rounded-md p-3">
+                      <div className="flex w-full items-center justify-between mb-3 border-2 border-gray-200 rounded-lg p-2">
                         <ColorItem color={color} />
                         <InventoryItem label="Stock" value={color.stock} />
                         <InventoryItem label="Price" value={color.price} />
@@ -223,11 +226,11 @@ function ViewProduct() {
                 {productData.sizes.map((size, index) => (
                   <div
                     key={size.id || index}
-                    className="flex items-center border-2 border-gray-200 rounded-lg mb-4 p-3 justify-between"
+                    className="flex items-center border-2 border-gray-200 rounded-lg mb-3 p-2 justify-between"
                   >
                     <div>
-                      <h3 className="text-gray-400 text-16">Size</h3>
-                      <p className="text-17 mt-1 bg-customOrange-mediumOrange rounded-md p-1 text-primary">
+                      <h3 className="text-gray-400 text-15">Size</h3>
+                      <p className="text-14 mt-1 bg-customOrange-mediumOrange rounded-md p-1 text-primary">
                         {size.name}
                       </p>
                     </div>

@@ -7,7 +7,8 @@ export const addProduct = async (formData) => {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
         "Content-Type": "multipart/form-data",
-        "Accept-Language": "en",
+        // "Accept-Language": "en",
+
       },
     });
     if (response.status === 200) {

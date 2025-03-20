@@ -4,7 +4,7 @@ export const UploadProductImage = ({ previewImages, onImageChange }) => {
   return (
     <>
       <h2 className="font-bold mb-3">Product Icon / Image</h2>
-      <div className="bg-gray-100 w-full border-2 border-gray-400 border-dashed outline-none h-48 p-1 rounded-md ">
+      <div className="bg-gray-100 w-full border-2 border-gray-400 border-dashed outline-none h-48 rounded-md ">
         <input
           type="file"
           name="images"
@@ -23,22 +23,22 @@ export const UploadProductImage = ({ previewImages, onImageChange }) => {
               <img
                 src={previewImages[0]}
                 alt="main-product-image"
-                className="w-full h-44 rounded-md mt-1"
+                className="w-full h-full object-cover rounded-md"
               />
               {/* Thumbnails */}
-              <div className="flex gap-2 mt-2">
+              <div className="flex gap-2 mt-3">
                 {previewImages.map((image, index) => (
                   <div
                     key={index}
                     className={`thumbnail-container ${
-                      index === 0 ? "border-2 border-blue-500" : ""
+                      index === 0 ? "border-2 rounded-lg border-blue-500" : ""
                     }`}
                     onClick={() => onImageChange([image])}
                   >
                     <img
                       src={image}
                       alt={`thumbnail-${index}`}
-                      className="h-12 w-12 object-cover rounded-md cursor-pointer"
+                      className="h-12 w-12 object-cover rounded-lg cursor-pointer"
                     />
                   </div>
                 ))}

@@ -7,12 +7,14 @@ import InputField from "../../Components/InputFields/InputField";
 import UploadUpdatedProductImages from "../../Components/Upload Image/UploadUpdatedProductImages";
 import Footer from "../../Components/Footer/Footer";
 import { fetchCategories } from "../../ApiServices/AllCategoriesApi";
-import ColorFieldArray from "../Add Product/ColorFieldArray"
+import ColorFieldArray from "../Add Product/ColorFieldArray";
 import SizeFieldArray from "../Add Product/SizeFieldArray";
+import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 function EditProduct() {
   const [isDiscountScheduled, setIsDiscountScheduled] = useState(false);
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const { state } = useLocation();
   const [previewImages, setPreviewImages] = useState(
     state?.images?.map((img) => img.src) || []
@@ -64,8 +66,14 @@ function EditProduct() {
     // Append name and description fields (ensure they are not empty)
     formData.append("name[ar]", values.name || "Default Arabic Name");
     formData.append("name[en]", values.name || "Default English Name");
-    formData.append("description[ar]", values.description || "Default Arabic Description");
-    formData.append("description[en]", values.description || "Default English Description");
+    formData.append(
+      "description[ar]",
+      values.description || "Default Arabic Description"
+    );
+    formData.append(
+      "description[en]",
+      values.description || "Default English Description"
+    );
 
     // Append other fields
     formData.append("cost", values.cost || "");
@@ -74,16 +82,11 @@ function EditProduct() {
     formData.append("category_id", values.category_id || "");
 
     // Append images
-    if (values.images && values.images.length > 0) {
-      values.images.forEach((image, index) => {
-        if (image instanceof File) {
-          formData.append(`images[${index}]`, image);
-        } else if (image.src) {
-          formData.append(`images[${index}]`, image.src);
-        }
-      });
-    }
-
+    values.images.forEach((image, index) => {
+      if (image instanceof File) {
+        formData.append(`images[${index}]`, image);
+      }
+    });
     formData.append("price", values.price || "");
     formData.append("discount_percentage", values.discount_percentage || "");
     formData.append("discount_expire_at", values.discount_expire_at || "");
@@ -121,11 +124,16 @@ function EditProduct() {
 
     try {
       await updateProduct(product.id, formData);
-      navigate("/Home/products", { replace: true });
+      setShowModal(true);
+      setTimeout(() => {
+        // navigate("/Home/products", { replace: true });
+      }, 1500);
     } catch (error) {
       console.error("Failed to update product:", error.response?.data || error);
       alert(
-        `Failed to update product: ${error.response?.data?.message || "Unknown error"}`
+        `Failed to update product: ${
+          error.response?.data?.message || "Unknown error"
+        }`
       );
     } finally {
       setIsLoading(false);
@@ -228,7 +236,9 @@ function EditProduct() {
                   placeholder={"Tags"}
                   value={values.tags?.join(", ")} // Display tags as a comma-separated string
                   onChange={(e) => {
-                    const tagsArray = e.target.value.split(",").map((tag) => tag.trim());
+                    const tagsArray = e.target.value
+                      .split(",")
+                      .map((tag) => tag.trim());
                     setFieldValue("tags_id", tagsArray);
                   }}
                 />
@@ -254,7 +264,7 @@ function EditProduct() {
                 <InputField
                   name="revenue"
                   placeholder="Revenue"
-                  readOnly={true}
+                  // readOnly={true}
                 />
               </div>
               <div className="flex items-center gap-3 mt-3 mb-3">
@@ -296,32 +306,6 @@ function EditProduct() {
               )}
             </div>
 
-            {/* Conditional Rendering for Colors and Sizes */}
-            {categoryType === "Color" && (
-              <ColorFieldArray
-                values={values}
-                setFieldValue={setFieldValue}
-              />
-            )}
-            {categoryType === "Size" && (
-              <SizeFieldArray
-                values={values}
-                setFieldValue={setFieldValue}
-              />
-            )}
-            {categoryType === "Both" && (
-              <>
-                <ColorFieldArray
-                  values={values}
-                  setFieldValue={setFieldValue}
-                />
-                <SizeFieldArray
-                  values={values}
-                  setFieldValue={setFieldValue}
-                />
-              </>
-            )}
-
             <Footer
               saveText={"Save Changes"}
               cancelText={"Cancel"}
@@ -333,6 +317,26 @@ function EditProduct() {
           </Form>
         )}
       </Formik>
+      {/* Success Modal */}
+      <SuccessModal isOpen={showModal}>
+        <div className="flex flex-col justify-center w-370 items-center">
+          <img
+            src="/assets/images/success.png"
+            alt="Success"
+            className="w-32 mt-6"
+          />
+          <p className="font-bold mt-5 text-center">
+            Product updated successfully!
+          </p>
+          <button
+            className="bg-primary text-white rounded-md p-2 text-14 mt-4 w-64"
+            onClick={() => navigate("/Home/products")}
+            aria-label="Back to products"
+          >
+            Back to Categories
+          </button>
+        </div>
+      </SuccessModal>
     </div>
   );
 }

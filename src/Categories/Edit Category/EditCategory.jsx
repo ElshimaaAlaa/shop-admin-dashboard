@@ -155,7 +155,7 @@ function EditCategory() {
                         setFieldValue("newTagEn", "");
                       }
                     }}
-                    className="w-full bg-transparent outline-none placeholder:text-14"
+                    className="bg-transparent outline-none placeholder:text-14"
                   />
                 </div>
                 {/* Arabic Tags */}
@@ -191,7 +191,7 @@ function EditCategory() {
                         setFieldValue("newTagAr", "");
                       }
                     }}
-                    className="w-full bg-transparent outline-none placeholder:text-14"
+                    className="bg-transparent outline-none placeholder:text-14"
                   />
                 </div>
                 <Field

@@ -2,6 +2,7 @@ import React from "react";
 import InputField from "../../Components/InputFields/InputField";
 import { VscPercentage } from "react-icons/vsc";
 import { Field } from "formik";
+import './style.scss';
 const BasicInformationSection = ({
   categories,
   selectedCategoryTags,
@@ -45,14 +46,14 @@ const BasicInformationSection = ({
       </Field>
     </div>
     <div className="flex gap-4 mt-3 mb-3">
-      <div className="relative flex items-center w-full border-2 bg-transparent border-gray-200 rounded-md placeholder:text-14 focus-within:border-primary">
-        <span className="h-full w-12 text-center pt-5 ps-3 bg-gray-100 absolute rounded-tl-md rounded-bl-md">
+      <div className="relative flex items-center w-810 border-2 bg-transparent border-gray-200 rounded-md  focus-within:border-primary">
+        <span className="h-full w-10 text-center pt-4 ps-3 bg-gray-100 absolute rounded-tl-md rounded-bl-md">
           <VscPercentage className="text-xl text-gray-600 font-bold" />
         </span>
         <Field
           name="return_percentage"
           placeholder="percentage (upon return)"
-          className="outline-none ms-14"
+          className="outline-none ms-12 placeholder:text-14"
         />
       </div>
       <div className="w-full">
@@ -72,7 +73,7 @@ const BasicInformationSection = ({
               value={index}
               checked={values.tags_ids.includes(index)}
               onChange={() => handleTagChange(index, setFieldValue, values)}
-              className="mr-2"
+              className="mr-2 custom-checkbox"
             />
             {tag}
           </label>
@@ -87,5 +88,4 @@ const BasicInformationSection = ({
     />
   </div>
 );
-
 export default BasicInformationSection;

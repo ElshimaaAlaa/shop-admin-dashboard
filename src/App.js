@@ -23,6 +23,7 @@ import StoreTheme from "./Store/Store Theme/StoreTheme";
 import EditStoreTheme from "./Store/Store Theme/EditStoreTheme";
 import StoreInformation from "./Store/Store Information/StoreInformation";
 import EditStoreInformation from "./Store/Store Information/EditStoreInformation";
+import StoreSetupWizard from "./Store/SetUp Store/SetUpStore";
 
 function App() {
   return (
@@ -65,6 +66,7 @@ function App() {
           <Route path="support" element={<Support />} />
           <Route path="Faqs" element={<Faqs />} />
         </Route>
+        <Route path="/StoreSetupWizard" element={<StoreSetupWizard/>}/>
       </Routes>
     </BrowserRouter>
   );
