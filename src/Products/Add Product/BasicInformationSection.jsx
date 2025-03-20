@@ -47,7 +47,7 @@ const BasicInformationSection = ({
     </div>
     <div className="flex gap-4 mt-3 mb-3">
       <div className="relative flex items-center w-810 border-2 bg-transparent border-gray-200 rounded-md  focus-within:border-primary">
-        <span className="h-full w-10 text-center pt-4 ps-3 bg-gray-100 absolute rounded-tl-md rounded-bl-md">
+        <span className="h-full w-10 text-center pt-4 ps-2 bg-gray-100 absolute rounded-tl-md rounded-bl-md">
           <VscPercentage className="text-xl text-gray-600 font-bold" />
         </span>
         <Field
@@ -63,7 +63,7 @@ const BasicInformationSection = ({
     <div className="mt-3">
       <div className="flex flex-wrap gap-2 w-full h-14 p-3 border-2 bg-transparent border-gray-200 rounded-md outline-none placeholder:text-14 focus:border-2 focus:border-primary">
         {selectedCategoryTags.length === 0 && (
-          <p className="text-14 text-gray-400">Tags</p>
+          <p className="text-14 text-gray-400">Select Tags</p>
         )}
         {selectedCategoryTags.map((tag, index) => (
           <label key={index} className="flex items-center">

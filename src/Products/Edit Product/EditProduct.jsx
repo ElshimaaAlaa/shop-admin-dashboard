@@ -7,8 +7,6 @@ import InputField from "../../Components/InputFields/InputField";
 import UploadUpdatedProductImages from "../../Components/Upload Image/UploadUpdatedProductImages";
 import Footer from "../../Components/Footer/Footer";
 import { fetchCategories } from "../../ApiServices/AllCategoriesApi";
-import ColorFieldArray from "../Add Product/ColorFieldArray";
-import SizeFieldArray from "../Add Product/SizeFieldArray";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 function EditProduct() {
   const [isDiscountScheduled, setIsDiscountScheduled] = useState(false);
@@ -20,6 +18,7 @@ function EditProduct() {
     state?.images?.map((img) => img.src) || []
   );
   const navigate = useNavigate();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const product = state || {};
   const [categoryType, setCategoryType] = useState(null); // State to track category type
 
