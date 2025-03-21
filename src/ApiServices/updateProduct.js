@@ -11,6 +11,7 @@ export const updateProduct = async (productId, formData) => {
       headers: {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Accept-Language": "en",
       },
     });
     if (response.status === 200) {

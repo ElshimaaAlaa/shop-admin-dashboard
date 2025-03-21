@@ -27,12 +27,14 @@ function ViewProduct() {
   const [productData, setProductData] = useState({});
   const { productId } = useParams();
   const [mainImage, setMainImage] = useState(null);
-
+  const API_BASE_URL = "https://";
+  const live_shop_domain = localStorage.getItem("live_shop_domain");
+  const role = localStorage.getItem("role");
   useEffect(() => {
     const fetchProductDetails = async () => {
       try {
         const response = await axios({
-          url: `https://demo.vrtex.duckdns.org/api/shop/products/${productId}`,
+          url: `${API_BASE_URL}${live_shop_domain}/api/${role}/products/${productId}`,
           method: "GET",
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -107,7 +109,9 @@ function ViewProduct() {
                       </span>
                     ))
                   ) : (
-                    <span className="bg-customOrange-mediumOrange text-primary mt-1 text-14 w-fit text-center p-2 rounded-md">No tags available</span>
+                    <span className="bg-customOrange-mediumOrange text-primary mt-1 text-14 w-fit text-center p-2 rounded-md">
+                      No tags available
+                    </span>
                   )}
                 </div>
               </div>

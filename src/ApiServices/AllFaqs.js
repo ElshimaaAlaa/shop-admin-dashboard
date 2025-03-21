@@ -1,9 +1,12 @@
 import axios from "axios";
-const API_BASE_URL = "https://demo.vrtex.duckdns.org/api/shop";
+
+const API_BASE_URL = "https://";
+const live_shop_domain = localStorage.getItem("live_shop_domain");
+const role = localStorage.getItem("role");
 export const getFaqs = async () => {
   try {
     const response = await axios({
-      url: `${API_BASE_URL}/faqs`,
+      url: `${API_BASE_URL}/${live_shop_domain}/api/${role}/faqs`,
       method: "GET",
       headers: {
         "Accept-Language": "en",

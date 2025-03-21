@@ -4,21 +4,20 @@ import OAuth from "../OAuth/OAuth";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { ClipLoader } from "react-spinners";
-import axios from "axios";
 import { Helmet } from "react-helmet";
 import AuthInputField from "../../Components/AuthInput Field/AuthInputField";
 import PasswordInput from "../../Components/Password Input/PasswordInput";
 import MainBtn from "../../Components/Main Button/MainBtn";
 import { register } from "../../ApiServices/RegisterApi";
+import { useNavigate } from "react-router-dom";
 
 function Register() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirmation, setShowPasswordConfirmation] =
     useState(false);
-  const [showLogin, setShowLogin] = useState(false);
+  const navigate = useNavigate();
   const [error, setError] = useState(null);
-
   const initialValues = {
     name: "",
     email: "",
@@ -55,6 +54,7 @@ function Register() {
       );
       console.log(registerData);
     } catch (error) {
+      setLoading(false);
       console.error(error.message);
       setError("Failed to register. Please try again.");
     }
@@ -139,11 +139,11 @@ function Register() {
                 <div className="border-t border-gray-300 flex-grow"></div>
               </div>
               <OAuth />
-              <p className="text-gray-400 text-center mt-3 text-15">
-                Have An Account?
+              <p className="text-center text-gray-400 mt-3 text-15">
+                Have An Account ?
                 <span
-                  onClick={() => setShowLogin(true)}
-                  className="ms-2 text-primary font-bold cursor-pointer text-16"
+                  onClick={() => navigate("/AdminLogin")}
+                  className="ms-2 text-primary font-bold text-17 cursor-pointer"
                 >
                   Login
                 </span>

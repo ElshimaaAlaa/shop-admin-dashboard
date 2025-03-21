@@ -25,18 +25,21 @@ import StoreInformation from "./Store/Store Information/StoreInformation";
 import EditStoreInformation from "./Store/Store Information/EditStoreInformation";
 import Main from "./Pages/Main/Main";
 import Register from "./Auth/Register/Register";
+import GetDomain from "./Auth/Get Domain/GetDomain";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         {/* Auth Routes */}
-        <Route path="/" element={<Main />} />
+        <Route path="/" element={<GetDomain />} />
+        <Route path="/Main" element={<Main/>}/>
         <Route path="/Register" element={<Register />} />
         <Route path="/AdminLogin" element={<AdminLogin />} />
         <Route path="/ForgotPassword" element={<ForgotPassword />} />
         <Route path="/VerifayPassword" element={<VerifayPassword />} />
         <Route path="/CreateNewPassword" element={<CreateNewPassword />} />
+        {/* <Route path="/GetDomain" element={<GetDomain />} /> */}
 
         <Route path="/Home" element={<Home />}>
           {/* Categories */}

@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import FailedModal from "../../Components/Modal/Failed Modal/FailedModal";
 import axios from "axios";
 import { ClipLoader } from "react-spinners";
-import './DeleteModal.scss';
+import "./DeleteModal.scss";
 function DeleteCategory({ id, onDelete }) {
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const API_BASE_URL = "https://";
+  const live_shop_domain = localStorage.getItem("live_shop_domain");
+  const role = localStorage.getItem("role");
   const handleDeleteCategory = async () => {
     setIsLoading(true);
     if (!id) {
@@ -15,7 +18,7 @@ function DeleteCategory({ id, onDelete }) {
     try {
       const response = await axios({
         method: "GET",
-        url: `https://demo.vrtex.duckdns.org/api/shop/categories/delete/${id}`,
+        url: `${API_BASE_URL}${live_shop_domain}/api/${role}/categories/delete/${id}`,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

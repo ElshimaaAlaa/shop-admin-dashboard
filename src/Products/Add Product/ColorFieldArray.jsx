@@ -1,20 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { FieldArray, Field } from "formik";
 import { AiOutlineClose } from "react-icons/ai";
 import { Plus } from "lucide-react";
 import InputField from "../../Components/InputFields/InputField";
-import { UploadImageForColor } from "../../Components/Upload Image/UploadImageForColor";
 
 const ColorFieldArray = ({ values, setFieldValue }) => {
-  
-  useEffect(() => {
-    values.colors.forEach((color, index) => {
-      if (!color.previewImage && values.product_images?.length > 0) {
-        setFieldValue(`colors[${index}].previewImage`, values.product_images[0]); 
-      }
-    });
-  }, [values.colors, values.product_images, setFieldValue]);
-
   return (
     <div className="bg-white p-5 rounded-md mt-5 mx-10 w-890">
       <h2 className="font-bold mb-5">Inventory</h2>
@@ -27,22 +17,53 @@ const ColorFieldArray = ({ values, setFieldValue }) => {
                 className="flex flex-col gap-4 mb-4 bg-gray-100 p-5 rounded-md"
               >
                 <div className="flex gap-2">
+                  {/* Upload Image for Color */}
                   <UploadImageForColor
                     name={`colors[${index}].image`}
-                    previewImage={color.previewImage || values.product_images?.[0]} // Default to first product image
+                    previewImage={
+                      color.previewImage ||
+                      (values.product_images?.length > 0
+                        ? values.product_images[0]
+                        : null)
+                    }
                     onImageChange={(event) => {
                       const file = event.currentTarget.files[0];
                       if (file) {
                         const previewURL = URL.createObjectURL(file);
                         setFieldValue(`colors[${index}].image`, file);
-                        setFieldValue(`colors[${index}].previewImage`, previewURL);
+                        setFieldValue(
+                          `colors[${index}].previewImage`,
+                          previewURL
+                        );
                       }
                     }}
                   />
-                  <InputField name={`colors[${index}].name`} placeholder="Color" />
-                  <InputField name={`colors[${index}].code`} placeholder="Color Code (e.g., #FFFFFF)" />
-                  <InputField name={`colors[${index}].stock`} placeholder="Stock" />
-                  <InputField name={`colors[${index}].price`} placeholder="Price" />
+
+                  {/* Color Name */}
+                  <InputField
+                    name={`colors[${index}].name`}
+                    placeholder="Color"
+                  />
+
+                  {/* Color Code */}
+                  <InputField
+                    name={`colors[${index}].code`}
+                    placeholder="Color Code (e.g., #FFFFFF)"
+                  />
+
+                  {/* Stock */}
+                  <InputField
+                    name={`colors[${index}].stock`}
+                    placeholder="Stock"
+                  />
+
+                  {/* Price */}
+                  <InputField
+                    name={`colors[${index}].price`}
+                    placeholder="Price"
+                  />
+
+                  {/* Remove Color Button */}
                   <button
                     type="button"
                     className="text-2xl font-light text-red-500 ms-3"
@@ -61,7 +82,10 @@ const ColorFieldArray = ({ values, setFieldValue }) => {
                       name={`colors[${index}].schedule_discount`}
                       className="hidden"
                       onChange={(e) => {
-                        setFieldValue(`colors[${index}].schedule_discount`, e.target.checked);
+                        setFieldValue(
+                          `colors[${index}].schedule_discount`,
+                          e.target.checked
+                        );
                       }}
                     />
                     <span className="w-4 h-4 border-2 border-gray-300 rounded flex items-center justify-center transition-all duration-200 peer-checked:border-orange-500">
@@ -80,12 +104,21 @@ const ColorFieldArray = ({ values, setFieldValue }) => {
                 {/* Discount Fields - Show only if schedule discount is checked */}
                 {color.schedule_discount && (
                   <div className="flex gap-4">
-                    <InputField name={`colors[${index}].discount_percentage`} placeholder="Discount" />
-                    <InputField name={`colors[${index}].discount_expire_at`} type="date" placeholder="Discount Expiry Date" />
+                    <InputField
+                      name={`colors[${index}].discount_percentage`}
+                      placeholder="Discount"
+                    />
+                    <InputField
+                      name={`colors[${index}].discount_expire_at`}
+                      type="date"
+                      placeholder="Discount Expiry Date"
+                    />
                   </div>
                 )}
               </div>
             ))}
+
+            {/* Add Color Button */}
             <div className="flex justify-end">
               <button
                 className="text-primary rounded-md p-2 text-16 font-bold flex items-center gap-2"
@@ -96,8 +129,11 @@ const ColorFieldArray = ({ values, setFieldValue }) => {
                     stock: "",
                     price: "",
                     image: null,
-                    previewImage: values.product.images?.[0] || null, // Set default image
-                    schedule_discount: false, 
+                    previewImage:
+                      values.product_images?.length > 0
+                        ? values.product_images[0]
+                        : null, // Set default image
+                    schedule_discount: false,
                     discount_percentage: "",
                     discount_expire_at: "",
                   })
@@ -116,3 +152,37 @@ const ColorFieldArray = ({ values, setFieldValue }) => {
 };
 
 export default ColorFieldArray;
+
+// UploadImageForColor Component
+export const UploadImageForColor = ({ previewImage, onImageChange, name }) => {
+  return (
+    <div className="border-2 w-72 border-dashed bg-white border-primary rounded-md p-1 flex items-center justify-center">
+      <input
+        type="file"
+        name={name}
+        onChange={onImageChange}
+        className="hidden"
+        id={`image-upload-${name}`}
+        aria-label="Upload product image"
+      />
+      <label
+        htmlFor={`image-upload-${name}`}
+        className="text-gray-500 cursor-pointer flex flex-col items-center gap-2"
+      >
+        {previewImage ? (
+          <img
+            src={previewImage}
+            alt="preview"
+            className="w-full h-full object-fill rounded-md"
+          />
+        ) : (
+          <img
+            src="/assets/svgs/upload-file_svgrepo.com.svg"
+            alt="upload-image-file"
+            className="mt-3 mb-3 w-6"
+          />
+        )}
+      </label>
+    </div>
+  );
+};

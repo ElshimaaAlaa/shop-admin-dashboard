@@ -68,7 +68,7 @@ function AllProducts() {
       <Helmet>
         <title>All Products | VERTEX</title>
       </Helmet>
-      <h1 className="font-bold text-lg bg-white mb-5 p-4 rounded-md">
+      <h1 className="font-bold text-17 bg-white mb-3 p-4 rounded-md">
         Products
       </h1>
       <div className="bg-white p-5 rounded-md">

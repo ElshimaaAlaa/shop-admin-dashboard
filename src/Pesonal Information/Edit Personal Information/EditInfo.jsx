@@ -16,6 +16,9 @@ function EditInfo() {
   const navigate = useNavigate();
   const { state } = useLocation();
   const personalInfo = state || {};
+  const API_BASE_URL = "https://";
+  const live_shop_domain = localStorage.getItem("live_shop_domain");
+  const role = localStorage.getItem("role");
 
   const initialValues = {
     name: personalInfo?.name || "",
@@ -23,7 +26,6 @@ function EditInfo() {
     phone: personalInfo?.phone || "",
     image: null,
   };
-
 
   const handleSubmit = async (values) => {
     setIsLoading(true);
@@ -37,7 +39,7 @@ function EditInfo() {
         formData.append("image", selectedImage);
       }
       const response = await axios.post(
-        "https://demo.vrtex.duckdns.org/api/shop/update-profile",
+        `${API_BASE_URL}${live_shop_domain}/api/${role}/update-profile`,
         formData,
         {
           headers: {

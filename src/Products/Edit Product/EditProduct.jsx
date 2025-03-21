@@ -8,33 +8,30 @@ import UploadUpdatedProductImages from "../../Components/Upload Image/UploadUpda
 import Footer from "../../Components/Footer/Footer";
 import { fetchCategories } from "../../ApiServices/AllCategoriesApi";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
+import { VscPercentage } from "react-icons/vsc";
+import SizeFieldArray from "../Add Product/SizeFieldArray";
+import ColorFieldArray from "../Add Product/ColorFieldArray";
+import PricingSection from "../Add Product/PricingSection";
 function EditProduct() {
-  const [isDiscountScheduled, setIsDiscountScheduled] = useState(false);
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [dynamicHeight, setDynamicHeight] = useState("h-auto");
+
   const { state } = useLocation();
   const [previewImages, setPreviewImages] = useState(
     state?.images?.map((img) => img.src) || []
   );
   const navigate = useNavigate();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const product = state || {};
-  const [categoryType, setCategoryType] = useState(null); // State to track category type
-
-  // Log the product object for debugging
-  useEffect(() => {
-    console.log("Product from API:", product);
-  }, [product]);
-
-  // Determine category type based on the selected category
+  const [categoryType, setCategoryType] = useState(null);
   useEffect(() => {
     if (product.category_id) {
       const selectedCategory = categories.find(
         (cat) => cat.id === product.category_id
       );
       if (selectedCategory) {
-        setCategoryType(selectedCategory.type_name); // Set category type
+        setCategoryType(selectedCategory.type_name);
       }
     }
   }, [product.category_id, categories]);
@@ -47,9 +44,9 @@ function EditProduct() {
     description: product.description || "",
     tag_number: product.tag_number || "",
     gender: product.gender || "",
-    tags_id: product.tags_id || [], // Ensure tags are initialized
+    tags_id: product.tags || [],
     images: product.images || [],
-    category_id: product.category?.id || "", // Ensure category_id is initialized
+    category_id: product.category?.id || "",
     price: product.price || 0,
     discount_percentage: product.discount_percentage || 0,
     discount_expire_at: product.discount_expire_at || "",
@@ -61,43 +58,28 @@ function EditProduct() {
   const handleSubmit = async (values) => {
     setIsLoading(true);
     const formData = new FormData();
-
-    // Append name and description fields (ensure they are not empty)
-    formData.append("name[ar]", values.name || "Default Arabic Name");
-    formData.append("name[en]", values.name || "Default English Name");
-    formData.append(
-      "description[ar]",
-      values.description || "Default Arabic Description"
-    );
-    formData.append(
-      "description[en]",
-      values.description || "Default English Description"
-    );
-
-    // Append other fields
-    formData.append("cost", values.cost || "");
-    formData.append("revenue", values.revenue || "");
-    formData.append("tag_number", values.tag_number || "");
-    formData.append("category_id", values.category_id || "");
-
-    // Append images
+    formData.append("name[ar]", values.name);
+    formData.append("name[en]", values.name);
+    formData.append("description[ar]", values.description);
+    formData.append("description[en]", values.description);
+    formData.append("cost", values.cost);
+    formData.append("revenue", values.revenue);
+    formData.append("tag_number", values.tag_number);
+    formData.append("category_id", values.category_id);
     values.images.forEach((image, index) => {
       if (image instanceof File) {
         formData.append(`images[${index}]`, image);
       }
     });
-    formData.append("price", values.price || "");
-    formData.append("discount_percentage", values.discount_percentage || "");
-    formData.append("discount_expire_at", values.discount_expire_at || "");
-    formData.append("stock", values.stock || "");
-
-    // Append tags_id as a JSON array (if required by the backend)
+    formData.append("price", values.price);
+    formData.append("discount_percentage", values.discount_percentage);
+    formData.append("discount_expire_at", values.discount_expire_at);
+    formData.append("stock", values.stock);
     if (values.tags_id && values.tags_id.length > 0) {
       formData.append("tags_id", JSON.stringify(values.tags_id));
     } else {
-      formData.append("tags_id", "[]"); // Send an empty array if no tags are provided
+      formData.append("tags_id", "[]");
     }
-
     // Append colors
     if (categoryType === "Color" || categoryType === "Both") {
       values.colors.forEach((color, index) => {
@@ -106,7 +88,6 @@ function EditProduct() {
         });
       });
     }
-
     // Append sizes
     if (categoryType === "Size" || categoryType === "Both") {
       values.sizes.forEach((size, index) => {
@@ -115,35 +96,19 @@ function EditProduct() {
         });
       });
     }
-
-    // Debugging: Log the formData
-    for (let [key, value] of formData.entries()) {
-      console.log(key, value);
-    }
-
     try {
       await updateProduct(product.id, formData);
       setShowModal(true);
-      setTimeout(() => {
-        // navigate("/Home/products", { replace: true });
-      }, 1500);
     } catch (error) {
       console.error("Failed to update product:", error.response?.data || error);
-      alert(
-        `Failed to update product: ${
-          error.response?.data?.message || "Unknown error"
-        }`
-      );
     } finally {
       setIsLoading(false);
     }
   };
-
   const handleImageChange = (files) => {
     const imageUrls = files.map((file) => URL.createObjectURL(file));
     setPreviewImages(imageUrls);
   };
-
   // Fetch categories
   useEffect(() => {
     const getCategories = async () => {
@@ -156,14 +121,22 @@ function EditProduct() {
     };
     getCategories();
   }, []);
-
+  useEffect(() => {
+    if (categoryType === "Both") {
+      setDynamicHeight("h-400vh");
+    } else if (categoryType === "Color" || categoryType === "Size") {
+      setDynamicHeight("h-300vh");
+    } else {
+      setDynamicHeight("h-150vh");
+    }
+  }, [categoryType]);
   return (
-    <div className="bg-gray-100 flex flex-col h-150vh relative">
+    <div className={`bg-gray-100 flex flex-col ${dynamicHeight} relative`}>
       <Helmet>
         <title>Edit Product - VERTEX</title>
         <meta name="description" content="Edit product details in VERTEX" />
       </Helmet>
-      <h1 className="font-bold rounded-md p-5 text-lg mx-10 bg-white my-4">
+      <h1 className="font-bold rounded-md p-5 text-17 mx-10 bg-white my-3">
         Edit Product
       </h1>
       <Formik
@@ -190,6 +163,10 @@ function EditProduct() {
                         (cat) => cat.id === Number(categoryId)
                       );
                       if (selectedCategory) {
+                        console.log(
+                          "Selected Category Type:",
+                          selectedCategory.type_name
+                        ); // Debugging
                         setCategoryType(selectedCategory.type_name);
                       } else {
                         setCategoryType(null);
@@ -218,22 +195,24 @@ function EditProduct() {
                   </Field>
                 </div>
                 <div className="flex gap-4 mt-3 mb-3">
-                  <div className="flex items-center w-full border-2 bg-transparent border-gray-200 rounded-lg outline-none placeholder:text-14 focus-within:border-primary">
-                    <span className="text-lg h-full w-10 text-center pt-3 font-bold text-gray-600 bg-gray-200">
-                      %
+                  <div className="relative flex items-center w-810 border-2 bg-transparent border-gray-200 rounded-md  focus-within:border-primary">
+                    <span className="h-full w-10 text-center pt-4 ps-2 bg-gray-100 absolute rounded-tl-md rounded-bl-md">
+                      <VscPercentage className="text-xl text-gray-600 font-bold" />
                     </span>
                     <Field
                       name="return_percentage"
                       placeholder="percentage (upon return)"
-                      className="outline-none ms-2"
+                      className="outline-none ms-12 placeholder:text-14"
                     />
                   </div>
-                  <InputField name="stock" placeholder="Stock" />
+                  <div className="w-full">
+                    <InputField name="stock" placeholder="Stock" />
+                  </div>
                 </div>
                 <InputField
                   name={"tags_id"}
                   placeholder={"Tags"}
-                  value={values.tags?.join(", ")} // Display tags as a comma-separated string
+                  value={values.tags?.join(", ")}
                   onChange={(e) => {
                     const tagsArray = e.target.value
                       .split(",")
@@ -254,57 +233,13 @@ function EditProduct() {
                 setFieldValue={setFieldValue}
               />
             </div>
-            {/* Pricing Section */}
-            <div className="bg-white p-5 rounded-md mt-5 mx-10 w-890">
-              <h2 className="font-bold mb-5">Pricing</h2>
-              <div className="flex gap-4">
-                <InputField name="price" placeholder="Price (For Piece)" />
-                <InputField name="cost" placeholder="Cost" />
-                <InputField
-                  name="revenue"
-                  placeholder="Revenue"
-                  // readOnly={true}
-                />
-              </div>
-              <div className="flex items-center gap-3 mt-3 mb-3">
-                <label className="inline-flex items-center cursor-pointer">
-                  <Field
-                    as="input"
-                    type="checkbox"
-                    name="schedule_discount"
-                    className="hidden"
-                    onChange={(e) => {
-                      setIsDiscountScheduled(e.target.checked);
-                      setFieldValue("schedule_discount", e.target.checked);
-                    }}
-                  />
-                  <span className="w-4 h-4 border-2 border-gray-300 rounded flex items-center justify-center transition-all duration-200 peer-checked:border-orange-500">
-                    <svg
-                      className="w-3 h-3 text-primary opacity-0 transition-all duration-200 peer-checked:opacity-100"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
-                    </svg>
-                  </span>
-                </label>
-                <p className="font-bold text-15">Schedule a discount</p>
-              </div>
-              {isDiscountScheduled && (
-                <div className="flex gap-4">
-                  <InputField
-                    name="discount_percentage"
-                    placeholder="Discount"
-                  />
-                  <InputField
-                    name="discount_expire_at"
-                    type="date"
-                    placeholder="Discount Expiry Date"
-                  />
-                </div>
-              )}
-            </div>
-
+            <PricingSection values={values} setFieldValue={setFieldValue} />
+            {categoryType === "Color" && (
+              <ColorFieldArray values={values} setFieldValue={setFieldValue} />
+            )}
+            {categoryType === "Size" && (
+              <SizeFieldArray values={values} setFieldValue={setFieldValue} />
+            )}
             <Footer
               saveText={"Save Changes"}
               cancelText={"Cancel"}
@@ -332,12 +267,11 @@ function EditProduct() {
             onClick={() => navigate("/Home/products")}
             aria-label="Back to products"
           >
-            Back to Categories
+            Back to products
           </button>
         </div>
       </SuccessModal>
     </div>
   );
 }
-
 export default EditProduct;

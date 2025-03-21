@@ -184,7 +184,7 @@ const AddProduct = () => {
       <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
         {({ setFieldValue, isSubmitting, errors, values }) => (
           <Form className="flex flex-col">
-            <h1 className="font-bold rounded-md p-5 text-17 mx-10 bg-white my-5">
+            <h1 className="font-bold rounded-md p-5 text-17 mx-10 bg-white my-3">
               Add Product
             </h1>
             <div className="flex gap-5 mx-10">
