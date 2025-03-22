@@ -24,8 +24,8 @@ function Register() {
     password: "",
     password_confirmation: "",
     agreeToTerms: false,
+    domain: "",
   };
-
   const validationSchema = Yup.object({
     name: Yup.string().required("Name is required"),
     email: Yup.string()
@@ -40,8 +40,8 @@ function Register() {
     agreeToTerms: Yup.boolean()
       .oneOf([true], "You must agree to the terms and conditions")
       .required("You must agree to the terms and conditions"),
+    domain: Yup.string().required("Domain is required"),
   });
-
   const handleSubmit = async (values) => {
     setLoading(true);
     setError(null);
@@ -50,9 +50,12 @@ function Register() {
         values.name,
         values.password,
         values.email,
-        values.password_confirmation
+        values.password_confirmation,
+        values.agreeToTerms,
+        values.domain
       );
-      console.log(registerData);
+      console.log("Registration Successful:", registerData);
+      navigate("/ThemeStore");
     } catch (error) {
       setLoading(false);
       console.error(error.message);
@@ -80,6 +83,9 @@ function Register() {
             <Form className="flex flex-col">
               <div className="relative mt-4">
                 <AuthInputField placeholder="Name" name="name" />
+              </div>
+              <div className="relative mt-3">
+                <AuthInputField placeholder="Domain" name="domain" />
               </div>
               <div className="relative mt-3">
                 <AuthInputField placeholder="Email" name="email" />
@@ -155,4 +161,5 @@ function Register() {
     </div>
   );
 }
+
 export default Register;

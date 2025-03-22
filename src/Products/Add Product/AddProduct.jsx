@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Formik, Form } from "formik";
+import { Formik, Form, FieldArray } from "formik";
 import { Helmet } from "react-helmet";
 import { fetchCategories } from "../../ApiServices/AllCategoriesApi";
 import Footer from "../../Components/Footer/Footer";
@@ -8,12 +8,11 @@ import { addProduct } from "../../ApiServices/AddNewProductApi";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 import { UploadProductImage } from "../../Components/Upload Image/UploadProductImages";
 import "./style.scss";
-import ColorFieldArray from "./ColorFieldArray";
 import PricingSection from "./PricingSection";
 import BasicInformationSection from "./BasicInformationSection";
 import SizeFieldArray from "./SizeFieldArray";
 import * as Yup from "yup";
-
+import ColorFieldArray from "./ColorFieldArray";
 const AddProduct = () => {
   const [categories, setCategories] = useState([]);
   const [selectedCategoryTags, setSelectedCategoryTags] = useState([]);
@@ -43,6 +42,7 @@ const AddProduct = () => {
     colors: [],
     sizes: [],
   };
+
   const validationSchema = Yup.object({
     name: Yup.string().required("Product name is required"),
     category_id: Yup.string().required("Category is required"),
@@ -58,18 +58,22 @@ const AddProduct = () => {
       is: true,
       then: Yup.number().required("Discount percentage is required"),
     }),
-  })
+  });
+
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
     setIsLoading(true);
     try {
+      console.log("Form Values:", values); // Debugging: Log form values
+
       const formData = new FormData();
 
+      // Append basic fields
       formData.append("name[ar]", values.name);
       formData.append("name[en]", values.name);
       formData.append("description[ar]", values.description);
       formData.append("description[en]", values.description);
 
-      // Append other basic fields
+      // Append other fields
       Object.entries(values).forEach(([key, value]) => {
         if (
           key !== "colors" &&
@@ -83,22 +87,24 @@ const AddProduct = () => {
         }
       });
 
-      // Append colors
-      if (categoryType === "Color" || categoryType === "Both") {
+      // Append colors if category type is "Color" or "Both" and colors array is not empty
+      if ((categoryType === "Color" || categoryType === "Both") && values.colors.length > 0) {
         values.colors.forEach((color, index) => {
           Object.entries(color).forEach(([field, fieldValue]) => {
             formData.append(`colors[${index}][${field}]`, fieldValue);
           });
         });
       }
-      // Append sizes
-      if (categoryType === "Size" || categoryType === "Both") {
+
+      // Append sizes if category type is "Size" or "Both" and sizes array is not empty
+      if ((categoryType === "Size" || categoryType === "Both") && values.sizes.length > 0) {
         values.sizes.forEach((size, index) => {
           Object.entries(size).forEach(([field, fieldValue]) => {
             formData.append(`sizes[${index}][${field}]`, fieldValue);
           });
         });
       }
+
       // Append images
       values.images.forEach((image, index) => {
         formData.append(`images[${index}]`, image);
@@ -108,6 +114,7 @@ const AddProduct = () => {
       values.tags_ids.forEach((tagId, index) => {
         formData.append(`tags_ids[${index}]`, tagId);
       });
+
       await addProduct(formData);
       setShowModal(true);
     } catch (error) {
@@ -181,7 +188,11 @@ const AddProduct = () => {
         <title>Add New Product - VERTEX</title>
         <meta name="description" content="Add a new product to VERTEX" />
       </Helmet>
-      <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
+      <Formik
+        initialValues={initialValues}
+        onSubmit={handleSubmit}
+        validationSchema={validationSchema}
+      >
         {({ setFieldValue, isSubmitting, errors, values }) => (
           <Form className="flex flex-col">
             <h1 className="font-bold rounded-md p-5 text-17 mx-10 bg-white my-3">
@@ -254,4 +265,5 @@ const AddProduct = () => {
     </div>
   );
 };
+
 export default AddProduct;

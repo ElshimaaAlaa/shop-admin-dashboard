@@ -26,21 +26,25 @@ import EditStoreInformation from "./Store/Store Information/EditStoreInformation
 import Main from "./Pages/Main/Main";
 import Register from "./Auth/Register/Register";
 import GetDomain from "./Auth/Get Domain/GetDomain";
+import ThemeStore from "./Store/SetUp Store/StoreTheme";
+import StoreProfile from "./Store/SetUp Store/StoreProfile";
 
 function App() {
+
   return (
     <BrowserRouter>
       <Routes>
         {/* Auth Routes */}
         <Route path="/" element={<GetDomain />} />
-        <Route path="/Main" element={<Main/>}/>
+        <Route path="/Main" element={<Main />} />
         <Route path="/Register" element={<Register />} />
         <Route path="/AdminLogin" element={<AdminLogin />} />
         <Route path="/ForgotPassword" element={<ForgotPassword />} />
         <Route path="/VerifayPassword" element={<VerifayPassword />} />
         <Route path="/CreateNewPassword" element={<CreateNewPassword />} />
-        {/* <Route path="/GetDomain" element={<GetDomain />} /> */}
-
+        {/* set up store */}
+        <Route path="/ThemeStore" element={<ThemeStore/>} />
+        <Route path="/StoreProfile" element={<StoreProfile/>}/>
         <Route path="/Home" element={<Home />}>
           {/* Categories */}
           <Route path="categories" element={<AllCategory />} />

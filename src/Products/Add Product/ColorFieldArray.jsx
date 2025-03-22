@@ -20,12 +20,7 @@ const ColorFieldArray = ({ values, setFieldValue }) => {
                   {/* Upload Image for Color */}
                   <UploadImageForColor
                     name={`colors[${index}].image`}
-                    previewImage={
-                      color.previewImage ||
-                      (values.product_images?.length > 0
-                        ? values.product_images[0]
-                        : null)
-                    }
+                    previewImage={color.previewImage}
                     onImageChange={(event) => {
                       const file = event.currentTarget.files[0];
                       if (file) {
@@ -129,10 +124,7 @@ const ColorFieldArray = ({ values, setFieldValue }) => {
                     stock: "",
                     price: "",
                     image: null,
-                    previewImage:
-                      values.product_images?.length > 0
-                        ? values.product_images[0]
-                        : null, // Set default image
+                    previewImage: null,
                     schedule_discount: false,
                     discount_percentage: "",
                     discount_expire_at: "",

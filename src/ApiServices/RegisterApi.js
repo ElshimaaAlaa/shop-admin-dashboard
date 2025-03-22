@@ -1,36 +1,30 @@
 import axios from "axios";
+
 export const register = async (
   name,
-  email,
   password,
+  email,
   password_confirmation,
+  agreeToTerms,
   domain
 ) => {
   try {
+    const payload = {
+      name,
+      password,
+      email,
+      password_confirmation,
+      agreeToTerms,
+      domain,
+    };
+    console.log("Request Payload:", payload);
     const response = await axios.post(
       "https://vrtex.duckdns.org/api/register-tenant",
-      {
-        name,
-        email,
-        password,
-        password_confirmation,
-        domain,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "Accept-Language": "ar",
-        },
-      }
+      payload
     );
-
     return response.data;
   } catch (error) {
-    if (error.response) {
-      console.error("API Response Error:", error.response.data);
-    } else {
-      console.error("Network Error:", error.message);
-    }
+    console.error("API Response Error:", error.response?.data || error);
     throw error;
   }
 };
