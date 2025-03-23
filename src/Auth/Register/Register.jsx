@@ -64,7 +64,7 @@ function Register() {
   };
 
   return (
-    <div className="main-container">
+    <div className="maincontainer">
       <Helmet>
         <meta charSet="utf-8" />
         <title>Register</title>

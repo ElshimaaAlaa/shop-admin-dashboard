@@ -1,18 +1,27 @@
-import { useState } from "react";
 import StepIndicator from "./StepIndicator";
 import "./setUpStoreStyle.scss";
 import { FaArrowRightLong, FaArrowLeftLong } from "react-icons/fa6";
-import { Form, Formik } from "formik";
+import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
-
+import InputField from "../../Components/InputFields/InputField";
+import { useNavigate } from "react-router-dom";
 export default function StoreProfile({ onNext, onBack }) {
-  const intialValues = {};
+  const navigate = useNavigate();
+  const intialValues = {
+    store_name: "",
+    address: "",
+    bio: "",
+  };
   const handleSubmit = async (values) => {};
-  const validationSchema = Yup.object({});
+  const validationSchema = Yup.object({
+    store_name: Yup.string().required("Store Name is required"),
+    address: Yup.string().required("Address is required"),
+    bio: Yup.string(),
+  });
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-customBlue-mediumBlue via-customOrange-mediumOrange to-customOrange-mediumOrange p-6 flex items-center justify-center">
-      <div className="w-full lg:w-600px md:w-550 bg-white rounded-lg shadow-lg">
+      <div className="w-full lg:w-750 md:w-600px bg-white rounded-lg shadow-lg">
         <div className="flex justify-center my-7">
           <img src="/assets/svgs/vertex.svg" alt="logo" className="w-28" />
         </div>
@@ -25,56 +34,24 @@ export default function StoreProfile({ onNext, onBack }) {
           </p>
         </div>
         <StepIndicator currentStep={2} />
-        <Formik>
-          <Form></Form>
+        <Formik initialValues={intialValues}>
+          <Form className="ps-6 pe-6">
+            <h1 className="font-bold">Fill The Store Profile</h1>
+            <div className="flex gap-2 mt-3">
+              <InputField name={"store_name"} placeholder={"Store Name"} />
+              <InputField name={"address"} placeholder={"Location"} />
+            </div>
+            <Field
+              name="bio"
+              as="textarea"
+              placeholder="Bio"
+              className={`w-full mt-3 h-20 p-3 border-2 rounded-md outline-none transition-all duration-200 placeholder:text-14 focus:border-primary`}
+            />
+          </Form>
         </Formik>
-        {/* <h2 className="text-15 font-bold mt-8 mb-4 ps-6">
-          Fill The Store Profile
-        </h2>
-
-        <div className="space-y-4 mb-6 px-6">
-          <div>
-            <label className="text-13 font-bold text-gray-600 mb-1 block">
-              Store Name
-            </label>
-            <input
-              type="text"
-              value={storeName}
-              onChange={(e) => setStoreName(e.target.value)}
-              className="w-full p-2 border-2 border-gray-200 rounded-md"
-              placeholder="Enter store name"
-            />
-          </div>
-
-          <div>
-            <label className="text-13 font-bold text-gray-600 mb-1 block">
-              Store Description
-            </label>
-            <input
-              type="text"
-              value={storeDescription}
-              onChange={(e) => setStoreDescription(e.target.value)}
-              className="w-full p-2 border-2 border-gray-200 rounded-md"
-              placeholder="Enter store description"
-            />
-          </div> */}
-
-        {/* <div>
-            <label className="text-13 font-bold text-gray-600 mb-1 block">
-              Bio
-            </label>
-            <textarea
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-              className="w-full p-2 border-2 border-gray-200 rounded-md min-h-[100px]"
-              placeholder="Enter bio"
-            />
-          </div>
-        </div> */}
-
-        <div className="px-6">
+        <div className="px-6 mt-2">
           <div className="border border-dashed border-primary rounded-md p-4 mb-6">
-            <div className="flex items-center gap-8">
+            <div className="flex items-center gap-5">
               <p className="text-12 font-bold text-gray-600 flex items-center gap-2">
                 <img
                   src="/assets/svgs/upload-file_svgrepo.com.svg"
@@ -90,29 +67,24 @@ export default function StoreProfile({ onNext, onBack }) {
             </div>
           </div>
         </div>
-
-        <div className="flex justify-between mt-4 my-5 mx-5">
+        <div className="flex items-center justify-between mt-4 my-5 mx-5">
           <button
             onClick={onBack}
-            className="flex items-center gap-3 border-2 border-primary text-primary px-6 py-2 rounded-md"
+            className="flex items-center gap-3 text-dark px-6 "
           >
-            <FaArrowLeftLong /> Back
+            <FaArrowLeftLong size={15} /> Back
           </button>
-
-          <div className="flex items-center">
             <div className="flex space-x-1 mr-4">
               <div className="w-2 h-2 rounded-full bg-primary"></div>
               <div className="w-2 h-2 rounded-full bg-primary"></div>
               <div className="w-2 h-2 rounded-full bg-gray-300"></div>
             </div>
-
             <button
-              onClick={onNext}
+              onClick={()=>navigate('/PricingPlan')}
               className="flex items-center gap-3 bg-primary text-white px-6 py-2 rounded-md"
             >
               Next <FaArrowRightLong />
             </button>
-          </div>
         </div>
       </div>
     </div>

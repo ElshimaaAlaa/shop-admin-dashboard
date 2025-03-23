@@ -28,9 +28,10 @@ import Register from "./Auth/Register/Register";
 import GetDomain from "./Auth/Get Domain/GetDomain";
 import ThemeStore from "./Store/SetUp Store/StoreTheme";
 import StoreProfile from "./Store/SetUp Store/StoreProfile";
+import PricingPlan from "./Store/SetUp Store/PricingPlan";
+import PaymentInfo from "./Store/SetUp Store/PaymentInfo";
 
 function App() {
-
   return (
     <BrowserRouter>
       <Routes>
@@ -43,8 +44,10 @@ function App() {
         <Route path="/VerifayPassword" element={<VerifayPassword />} />
         <Route path="/CreateNewPassword" element={<CreateNewPassword />} />
         {/* set up store */}
-        <Route path="/ThemeStore" element={<ThemeStore/>} />
-        <Route path="/StoreProfile" element={<StoreProfile/>}/>
+        <Route path="/ThemeStore" element={<ThemeStore />} />
+        <Route path="/StoreProfile" element={<StoreProfile />} />
+        <Route path="/PricingPlan" element={<PricingPlan />} />
+        <Route path="/PaymentInfo" element={<PaymentInfo/>}/>
         <Route path="/Home" element={<Home />}>
           {/* Categories */}
           <Route path="categories" element={<AllCategory />} />

@@ -23,7 +23,7 @@ export default function ThemeStore({ onNext }) {
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-customBlue-mediumBlue via-customOrange-mediumOrange to-customOrange-mediumOrange p-6 flex items-center justify-center">
-      <div className="w-full lg:w-600px md:w-550 bg-white rounded-lg shadow-lg ">
+      <div className="w-full lg:w-750 md:w-600px bg-white rounded-lg shadow-lg ">
         <div className="flex justify-center my-10">
           <img src="/assets/svgs/vertex.svg" alt="logo" className="w-28" />
         </div>
@@ -36,7 +36,7 @@ export default function ThemeStore({ onNext }) {
           </p>
         </div>
         <StepIndicator currentStep={1} />
-        <h2 className="text-15 font-bold mt-8 mb-4 ps-6">Upload Logo File</h2>
+        <h2 className="text-16 font-bold  mb-4 ps-6">Upload Logo File</h2>
         <div className="px-6">
           <div className="border border-dashed border-primary rounded-md p-4 mb-3">
             <div className="flex items-center gap-8">
