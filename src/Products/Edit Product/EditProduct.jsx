@@ -12,19 +12,22 @@ import { VscPercentage } from "react-icons/vsc";
 import SizeFieldArray from "../Add Product/SizeFieldArray";
 import ColorFieldArray from "../Add Product/ColorFieldArray";
 import PricingSection from "../Add Product/PricingSection";
+
 function EditProduct() {
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [dynamicHeight, setDynamicHeight] = useState("h-auto");
-
+  const [isDiscountScheduled, setIsDiscountScheduled] = useState(false);
   const { state } = useLocation();
+  const navigate = useNavigate();
+  const product = state || {};
+
   const [previewImages, setPreviewImages] = useState(
     state?.images?.map((img) => img.src) || []
   );
-  const navigate = useNavigate();
-  const product = state || {};
   const [categoryType, setCategoryType] = useState(null);
+
   useEffect(() => {
     if (product.category_id) {
       const selectedCategory = categories.find(
@@ -53,6 +56,7 @@ function EditProduct() {
     stock: product.stock || 0,
     sizes: product.sizes || [],
     colors: product.colors || [],
+    schedule_discount: product.schedule_discount || false,
   };
 
   const handleSubmit = async (values) => {
@@ -66,6 +70,8 @@ function EditProduct() {
     formData.append("revenue", values.revenue);
     formData.append("tag_number", values.tag_number);
     formData.append("category_id", values.category_id);
+    formData.append("return_percentage", values.return_percentage);
+    formData.append("gender", values.gender);
     values.images.forEach((image, index) => {
       if (image instanceof File) {
         formData.append(`images[${index}]`, image);
@@ -75,10 +81,12 @@ function EditProduct() {
     formData.append("discount_percentage", values.discount_percentage);
     formData.append("discount_expire_at", values.discount_expire_at);
     formData.append("stock", values.stock);
+    formData.append("schedule_discount", values.schedule_discount);
+    // Append tags_id as an array
     if (values.tags_id && values.tags_id.length > 0) {
-      formData.append("tags_id", JSON.stringify(values.tags_id));
-    } else {
-      formData.append("tags_id", "[]");
+      values.tags_id.forEach((tagId) => {
+        formData.append("tags_id[]", tagId);
+      });
     }
     // Append colors
     if (categoryType === "Color" || categoryType === "Both") {
@@ -121,15 +129,17 @@ function EditProduct() {
     };
     getCategories();
   }, []);
+  const hasColors = product.colors && product.colors.length > 0;
+  const hasSizes = product.sizes && product.sizes.length > 0;
   useEffect(() => {
-    if (categoryType === "Both") {
+    if (hasSizes && hasColors) {
       setDynamicHeight("h-400vh");
-    } else if (categoryType === "Color" || categoryType === "Size") {
+    } else if (hasSizes || hasColors) {
       setDynamicHeight("h-300vh");
     } else {
       setDynamicHeight("h-150vh");
     }
-  }, [categoryType]);
+  }, [hasColors, hasSizes]);
   return (
     <div className={`bg-gray-100 flex flex-col ${dynamicHeight} relative`}>
       <Helmet>
@@ -155,7 +165,7 @@ function EditProduct() {
                     name="category_id"
                     as="select"
                     className="w-full p-3 border-2 h-14 bg-transparent border-gray-200 rounded-lg outline-none placeholder:text-14 focus:border-2 focus:border-primary"
-                    value={values.category_id} // Use the value prop to control the selected option
+                    value={values.category_id}
                     onChange={(e) => {
                       const categoryId = e.target.value;
                       setFieldValue("category_id", categoryId);
@@ -163,10 +173,6 @@ function EditProduct() {
                         (cat) => cat.id === Number(categoryId)
                       );
                       if (selectedCategory) {
-                        console.log(
-                          "Selected Category Type:",
-                          selectedCategory.type_name
-                        ); // Debugging
                         setCategoryType(selectedCategory.type_name);
                       } else {
                         setCategoryType(null);
@@ -211,12 +217,17 @@ function EditProduct() {
                 </div>
                 <InputField
                   name={"tags_id"}
-                  placeholder={"Tags"}
-                  value={values.tags?.join(", ")}
+                  placeholder={"Tags (comma separated)"}
+                  value={
+                    Array.isArray(values.tags_id)
+                      ? values.tags_id.join(", ")
+                      : ""
+                  }
                   onChange={(e) => {
                     const tagsArray = e.target.value
                       .split(",")
-                      .map((tag) => tag.trim());
+                      .map((tag) => tag.trim())
+                      .filter((tag) => tag !== "");
                     setFieldValue("tags_id", tagsArray);
                   }}
                 />
@@ -233,12 +244,29 @@ function EditProduct() {
                 setFieldValue={setFieldValue}
               />
             </div>
-            <PricingSection values={values} setFieldValue={setFieldValue} />
-            {categoryType === "Color" && (
-              <ColorFieldArray values={values} setFieldValue={setFieldValue} />
-            )}
-            {categoryType === "Size" && (
-              <SizeFieldArray values={values} setFieldValue={setFieldValue} />
+            <PricingSection
+              isDiscountScheduled={isDiscountScheduled}
+              setIsDiscountScheduled={setIsDiscountScheduled}
+            />
+            {(hasColors || hasSizes) && (
+              <div>
+                {hasColors && (
+                  <div>
+                    <ColorFieldArray
+                      values={values}
+                      setFieldValue={setFieldValue}
+                    />
+                  </div>
+                )}
+                {hasSizes && (
+                  <div>
+                    <SizeFieldArray
+                      values={values}
+                      setFieldValue={setFieldValue}
+                    />
+                  </div>
+                )}
+              </div>
             )}
             <Footer
               saveText={"Save Changes"}

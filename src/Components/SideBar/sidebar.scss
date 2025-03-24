@@ -31,7 +31,24 @@
     border-radius: 10px;
     width:150px;
   }
+  
+  // Submenu styling
+  .submenu {
+    border-left: 1px solid #e0a75e;
+    margin-left: 24px;
+  }
+  
+  .active-menu-item {
+    // background-color: rgba(224, 167, 94, 0.2);
+    border-radius: 10px;
+    padding: 8px;
+  }
+  
+  .selected-submenu-item {
+    // background-color: rgba(224, 167, 94, 0.1);
+  }
 }
+
 .sidebar.expanded {
   width: 200px;
 }
@@ -45,3 +62,4 @@
 .sidebar.expanded .logo {
   display: none;
 }
+

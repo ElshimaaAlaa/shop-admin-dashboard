@@ -216,5 +216,4 @@ function AllProducts() {
     </div>
   );
 }
-
 export default AllProducts;

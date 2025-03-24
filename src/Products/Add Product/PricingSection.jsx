@@ -1,6 +1,7 @@
 import React from "react";
 import { Field, useFormikContext } from "formik";
 import InputField from "../../Components/InputFields/InputField";
+
 const PricingSection = ({ isDiscountScheduled, setIsDiscountScheduled }) => {
   const { setFieldValue } = useFormikContext();
 
@@ -11,7 +12,7 @@ const PricingSection = ({ isDiscountScheduled, setIsDiscountScheduled }) => {
         <div className="flex gap-4">
           <InputField name="price" placeholder="Price (For Piece)" />
           <InputField name="cost" placeholder="Cost" />
-          <InputField name="revenue" placeholder="Revenue" />
+          <InputField name="revenue" placeholder="Revenue" readOnly={true} />
         </div>
         <div className="flex items-center gap-2 mt-3 mb-3">
           <label className="inline-flex items-center cursor-pointer">
@@ -20,9 +21,11 @@ const PricingSection = ({ isDiscountScheduled, setIsDiscountScheduled }) => {
               type="checkbox"
               name="schedule_discount"
               className="hidden"
+              checked={isDiscountScheduled}
               onChange={(e) => {
-                setIsDiscountScheduled(e.target.checked);
-                setFieldValue("schedule_discount", e.target.checked);
+                const isChecked = e.target.checked;
+                setIsDiscountScheduled(isChecked);
+                setFieldValue("schedule_discount", isChecked);
               }}
             />
             <span className="w-4 h-4 border-2 border-gray-300 rounded flex items-center justify-center transition-all duration-200 peer-checked:border-orange-500">
@@ -48,9 +51,7 @@ const PricingSection = ({ isDiscountScheduled, setIsDiscountScheduled }) => {
           </div>
         )}
       </div>
-      <div className="w-2/4">
-
-      </div>
+      <div className="w-2/4"></div>
     </div>
   );
 };

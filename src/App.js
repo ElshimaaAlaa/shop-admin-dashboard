@@ -30,6 +30,7 @@ import ThemeStore from "./Store/SetUp Store/StoreTheme";
 import StoreProfile from "./Store/SetUp Store/StoreProfile";
 import PricingPlan from "./Store/SetUp Store/PricingPlan";
 import PaymentInfo from "./Store/SetUp Store/PaymentInfo";
+import Orders from "./Orders/Orders";
 
 function App() {
   return (
@@ -47,7 +48,7 @@ function App() {
         <Route path="/ThemeStore" element={<ThemeStore />} />
         <Route path="/StoreProfile" element={<StoreProfile />} />
         <Route path="/PricingPlan" element={<PricingPlan />} />
-        <Route path="/PaymentInfo" element={<PaymentInfo/>}/>
+        <Route path="/PaymentInfo" element={<PaymentInfo />} />
         <Route path="/Home" element={<Home />}>
           {/* Categories */}
           <Route path="categories" element={<AllCategory />} />
@@ -79,7 +80,8 @@ function App() {
               element={<EditStoreInformation />}
             />
           </Route>
-
+          {/* Orders */}
+          <Route index element={<Orders/>}/>
           {/* Other Routes */}
           <Route path="/Home/Profile" element={<Profile />} />
           <Route path="support" element={<Support />} />

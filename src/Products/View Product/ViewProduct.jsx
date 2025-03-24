@@ -10,7 +10,6 @@ const InventoryItem = ({ label, value }) => (
     <p className="text-14 mt-1">{value || FALLBACK_TEXT}</p>
   </div>
 );
-
 const ColorItem = React.memo(({ color }) => (
   <div className="flex gap-10 items-center">
     <div>
@@ -55,7 +54,7 @@ function ViewProduct() {
       }
     };
     fetchProductDetails();
-  }, [productId]);
+  }, [live_shop_domain, productId, role]);
 
   const hasColors = productData.colors && productData.colors.length > 0;
   const hasSizes = productData.sizes && productData.sizes.length > 0;
@@ -66,7 +65,7 @@ function ViewProduct() {
         <title>View Product - VERTEX</title>
         <meta name="description" content="View product details in VERTEX" />
       </Helmet>
-      <h1 className="font-bold text-lg bg-white p-4 rounded-md mx-10 my-5">
+      <h1 className="font-bold text-lg bg-white p-4 rounded-md mx-10 mt-5 mb-3">
         View Product
       </h1>
       <div className="flex flex-col">
@@ -202,7 +201,9 @@ function ViewProduct() {
                     <div key={color.id || index} className="flex gap-3">
                       <div>
                         <img
-                          src={color.image || "/assets/images/product.png"}
+                          src={
+                            color.image || productData.images?.[0]?.src || ""
+                          }
                           alt={`Color: ${color.name}`}
                           className="h-20 w-24 object-cover rounded-xl"
                         />
