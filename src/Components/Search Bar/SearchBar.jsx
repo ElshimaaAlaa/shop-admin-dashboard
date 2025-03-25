@@ -1,7 +1,7 @@
 import React from "react";
 import { Search, Plus } from "lucide-react";
 
-function SearchBar({onclick , value ,onchange ,text}) {
+function SearchBar({onclick , value ,onchange ,text , icon}) {
   return (
     <div className="flex justify-between items-center gap-5 bg-white mb-10 rounded-md">
       <div className="relative w-full">
@@ -21,10 +21,10 @@ function SearchBar({onclick , value ,onchange ,text}) {
         className="flex items-center gap-3 bg-primary text-white py-4 px-3 rounded-md w-64 cursor-pointer"
         onClick={onclick}
       >
-        <div className=" text-white rounded-full border-2 border-white">
-          <Plus className="font-bold" size={18}/>
+        <div >
+          {icon}
         </div>
-        <p className="text-15">{text}</p>
+        <p className="text-16">{text}</p>
       </div>
     </div>
   );

@@ -73,17 +73,16 @@ const Sidebar = () => {
       label: "Orders",
       icon: <Orders />,
       width: "32px",
-      onclick: () => navigate("Orders"),
       subItems: [
         {
           id: "orders-pending",
           label: "Received Orders",
-          onclick: () => navigate(""),
+          onclick: () => navigate("RecivedOrders"),
         },
         {
           id: "orders-processing",
           label: "Refund Requests",
-          onclick: () => navigate(""),
+          onclick: () => navigate("RefundRequests"),
         },
         {
           id: "orders-completed",

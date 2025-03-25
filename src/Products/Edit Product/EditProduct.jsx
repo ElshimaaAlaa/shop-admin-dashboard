@@ -49,19 +49,24 @@ function EditProduct() {
     gender: product.gender || "",
     tags_id: product.tags || [],
     images: product.images || [],
-    category_id: product.category?.id || "",
+    category_id: product.category_id || product.category?.id || "",
     price: product.price || 0,
     discount_percentage: product.discount_percentage || 0,
     discount_expire_at: product.discount_expire_at || "",
     stock: product.stock || 0,
     sizes: product.sizes || [],
-    colors: product.colors || [],
+    colors: product.colors ? product.colors.map(color => ({
+      ...color,
+      previewImage: color.image // Set previewImage from existing image
+    })) : [],
     schedule_discount: product.schedule_discount || false,
   };
 
   const handleSubmit = async (values) => {
     setIsLoading(true);
     const formData = new FormData();
+    
+    // Basic information
     formData.append("name[ar]", values.name);
     formData.append("name[en]", values.name);
     formData.append("description[ar]", values.description);
@@ -72,38 +77,73 @@ function EditProduct() {
     formData.append("category_id", values.category_id);
     formData.append("return_percentage", values.return_percentage);
     formData.append("gender", values.gender);
+    
+    // Handle product images
     values.images.forEach((image, index) => {
       if (image instanceof File) {
         formData.append(`images[${index}]`, image);
+      } else if (image.src) {
+        // For existing images, we might just want to keep them as is
+        formData.append(`images[${index}]`, image.src);
       }
     });
+    
+    // Pricing
     formData.append("price", values.price);
     formData.append("discount_percentage", values.discount_percentage);
-    formData.append("discount_expire_at", values.discount_expire_at);
+    if (values.discount_expire_at) {
+      formData.append("discount_expire_at", values.discount_expire_at);
+    }
     formData.append("stock", values.stock);
     formData.append("schedule_discount", values.schedule_discount);
-    // Append tags_id as an array
+    
+    // Tags
     if (values.tags_id && values.tags_id.length > 0) {
       values.tags_id.forEach((tagId) => {
-        formData.append("tags_id[]", tagId);
+        const numericTagId = Number(tagId);
+        if (!isNaN(numericTagId)) {
+          formData.append("tags_id[]", numericTagId);
+        }
       });
     }
-    // Append colors
-    if (categoryType === "Color" || categoryType === "Both") {
+    
+    // Handle colors
+    if (values.colors && values.colors.length > 0) {
       values.colors.forEach((color, index) => {
-        Object.entries(color).forEach(([field, fieldValue]) => {
-          formData.append(`colors[${index}][${field}]`, fieldValue);
-        });
+        formData.append(`colors[${index}][name]`, color.name || "");
+        formData.append(`colors[${index}][code]`, color.code || "");
+        formData.append(`colors[${index}][stock]`, color.stock || 0);
+        formData.append(`colors[${index}][price]`, color.price || 0);
+        
+        // Handle color image
+        if (color.image) {
+          if (color.image instanceof File) {
+            formData.append(`colors[${index}][image]`, color.image);
+          } else if (typeof color.image === 'string') {
+            // Existing image URL
+            formData.append(`colors[${index}][image]`, color.image);
+          }
+        }
+        
+        // Handle discount if scheduled
+        if (color.schedule_discount) {
+          formData.append(`colors[${index}][discount_percentage]`, color.discount_percentage || 0);
+          if (color.discount_expire_at) {
+            formData.append(`colors[${index}][discount_expire_at]`, color.discount_expire_at);
+          }
+        }
       });
     }
-    // Append sizes
-    if (categoryType === "Size" || categoryType === "Both") {
+    
+    // Handle sizes if needed
+    if (values.sizes && values.sizes.length > 0) {
       values.sizes.forEach((size, index) => {
         Object.entries(size).forEach(([field, fieldValue]) => {
           formData.append(`sizes[${index}][${field}]`, fieldValue);
         });
       });
     }
+
     try {
       await updateProduct(product.id, formData);
       setShowModal(true);
@@ -113,10 +153,12 @@ function EditProduct() {
       setIsLoading(false);
     }
   };
+
   const handleImageChange = (files) => {
     const imageUrls = files.map((file) => URL.createObjectURL(file));
     setPreviewImages(imageUrls);
   };
+
   // Fetch categories
   useEffect(() => {
     const getCategories = async () => {
@@ -129,17 +171,20 @@ function EditProduct() {
     };
     getCategories();
   }, []);
+
   const hasColors = product.colors && product.colors.length > 0;
   const hasSizes = product.sizes && product.sizes.length > 0;
+
   useEffect(() => {
     if (hasSizes && hasColors) {
-      setDynamicHeight("h-400vh");
+      setDynamicHeight("h-[400vh]");
     } else if (hasSizes || hasColors) {
-      setDynamicHeight("h-300vh");
+      setDynamicHeight("h-[300vh]");
     } else {
-      setDynamicHeight("h-150vh");
+      setDynamicHeight("h-[150vh]");
     }
   }, [hasColors, hasSizes]);
+
   return (
     <div className={`bg-gray-100 flex flex-col ${dynamicHeight} relative`}>
       <Helmet>
@@ -179,7 +224,7 @@ function EditProduct() {
                       }
                     }}
                   >
-                    <option value="">Category</option>
+                    <option value="">Select Category</option>
                     {categories.map((category) => (
                       <option key={category.id} value={category.id}>
                         {category.name}
@@ -193,8 +238,9 @@ function EditProduct() {
                     as="select"
                     name="gender"
                     className="w-full p-3 border-2 h-14 bg-transparent border-gray-200 rounded-lg outline-none placeholder:text-14 focus:border-2 focus:border-primary"
+                    value={values.gender}
                   >
-                    <option value="">Gender</option>
+                    <option value="">Select Gender</option>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
                     <option value="children">Children</option>
@@ -217,7 +263,7 @@ function EditProduct() {
                 </div>
                 <InputField
                   name={"tags_id"}
-                  placeholder={"Tags (comma separated)"}
+                  placeholder={"Tags (comma separated IDs)"}
                   value={
                     Array.isArray(values.tags_id)
                       ? values.tags_id.join(", ")
@@ -226,8 +272,10 @@ function EditProduct() {
                   onChange={(e) => {
                     const tagsArray = e.target.value
                       .split(",")
-                      .map((tag) => tag.trim())
-                      .filter((tag) => tag !== "");
+                      .map(tag => tag.trim())
+                      .filter(tag => tag !== "")
+                      .map(tag => Number(tag))
+                      .filter(tag => !isNaN(tag));
                     setFieldValue("tags_id", tagsArray);
                   }}
                 />
@@ -302,4 +350,5 @@ function EditProduct() {
     </div>
   );
 }
+
 export default EditProduct;

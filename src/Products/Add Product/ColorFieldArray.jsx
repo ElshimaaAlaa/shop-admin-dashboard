@@ -18,27 +18,73 @@ const ColorFieldArray = ({ values, setFieldValue }) => {
               >
                 <div className="flex gap-2">
                   {/* Upload Image for Color */}
-                  <UploadImageForColor
-                    name={`colors[${index}].image`}
-                    previewImage={color.previewImage}
-                    onImageChange={(event) => {
-                      const file = event.currentTarget.files[0];
-                      if (file) {
-                        const previewURL = URL.createObjectURL(file);
-                        setFieldValue(`colors[${index}].image`, file);
-                        setFieldValue(
-                          `colors[${index}].previewImage`,
-                          previewURL
-                        );
-                      }
-                    }}
-                  />
+                  <div className="border-2 w-72 border-dashed bg-white border-primary rounded-md p-1 flex items-center justify-center">
+                    <input
+                      type="file"
+                      name={`colors[${index}].image`}
+                      onChange={(event) => {
+                        const file = event.currentTarget.files[0];
+                        if (file) {
+                          const previewURL = URL.createObjectURL(file);
+                          setFieldValue(`colors[${index}].image`, file);
+                          setFieldValue(
+                            `colors[${index}].previewImage`,
+                            previewURL
+                          );
+                        }
+                      }}
+                      className="hidden"
+                      id={`color-image-upload-${index}`}
+                    />
+                    <label
+                      htmlFor={`color-image-upload-${index}`}
+                      className="text-gray-500 cursor-pointer flex flex-col items-center gap-2 w-full h-full"
+                    >
+                      {color.previewImage ? (
+                        <img
+                          src={typeof color.previewImage === 'string' ? color.previewImage : URL.createObjectURL(color.previewImage)}
+                          alt="color preview"
+                          className="w-full h-full object-cover rounded-md"
+                        />
+                      ) : color.image ? (
+                        <img
+                          src={color.image}
+                          alt="color preview"
+                          className="w-full h-full object-cover rounded-md"
+                        />
+                      ) : (
+                        <>
+                          <img
+                            src="/assets/svgs/upload-file_svgrepo.com.svg"
+                            alt="upload-image-file"
+                            className="mt-3 mb-3 w-6"
+                          />
+                          <span className="text-sm text-gray-500">Upload Color Image</span>
+                        </>
+                      )}
+                    </label>
+                  </div>
 
-                  {/* Color Name */}
-                  <InputField
-                    name={`colors[${index}].name`}
-                    placeholder="Color"
-                  />
+                  {/* Color Name - Required */}
+                  <div className="flex flex-col w-full">
+                    <Field
+                      name={`colors[${index}].name`}
+                      validate={(value) => !value && "Color name is required"}
+                    >
+                      {({ field, meta }) => (
+                        <>
+                          <input
+                            {...field}
+                            placeholder="Color*"
+                            className="border border-gray-300 rounded-md p-2 w-full"
+                          />
+                          {meta.touched && meta.error && (
+                            <div className="text-red-500 text-sm">{meta.error}</div>
+                          )}
+                        </>
+                      )}
+                    </Field>
+                  </div>
 
                   {/* Color Code */}
                   <InputField
@@ -50,12 +96,14 @@ const ColorFieldArray = ({ values, setFieldValue }) => {
                   <InputField
                     name={`colors[${index}].stock`}
                     placeholder="Stock"
+                    type="number"
                   />
 
                   {/* Price */}
                   <InputField
                     name={`colors[${index}].price`}
                     placeholder="Price"
+                    type="number"
                   />
 
                   {/* Remove Color Button */}
@@ -102,6 +150,7 @@ const ColorFieldArray = ({ values, setFieldValue }) => {
                     <InputField
                       name={`colors[${index}].discount_percentage`}
                       placeholder="Discount"
+                      type="number"
                     />
                     <InputField
                       name={`colors[${index}].discount_expire_at`}
@@ -120,13 +169,13 @@ const ColorFieldArray = ({ values, setFieldValue }) => {
                 onClick={() =>
                   push({
                     name: "",
-                    code: "",
-                    stock: "",
-                    price: "",
+                    code: "", // Default color code
+                    stock: 0,
+                    price: 0,
                     image: null,
                     previewImage: null,
                     schedule_discount: false,
-                    discount_percentage: "",
+                    discount_percentage: 0,
                     discount_expire_at: "",
                   })
                 }
@@ -144,37 +193,3 @@ const ColorFieldArray = ({ values, setFieldValue }) => {
 };
 
 export default ColorFieldArray;
-
-// UploadImageForColor Component
-export const UploadImageForColor = ({ previewImage, onImageChange, name }) => {
-  return (
-    <div className="border-2 w-72 border-dashed bg-white border-primary rounded-md p-1 flex items-center justify-center">
-      <input
-        type="file"
-        name={name}
-        onChange={onImageChange}
-        className="hidden"
-        id={`image-upload-${name}`}
-        aria-label="Upload product image"
-      />
-      <label
-        htmlFor={`image-upload-${name}`}
-        className="text-gray-500 cursor-pointer flex flex-col items-center gap-2"
-      >
-        {previewImage ? (
-          <img
-            src={previewImage}
-            alt="preview"
-            className="w-full h-full object-fill rounded-md"
-          />
-        ) : (
-          <img
-            src="/assets/svgs/upload-file_svgrepo.com.svg"
-            alt="upload-image-file"
-            className="mt-3 mb-3 w-6"
-          />
-        )}
-      </label>
-    </div>
-  );
-};

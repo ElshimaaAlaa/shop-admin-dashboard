@@ -30,7 +30,10 @@ import ThemeStore from "./Store/SetUp Store/StoreTheme";
 import StoreProfile from "./Store/SetUp Store/StoreProfile";
 import PricingPlan from "./Store/SetUp Store/PricingPlan";
 import PaymentInfo from "./Store/SetUp Store/PaymentInfo";
-import Orders from "./Orders/Orders";
+import RecivedOrders from "./Orders/Recived Orders";
+import OrderDetails from "./Orders/OrderDetails";
+import CancelOrder from "./Orders/CancelOrder";
+import RefundRequests from "./Orders/RefundRequests";
 
 function App() {
   return (
@@ -81,7 +84,11 @@ function App() {
             />
           </Route>
           {/* Orders */}
-          <Route index element={<Orders/>}/>
+          <Route path="RecivedOrders" element={<RecivedOrders/>}/>
+          {/* <Route path="RecivedOrders/:orderId" element={<OrderDetails/>}/> */}
+          <Route path="OrderDetails" element={<OrderDetails/>}/>
+          <Route path="CancelOrder" element={<CancelOrder/>}/>
+          <Route path="RefundRequests" element={<RefundRequests/>}/>
           {/* Other Routes */}
           <Route path="/Home/Profile" element={<Profile />} />
           <Route path="support" element={<Support />} />

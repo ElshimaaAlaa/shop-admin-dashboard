@@ -7,7 +7,7 @@ import { ClipLoader } from "react-spinners";
 import { fetchCategories } from "../../ApiServices/AllCategoriesApi";
 import { Helmet } from "react-helmet";
 import SearchBar from "../../Components/Search Bar/SearchBar";
-
+import { Plus } from "lucide-react";
 function AllCategory() {
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -98,6 +98,7 @@ function AllCategory() {
           value={searchQuery}
           onchange={(e) => setSearchQuery(e.target.value)}
           text="Add New Category"
+          icon={<Plus className="text-white rounded-full border-2 border-white font-bold" size={20}/>}
         />
         {error ? (
           <div className="text-red-500 text-center mt-10">

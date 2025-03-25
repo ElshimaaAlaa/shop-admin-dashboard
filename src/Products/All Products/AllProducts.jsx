@@ -7,7 +7,7 @@ import { ClipLoader } from "react-spinners";
 import { fetchProducts } from "../../ApiServices/AllProuctsApi";
 import { Helmet } from "react-helmet";
 import SearchBar from "../../Components/Search Bar/SearchBar";
-
+import { Plus } from "lucide-react";
 function AllProducts() {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -77,6 +77,12 @@ function AllProducts() {
           value={searchQuery}
           onchange={(e) => setSearchQuery(e.target.value)}
           text={"Add New Product"}
+          icon={
+            <Plus
+              className="text-white rounded-full border-2 border-white font-bold"
+              size={20}
+            />
+          }
         />
         {error ? (
           <div className="text-red-500 text-center mt-10 ">

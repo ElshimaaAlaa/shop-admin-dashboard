@@ -1,9 +1,58 @@
-import React from 'react'
-
+import axios from "axios";
+import React, { useState } from "react";
+import { IoIosCloseCircle } from "react-icons/io";
+import FailedModal from "../Components/Modal/Failed Modal/FailedModal";
+import { ClipLoader } from "react-spinners";
+import "./OrderStyle.scss";
 function CancelOrder() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const handleCancelOrder = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios({});
+    } catch (error) {
+      setIsLoading(false);
+      console.error("API call failed: ", error.message);
+    }
+  };
+  if (showModal) {
+    document.body.classList.add("no-scroll");
+  } else {
+    document.body.classList.remove("no-scroll");
+  }
   return (
-    <div>CancelOrder</div>
-  )
+    <div>
+      <button
+        className="flex items-center gap-2 rounded-md font-bold p-3 border-1 border-red-600 bg-red-50 text-red-600"
+        onClick={() => setShowModal(true)}
+      >
+        <IoIosCloseCircle size={22} />
+        Cancel
+      </button>
+      <FailedModal isOpen={showModal} onClose={() => setShowModal(false)}>
+        <div className="bg-red-50 rounded-md p-2 mt-5 mb-5">
+          <IoIosCloseCircle color="#DC2626" size={30} />
+        </div>
+        <p className="font-bold text-center">
+          Are You Sure You Want To Cancel This <br /> Order ?
+        </p>
+        <div className="mt-5 flex items-center gap-3 ">
+          <button
+            className="bg-gray-100 text-gray-400 rounded-md p-3 w-40 font-bold"
+            onClick={() => setShowModal(false)}
+          >
+            Cancel
+          </button>
+          <button
+            className="bg-red-600 rounded-md text-white p-3 w-40 font-bold"
+            onClick={handleCancelOrder}
+          >
+            {isLoading ? <ClipLoader size={22} color="#fff" /> : "Yes , Cancel"}
+          </button>
+        </div>
+      </FailedModal>
+    </div>
+  );
 }
-
-export default CancelOrder
+export default CancelOrder;

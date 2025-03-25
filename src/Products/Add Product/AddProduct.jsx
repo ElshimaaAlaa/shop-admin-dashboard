@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Formik, Form, FieldArray } from "formik";
+import { Formik, Form } from "formik";
 import { Helmet } from "react-helmet";
 import { fetchCategories } from "../../ApiServices/AllCategoriesApi";
 import Footer from "../../Components/Footer/Footer";
@@ -59,21 +59,15 @@ const AddProduct = () => {
       then: Yup.number().required("Discount percentage is required"),
     }),
   });
-
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
     setIsLoading(true);
     try {
-      console.log("Form Values:", values); // Debugging: Log form values
-
+      console.log("Form Values:", values);
       const formData = new FormData();
-
-      // Append basic fields
       formData.append("name[ar]", values.name);
       formData.append("name[en]", values.name);
       formData.append("description[ar]", values.description);
       formData.append("description[en]", values.description);
-
-      // Append other fields
       Object.entries(values).forEach(([key, value]) => {
         if (
           key !== "colors" &&

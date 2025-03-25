@@ -12,7 +12,7 @@ const PricingSection = ({ isDiscountScheduled, setIsDiscountScheduled }) => {
         <div className="flex gap-4">
           <InputField name="price" placeholder="Price (For Piece)" />
           <InputField name="cost" placeholder="Cost" />
-          <InputField name="revenue" placeholder="Revenue" readOnly={true} />
+          <InputField name="revenue" placeholder="Revenue"/>
         </div>
         <div className="flex items-center gap-2 mt-3 mb-3">
           <label className="inline-flex items-center cursor-pointer">
