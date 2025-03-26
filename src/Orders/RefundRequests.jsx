@@ -56,7 +56,7 @@ function RefundRequests() {
                   120 $
                 </td>
                 <td className="px-6 py-3 border-t border-l text-gray-500">
-                  <p className="bg-customOrange-mediumOrange text-primary rounded-md p-1">
+                  <p className="bg-customOrange-mediumOrange text-primary rounded-md p-1 text-13">
                     Manufacturing defect
                   </p>
                 </td>

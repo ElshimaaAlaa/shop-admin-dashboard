@@ -89,7 +89,7 @@ function AllCategory() {
       <Helmet>
         <title>All Categories - VERTEX</title>
       </Helmet>
-      <div className="bg-white p-5 rounded-md mb-5">
+      <div className="bg-white p-5 rounded-md mb-3">
         <h1 className="font-bold text-lg">Categories</h1>
       </div>
       <div className="bg-white p-5 rounded-md">

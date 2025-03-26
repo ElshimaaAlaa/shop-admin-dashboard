@@ -24,8 +24,8 @@ function RejectRefundRequests() {
         onClick={() => setShowModal(true)}
       />
       <FailedModal isOpen={showModal} onClose={() => setShowModal(false)}>
-        <div className="bg-red-50 rounded-md p-2 mt-5 mb-5">
-          <IoIosCloseCircle color="#DC2626" size={30} />
+        <div className="bg-red-50 rounded-md p-2 mt-5 mb-5 cursor-pointer">
+          <IoIosCloseCircle color="#DC2626" size={30} className="cursor-pointer"/>
         </div>
         <p className="font-bold text-center text-dark">
           Are You Sure You Want To Reject This <br /> Refund request ?

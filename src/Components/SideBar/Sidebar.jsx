@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState } from "react";
 import "./sidebar.scss";
 import { useNavigate } from "react-router-dom";
@@ -15,7 +13,6 @@ import Help from "../../Svgs/Help";
 import Logo from "../../Svgs/logo";
 import Text from "../../Svgs/text";
 import { ChevronDown, ChevronUp } from "lucide-react";
-// import Invoices from "../../Svgs/Invoices";
 
 const Sidebar = () => {
   const [expanded, setExpanded] = useState(false);

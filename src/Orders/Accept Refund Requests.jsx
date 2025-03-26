@@ -19,8 +19,8 @@ function AcceptRefundRequests() {
     <div>
       <FaCheckCircle size={26} color="#34B41E" onClick={()=>setShowModal(true)}/>
       <FailedModal isOpen={showModal} onClose={() => setShowModal(false)}>
-        <div className="bg-[#FCEFDB] rounded-md p-2 mt-5 mb-5">
-          <FaCheckCircle color="#E0A75E" size={30} />
+        <div className="bg-[#FCEFDB] rounded-md p-2 mt-5 mb-5 cursor-pointer">
+          <FaCheckCircle color="#E0A75E" size={30} className="cursor-pointer"/>
         </div>
         <p className="font-bold text-center text-dark">
           Are You Sure You Want To Accept This <br /> Refund request ?

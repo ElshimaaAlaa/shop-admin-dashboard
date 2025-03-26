@@ -54,7 +54,7 @@ function LogOut() {
             {isLoading ? (
               <ClipLoader color="#fff" size={"22px"} className="text-center" />
             ) : (
-              "Delete"
+              "Logout"
             )}
           </button>
         </div>

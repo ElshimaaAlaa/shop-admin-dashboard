@@ -7,6 +7,7 @@ import { updateCategory } from "../../ApiServices/updateCategory";
 import Footer from "../../Components/Footer/Footer";
 import { ImageUpload } from "../../Components/Upload Image/UploadUpdatedImage";
 import InputField from "../../Components/InputFields/InputField";
+import "./style.scss";
 function EditCategory() {
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -83,6 +84,11 @@ function EditCategory() {
       </button>
     </div>
   );
+  if (showModal) {
+    document.body.classList.add("no-scroll");
+  } else {
+    document.body.classList.remove("no-scroll");
+  }
   return (
     <div className="bg-gray-100 h-150vh flex flex-col relative">
       <Helmet>
