@@ -1,11 +1,11 @@
 import axios from "axios";
-
-const API_BASE_URL = "https://demo.vrtex.duckdns.org/api/shop/products";
-
+const API_BASE_URL = "https://";
+const live_shop_domain = localStorage.getItem("live_shop_domain");
+const role = localStorage.getItem("role");
 export const updateProduct = async (productId, formData) => {
   try {
     const response = await axios({
-      url: `${API_BASE_URL}/update/${productId}`,
+      url: `${API_BASE_URL}${live_shop_domain}/api/${role}/update/products${productId}`,
       method: "POST",
       data: formData,
       headers: {

@@ -1,5 +1,4 @@
 import axios from "axios";
-
 export const getDomain = async (email) => {
   try {
     const response = await axios({
