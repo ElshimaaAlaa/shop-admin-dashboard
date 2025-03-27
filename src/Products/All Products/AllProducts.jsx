@@ -73,7 +73,7 @@ function AllProducts() {
       </h1>
       <div className="bg-white p-5 rounded-md">
         <SearchBar
-          onclick={() => navigate("/Home/addProduct")}
+          onclick={() => navigate("/Dashboard/addProduct")}
           value={searchQuery}
           onchange={(e) => setSearchQuery(e.target.value)}
           text={"Add New Product"}
@@ -123,7 +123,7 @@ function AllProducts() {
                   <tr key={product.id}>
                     <td
                       className="px-3 py-3 cursor-pointer border-t border-r w-250 text-customGray-grayText"
-                      onClick={() => navigate(`/Home/products/${product.id}`)}
+                      onClick={() => navigate(`/Dashboard/products/${product.id}`)}
                     >
                       <p className="flex items-center gap-3">
                         <input
@@ -182,7 +182,7 @@ function AllProducts() {
                         <button
                           className="p-1"
                           onClick={() =>
-                            navigate(`/Home/EditProduct/${product.id}`, {
+                            navigate(`/Dashboard/EditProduct/${product.id}`, {
                               state: product,
                             })
                           }

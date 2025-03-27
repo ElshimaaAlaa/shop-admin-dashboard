@@ -36,7 +36,7 @@ function VerifayPassword() {
     try {
       await VerifayPasswordService(otp, email);
       console.log("OTP verified successfully!");
-      navigate("/CreateNewPassword");
+      navigate("/AdminLogin/CreateNewPassword");
     } catch (error) {
       console.error("Error: OTP Verification", error);
       if (error.message.includes("404")) {

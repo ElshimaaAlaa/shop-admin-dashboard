@@ -80,7 +80,7 @@ export default function StoreProfile({ onNext, onBack }) {
               <div className="w-2 h-2 rounded-full bg-gray-300"></div>
             </div>
             <button
-              onClick={()=>navigate('/PricingPlan')}
+              onClick={()=>navigate('/Register/PricingPlan')}
               className="flex items-center gap-3 bg-primary text-white px-6 py-2 rounded-md"
             >
               Next <FaArrowRightLong />

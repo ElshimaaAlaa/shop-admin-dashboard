@@ -166,7 +166,7 @@ export default function PricingPlan({ onNext, onBack }) {
           </button>
 
           <button
-            onClick={() => navigate("/PaymentInfo")}
+            onClick={() => navigate("/Register/PaymentInfo")}
             className="flex items-center gap-3 bg-primary text-white px-6 py-2 rounded-md"
           >
             Next <FaArrowRightLong />

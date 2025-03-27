@@ -24,7 +24,7 @@ function GetDomain() {
       await getDomain(values.email);
       setIsLoading(false);
       setTimeout(() => {
-        navigate('/Main');
+        navigate('/Vertext-Website');
       }, 1500);
     } catch (error) {
       console.error(error);

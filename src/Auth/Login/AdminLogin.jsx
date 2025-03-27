@@ -52,7 +52,7 @@ function AdminLogin() {
         localStorage.removeItem("password");
       }
       setTimeout(() => {
-        navigate("/Home");
+        navigate("/Dashboard");
       }, 1500);
     } catch (error) {
       console.error(error);
@@ -135,7 +135,7 @@ function AdminLogin() {
                   role="button"
                   tabIndex={0}
                   className="font-bold text-11 lg:text-13 cursor-pointer"
-                  onClick={() => navigate("/ForgotPassword")}
+                  onClick={() => navigate("/AdminLogin/ForgotPassword")}
                 >
                   Forget your password?
                 </div>

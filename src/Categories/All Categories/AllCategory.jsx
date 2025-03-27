@@ -94,7 +94,7 @@ function AllCategory() {
       </div>
       <div className="bg-white p-5 rounded-md">
         <SearchBar
-          onclick={() => navigate("/Home/addCategory")}
+          onclick={() => navigate("/Dashboard/addCategory")}
           value={searchQuery}
           onchange={(e) => setSearchQuery(e.target.value)}
           text="Add New Category"
@@ -180,7 +180,7 @@ function AllCategory() {
                             <button
                               aria-label={`Edit ${category.name}`}
                               onClick={() =>
-                                navigate(`/Home/editCategory/${category.id}`, {
+                                navigate(`/Dashboard/editCategory/${category.id}`, {
                                   state: category,
                                 })
                               }

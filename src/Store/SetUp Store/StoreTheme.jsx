@@ -99,7 +99,7 @@ export default function ThemeStore({ onNext }) {
         </div>
         <div className="flex justify-end mt-4 my-5 mx-5">
           <button
-            onClick={() => navigate("/StoreProfile")}
+            onClick={() => navigate("/Register/StoreProfile")}
             className="flex items-center gap-3 bg-primary text-white px-6 py-2 rounded-md"
           >
             Next

@@ -8,7 +8,6 @@ import { ClipLoader } from "react-spinners";
 import { Helmet } from "react-helmet";
 import { ForgotPasswordService } from "../../ApiServices/ForgotPasswordService";
 import { useNavigate } from "react-router-dom";
-// import InputField from "../../Components/Input Field/InputField";
 import AuthInputField from "../../Components/AuthInput Field/AuthInputField";
 function ForgotPassword() {
   const navigate = useNavigate();
@@ -27,7 +26,7 @@ function ForgotPassword() {
     try {
       await ForgotPasswordService(values.email);
       console.log("OTP sent successfully!");
-      navigate("/VerifayPassword");
+      navigate("/AdminLogin/VerifayPassword");
     } catch (error) {
       console.error(error.message);
       setErrors({ email: "Failed to send OTP. Please try again." });

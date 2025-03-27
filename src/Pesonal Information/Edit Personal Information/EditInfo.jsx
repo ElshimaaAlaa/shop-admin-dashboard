@@ -6,7 +6,6 @@ import { ClipLoader } from "react-spinners";
 import axios from "axios";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 import AuthInputField from "../../Components/AuthInput Field/AuthInputField";
-import { RiDeleteBin6Line } from "react-icons/ri";
 import { FaCircleCheck } from "react-icons/fa6";
 function EditInfo() {
   const [isLoading, setIsLoading] = useState(false);
@@ -118,7 +117,11 @@ function EditInfo() {
                         }}
                         aria-label="Delete image"
                       >
-                        <RiDeleteBin6Line size={20} color="red" />
+                        <img
+                          src="/assets/svgs/deleteIcon.svg"
+                          alt="delete-account"
+                          className=" h-5"
+                        />
                       </button>
                     </div>
                   </div>

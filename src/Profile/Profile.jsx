@@ -91,7 +91,7 @@ export default function ProfileMenu() {
           <hr className="me-3 ms-3" />
           <button
             className="w-full flex items-center gap-3 p-2 hover:bg-gray-50"
-            onClick={() => navigate("/Home/MainInfo")}
+            onClick={() => navigate("/Dashboard/MainInfo")}
           >
             <Eye className="w-6 h-6" />
             <span className="flex-grow text-left text-gray-600 text-17">
@@ -103,7 +103,7 @@ export default function ProfileMenu() {
           <button
             className="w-full flex items-center gap-3 p-2 hover:bg-gray-50"
             onClick={() =>
-              navigate("/Home/MainInfo/EditInfo", { state: personalInfo })
+              navigate("/Dashboard/MainInfo/EditInfo", { state: personalInfo })
             }
           >
             <PenLine className="w-6 h-6" />

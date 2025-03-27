@@ -3,12 +3,10 @@ import AllCategory from "./Categories/All Categories/AllCategory";
 import Home from "./Pages/Home page/Home";
 import AddCategory from "./Categories/Add Category/AddCategory";
 import EditCategory from "./Categories/Edit Category/EditCategory";
-import ViewCategory from "./Categories/View Category/ViewCategory";
 import AllProducts from "./Products/All Products/AllProducts";
 import AddProduct from "./Products/Add Product/AddProduct";
 import EditProduct from "./Products/Edit Product/EditProduct";
 import ViewProduct from "./Products/View Product/ViewProduct";
-import AllDiscounts from "./DisCounts and Promotions/All Discounts/AllDiscounts";
 import AdminLogin from "./Auth/Login/AdminLogin";
 import ForgotPassword from "./Auth/Forgot Password/ForgotPassword";
 import VerifayPassword from "./Auth/Verivation Code/VerifayPassword";
@@ -41,36 +39,26 @@ function App() {
       <Routes>
         {/* Auth Routes */}
         <Route path="/" element={<GetDomain />} />
-        <Route path="/Main" element={<Main />} />
-        <Route path="/Register" element={<Register />} />
+        <Route path="/Vertext-Website" element={<Main />} />
+        {/* Auth */}
         <Route path="/AdminLogin" element={<AdminLogin />} />
-        <Route path="/ForgotPassword" element={<ForgotPassword />} />
-        <Route path="/VerifayPassword" element={<VerifayPassword />} />
-        <Route path="/CreateNewPassword" element={<CreateNewPassword />} />
-        {/* set up store */}
-        <Route path="/ThemeStore" element={<ThemeStore />} />
-        <Route path="/StoreProfile" element={<StoreProfile />} />
-        <Route path="/PricingPlan" element={<PricingPlan />} />
-        <Route path="/PaymentInfo" element={<PaymentInfo />} />
-        <Route path="/Home" element={<Home />}>
-          {/* Categories */}
-          <Route path="categories" element={<AllCategory />} />
-          <Route path="addCategory" element={<AddCategory />} />
-          <Route path="/Home/editCategory/:id" element={<EditCategory />} />
-          <Route path="viewCategory" element={<ViewCategory />} />
-
-          {/* Products */}
-          <Route path="products" element={<AllProducts />} />
-          <Route path="addProduct" element={<AddProduct />} />
-          <Route
-            path="/Home/EditProduct/:productId"
-            element={<EditProduct />}
-          />
-          <Route path="/Home/products/:productId" element={<ViewProduct />} />
-
-          {/* Discounts */}
-          <Route path="allDiscounts" element={<AllDiscounts />} />
-
+        <Route path="/AdminLogin/ForgotPassword" element={<ForgotPassword />} />
+        <Route
+          path="/AdminLogin/VerifayPassword"
+          element={<VerifayPassword />}
+        />
+        <Route
+          path="/AdminLogin/CreateNewPassword"
+          element={<CreateNewPassword />}
+        />
+        {/* Register and set up store */}
+        <Route path="/Register" element={<Register />} />
+        <Route path="/Register/ThemeStore" element={<ThemeStore />} />
+        <Route path="/Register/StoreProfile" element={<StoreProfile />} />
+        <Route path="/Register/PricingPlan" element={<PricingPlan />} />
+        <Route path="/Register/PaymentInfo" element={<PaymentInfo />} />
+        {/* DashBoard */}
+        <Route path="/Dashboard" element={<Home />}>
           {/* Personal Information */}
           <Route path="MainInfo" element={<MainInfo />}>
             <Route index element={<PersonalInformation />} />
@@ -83,14 +71,30 @@ function App() {
               element={<EditStoreInformation />}
             />
           </Route>
+          {/* Categories */}
+          <Route path="categories" element={<AllCategory />} />
+          <Route path="addCategory" element={<AddCategory />} />
+          <Route
+            path="/Dashboard/editCategory/:id"
+            element={<EditCategory />}
+          />
+          {/* Products */}
+          <Route path="products" element={<AllProducts />} />
+          <Route path="addProduct" element={<AddProduct />} />
+          <Route
+            path="/Dashboard/EditProduct/:productId"
+            element={<EditProduct />}
+          />
+          <Route
+            path="/Dashboard/products/:productId"
+            element={<ViewProduct />}
+          />
           {/* Orders */}
-          <Route path="RecivedOrders" element={<RecivedOrders/>}/>
-          {/* <Route path="RecivedOrders/:orderId" element={<OrderDetails/>}/> */}
-          <Route path="OrderDetails" element={<OrderDetails/>}/>
-          <Route path="CancelOrder" element={<CancelOrder/>}/>
-          <Route path="RefundRequests" element={<RefundRequests/>}/>
-          {/* Other Routes */}
-          <Route path="/Home/Profile" element={<Profile />} />
+          <Route path="RecivedOrders" element={<RecivedOrders />} />
+          <Route path="OrderDetails" element={<OrderDetails />} />
+          <Route path="CancelOrder" element={<CancelOrder />} />
+          <Route path="RefundRequests" element={<RefundRequests />} />
+          <Route path="/Dashboard/Profile" element={<Profile />} />
           <Route path="support" element={<Support />} />
           <Route path="Faqs" element={<Faqs />} />
         </Route>
