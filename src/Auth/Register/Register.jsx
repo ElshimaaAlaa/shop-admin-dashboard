@@ -55,7 +55,7 @@ function Register() {
         values.domain
       );
       console.log("Registration Successful:", registerData);
-      navigate("/ThemeStore");
+      navigate("/Register/ThemeStore");
     } catch (error) {
       setLoading(false);
       console.error(error.message);

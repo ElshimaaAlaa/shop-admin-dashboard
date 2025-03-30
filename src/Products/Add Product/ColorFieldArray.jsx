@@ -3,10 +3,11 @@ import { FieldArray, Field } from "formik";
 import { AiOutlineClose } from "react-icons/ai";
 import { Plus } from "lucide-react";
 import InputField from "../../Components/InputFields/InputField";
+import { UploadImageForColor } from "../../Components/Upload Image/UploadImageForColor";
 
 const ColorFieldArray = ({ values, setFieldValue }) => {
   return (
-    <div className="bg-white p-5 rounded-md mt-5 mx-10 w-890">
+    <div className="bg-white p-5 rounded-md mt-5 mx-10 w-900">
       <h2 className="font-bold mb-5">Inventory</h2>
       <FieldArray name="colors">
         {({ push, remove }) => (
@@ -16,107 +17,46 @@ const ColorFieldArray = ({ values, setFieldValue }) => {
                 key={index}
                 className="flex flex-col gap-4 mb-4 bg-gray-100 p-5 rounded-md"
               >
-                <div className="flex gap-2">
-                  {/* Upload Image for Color */}
-                  <div className="border-2 w-72 border-dashed bg-white border-primary rounded-md p-1 flex items-center justify-center">
-                    <input
-                      type="file"
-                      name={`colors[${index}].image`}
-                      onChange={(event) => {
-                        const file = event.currentTarget.files[0];
-                        if (file) {
-                          const previewURL = URL.createObjectURL(file);
-                          setFieldValue(`colors[${index}].image`, file);
-                          setFieldValue(
-                            `colors[${index}].previewImage`,
-                            previewURL
-                          );
-                        }
-                      }}
-                      className="hidden"
-                      id={`color-image-upload-${index}`}
-                    />
-                    <label
-                      htmlFor={`color-image-upload-${index}`}
-                      className="text-gray-500 cursor-pointer flex flex-col items-center gap-2 w-full h-full"
-                    >
-                      {color.previewImage ? (
-                        <img
-                          src={typeof color.previewImage === 'string' ? color.previewImage : URL.createObjectURL(color.previewImage)}
-                          alt="color preview"
-                          className="w-full h-full object-cover rounded-md"
-                        />
-                      ) : color.image ? (
-                        <img
-                          src={color.image}
-                          alt="color preview"
-                          className="w-full h-full object-cover rounded-md"
-                        />
-                      ) : (
-                        <>
-                          <img
-                            src="/assets/svgs/upload-file_svgrepo.com.svg"
-                            alt="upload-image-file"
-                            className="mt-3 mb-3 w-6"
-                          />
-                          <span className="text-sm text-gray-500">Upload Color Image</span>
-                        </>
-                      )}
-                    </label>
-                  </div>
-
-                  {/* Color Name - Required */}
-                  <div className="flex flex-col w-full">
-                    <Field
-                      name={`colors[${index}].name`}
-                      validate={(value) => !value && "Color name is required"}
-                    >
-                      {({ field, meta }) => (
-                        <>
-                          <input
-                            {...field}
-                            placeholder="Color*"
-                            className="border border-gray-300 rounded-md p-2 w-full"
-                          />
-                          {meta.touched && meta.error && (
-                            <div className="text-red-500 text-sm">{meta.error}</div>
-                          )}
-                        </>
-                      )}
-                    </Field>
-                  </div>
-
-                  {/* Color Code */}
+                <div className="flex gap-1">
+                  <UploadImageForColor
+                    previewImage={color.previewImage}
+                    name={`colors[${index}]`}
+                    setFieldValue={setFieldValue}
+                    colorIndex={index}
+                  />
+                  <InputField 
+                    name={`colors[${index}].name.ar`} 
+                    placeholder="Color Name (Arabic)"
+                    value={color.name?.ar || ""}
+                  />
+                  <InputField 
+                    name={`colors[${index}].name.en`} 
+                    placeholder="Color Name (English)"
+                    value={color.name?.en || ""}
+                  />
                   <InputField
                     name={`colors[${index}].code`}
-                    placeholder="Color Code (e.g., #FFFFFF)"
+                    placeholder="Color Code"
+                    value={color.code || ""}
                   />
-
-                  {/* Stock */}
                   <InputField
                     name={`colors[${index}].stock`}
                     placeholder="Stock"
-                    type="number"
+                    value={color.stock || ""}
                   />
-
-                  {/* Price */}
                   <InputField
                     name={`colors[${index}].price`}
                     placeholder="Price"
-                    type="number"
+                    value={color.price || ""}
                   />
-
-                  {/* Remove Color Button */}
                   <button
                     type="button"
-                    className="text-2xl font-light text-red-500 ms-3"
+                    className="text-3xl font-light text-red-500 mb-5"
                     onClick={() => remove(index)}
                   >
                     <AiOutlineClose />
                   </button>
                 </div>
-
-                {/* Schedule Discount Checkbox */}
                 <div className="flex items-center gap-2 mt-3 mb-3">
                   <label className="inline-flex items-center cursor-pointer">
                     <Field
@@ -124,6 +64,7 @@ const ColorFieldArray = ({ values, setFieldValue }) => {
                       type="checkbox"
                       name={`colors[${index}].schedule_discount`}
                       className="hidden"
+                      checked={color.schedule_discount || false}
                       onChange={(e) => {
                         setFieldValue(
                           `colors[${index}].schedule_discount`,
@@ -143,39 +84,36 @@ const ColorFieldArray = ({ values, setFieldValue }) => {
                   </label>
                   <div className="font-bold text-15">Schedule a discount</div>
                 </div>
-
-                {/* Discount Fields - Show only if schedule discount is checked */}
                 {color.schedule_discount && (
                   <div className="flex gap-4">
                     <InputField
                       name={`colors[${index}].discount_percentage`}
                       placeholder="Discount"
-                      type="number"
+                      value={color.discount_percentage || ""}
                     />
                     <InputField
                       name={`colors[${index}].discount_expire_at`}
                       type="date"
                       placeholder="Discount Expiry Date"
+                      value={color.discount_expire_at || ""}
                     />
                   </div>
                 )}
               </div>
             ))}
-
-            {/* Add Color Button */}
             <div className="flex justify-end">
               <button
                 className="text-primary rounded-md p-2 text-16 font-bold flex items-center gap-2"
                 onClick={() =>
                   push({
-                    name: "",
-                    code: "", // Default color code
-                    stock: 0,
-                    price: 0,
-                    image: null,
-                    previewImage: null,
+                    name: { ar: "", en: "" },
+                    code: "",
+                    stock: "",
+                    price: "",
+                    image: "/assets/images/default-color.png",
+                    previewImage: "/assets/images/default-color.png",
                     schedule_discount: false,
-                    discount_percentage: 0,
+                    discount_percentage: "",
                     discount_expire_at: "",
                   })
                 }

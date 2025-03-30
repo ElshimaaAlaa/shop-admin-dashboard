@@ -1,75 +1,174 @@
-import { Form, Formik } from "formik";
+import { Form, Formik, Field } from "formik";
 import React from "react";
 import * as Yup from "yup";
 import InputField from "../../Components/InputFields/InputField";
-import { FaArrowRightLong } from "react-icons/fa6";
-function PaymentInfo() {
-  const intialValues = {};
-  const validationSchema = Yup.object({});
-  const handleSubmit = async (values) => {};
+import { FaArrowRightLong, FaCheck } from "react-icons/fa6";
+
+function PaymentInfo({ onSubmit, onBack, formData, updateFormData }) {
+  const initialValues = {
+    name: "",
+    email: "",
+    phone_number: "",
+    payment_method: "credit_card",
+    card_holder_name: "",
+    card_number: "",
+    expiration_date: "",
+    cvv: ""
+  };
+
+  const validationSchema = Yup.object({
+    name: Yup.string().required("Name is required"),
+    email: Yup.string().email("Invalid email").required("Email is required"),
+    phone_number: Yup.string()
+      .matches(/^[0-9]+$/, "Must be only digits")
+      .min(10, "Must be at least 10 digits")
+      .required("Phone number is required"),
+    card_holder_name: Yup.string().when('payment_method', {
+      is: 'credit_card',
+      then: Yup.string().required("Card holder name is required")
+    }),
+    card_number: Yup.string().when('payment_method', {
+      is: 'credit_card',
+      then: Yup.string()
+        .required("Card number is required")
+        .matches(/^\d{16}$/, "Card number must be 16 digits")
+    }),
+    expiration_date: Yup.string().when('payment_method', {
+      is: 'credit_card',
+      then: Yup.string()
+        .required("Expiration date is required")
+        .matches(/^(0[1-9]|1[0-2])\/?([0-9]{2})$/, "Invalid expiration date (MM/YY)")
+    }),
+    cvv: Yup.string().when('payment_method', {
+      is: 'credit_card',
+      then: Yup.string()
+        .required("CVV is required")
+        .matches(/^\d{3,4}$/, "CVV must be 3 or 4 digits")
+    })
+  });
+
+  const handleSubmit = (values) => {
+    // Update payment info in the main form data
+    updateFormData('payment_info', values);
+    onSubmit();
+  };
+
+  const paymentMethods = [
+    { id: 'credit_card', label: 'Credit Card', icon: '/assets/svgs/MasterCard.svg' },
+    { id: 'paypal', label: 'PayPal', icon: '/assets/svgs/PayPal - Long.svg' },
+    { id: 'visa', label: 'Visa', icon: '/assets/svgs/Visa Electron.svg' },
+    { id: 'google_pay', label: 'Google Pay', icon: '/assets/svgs/Googlepay.svg' }
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-r from-customBlue-mediumBlue via-customOrange-mediumOrange to-customOrange-mediumOrange p-6 flex items-center justify-center">
       <div className="w-full lg:w-600px md:w-600px bg-white rounded-lg shadow-lg">
         <div className="flex justify-center my-7">
           <img src="/assets/svgs/vertex.svg" alt="logo" className="w-28" />
         </div>
+        
         <div className="text-center">
-          <h2 className="text-17 font-bold">Enter Your Payment Info </h2>
+          <h2 className="text-17 font-bold">Enter Your Payment Info</h2>
           <p className="text-14 text-gray-500">To Complete the Process</p>
         </div>
-        <Formik>
-          <Form className="ps-6 pe-6">
-            <h2 className="font-bold mb-3 mt-3">Contact Info</h2>
-            <div className="flex gap-3">
-              <InputField name={"name"} placeholder={"Name"} />
-              <InputField name={"emial"} placeholder={"Email"} />
-            </div>
-            <div className="flex gap-3 mt-3">
-              <InputField placeholder={"Phone Number"} name="phone_number" />
-              <div className="w-full"></div>
-            </div>
-            <h2 className="font-bold mt-4 mb-3">Payment Method</h2>
-            <div className="grid grid-cols-3 gap-3">
-              <div className="bg-gray-100 rounded-md p-3 flex items-center gap-3 text-15">
-                <img src="/assets/svgs/MasterCard.svg" alt="MasterCard" />
-                Credit Card
-              </div>
-              <div className="bg-gray-100 rounded-md p-3 flex items-center gap-3 text-15">
-                <img src="/assets/svgs/PayPal - Long.svg" alt="paypal" />
-                Pay Pal
-              </div>
-              <div className="bg-gray-100 rounded-md p-3 flex items-center gap-3 text-15">
-                <img src="/assets/svgs/Visa Electron.svg" alt="visa" />
-                Visa
-              </div>
-              <div className="bg-gray-100 rounded-md p-3 flex items-center gap-3 text-15">
-                <img src="/assets/svgs/Googlepay.svg" alt="google play" />
-                Google Pay
-              </div>
-            </div>
-            <div className="mt-4 bg-gray-100 rounded-md p-4">
-              <h2 className="font-bold mb-3">Payment Data</h2>
+
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
+        >
+          {({ values, setFieldValue }) => (
+            <Form className="ps-6 pe-6">
+              <h2 className="font-bold mb-3 mt-3">Contact Info</h2>
               <div className="flex gap-3">
-                <InputField name={"cvv"} placeholder={"CVV"} />
-                <InputField name={"expiration-date"} placeholder={"Expiration Date"} />
+                <InputField name="name" placeholder="Name" />
+                <InputField name="email" placeholder="Email" type="email" />
               </div>
               <div className="flex gap-3 mt-3">
-                <InputField placeholder={"Card Holder Name"} name="card-name" />
-                <InputField placeholder={"Card number"} name="card-number" />
+                <InputField 
+                  name="phone_number" 
+                  placeholder="Phone Number" 
+                  type="tel"
+                />
               </div>
-            </div>
-            <div className="flex items-center gap-4 justify-end my-5">
-              <button className="bg-gray-100 text-gray-500 rounded-md p-2  w-28">
-                Cancel
-              </button>
-              <button className="bg-primary text-white flex items-center rounded-md border p-2 gap-3 ">
-                Pay Now <FaArrowRightLong />
-              </button>
-            </div>
-          </Form>
+
+              <h2 className="font-bold mt-4 mb-3">Payment Method</h2>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                {paymentMethods.map((method) => (
+                  <label 
+                    key={method.id}
+                    className={`rounded-md p-3 flex items-center gap-3 text-15 cursor-pointer transition-colors ${
+                      values.payment_method === method.id 
+                        ? 'bg-primary-light border border-primary' 
+                        : 'bg-gray-100 hover:bg-gray-200'
+                    }`}
+                  >
+                    <Field
+                      type="radio"
+                      name="payment_method"
+                      value={method.id}
+                      className="hidden"
+                      onChange={() => setFieldValue('payment_method', method.id)}
+                    />
+                    <img src={method.icon} alt={method.label} className="w-6" />
+                    {method.label}
+                  </label>
+                ))}
+              </div>
+
+              {values.payment_method === 'credit_card' && (
+                <div className="mt-4 bg-gray-50 rounded-md p-4 border border-gray-200">
+                  <h2 className="font-bold mb-3">Card Details</h2>
+                  <div className="flex gap-3">
+                    <InputField 
+                      name="card_holder_name" 
+                      placeholder="Card Holder Name" 
+                    />
+                    <InputField 
+                      name="card_number" 
+                      placeholder="Card Number" 
+                      type="text"
+                      maxLength="16"
+                    />
+                  </div>
+                  <div className="flex gap-3 mt-3">
+                    <InputField 
+                      name="expiration_date" 
+                      placeholder="Expiration Date (MM/YY)" 
+                      type="text"
+                      maxLength="5"
+                    />
+                    <InputField 
+                      name="cvv" 
+                      placeholder="CVV" 
+                      type="text"
+                      maxLength="4"
+                    />
+                  </div>
+                </div>
+              )}
+
+              <div className="flex items-center justify-between my-5">
+                <button 
+                  type="button"
+                  onClick={onBack}
+                  className="bg-gray-100 text-gray-700 rounded-md px-6 py-2 hover:bg-gray-200 transition-colors"
+                >
+                  Back
+                </button>
+                <button 
+                  type="submit"
+                  className="bg-primary text-white flex items-center rounded-md px-6 py-2 gap-3 hover:bg-primary-dark transition-colors"
+                >
+                  Complete Setup <FaCheck />
+                </button>
+              </div>
+            </Form>
+          )}
         </Formik>
       </div>
     </div>
   );
 }
+
 export default PaymentInfo;

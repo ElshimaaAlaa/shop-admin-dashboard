@@ -5,7 +5,7 @@ const role = localStorage.getItem("role");
 export const updateProduct = async (productId, formData) => {
   try {
     const response = await axios({
-      url: `${API_BASE_URL}${live_shop_domain}/api/${role}/update/products${productId}`,
+      url: `${API_BASE_URL}${live_shop_domain}/api/${role}/products/update/${productId}`,
       method: "POST",
       data: formData,
       headers: {

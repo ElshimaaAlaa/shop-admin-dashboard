@@ -55,10 +55,27 @@ function EditProduct() {
     discount_expire_at: product.discount_expire_at || "",
     stock: product.stock || 0,
     sizes: product.sizes || [],
-    colors: product.colors ? product.colors.map(color => ({
-      ...color,
-      previewImage: color.image // Set previewImage from existing image
-    })) : [],
+    colors: product.colors
+      ? product.colors.map((color) => ({
+          id: color.id || null,
+          name: {
+            ar: typeof color.name === 'object' 
+                ? color.name.ar 
+                : (color.name || ''),
+            en: typeof color.name === 'object' 
+                ? color.name.en 
+                : (color.name || '')
+          },
+          code: color.code || "",
+          stock: color.stock || 0,
+          price: color.price || 0,
+          image: color.image || null,
+          previewImage: color.image || product.images[0].src ,
+          schedule_discount: color.schedule_discount || false,
+          discount_percentage: color.discount_percentage || 0,
+          discount_expire_at: color.discount_expire_at || "",
+        }))
+      : [],
     schedule_discount: product.schedule_discount || false,
   };
 
@@ -66,7 +83,7 @@ function EditProduct() {
     setIsLoading(true);
     const formData = new FormData();
     
-    // Basic information
+    // Basic product information
     formData.append("name[ar]", values.name);
     formData.append("name[en]", values.name);
     formData.append("description[ar]", values.description);
@@ -78,17 +95,16 @@ function EditProduct() {
     formData.append("return_percentage", values.return_percentage);
     formData.append("gender", values.gender);
     
-    // Handle product images
+    // Handle images
     values.images.forEach((image, index) => {
       if (image instanceof File) {
         formData.append(`images[${index}]`, image);
-      } else if (image.src) {
-        // For existing images, we might just want to keep them as is
-        formData.append(`images[${index}]`, image.src);
+      } else if (typeof image === "string") {
+        formData.append(`images[${index}]`, image);
       }
     });
     
-    // Pricing
+    // Pricing information
     formData.append("price", values.price);
     formData.append("discount_percentage", values.discount_percentage);
     if (values.discount_expire_at) {
@@ -97,12 +113,11 @@ function EditProduct() {
     formData.append("stock", values.stock);
     formData.append("schedule_discount", values.schedule_discount);
     
-    // Tags
-    if (values.tags_id && values.tags_id.length > 0) {
+    // Handle tags
+    if (values.tags_id && Array.isArray(values.tags_id)) {
       values.tags_id.forEach((tagId) => {
-        const numericTagId = Number(tagId);
-        if (!isNaN(numericTagId)) {
-          formData.append("tags_id[]", numericTagId);
+        if (tagId !== null && tagId !== undefined) {
+          formData.append("tags_id[]", tagId);
         }
       });
     }
@@ -110,32 +125,42 @@ function EditProduct() {
     // Handle colors
     if (values.colors && values.colors.length > 0) {
       values.colors.forEach((color, index) => {
-        formData.append(`colors[${index}][name]`, color.name || "");
+        if (color.id) {
+          formData.append(`colors[${index}][id]`, color.id);
+        }
+        
+        formData.append(`colors[${index}][name][ar]`, color.name?.ar || "");
+        formData.append(`colors[${index}][name][en]`, color.name?.en || "");
         formData.append(`colors[${index}][code]`, color.code || "");
         formData.append(`colors[${index}][stock]`, color.stock || 0);
         formData.append(`colors[${index}][price]`, color.price || 0);
         
-        // Handle color image
-        if (color.image) {
-          if (color.image instanceof File) {
-            formData.append(`colors[${index}][image]`, color.image);
-          } else if (typeof color.image === 'string') {
-            // Existing image URL
-            formData.append(`colors[${index}][image]`, color.image);
-          }
+        if (color.image instanceof File) {
+          formData.append(`colors[${index}][image]`, color.image);
+        } else if (typeof color.image === "string") {
+          formData.append(`colors[${index}][image]`, color.image);
         }
         
-        // Handle discount if scheduled
+        formData.append(
+          `colors[${index}][schedule_discount]`,
+          color.schedule_discount ? "1" : "0"
+        );
         if (color.schedule_discount) {
-          formData.append(`colors[${index}][discount_percentage]`, color.discount_percentage || 0);
+          formData.append(
+            `colors[${index}][discount_percentage]`,
+            color.discount_percentage || 0
+          );
           if (color.discount_expire_at) {
-            formData.append(`colors[${index}][discount_expire_at]`, color.discount_expire_at);
+            formData.append(
+              `colors[${index}][discount_expire_at]`,
+              color.discount_expire_at
+            );
           }
         }
       });
     }
     
-    // Handle sizes if needed
+    // Handle sizes
     if (values.sizes && values.sizes.length > 0) {
       values.sizes.forEach((size, index) => {
         Object.entries(size).forEach(([field, fieldValue]) => {
@@ -159,7 +184,6 @@ function EditProduct() {
     setPreviewImages(imageUrls);
   };
 
-  // Fetch categories
   useEffect(() => {
     const getCategories = async () => {
       try {
@@ -199,7 +223,7 @@ function EditProduct() {
         enableReinitialize
         onSubmit={handleSubmit}
       >
-        {({ setFieldValue, values }) => (
+        {({ setFieldValue, values, setTouched, touched }) => (
           <Form className="flex flex-col flex-grow">
             <div className="flex gap-5 mx-10">
               <div className="bg-white p-5 rounded-md w-full">
@@ -262,21 +286,22 @@ function EditProduct() {
                   </div>
                 </div>
                 <InputField
-                  name={"tags_id"}
-                  placeholder={"Tags (comma separated IDs)"}
-                  value={
-                    Array.isArray(values.tags_id)
-                      ? values.tags_id.join(", ")
-                      : ""
-                  }
+                  name="tags_id"
+                  placeholder="Tags (comma separated IDs, e.g., 1, 2, 3)"
+                  value={Array.isArray(values.tags_id) ? values.tags_id.join(", ") : ""}
                   onChange={(e) => {
                     const tagsArray = e.target.value
                       .split(",")
-                      .map(tag => tag.trim())
-                      .filter(tag => tag !== "")
-                      .map(tag => Number(tag))
-                      .filter(tag => !isNaN(tag));
+                      .map((tag) => tag.trim())
+                      .filter((tag) => tag !== "")
+                      .map((tag) => {
+                        const num = Number(tag);
+                        return isNaN(num) ? tag : num;
+                      });
                     setFieldValue("tags_id", tagsArray);
+                  }}
+                  onBlur={() => {
+                    setTouched({ ...touched, tags_id: true });
                   }}
                 />
                 <Field
@@ -299,20 +324,16 @@ function EditProduct() {
             {(hasColors || hasSizes) && (
               <div>
                 {hasColors && (
-                  <div>
-                    <ColorFieldArray
-                      values={values}
-                      setFieldValue={setFieldValue}
-                    />
-                  </div>
+                  <ColorFieldArray
+                    values={values}
+                    setFieldValue={setFieldValue}
+                  />
                 )}
                 {hasSizes && (
-                  <div>
-                    <SizeFieldArray
-                      values={values}
-                      setFieldValue={setFieldValue}
-                    />
-                  </div>
+                  <SizeFieldArray
+                    values={values}
+                    setFieldValue={setFieldValue}
+                  />
                 )}
               </div>
             )}
@@ -327,7 +348,6 @@ function EditProduct() {
           </Form>
         )}
       </Formik>
-      {/* Success Modal */}
       <SuccessModal isOpen={showModal}>
         <div className="flex flex-col justify-center w-370 items-center">
           <img
@@ -340,7 +360,7 @@ function EditProduct() {
           </p>
           <button
             className="bg-primary text-white rounded-md p-2 text-14 mt-4 w-64"
-            onClick={() => navigate("/Home/products")}
+            onClick={() => navigate("/Dashboard/products")}
             aria-label="Back to products"
           >
             Back to products

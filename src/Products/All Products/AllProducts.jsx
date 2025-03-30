@@ -159,7 +159,7 @@ function AllProducts() {
                     </td>
                     <td
                       className="px-6 py-3 border-t border-r w-250 cursor-pointer"
-                      onClick={() => navigate(`/Home/products/${product.id}`)}
+                      onClick={() => navigate(`/Dashboard/products/${product.id}`)}
                     >
                       <div className="flex items-center gap-1">
                         {product.colors.slice(0, 4).map((color) => (

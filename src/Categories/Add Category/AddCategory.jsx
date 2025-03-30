@@ -174,7 +174,7 @@ function AddCategory() {
           <p className="font-bold mt-5">Category added successfully!</p>
           <button
             className="bg-primary text-white rounded-md p-2 text-14 w-48 mt-4"
-            onClick={() => navigate("/Home/categories")}
+            onClick={() => navigate("/Dashboard/categories")}
           >
             Back to Categories
           </button>

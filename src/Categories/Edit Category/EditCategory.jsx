@@ -250,7 +250,7 @@ function EditCategory() {
           </p>
           <button
             className="bg-primary text-white rounded-md p-2 text-14 mt-4 w-64"
-            onClick={() => navigate("/Home/categories")}
+            onClick={() => navigate("/Dashboard/categories")}
             aria-label="Back to categories"
           >
             Back to Categories

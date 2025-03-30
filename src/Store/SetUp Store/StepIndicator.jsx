@@ -1,44 +1,31 @@
 export default function StepIndicator({ currentStep }) {
-    return (
-      <div className="grid grid-cols-3 gap-4 border-t border-b mb-5">
-        <div className={`flex items-center ${currentStep === 1 ? "bg-customOrange-mediumOrange" : ""} p-3`}>
+  const steps = [
+    { number: 1, title: "Store Theme" },
+    { number: 2, title: "Store Profile" },
+    { number: 3, title: "Pricing Plan" },
+    { number: 4, title: "Payment" }
+  ];
+
+  return (
+    <div className="grid grid-cols-4 gap-4 border-t border-b mb-5">
+      {steps.map((step) => (
+        <div 
+          key={step.number} 
+          className={`flex items-center ${currentStep === step.number ? "bg-customOrange-mediumOrange" : ""} p-3`}
+        >
           <div
             className={`rounded-full h-10 w-10 flex items-center justify-center text-17 mr-2 ${
-              currentStep === 1 ? "bg-primary text-white" : "bg-gray-100 text-gray-400"
+              currentStep === step.number ? "bg-primary text-white" : "bg-gray-100 text-gray-400"
             }`}
           >
-            1
+            {step.number}
           </div>
-          <p className={`flex flex-col gap-2 text-11 font-bold ${currentStep === 1 ? "font-bold" : "text-dark"}`}>
-            <span className="text-gray-400 font-light">Step 1</span>Store Theme
-            </p>
+          <p className={`flex flex-col gap-2 text-11 font-bold ${currentStep === step.number ? "font-bold" : "text-dark"}`}>
+            <span className="text-gray-400 font-light">Step {step.number}</span>
+            {step.title}
+          </p>
         </div>
-  
-        <div className={`flex items-center ${currentStep === 2 ? "bg-customOrange-mediumOrange" : ""} p-3`}>
-          <div
-            className={`rounded-full h-10 w-10 flex items-center justify-center text-17 mr-2 ${
-              currentStep === 2 ? "bg-primary text-white" : "bg-gray-100 text-gray-400"
-            }`}
-          >
-            2
-          </div>
-          <p className={`flex flex-col gap-2 text-11 font-bold ${currentStep === 2 ? "font-bold" : "text-dark"}`}>
-            <span className="text-gray-400 font-light">Step 2</span>Store Profile</p>
-        </div>
-  
-        <div className={`flex items-center ${currentStep === 3 ? "bg-customOrange-mediumOrange" : ""} p-3`}>
-          <div
-            className={`rounded-full h-10 w-10 flex items-center justify-center text-17 mr-2 ${
-              currentStep === 3 ? "bg-primary text-white" : "bg-gray-100 text-gray-400"
-            }`}
-          >
-            3
-          </div>
-          <p className={`flex flex-col gap-2 text-11 font-bold ${currentStep === 3 ? "font-bold" : "text-dark"}`}>
-            <span className="text-gray-400 font-light">Step 3</span>Pricing Plan</p>
-        </div>
-      </div>
-    )
-  }
-  
-  
+      ))}
+    </div>
+  );
+}

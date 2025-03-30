@@ -13,6 +13,7 @@ import BasicInformationSection from "./BasicInformationSection";
 import SizeFieldArray from "./SizeFieldArray";
 import * as Yup from "yup";
 import ColorFieldArray from "./ColorFieldArray";
+
 const AddProduct = () => {
   const [categories, setCategories] = useState([]);
   const [selectedCategoryTags, setSelectedCategoryTags] = useState([]);
@@ -59,15 +60,19 @@ const AddProduct = () => {
       then: Yup.number().required("Discount percentage is required"),
     }),
   });
+
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
     setIsLoading(true);
     try {
       console.log("Form Values:", values);
       const formData = new FormData();
+      
+      // Append basic fields
       formData.append("name[ar]", values.name);
       formData.append("name[en]", values.name);
       formData.append("description[ar]", values.description);
       formData.append("description[en]", values.description);
+      
       Object.entries(values).forEach(([key, value]) => {
         if (
           key !== "colors" &&
@@ -81,30 +86,70 @@ const AddProduct = () => {
         }
       });
 
-      // Append colors if category type is "Color" or "Both" and colors array is not empty
-      if ((categoryType === "Color" || categoryType === "Both") && values.colors.length > 0) {
+      // Handle colors array
+      if ((categoryType === "Color") && values.colors.length > 0) {
         values.colors.forEach((color, index) => {
+          // Append name fields separately
+          formData.append(`colors[${index}][name][ar]`, color.name.ar || "");
+          formData.append(`colors[${index}][name][en]`, color.name.en || "");
+          
+          // Append other color fields
           Object.entries(color).forEach(([field, fieldValue]) => {
-            formData.append(`colors[${index}][${field}]`, fieldValue);
+            if (field !== 'name' && field !== 'previewImage') {
+              if (field === 'image' && fieldValue instanceof File) {
+                formData.append(`colors[${index}][${field}]`, fieldValue);
+              } else if (field !== 'image') {
+                formData.append(`colors[${index}][${field}]`, fieldValue || "");
+              }
+            }
           });
         });
       }
 
-      // Append sizes if category type is "Size" or "Both" and sizes array is not empty
-      if ((categoryType === "Size" || categoryType === "Both") && values.sizes.length > 0) {
+      // Handle sizes array
+      if ((categoryType === "Size") && values.sizes.length > 0) {
         values.sizes.forEach((size, index) => {
           Object.entries(size).forEach(([field, fieldValue]) => {
-            formData.append(`sizes[${index}][${field}]`, fieldValue);
+            formData.append(`sizes[${index}][${field}]`, fieldValue || "");
           });
         });
       }
+    //  handle two types (colors and sizes)
+      if (categoryType === "Both") {
+        // Handle colors array
+        if (values.colors.length > 0) {
+          values.colors.forEach((color, index) => {
+            // Append name fields separately
+            formData.append(`colors[${index}][name][ar]`, color.name.ar || "");
+            formData.append(`colors[${index}][name][en]`, color.name.en || "");
+            
+            // Append other color fields
+            Object.entries(color).forEach(([field, fieldValue]) => {
+              if (field!== 'name' && field!== 'previewImage') {
+                if (field === 'image' && fieldValue instanceof File) {
+                  formData.append(`colors[${index}][${field}]`, fieldValue);
+                } else if (field!== 'image') {
+                  formData.append(`colors[${index}][${field}]`, fieldValue || "");
+                }
+              }
+            });
+            // Handle sizes array
+            values.sizes.forEach((size, index) => {
+              Object.entries(size).forEach(([field, fieldValue]) => {
+                formData.append(`sizes[${index}][${field}]`, fieldValue || "");
+              });
+            });
+          });
+        }
+      }
+      // Handle images
+      if (values.images.length > 0) {
+        values.images.forEach((image, index) => {
+          formData.append(`images[${index}]`, image);
+        });
+      }
 
-      // Append images
-      values.images.forEach((image, index) => {
-        formData.append(`images[${index}]`, image);
-      });
-
-      // Append tags
+      // Handle tags
       values.tags_ids.forEach((tagId, index) => {
         formData.append(`tags_ids[${index}]`, tagId);
       });
@@ -232,7 +277,7 @@ const AddProduct = () => {
             <Footer
               saveText="Save"
               cancelText="Cancel"
-              cancelOnClick={() => navigate("/Home/products")}
+              cancelOnClick={() => navigate("/Dashboard/products")}
               saveBtnType="submit"
               cancelBtnType="button"
               isLoading={isLoading || isSubmitting}
@@ -250,7 +295,7 @@ const AddProduct = () => {
           <p className="font-bold mt-5">Product added successfully!</p>
           <button
             className="bg-primary text-white rounded-md p-2 text-14 w-40 mt-4"
-            onClick={() => navigate("/Home/products")}
+            onClick={() => navigate("/Dashboard/products")}
           >
             Back to products
           </button>
