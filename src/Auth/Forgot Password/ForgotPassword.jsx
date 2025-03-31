@@ -64,9 +64,6 @@ function ForgotPassword() {
                 error={touched.email && errors.email}
                 active={touched.email}
               />
-              {/* {errors.email && touched.email && (
-                <p className="text-red-500 text-sm mt-2">{errors.email}</p>
-              )} */}
               <div className="mt-5 w-full">
                 <MainBtn
                   text={isLoading ? <ClipLoader color="#fff" size={22} /> : "Send Code"}
@@ -81,5 +78,4 @@ function ForgotPassword() {
     </div>
   );
 }
-
 export default ForgotPassword;

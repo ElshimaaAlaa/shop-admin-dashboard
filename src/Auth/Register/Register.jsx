@@ -149,7 +149,7 @@ function Register() {
                 Have An Account ?
                 <span
                   onClick={() => navigate("/AdminLogin")}
-                  className="ms-2 text-primary font-bold text-17 cursor-pointer"
+                  className="ms-2 text-primary font-bold text-16 cursor-pointer"
                 >
                   Login
                 </span>

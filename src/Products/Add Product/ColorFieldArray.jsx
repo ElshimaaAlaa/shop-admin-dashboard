@@ -5,14 +5,17 @@ import { Plus } from "lucide-react";
 import InputField from "../../Components/InputFields/InputField";
 import { UploadImageForColor } from "../../Components/Upload Image/UploadImageForColor";
 
-const ColorFieldArray = ({ values, setFieldValue }) => {
+const ColorFieldArray = ({ values, setFieldValue, sizeIndex, nested }) => {
+  const colorsPath = nested ? `sizes[${sizeIndex}].colors` : "colors";
+  const colors = nested ? values.sizes[sizeIndex]?.colors : values.colors;
+
   return (
-    <div className="bg-white p-5 rounded-md mt-5 mx-10 w-900">
-      <h2 className="font-bold mb-5">Inventory</h2>
-      <FieldArray name="colors">
+    <div className={`${nested ? 'ml-8 pl-4 border-l-2 border-gray-200' : 'bg-white p-5 rounded-md mt-5 mx-10 w-900'}`}>
+      {!nested && <h2 className="font-bold mb-5">Inventory</h2>}
+      <FieldArray name={colorsPath}>
         {({ push, remove }) => (
           <>
-            {values.colors.map((color, index) => (
+            {colors?.map((color, index) => (
               <div
                 key={index}
                 className="flex flex-col gap-4 mb-4 bg-gray-100 p-5 rounded-md"
@@ -20,32 +23,32 @@ const ColorFieldArray = ({ values, setFieldValue }) => {
                 <div className="flex gap-1">
                   <UploadImageForColor
                     previewImage={color.previewImage}
-                    name={`colors[${index}]`}
+                    name={`${colorsPath}[${index}]`}
                     setFieldValue={setFieldValue}
                     colorIndex={index}
                   />
                   <InputField 
-                    name={`colors[${index}].name.ar`} 
+                    name={`${colorsPath}[${index}].name.ar`} 
                     placeholder="Color Name (Arabic)"
                     value={color.name?.ar || ""}
                   />
                   <InputField 
-                    name={`colors[${index}].name.en`} 
+                    name={`${colorsPath}[${index}].name.en`} 
                     placeholder="Color Name (English)"
                     value={color.name?.en || ""}
                   />
                   <InputField
-                    name={`colors[${index}].code`}
+                    name={`${colorsPath}[${index}].code`}
                     placeholder="Color Code"
                     value={color.code || ""}
                   />
                   <InputField
-                    name={`colors[${index}].stock`}
+                    name={`${colorsPath}[${index}].stock`}
                     placeholder="Stock"
                     value={color.stock || ""}
                   />
                   <InputField
-                    name={`colors[${index}].price`}
+                    name={`${colorsPath}[${index}].price`}
                     placeholder="Price"
                     value={color.price || ""}
                   />
@@ -62,12 +65,12 @@ const ColorFieldArray = ({ values, setFieldValue }) => {
                     <Field
                       as="input"
                       type="checkbox"
-                      name={`colors[${index}].schedule_discount`}
+                      name={`${colorsPath}[${index}].schedule_discount`}
                       className="hidden"
                       checked={color.schedule_discount || false}
                       onChange={(e) => {
                         setFieldValue(
-                          `colors[${index}].schedule_discount`,
+                          `${colorsPath}[${index}].schedule_discount`,
                           e.target.checked
                         );
                       }}
@@ -87,12 +90,12 @@ const ColorFieldArray = ({ values, setFieldValue }) => {
                 {color.schedule_discount && (
                   <div className="flex gap-4">
                     <InputField
-                      name={`colors[${index}].discount_percentage`}
+                      name={`${colorsPath}[${index}].discount_percentage`}
                       placeholder="Discount"
                       value={color.discount_percentage || ""}
                     />
                     <InputField
-                      name={`colors[${index}].discount_expire_at`}
+                      name={`${colorsPath}[${index}].discount_expire_at`}
                       type="date"
                       placeholder="Discount Expiry Date"
                       value={color.discount_expire_at || ""}

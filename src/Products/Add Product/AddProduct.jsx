@@ -86,62 +86,68 @@ const AddProduct = () => {
         }
       });
 
-      // Handle colors array
-      if ((categoryType === "Color") && values.colors.length > 0) {
-        values.colors.forEach((color, index) => {
-          // Append name fields separately
-          formData.append(`colors[${index}][name][ar]`, color.name.ar || "");
-          formData.append(`colors[${index}][name][en]`, color.name.en || "");
-          
-          // Append other color fields
-          Object.entries(color).forEach(([field, fieldValue]) => {
-            if (field !== 'name' && field !== 'previewImage') {
-              if (field === 'image' && fieldValue instanceof File) {
-                formData.append(`colors[${index}][${field}]`, fieldValue);
-              } else if (field !== 'image') {
-                formData.append(`colors[${index}][${field}]`, fieldValue || "");
-              }
-            }
-          });
-        });
-      }
-
-      // Handle sizes array
-      if ((categoryType === "Size") && values.sizes.length > 0) {
-        values.sizes.forEach((size, index) => {
-          Object.entries(size).forEach(([field, fieldValue]) => {
-            formData.append(`sizes[${index}][${field}]`, fieldValue || "");
-          });
-        });
-      }
-    //  handle two types (colors and sizes)
-      if (categoryType === "Both") {
-        // Handle colors array
+      // Handle different category types
+      if (categoryType === "Color") {
+        // Handle colors array (standalone)
         if (values.colors.length > 0) {
           values.colors.forEach((color, index) => {
-            // Append name fields separately
             formData.append(`colors[${index}][name][ar]`, color.name.ar || "");
             formData.append(`colors[${index}][name][en]`, color.name.en || "");
             
-            // Append other color fields
             Object.entries(color).forEach(([field, fieldValue]) => {
-              if (field!== 'name' && field!== 'previewImage') {
+              if (field !== 'name' && field !== 'previewImage') {
                 if (field === 'image' && fieldValue instanceof File) {
                   formData.append(`colors[${index}][${field}]`, fieldValue);
-                } else if (field!== 'image') {
+                } else if (field !== 'image') {
                   formData.append(`colors[${index}][${field}]`, fieldValue || "");
                 }
               }
             });
-            // Handle sizes array
-            values.sizes.forEach((size, index) => {
-              Object.entries(size).forEach(([field, fieldValue]) => {
-                formData.append(`sizes[${index}][${field}]`, fieldValue || "");
-              });
+          });
+        }
+      } 
+      else if (categoryType === "Size") {
+        // Handle sizes array (standalone)
+        if (values.sizes.length > 0) {
+          values.sizes.forEach((size, index) => {
+            Object.entries(size).forEach(([field, fieldValue]) => {
+              formData.append(`sizes[${index}][${field}]`, fieldValue || "");
             });
           });
         }
       }
+      else if (categoryType === "Both") {
+        // Handle sizes with nested colors
+        if (values.sizes.length > 0) {
+          values.sizes.forEach((size, sizeIndex) => {
+            // Append size fields
+            Object.entries(size).forEach(([field, fieldValue]) => {
+              if (field !== 'colors') {
+                formData.append(`sizes[${sizeIndex}][${field}]`, fieldValue || "");
+              }
+            });
+            
+            // Append nested colors for this size
+            if (size.colors && size.colors.length > 0) {
+              size.colors.forEach((color, colorIndex) => {
+                formData.append(`sizes[${sizeIndex}][colors][${colorIndex}][name][ar]`, color.name.ar || "");
+                formData.append(`sizes[${sizeIndex}][colors][${colorIndex}][name][en]`, color.name.en || "");
+                
+                Object.entries(color).forEach(([field, fieldValue]) => {
+                  if (field !== 'name' && field !== 'previewImage') {
+                    if (field === 'image' && fieldValue instanceof File) {
+                      formData.append(`sizes[${sizeIndex}][colors][${colorIndex}][${field}]`, fieldValue);
+                    } else if (field !== 'image') {
+                      formData.append(`sizes[${sizeIndex}][colors][${colorIndex}][${field}]`, fieldValue || "");
+                    }
+                  }
+                });
+              });
+            }
+          });
+        }
+      }
+
       // Handle images
       if (values.images.length > 0) {
         values.images.forEach((image, index) => {
@@ -190,6 +196,10 @@ const AddProduct = () => {
       setSelectedCategoryTags(combinedTags);
       setFieldValue("category_id", categoryId);
       setCategoryType(selectedCategory.type_name);
+      
+      // Reset sizes and colors when category changes
+      setFieldValue("sizes", []);
+      setFieldValue("colors", []);
     } else {
       setSelectedCategoryTags([]);
       setFieldValue("category_id", "");
@@ -263,16 +273,18 @@ const AddProduct = () => {
               <ColorFieldArray values={values} setFieldValue={setFieldValue} />
             )}
             {categoryType === "Size" && (
-              <SizeFieldArray values={values} setFieldValue={setFieldValue} />
+              <SizeFieldArray 
+                values={values} 
+                setFieldValue={setFieldValue} 
+                hasNestedColors={categoryType === "Both"}
+              />
             )}
             {categoryType === "Both" && (
-              <>
-                <ColorFieldArray
-                  values={values}
-                  setFieldValue={setFieldValue}
-                />
-                <SizeFieldArray values={values} setFieldValue={setFieldValue} />
-              </>
+              <SizeFieldArray 
+                values={values} 
+                setFieldValue={setFieldValue} 
+                hasNestedColors={true}
+              />
             )}
             <Footer
               saveText="Save"

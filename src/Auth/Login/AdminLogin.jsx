@@ -159,7 +159,7 @@ function AdminLogin() {
         </div>
         <OAuth />
         <p className="text-center text-gray-400 mt-3 text-15">
-          Don’t Have An Account ? <span className="ms-1 text-primary font-bold text-17 cursor-pointer" onClick={()=>navigate('/Register')}>Register</span>
+          Don’t Have An Account ? <span className="ms-1 text-primary font-bold text-16 cursor-pointer" onClick={()=>navigate('/Register')}>Register</span>
         </p>
       </div>
     </div>

@@ -38,8 +38,8 @@ function App() {
     <BrowserRouter>
       <Routes>
         {/* Auth Routes */}
-        <Route path="/" element={<GetDomain />} />
-        <Route path="/Vertext-Website" element={<Main />} />
+        <Route path="/" element={<Main />} />
+         <Route path="/GetDomain" element={<GetDomain />} />
         {/* Auth */}
         <Route path="/AdminLogin" element={<AdminLogin />} />
         <Route path="/AdminLogin/ForgotPassword" element={<ForgotPassword />} />

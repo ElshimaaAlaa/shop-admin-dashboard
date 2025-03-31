@@ -29,11 +29,11 @@ function Navbar() {
           <img src="/assets/svgs/vertex.svg" alt="logo" className="w-36" />
         </div>
         <HamburgerMenu
-          onLoginClick={() =>navigate('/AdminLogin')}
+          onLoginClick={() =>navigate('/GetDomain')}
           onRegisterClick={() =>navigate('/Register')}
         />
         <DesktopButtons
-          onLoginClick={() =>navigate('/AdminLogin')}
+          onLoginClick={() =>navigate('/GetDomain')}
           onRegisterClick={() =>navigate('/Register')}
         />
       </div>

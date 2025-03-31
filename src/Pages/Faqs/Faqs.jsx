@@ -9,15 +9,17 @@ import * as Yup from "yup";
 import { addFaqs } from "../../ApiServices/AddFags";
 import InputField from "../../Components/InputFields/InputField";
 import MainBtn from "../../Components/Main Button/MainBtn";
-
 function Faqs() {
   const [isLoading, setIsLoading] = useState(false);
   const [openIndex, setOpenIndex] = useState(null);
   const [faqsData, setFaqsData] = useState([]);
+  const [displayCount, setDisplayCount] = useState(5);
+  
   const initialValues = {
     question: "",
     answer: "",
   };
+  
   const validationSchema = Yup.object({
     question: Yup.string().required("Question is required"),
     answer: Yup.string().required("Answer is required"),
@@ -28,9 +30,8 @@ function Faqs() {
     try {
       const questionData = await addFaqs(values.question, values.answer);
       if (questionData && questionData.data) {
-        // Update state with new FAQ from API response
         setFaqsData((prevFaqs) => [questionData.data, ...prevFaqs]);
-        resetForm(); // Reset the form after submission
+        resetForm();
       }
     } catch (error) {
       console.error("Failed to add FAQ:", error);
@@ -56,6 +57,10 @@ function Faqs() {
     setOpenIndex(openIndex === index ? null : index);
   };
 
+  const loadMore = () => {
+    setDisplayCount(prevCount => prevCount + 5);
+  };
+
   return (
     <div className="bg-white min-h-screen pb-10">
       <Helmet>
@@ -70,8 +75,8 @@ function Faqs() {
       </p>
       <div className="flex justify-center gap-5">
         {/* FAQ Section */}
-        <section className=" mt-5 w-500px">
-          {faqsData.map((item, index) => (
+        <section className="mt-5 w-500px">
+          {faqsData.slice(0, displayCount).map((item, index) => (
             <div
               key={index}
               className={`border-2 mt-5 p-5 rounded-lg transition-all duration-300 ${
@@ -100,7 +105,20 @@ function Faqs() {
               )}
             </div>
           ))}
+          
+          {/* Load More Button */}
+          {displayCount < faqsData.length && (
+            <div className="flex justify-center mt-5">
+              <p
+                onClick={loadMore}
+                className="bg-customOrange-mediumOrange text-primary cursor-pointer w-full px-4 py-2 rounded-md hover:bg-opacity-90 transition"
+              >
+                {isLoading ? <ClipLoader size={22} color="#fff"/>:"Load More....."}
+              </p>
+            </div>
+          )}
         </section>
+        
         {/* Add Question Section */}
         <section className="bg-customOrange-mediumOrange rounded-md p-5 w-430 h-full mt-10">
           <div className="flex justify-center">
@@ -150,4 +168,5 @@ function Faqs() {
     </div>
   );
 }
+
 export default Faqs;
