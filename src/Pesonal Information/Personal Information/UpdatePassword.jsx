@@ -52,7 +52,7 @@ function UpdatePassword() {
       setShowModal(false);
       setTimeout(() => {
         setShowSuccessModal(false);
-        navigate("/Home/MainInfo");
+        navigate("/Dashboard/MainInfo");
       }, 2500);
     } catch (error) {
       console.error("Failed to update password", error);

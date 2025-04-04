@@ -70,7 +70,7 @@ function EditProduct() {
           stock: color.stock || 0,
           price: color.price || 0,
           image: color.image || null,
-          previewImage: color.image || product.images[0].src ,
+          previewImage: color.image?.src || color.image?.url || product.images[0]?.src || '',
           schedule_discount: color.schedule_discount || false,
           discount_percentage: color.discount_percentage || 0,
           discount_expire_at: color.discount_expire_at || "",
@@ -95,13 +95,12 @@ function EditProduct() {
     formData.append("return_percentage", values.return_percentage);
     formData.append("gender", values.gender);
     
-    // Handle images
+    // Handle images - only append new files, skip existing URLs
     values.images.forEach((image, index) => {
       if (image instanceof File) {
         formData.append(`images[${index}]`, image);
-      } else if (typeof image === "string") {
-        formData.append(`images[${index}]`, image);
       }
+      // Skip existing images that are strings or objects
     });
     
     // Pricing information
@@ -122,7 +121,7 @@ function EditProduct() {
       });
     }
     
-    // Handle colors
+    // Handle colors - make image optional
     if (values.colors && values.colors.length > 0) {
       values.colors.forEach((color, index) => {
         if (color.id) {
@@ -135,11 +134,11 @@ function EditProduct() {
         formData.append(`colors[${index}][stock]`, color.stock || 0);
         formData.append(`colors[${index}][price]`, color.price || 0);
         
+        // Only append color image if it's a new file
         if (color.image instanceof File) {
           formData.append(`colors[${index}][image]`, color.image);
-        } else if (typeof color.image === "string") {
-          formData.append(`colors[${index}][image]`, color.image);
         }
+        // Skip existing color images
         
         formData.append(
           `colors[${index}][schedule_discount]`,
@@ -173,15 +172,32 @@ function EditProduct() {
       await updateProduct(product.id, formData);
       setShowModal(true);
     } catch (error) {
-      console.error("Failed to update product:", error.response?.data || error);
+      console.error("Failed to update product:", error);
+      if (error.response) {
+        console.error("Response data:", error.response.data);
+        console.error("Response status:", error.response.status);
+        console.error("Response headers:", error.response.headers);
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleImageChange = (files) => {
-    const imageUrls = files.map((file) => URL.createObjectURL(file));
+    const imageUrls = files.map((file) => 
+      file instanceof File ? URL.createObjectURL(file) : file
+    );
     setPreviewImages(imageUrls);
+  };
+
+  const handleRemoveImage = (indexToRemove, setFieldValue, values) => {
+    const newImages = [...values.images];
+    newImages.splice(indexToRemove, 1);
+    setFieldValue("images", newImages);
+    
+    const newPreviews = [...previewImages];
+    newPreviews.splice(indexToRemove, 1);
+    setPreviewImages(newPreviews);
   };
 
   useEffect(() => {
@@ -315,6 +331,7 @@ function EditProduct() {
                 previewImages={previewImages}
                 onImageChange={handleImageChange}
                 setFieldValue={setFieldValue}
+                onRemoveImage={(index) => handleRemoveImage(index, setFieldValue, values)}
               />
             </div>
             <PricingSection
@@ -327,6 +344,7 @@ function EditProduct() {
                   <ColorFieldArray
                     values={values}
                     setFieldValue={setFieldValue}
+                    makeImageOptional={true}
                   />
                 )}
                 {hasSizes && (

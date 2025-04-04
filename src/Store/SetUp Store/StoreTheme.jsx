@@ -1,303 +1,209 @@
-import { useState } from "react";
-import PropTypes from 'prop-types';
-import StepIndicator from "./StepIndicator";
-import { Trash2 } from "lucide-react";
-import { FaArrowRightLong } from "react-icons/fa6";
+import React, { useState } from "react";
+import { Formik, Form } from "formik";
+import * as Yup from "yup";
 import { ChromePicker } from "react-color";
+import { FaArrowRightLong, FaTrash } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
 
-export default function ThemeStore({ 
-  onNext, 
-  formData = {}, 
-  updateFormData = () => {}, 
-  isSubmitting, 
-  errors = {},
-  setErrors
-}) {
-  const [colors, setColors] = useState({
-    primary: formData.theme_primary_color || '#3B82F6',
-    secondary: formData.theme_secondary_color || '#10B981'
-  });
+const StoreTheme = ({ initialData = {}, onSuccess = () => {} }) => {
+  const [previewImage, setPreviewImage] = useState(null);
+  const [fileName, setFileName] = useState("");
   const [uploadProgress, setUploadProgress] = useState(0);
   const [showPrimaryPicker, setShowPrimaryPicker] = useState(false);
   const [showSecondaryPicker, setShowSecondaryPicker] = useState(false);
+  const navigate = useNavigate();
 
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile) {
-      setUploadProgress(100);
-      updateFormData('image', selectedFile);
-      if (errors.image) {
-        setErrors(prev => ({ ...prev, image: undefined }));
-      }
+  const initialValues = {
+    image: null,
+    theme_primary_color: "#3B82F6",
+    theme_secondary_color: "#10B981",
+    ...initialData,
+  };
+
+  const validationSchema = Yup.object().shape({
+    image: Yup.mixed()
+      .required("Logo is required")
+      .test("fileSize", "File too large", (value) => {
+        if (!value) return true; // if no file, let required validation handle it
+        return value.size <= 1024 * 1024 * 2; // 2MB max
+      })
+      .test("fileType", "Unsupported file format", (value) => {
+        if (!value) return true;
+        return ["image/jpeg", "image/png", "image/svg+xml"].includes(value.type);
+      }),
+    theme_primary_color: Yup.string().matches(/^#([0-9A-F]{3}){1,2}$/i, "Invalid hex color"),
+    theme_secondary_color: Yup.string().matches(/^#([0-9A-F]{3}){1,2}$/i, "Invalid hex color"),
+  });
+
+  const handleFileChange = (event, setFieldValue) => {
+    const file = event.currentTarget.files[0];
+    if (file) {
+      setFieldValue("image", file);
+      setFileName(file.name);
+
+      // Simulate upload progress
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += Math.random() * 10;
+        if (progress >= 100) {
+          progress = 100;
+          clearInterval(interval);
+        }
+        setUploadProgress(progress);
+      }, 200);
+
+      // Create preview for image
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setPreviewImage(e.target.result);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
-  const handleRemoveFile = () => {
+  const handleDrop = (event, setFieldValue) => {
+    event.preventDefault();
+    const file = event.dataTransfer.files[0];
+    if (file) {
+      const event = { currentTarget: { files: [file] } };
+      handleFileChange(event, setFieldValue);
+    }
+  };
+
+  const handleDragOver = (event) => {
+    event.preventDefault();
+  };
+
+  const removeFile = (setFieldValue) => {
+    setFieldValue("image", null);
+    setPreviewImage(null);
+    setFileName("");
     setUploadProgress(0);
-    updateFormData('image', null);
-  };
-
-  const handleColorChange = (color, type) => {
-    const hexColor = color.hex;
-    const newColors = {
-      ...colors,
-      [type]: hexColor
-    };
-    setColors(newColors);
-    updateFormData(`theme_${type}_color`, hexColor);
-    if (errors[`theme_${type}_color`]) {
-      setErrors(prev => ({ ...prev, [`theme_${type}_color`]: undefined }));
-    }
-  };
-
-  const handleNext = () => {
-    let isValid = true;
-    const newErrors = {};
-
-    if (!formData.image) {
-      newErrors.image = "Logo is required";
-      isValid = false;
-    }
-    if (!colors.primary || !/^#[0-9A-F]{6}$/i.test(colors.primary)) {
-      newErrors.theme_primary_color = "Valid primary color is required";
-      isValid = false;
-    }
-    if (!colors.secondary || !/^#[0-9A-F]{6}$/i.test(colors.secondary)) {
-      newErrors.theme_secondary_color = "Valid secondary color is required";
-      isValid = false;
-    }
-
-    setErrors(newErrors);
-    
-    if (isValid) {
-      onNext?.();
-    }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-green-100 p-4 md:p-6 flex items-center justify-center">
-      <div className="w-full max-w-2xl bg-white rounded-xl shadow-lg overflow-hidden">
-        {/* Header section */}
-        <div className="bg-gray-50 px-6 py-4 border-b">
-          <div className="flex justify-center mb-4">
-            <h1 className="text-2xl font-bold text-gray-800">VERTEX</h1>
-          </div>
-          <div className="flex items-center">
-            <div className="bg-white border-4 border-blue-500 text-gray-800 font-bold rounded-full h-8 w-8 flex items-center justify-center text-xs mr-3">
-              1/4
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={(values) => {
+        onSuccess(values);
+        navigate("/Register/StoreProfile");
+      }}
+    >
+      {({ values, setFieldValue, errors, touched }) => (
+        <Form className="p-6 bg-white rounded-lg shadow-md w-full max-w-2xl mx-auto">
+          {/* Step Indicator */}
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center text-lg font-semibold">
+              <span className="text-orange-500 text-xl font-bold">1 / 3</span>
+              <span className="ml-2">Let's Get Started To Set Up Your Own Store.</span>
             </div>
-            <h1 className="text-lg font-bold text-gray-800">
-              Let's Setup Your Store Branding
-            </h1>
           </div>
-        </div>
 
-        <StepIndicator currentStep={1} />
+          {/* Step Tabs */}
+          <div className="flex border-b mb-6">
+            <div className="flex-1 text-center py-2 border-b-4 border-orange-500 font-semibold">Step 1 - Store Theme</div>
+            <div className="flex-1 text-center py-2 text-gray-400">Step 2 - Store Profile</div>
+            <div className="flex-1 text-center py-2 text-gray-400">Step 3 - Pricing Plan</div>
+          </div>
 
-        <div className="p-6">
-          {/* File Upload Section */}
-          <section className="mb-8">
-            <h2 className="text-md font-semibold text-gray-800 mb-3">Upload Store Logo</h2>
-            <div className={`border-2 ${!formData.image && (errors.image ? 'border-red-500' : 'border-blue-400 hover:border-blue-500')} rounded-lg p-4 transition-all`}>
-              {!formData.image ? (
-                <div className="flex flex-col md:flex-row md:items-center gap-4">
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <img
-                      src="/assets/svgs/upload-file_svgrepo.com.svg"
-                      alt="Upload"
-                      className="w-5"
-                    />
-                    <span className="text-sm font-medium">
-                      Drag & drop your logo here or
-                    </span>
-                  </div>
-                  <label className="inline-flex items-center px-4 py-2 bg-blue-50 text-blue-600 rounded-md cursor-pointer hover:bg-blue-100 transition-colors">
-                    <span className="text-sm font-semibold">Browse Files</span>
-                    <input
-                      type="file"
-                      className="hidden"
-                      onChange={handleFileChange}
-                      accept=".svg,.png,.jpg,.jpeg"
-                    />
-                  </label>
-                </div>
-              ) : (
-                <div className="mt-4 bg-gray-100 p-4 rounded-md border-2 border-gray-200">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <svg 
-                        xmlns="http://www.w3.org/2000/svg" 
-                        className="h-5 w-5 text-gray-500" 
-                        fill="none" 
-                        viewBox="0 0 24 24" 
-                        stroke="currentColor"
-                      >
-                        <path 
-                          strokeLinecap="round" 
-                          strokeLinejoin="round" 
-                          strokeWidth={2} 
-                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" 
-                        />
-                      </svg>
-                      <p className="text-sm font-medium text-gray-800">{formData.image.name}</p>
-                    </div>
-                    <button 
-                      onClick={handleRemoveFile}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      <Trash2 className="h-5 w-5" />
-                    </button>
-                  </div>
-                  <div className="h-2 bg-gray-300 rounded-full">
-                    <div 
-                      className="h-full bg-blue-500 rounded-full" 
-                      style={{ width: `${uploadProgress}%` }}
-                    ></div>
-                  </div>
-                  <p className="text-xs text-gray-500 mt-1">100% done</p>
-                </div>
-              )}
-            </div>
-            {errors.image && (
-              <p className="mt-1 text-sm text-red-600">{errors.image}</p>
-            )}
-          </section>
-
-          {/* Color Selection Section */}
-          <section className="mb-8">
-            <h2 className="text-md font-semibold text-gray-800 mb-4">
-              Select Your Brand Colors
-            </h2>
+          {/* File Upload */}
+          <div 
+            className="border border-dashed border-gray-300 rounded-lg p-4 text-center mb-6"
+            onDrop={(e) => handleDrop(e, setFieldValue)}
+            onDragOver={handleDragOver}
+          >
+            <input
+              type="file"
+              id="file-upload"
+              className="hidden"
+              onChange={(e) => handleFileChange(e, setFieldValue)}
+              accept="image/jpeg, image/png, image/svg+xml"
+            />
+            <label htmlFor="file-upload" className="cursor-pointer">
+              <p className="text-gray-500">
+                Drag & Drop Your Logo File Here OR <span className="text-orange-500">Browse Files</span>
+              </p>
+            </label>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {previewImage && (
+              <div className="mt-4 bg-gray-100 p-2 rounded-lg flex items-center justify-between">
+                <span className="text-gray-700 truncate max-w-xs">{fileName}</span>
+                <div className="w-2/3 bg-gray-300 h-2 rounded-lg overflow-hidden mx-2">
+                  <div className="bg-orange-500 h-2" style={{ width: `${uploadProgress}%` }}></div>
+                </div>
+                <FaTrash 
+                  className="text-red-500 cursor-pointer" 
+                  onClick={() => removeFile(setFieldValue)} 
+                />
+              </div>
+            )}
+            
+            {errors.image && touched.image && (
+              <div className="text-red-500 text-sm mt-2">{errors.image}</div>
+            )}
+          </div>
+
+          {/* Color Pickers */}
+          <div className="mb-6">
+            <h3 className="font-semibold mb-2">Enter Your Store Theme Colors</h3>
+            <div className="flex gap-4">
               {/* Primary Color */}
-              <div className="relative">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Primary Color {errors.theme_primary_color && (
-                    <span className="text-red-500 text-xs"> - {errors.theme_primary_color}</span>
-                  )}
-                </label>
-                <div className="flex items-center gap-3">
-                  <div
-                    className="h-10 w-10 rounded-lg border border-gray-300 shadow-sm cursor-pointer"
-                    style={{ backgroundColor: colors.primary }}
-                    onClick={() => setShowPrimaryPicker(!showPrimaryPicker)}
-                  />
-                  <div className="flex-1 relative">
-                    <input
-                      type="text"
-                      className={`w-full pl-3 pr-10 py-2 border rounded-md text-sm focus:ring-blue-500 focus:border-blue-500 ${
-                        errors.theme_primary_color ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                      value={colors.primary}
-                      onChange={(e) => handleColorChange({ hex: e.target.value }, 'primary')}
-                      placeholder="#FFFFFF"
-                    />
-                    <span className="absolute right-3 top-2 text-xs text-gray-400">
-                      HEX
-                    </span>
-                  </div>
+              <div className="relative flex-1">
+                <label className="block mb-1">Primary Color</label>
+                <div className="flex items-center border rounded-lg p-2 cursor-pointer" onClick={() => setShowPrimaryPicker(!showPrimaryPicker)}>
+                  <div className="w-6 h-6 rounded-full border" style={{ backgroundColor: values.theme_primary_color }}></div>
+                  <span className="ml-2">{values.theme_primary_color}</span>
                 </div>
                 {showPrimaryPicker && (
                   <div className="absolute z-10 mt-2">
-                    <ChromePicker
-                      color={colors.primary}
-                      onChangeComplete={(color) => handleColorChange(color, 'primary')}
+                    <ChromePicker 
+                      color={values.theme_primary_color} 
+                      onChangeComplete={(color) => {
+                        setFieldValue("theme_primary_color", color.hex);
+                        setShowPrimaryPicker(false);
+                      }} 
                     />
-                    <button
-                      className="mt-2 px-3 py-1 bg-gray-200 rounded-md text-sm"
-                      onClick={() => setShowPrimaryPicker(false)}
-                    >
-                      Close
-                    </button>
                   </div>
                 )}
               </div>
-
+              
               {/* Secondary Color */}
-              <div className="relative">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Secondary Color {errors.theme_secondary_color && (
-                    <span className="text-red-500 text-xs"> - {errors.theme_secondary_color}</span>
-                  )}
-                </label>
-                <div className="flex items-center gap-3">
-                  <div
-                    className="h-10 w-10 rounded-lg border border-gray-300 shadow-sm cursor-pointer"
-                    style={{ backgroundColor: colors.secondary }}
-                    onClick={() => setShowSecondaryPicker(!showSecondaryPicker)}
-                  />
-                  <div className="flex-1 relative">
-                    <input
-                      type="text"
-                      className={`w-full pl-3 pr-10 py-2 border rounded-md text-sm focus:ring-blue-500 focus:border-blue-500 ${
-                        errors.theme_secondary_color ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                      value={colors.secondary}
-                      onChange={(e) => handleColorChange({ hex: e.target.value }, 'secondary')}
-                      placeholder="#FFFFFF"
-                    />
-                    <span className="absolute right-3 top-2 text-xs text-gray-400">
-                      HEX
-                    </span>
-                  </div>
+              <div className="relative flex-1">
+                <label className="block mb-1">Secondary Color</label>
+                <div className="flex items-center border rounded-lg p-2 cursor-pointer" onClick={() => setShowSecondaryPicker(!showSecondaryPicker)}>
+                  <div className="w-6 h-6 rounded-full border" style={{ backgroundColor: values.theme_secondary_color }}></div>
+                  <span className="ml-2">{values.theme_secondary_color}</span>
                 </div>
                 {showSecondaryPicker && (
                   <div className="absolute z-10 mt-2">
-                    <ChromePicker
-                      color={colors.secondary}
-                      onChangeComplete={(color) => handleColorChange(color, 'secondary')}
+                    <ChromePicker 
+                      color={values.theme_secondary_color} 
+                      onChangeComplete={(color) => {
+                        setFieldValue("theme_secondary_color", color.hex);
+                        setShowSecondaryPicker(false);
+                      }} 
                     />
-                    <button
-                      className="mt-2 px-3 py-1 bg-gray-200 rounded-md text-sm"
-                      onClick={() => setShowSecondaryPicker(false)}
-                    >
-                      Close
-                    </button>
                   </div>
                 )}
               </div>
             </div>
-          </section>
+          </div>
 
           {/* Next Button */}
           <div className="flex justify-end">
-            <button
-              onClick={handleNext}
-              disabled={isSubmitting || !formData.image || !colors.primary || !colors.secondary}
-              className={`flex items-center gap-2 px-6 py-2 rounded-md text-white font-medium transition-colors
-                ${isSubmitting || !formData.image || !colors.primary || !colors.secondary
-                  ? 'bg-gray-400 cursor-not-allowed'
-                  : 'bg-blue-600 hover:bg-blue-700'}
-              `}
+            <button 
+              type="submit" 
+              className="flex items-center px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600"
+              disabled={!values.image}
             >
-              Save Theme <FaArrowRightLong className="ml-1" />
+              Next <FaArrowRightLong className="ml-2" />
             </button>
           </div>
-        </div>
-      </div>
-    </div>
+        </Form>
+      )}
+    </Formik>
   );
-}
-
-ThemeStore.propTypes = {
-  onNext: PropTypes.func.isRequired,
-  formData: PropTypes.shape({
-    theme_primary_color: PropTypes.string,
-    theme_secondary_color: PropTypes.string,
-    image: PropTypes.object
-  }),
-  updateFormData: PropTypes.func.isRequired,
-  isSubmitting: PropTypes.bool,
-  errors: PropTypes.object,
-  setErrors: PropTypes.func
 };
 
-ThemeStore.defaultProps = {
-  onNext: () => {},
-  formData: {},
-  updateFormData: () => {},
-  isSubmitting: false,
-  errors: {},
-  setErrors: () => {}
-};
+export default StoreTheme;

@@ -1,4 +1,3 @@
-import { AiOutlineClose } from "react-icons/ai";
 import React from "react";
 
 export const UploadImageForColor = ({ 
@@ -6,7 +5,7 @@ export const UploadImageForColor = ({
   name,
   setFieldValue,
   colorIndex,
-  defaultProductImage 
+  defaultProductImage
 }) => {
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -14,57 +13,78 @@ export const UploadImageForColor = ({
 
     const reader = new FileReader();
     reader.onload = () => {
-      setFieldValue(`${name}.image`, file);
-      setFieldValue(`${name}.previewImage`, reader.result);
+      try {
+        setFieldValue(`${name}.image`, file);
+        setFieldValue(`${name}.previewImage`, reader.result);
+      } catch (error) {
+        console.error("Error setting image field:", error);
+      }
+    };
+    reader.onerror = () => {
+      console.error("Error reading file");
     };
     reader.readAsDataURL(file);
   };
 
   const handleRemoveImage = (e) => {
     e.stopPropagation();
-    setFieldValue(`${name}.image`, null);
-    setFieldValue(`${name}.previewImage`, defaultProductImage || "/assets/images/default-color.png");
+    try {
+      setFieldValue(`${name}.image`, null);
+      setFieldValue(`${name}.previewImage`, null);
+    } catch (error) {
+      console.error("Error removing image:", error);
+    }
   };
 
+  const getImageSrc = () => {
+    if (previewImage) {
+      if (typeof previewImage === 'string') return previewImage;
+      if (previewImage instanceof Blob) return URL.createObjectURL(previewImage);
+    }
+    return defaultProductImage || null;
+  };
+
+  const imageSrc = getImageSrc();
+
   return (
-    <div className="border-2 w-72 border-dashed bg-white border-primary rounded-md p-1 flex items-center justify-center">
+    <div className="border-2 w-80 h-16 border-dashed bg-white border-primary rounded-md p-1 flex items-center justify-center relative">
       <input
         type="file"
-        name={name}
         onChange={handleImageUpload}
         className="hidden"
         id={`image-upload-${colorIndex}`}
         accept="image/*"
-        aria-label="Upload color image"
       />
       <label
         htmlFor={`image-upload-${colorIndex}`}
-        className="text-gray-500 cursor-pointer flex flex-col items-center gap-2 w-full h-full relative"
+        className="cursor-pointer w-full h-full flex items-center justify-center"
       >
-        {previewImage ? (
+        {imageSrc ? (
           <>
             <img
-              src={typeof previewImage === 'string' ? previewImage : URL.createObjectURL(previewImage)}
-              alt="color preview"
+              src={imageSrc}
+              alt="Color preview"
               className="w-full h-32 object-contain rounded-md"
+              onError={(e) => {
+                e.target.src = defaultProductImage || '';
+              }}
             />
             <button
               type="button"
-              className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1"
               onClick={handleRemoveImage}
+              className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center"
             >
-              <AiOutlineClose size={14} />
+              ×
             </button>
           </>
         ) : (
-          <>
+          <div className="flex flex-col items-center">
             <img
               src="/assets/svgs/upload-file_svgrepo.com.svg"
-              alt="upload-image-file"
-              className="mt-3 mb-3 w-6"
+              alt="Upload-image"
+              className="w-6"
             />
-            <span className="text-xs text-gray-400">Click to upload image</span>
-          </>
+          </div>
         )}
       </label>
     </div>

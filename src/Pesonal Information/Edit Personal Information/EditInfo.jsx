@@ -23,7 +23,7 @@ function EditInfo() {
     name: personalInfo?.name || "",
     email: personalInfo?.email || "",
     phone: personalInfo?.phone || "",
-    image: null,
+    image: personalInfo?.image || null,
   };
 
   const handleSubmit = async (values) => {
@@ -176,7 +176,7 @@ function EditInfo() {
           </p>
           <button
             className="bg-primary text-white rounded-md p-2 text-14 mt-4 w-60 "
-            onClick={() => navigate("/Home/MainInfo")}
+            onClick={() => navigate("/Dashboard/MainInfo")}
           >
             Done ! Updated Successfully
           </button>

@@ -8,6 +8,7 @@ import { UploadImageForColor } from "../../Components/Upload Image/UploadImageFo
 const ColorFieldArray = ({ values, setFieldValue, sizeIndex, nested }) => {
   const colorsPath = nested ? `sizes[${sizeIndex}].colors` : "colors";
   const colors = nested ? values.sizes[sizeIndex]?.colors : values.colors;
+  const defaultProductImage = values.images?.[0]?.previewImage || values.images?.[0]?.image;
 
   return (
     <div className={`${nested ? 'ml-8 pl-4 border-l-2 border-gray-200' : 'bg-white p-5 rounded-md mt-5 mx-10 w-900'}`}>
@@ -22,19 +23,20 @@ const ColorFieldArray = ({ values, setFieldValue, sizeIndex, nested }) => {
               >
                 <div className="flex gap-1">
                   <UploadImageForColor
-                    previewImage={color.previewImage}
                     name={`${colorsPath}[${index}]`}
+                    previewImage={color.previewImage || color.image}
                     setFieldValue={setFieldValue}
                     colorIndex={index}
+                    defaultProductImage={defaultProductImage}
                   />
                   <InputField 
                     name={`${colorsPath}[${index}].name.ar`} 
-                    placeholder="Color Name (Arabic)"
+                    placeholder="Color Name (Ar)"
                     value={color.name?.ar || ""}
                   />
                   <InputField 
                     name={`${colorsPath}[${index}].name.en`} 
-                    placeholder="Color Name (English)"
+                    placeholder="Color Name (En)"
                     value={color.name?.en || ""}
                   />
                   <InputField
@@ -113,8 +115,8 @@ const ColorFieldArray = ({ values, setFieldValue, sizeIndex, nested }) => {
                     code: "",
                     stock: "",
                     price: "",
-                    image: "/assets/images/default-color.png",
-                    previewImage: "/assets/images/default-color.png",
+                    image: null,
+                    previewImage: null,
                     schedule_discount: false,
                     discount_percentage: "",
                     discount_expire_at: "",
@@ -132,5 +134,4 @@ const ColorFieldArray = ({ values, setFieldValue, sizeIndex, nested }) => {
     </div>
   );
 };
-
 export default ColorFieldArray;

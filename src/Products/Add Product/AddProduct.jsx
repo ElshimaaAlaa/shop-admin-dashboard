@@ -64,15 +64,14 @@ const AddProduct = () => {
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
     setIsLoading(true);
     try {
-      console.log("Form Values:", values);
       const formData = new FormData();
-      
+
       // Append basic fields
       formData.append("name[ar]", values.name);
       formData.append("name[en]", values.name);
       formData.append("description[ar]", values.description);
       formData.append("description[en]", values.description);
-      
+
       Object.entries(values).forEach(([key, value]) => {
         if (
           key !== "colors" &&
@@ -93,20 +92,27 @@ const AddProduct = () => {
           values.colors.forEach((color, index) => {
             formData.append(`colors[${index}][name][ar]`, color.name.ar || "");
             formData.append(`colors[${index}][name][en]`, color.name.en || "");
-            
+
             Object.entries(color).forEach(([field, fieldValue]) => {
-              if (field !== 'name' && field !== 'previewImage') {
-                if (field === 'image' && fieldValue instanceof File) {
-                  formData.append(`colors[${index}][${field}]`, fieldValue);
-                } else if (field !== 'image') {
-                  formData.append(`colors[${index}][${field}]`, fieldValue || "");
+              if (field !== "name" && field !== "previewImage") {
+                if (field === "image") {
+                  // Use the first product image as default if no color image is provided
+                  if (!fieldValue && values.images.length > 0) {
+                    formData.append(`colors[${index}][image]`, values.images[0]);
+                  } else if (fieldValue instanceof File) {
+                    formData.append(`colors[${index}][${field}]`, fieldValue);
+                  }
+                } else {
+                  formData.append(
+                    `colors[${index}][${field}]`,
+                    fieldValue || ""
+                  );
                 }
               }
             });
           });
         }
-      } 
-      else if (categoryType === "Size") {
+      } else if (categoryType === "Size") {
         // Handle sizes array (standalone)
         if (values.sizes.length > 0) {
           values.sizes.forEach((size, index) => {
@@ -115,30 +121,52 @@ const AddProduct = () => {
             });
           });
         }
-      }
-      else if (categoryType === "Both") {
+      } else if (categoryType === "Both") {
         // Handle sizes with nested colors
         if (values.sizes.length > 0) {
           values.sizes.forEach((size, sizeIndex) => {
             // Append size fields
             Object.entries(size).forEach(([field, fieldValue]) => {
-              if (field !== 'colors') {
-                formData.append(`sizes[${sizeIndex}][${field}]`, fieldValue || "");
+              if (field !== "colors") {
+                formData.append(
+                  `sizes[${sizeIndex}][${field}]`,
+                  fieldValue || ""
+                );
               }
             });
-            
+
             // Append nested colors for this size
             if (size.colors && size.colors.length > 0) {
               size.colors.forEach((color, colorIndex) => {
-                formData.append(`sizes[${sizeIndex}][colors][${colorIndex}][name][ar]`, color.name.ar || "");
-                formData.append(`sizes[${sizeIndex}][colors][${colorIndex}][name][en]`, color.name.en || "");
-                
+                formData.append(
+                  `sizes[${sizeIndex}][colors][${colorIndex}][name][ar]`,
+                  color.name.ar || ""
+                );
+                formData.append(
+                  `sizes[${sizeIndex}][colors][${colorIndex}][name][en]`,
+                  color.name.en || ""
+                );
+
                 Object.entries(color).forEach(([field, fieldValue]) => {
-                  if (field !== 'name' && field !== 'previewImage') {
-                    if (field === 'image' && fieldValue instanceof File) {
-                      formData.append(`sizes[${sizeIndex}][colors][${colorIndex}][${field}]`, fieldValue);
-                    } else if (field !== 'image') {
-                      formData.append(`sizes[${sizeIndex}][colors][${colorIndex}][${field}]`, fieldValue || "");
+                  if (field !== "name" && field !== "previewImage") {
+                    if (field === "image") {
+                      // Use the first product image as default if no color image is provided
+                      if (!fieldValue && values.images.length > 0) {
+                        formData.append(
+                          `sizes[${sizeIndex}][colors][${colorIndex}][image]`,
+                          values.images[0]
+                        );
+                      } else if (fieldValue instanceof File) {
+                        formData.append(
+                          `sizes[${sizeIndex}][colors][${colorIndex}][${field}]`,
+                          fieldValue
+                        );
+                      }
+                    } else {
+                      formData.append(
+                        `sizes[${sizeIndex}][colors][${colorIndex}][${field}]`,
+                        fieldValue || ""
+                      );
                     }
                   }
                 });
@@ -196,7 +224,7 @@ const AddProduct = () => {
       setSelectedCategoryTags(combinedTags);
       setFieldValue("category_id", categoryId);
       setCategoryType(selectedCategory.type_name);
-      
+
       // Reset sizes and colors when category changes
       setFieldValue("sizes", []);
       setFieldValue("colors", []);
@@ -223,16 +251,22 @@ const AddProduct = () => {
 
   useEffect(() => {
     if (categoryType === "Both") {
-      setDynamicHeight("h-400vh");
+      setDynamicHeight("h-[400vh]");
     } else if (categoryType === "Color" || categoryType === "Size") {
-      setDynamicHeight("h-300vh");
+      setDynamicHeight("h-[300vh]");
     } else {
-      setDynamicHeight("h-150vh");
+      setDynamicHeight("h-[150vh]");
     }
   }, [categoryType]);
 
+  if (showModal) {
+    document.body.classList.add("no-scroll");
+  } else {
+    document.body.classList.remove("no-scroll");
+  }
+
   return (
-    <div className={`bg-gray-100 ${dynamicHeight} relative`}>
+    <div className={`bg-gray-100 flex flex-col ${dynamicHeight} relative`}>
       <Helmet>
         <title>Add New Product - VERTEX</title>
         <meta name="description" content="Add a new product to VERTEX" />
@@ -243,7 +277,7 @@ const AddProduct = () => {
         validationSchema={validationSchema}
       >
         {({ setFieldValue, isSubmitting, errors, values }) => (
-          <Form className="flex flex-col">
+          <Form className="flex flex-col flex-grow">
             <h1 className="font-bold rounded-md p-5 text-17 mx-10 bg-white my-3">
               Add Product
             </h1>
@@ -270,20 +304,26 @@ const AddProduct = () => {
               setIsDiscountScheduled={setIsDiscountScheduled}
             />
             {categoryType === "Color" && (
-              <ColorFieldArray values={values} setFieldValue={setFieldValue} />
-            )}
-            {categoryType === "Size" && (
-              <SizeFieldArray 
+              <ColorFieldArray 
                 values={values} 
                 setFieldValue={setFieldValue} 
+                productImages={values.images}
+              />
+            )}
+            {categoryType === "Size" && (
+              <SizeFieldArray
+                values={values}
+                setFieldValue={setFieldValue}
                 hasNestedColors={categoryType === "Both"}
+                productImages={values.images}
               />
             )}
             {categoryType === "Both" && (
-              <SizeFieldArray 
-                values={values} 
-                setFieldValue={setFieldValue} 
+              <SizeFieldArray
+                values={values}
+                setFieldValue={setFieldValue}
                 hasNestedColors={true}
+                productImages={values.images}
               />
             )}
             <Footer
@@ -298,16 +338,19 @@ const AddProduct = () => {
         )}
       </Formik>
       <SuccessModal isOpen={showModal} onClose={() => setShowModal(false)}>
-        <div className="flex flex-col items-center justify-center w-400">
+        <div className="flex flex-col justify-center w-370 items-center">
           <img
             src="/assets/images/success.png"
-            alt="success"
+            alt="Success"
             className="w-32 mt-6"
           />
-          <p className="font-bold mt-5">Product added successfully!</p>
+          <p className="font-bold mt-5 text-center">
+            Product added successfully!
+          </p>
           <button
-            className="bg-primary text-white rounded-md p-2 text-14 w-40 mt-4"
+            className="bg-primary text-white rounded-md p-2 text-14 mt-4 w-64"
             onClick={() => navigate("/Dashboard/products")}
+            aria-label="Back to products"
           >
             Back to products
           </button>
