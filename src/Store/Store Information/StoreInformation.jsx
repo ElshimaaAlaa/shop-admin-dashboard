@@ -1,12 +1,18 @@
 import React, { useState } from "react";
 import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
+import { FaRegEye } from "react-icons/fa";
+import { IoDownloadOutline } from "react-icons/io5";
 function StoreInformation() {
   const [storeInfo, setStoreInfo] = useState([]);
   const navigate = useNavigate();
   const handleEditClick = () => {
     navigate("/Home/MainInfo/EditStoreInformation", { state: storeInfo });
   };
+  const storeInformation = JSON.parse(
+    localStorage.getItem("storeProfileData") || "{}"
+  );
+  const banner = JSON.parse(localStorage.getItem("storeThemeData") || "{}");
   return (
     <div>
       <Helmet>
@@ -36,44 +42,42 @@ function StoreInformation() {
           <div className="flex flex-col md:flex-row items-center gap-x-96">
             <div className="text-center md:text-left">
               <h2 className="text-14  text-gray-400">Name</h2>
-              <p className="mt-2 text-14">Vertex</p>
+              <p className="mt-2 text-14">{storeInformation.store_name}</p>
             </div>
             <div className="text-center md:text-left">
               <h2 className="text-14  text-gray-400">Loaction</h2>
-              <p className="mt-2 text-14">saudi arabia</p>
+              <p className="mt-2 text-14">{storeInformation.address}</p>
             </div>
           </div>
           <h2 className="text-14 mt-5 text-gray-400">Bio</h2>
-          <p className="mt-2 text-14">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          </p>
+          <p className="mt-2 text-14">{storeInformation.bio}</p>
           <div className="flex flex-col lg:flex-row md:flex-row items-end gap-x-64 mt-">
             <div>
               <p className="text-1xl font-bold mb-3 mt-7">Banners</p>
-              <img
-                src="/assets/svgs/Frame 1984077803.svg"
-                alt="upload-file"
-                className="w-52"
-              />
+              <div className="flex flex-wrap gap-4">
+                {banner.banners &&
+                  Array.isArray(banner.banners) &&
+                  banner.banners.map((file, index) => (
+                    <div key={index}>
+                      <img
+                        src={URL.createObjectURL(
+                          new File([file], file.name, { type: file.type })
+                        )}
+                        alt={`Banner`}
+                        className=" object-cover rounded"
+                      />
+                    </div>
+                  ))}
+              </div>
             </div>
-
             <div className="flex items-center gap-10 mb-3">
               <div className="flex items-center gap-2">
-                <img
-                  src="/assets/svgs/Component 6.svg"
-                  alt="see-file"
-                  className="w-6"
-                />
-                <p className="font-bold">View</p>
+                <FaRegEye color="#E0A75E" size={20} />
+                <p>View</p>
               </div>
               <div className="flex items-center gap-2">
-                <img
-                  src="/assets/svgs/download-8_svgrepo.com.svg"
-                  alt="download-file"
-                  className="w-6"
-                />
-                <p className="font-bold">Download</p>
+                <IoDownloadOutline color="#E0A75E" size={20} />
+                <p>Download</p>
               </div>
             </div>
           </div>
@@ -82,5 +86,4 @@ function StoreInformation() {
     </div>
   );
 }
-
 export default StoreInformation;

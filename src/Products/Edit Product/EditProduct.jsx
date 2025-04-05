@@ -13,8 +13,42 @@ import SizeFieldArray from "../Add Product/SizeFieldArray";
 import ColorFieldArray from "../Add Product/ColorFieldArray";
 import PricingSection from "../Add Product/PricingSection";
 
+const TagPill = ({ tag, onRemove }) => {
+  const stringToColor = (str) => {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const c = (hash & 0x00FFFFFF).toString(16).toUpperCase();
+    return `#${'00000'.substring(0, 6 - c.length)}${c}`;
+  };
+
+  const bgColor = stringToColor(tag.id?.toString() || tag.toString());
+  const textColor = parseInt(bgColor.replace('#', ''), 16) > 0xffffff / 1.5 
+    ? '#000000' 
+    : '#ffffff';
+
+  return (
+    <div 
+      className="flex items-center px-3 py-1 rounded-full text-xs font-medium mr-2 mb-2"
+      style={{ backgroundColor: bgColor, color: textColor }}
+    >
+      {tag.name || tag}
+      <button 
+        type="button" 
+        onClick={() => onRemove(tag)}
+        className="ml-2 focus:outline-none hover:scale-125 transition-transform"
+        aria-label={`Remove tag ${tag.name || tag}`}
+      >
+        ×
+      </button>
+    </div>
+  );
+};
+
 function EditProduct() {
   const [categories, setCategories] = useState([]);
+  const [availableTags, setAvailableTags] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [dynamicHeight, setDynamicHeight] = useState("h-auto");
@@ -39,6 +73,13 @@ function EditProduct() {
     }
   }, [product.category_id, categories]);
 
+  const normalizeTags = (tags) => {
+    if (!tags) return [];
+    return tags.map(tag => 
+      typeof tag === 'object' ? tag : { id: tag, name: `Tag ${tag}` }
+    );
+  };
+
   const initialValues = {
     name: product.name || "",
     cost: product.cost || "",
@@ -47,7 +88,8 @@ function EditProduct() {
     description: product.description || "",
     tag_number: product.tag_number || "",
     gender: product.gender || "",
-    tags_id: product.tags || [],
+    tags_id: normalizeTags(product.tags || []),
+    tagInput: "",
     images: product.images || [],
     category_id: product.category_id || product.category?.id || "",
     price: product.price || 0,
@@ -95,12 +137,11 @@ function EditProduct() {
     formData.append("return_percentage", values.return_percentage);
     formData.append("gender", values.gender);
     
-    // Handle images - only append new files, skip existing URLs
+    // Handle images
     values.images.forEach((image, index) => {
       if (image instanceof File) {
         formData.append(`images[${index}]`, image);
       }
-      // Skip existing images that are strings or objects
     });
     
     // Pricing information
@@ -112,16 +153,14 @@ function EditProduct() {
     formData.append("stock", values.stock);
     formData.append("schedule_discount", values.schedule_discount);
     
-    // Handle tags
-    if (values.tags_id && Array.isArray(values.tags_id)) {
-      values.tags_id.forEach((tagId) => {
-        if (tagId !== null && tagId !== undefined) {
-          formData.append("tags_id[]", tagId);
-        }
-      });
-    }
+    // Handle tags - send as tags_ids[] array with indexes
+    values.tags_id.forEach((tag, index) => {
+      if (tag.id) {
+        formData.append(`tags_ids[${index}]`, tag.id);
+      }
+    });
     
-    // Handle colors - make image optional
+    // Handle colors
     if (values.colors && values.colors.length > 0) {
       values.colors.forEach((color, index) => {
         if (color.id) {
@@ -134,11 +173,9 @@ function EditProduct() {
         formData.append(`colors[${index}][stock]`, color.stock || 0);
         formData.append(`colors[${index}][price]`, color.price || 0);
         
-        // Only append color image if it's a new file
         if (color.image instanceof File) {
           formData.append(`colors[${index}][image]`, color.image);
         }
-        // Skip existing color images
         
         formData.append(
           `colors[${index}][schedule_discount]`,
@@ -210,6 +247,18 @@ function EditProduct() {
       }
     };
     getCategories();
+
+    // Fetch available tags from API
+    const fetchTags = async () => {
+      try {
+        const response = await fetch('/api/tags');
+        const data = await response.json();
+        setAvailableTags(data);
+      } catch (error) {
+        console.error('Failed to fetch tags', error);
+      }
+    };
+    fetchTags();
   }, []);
 
   const hasColors = product.colors && product.colors.length > 0;
@@ -301,25 +350,71 @@ function EditProduct() {
                     <InputField name="stock" placeholder="Stock" />
                   </div>
                 </div>
-                <InputField
-                  name="tags_id"
-                  placeholder="Tags (comma separated IDs, e.g., 1, 2, 3)"
-                  value={Array.isArray(values.tags_id) ? values.tags_id.join(", ") : ""}
-                  onChange={(e) => {
-                    const tagsArray = e.target.value
-                      .split(",")
-                      .map((tag) => tag.trim())
-                      .filter((tag) => tag !== "")
-                      .map((tag) => {
-                        const num = Number(tag);
-                        return isNaN(num) ? tag : num;
-                      });
-                    setFieldValue("tags_id", tagsArray);
-                  }}
-                  onBlur={() => {
-                    setTouched({ ...touched, tags_id: true });
-                  }}
-                />
+                
+                {/* Enhanced Tags Input */}
+                <div className="w-full mt-3">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Tags</label>
+                  
+                  {/* Display existing tags as pills */}
+                  <div className="flex flex-wrap mb-2">
+                    {values.tags_id.length > 0 ? (
+                      values.tags_id.map((tag, index) => (
+                        <TagPill
+                          key={tag.id || index}
+                          tag={tag}
+                          onRemove={(tagToRemove) => {
+                            const newTags = values.tags_id.filter((t, i) => 
+                              i !== index // Remove by index to handle potential duplicates
+                            );
+                            setFieldValue("tags_id", newTags);
+                          }}
+                        />
+                      ))
+                    ) : (
+                      <p className="text-gray-500 text-sm">No tags added yet</p>
+                    )}
+                  </div>
+
+                  {/* Tag input field */}
+                  <div className="relative">
+                    <input
+                      type="text"
+                      placeholder="Add tags (press comma or enter to add)"
+                      className="w-full p-3 border-2 bg-transparent border-gray-200 rounded-lg outline-none placeholder:text-14 focus:border-2 focus:border-primary"
+                      value={values.tagInput || ""}
+                      onChange={(e) => {
+                        setFieldValue("tagInput", e.target.value);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === ',' || e.key === 'Enter') {
+                          e.preventDefault();
+                          const newTagName = e.target.value.trim().replace(/,+$/, '');
+                          if (newTagName) {
+                            // Check if this is an existing tag
+                            const existingTag = availableTags.find(t => 
+                              t.name.toLowerCase() === newTagName.toLowerCase()
+                            );
+                            
+                            const newTag = existingTag || { name: newTagName };
+                            
+                            // Only add if not already present
+                            if (!values.tags_id.some(t => 
+                              (t.id && t.id === newTag.id) || 
+                              (t.name && t.name.toLowerCase() === newTagName.toLowerCase())
+                            )) {
+                              setFieldValue("tags_id", [...values.tags_id, newTag]);
+                            }
+                            setFieldValue("tagInput", "");
+                          }
+                        }
+                      }}
+                    />
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                      <span className="text-gray-500 text-sm">, or Enter</span>
+                    </div>
+                  </div>
+                </div>
+
                 <Field
                   as="textarea"
                   placeholder="Description"

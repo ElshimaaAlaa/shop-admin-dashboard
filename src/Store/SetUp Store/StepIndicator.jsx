@@ -1,31 +1,49 @@
-export default function StepIndicator({ currentStep }) {
-  const steps = [
-    { number: 1, title: "Store Theme" },
-    { number: 2, title: "Store Profile" },
-    { number: 3, title: "Pricing Plan" },
-    { number: 4, title: "Payment" }
-  ];
+import React from 'react';
+import PropTypes from 'prop-types';
 
+const StepIndicator = ({ currentStep, steps }) => {
   return (
-    <div className="grid grid-cols-4 gap-4 border-t border-b mb-5">
+    <div className="grid grid-cols-2 gap-4 border-t border-b mb-8 py-4">
       {steps.map((step) => (
         <div 
           key={step.number} 
-          className={`flex items-center ${currentStep === step.number ? "bg-customOrange-mediumOrange" : ""} p-3`}
+          className={`flex items-center ${
+            currentStep === step.number ? "bg-orange-50" : ""
+          } p-3 rounded-lg transition-colors duration-200`}
         >
           <div
-            className={`rounded-full h-10 w-10 flex items-center justify-center text-17 mr-2 ${
-              currentStep === step.number ? "bg-primary text-white" : "bg-gray-100 text-gray-400"
-            }`}
+            className={`rounded-full h-8 w-8 flex items-center justify-center text-sm mr-3 ${
+              currentStep === step.number 
+                ? "bg-orange-500 text-white shadow-md" 
+                : step.number < currentStep 
+                  ? "bg-green-500 text-white" 
+                  : "bg-gray-200 text-gray-600"
+            } transition-colors duration-200`}
           >
-            {step.number}
+            {step.number < currentStep ? "✓" : step.number}
           </div>
-          <p className={`flex flex-col gap-2 text-11 font-bold ${currentStep === step.number ? "font-bold" : "text-dark"}`}>
-            <span className="text-gray-400 font-light">Step {step.number}</span>
-            {step.title}
-          </p>
+          <div className="flex flex-col">
+            <span className="text-xs text-gray-500">Step {step.number}</span>
+            <span className={`text-sm ${
+              currentStep === step.number ? "font-semibold text-orange-600" : "text-gray-700"
+            } transition-colors duration-200`}>
+              {step.title}
+            </span>
+          </div>
         </div>
       ))}
     </div>
   );
-}
+};
+
+StepIndicator.propTypes = {
+  currentStep: PropTypes.number.isRequired,
+  steps: PropTypes.arrayOf(
+    PropTypes.shape({
+      number: PropTypes.number.isRequired,
+      title: PropTypes.string.isRequired
+    })
+  ).isRequired
+};
+
+export default StepIndicator;
