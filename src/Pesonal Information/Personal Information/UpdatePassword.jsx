@@ -24,9 +24,6 @@ function UpdatePassword() {
     } else {
       document.body.classList.remove("no-scroll");
     }
-    return () => {
-      document.body.classList.remove("no-scroll");
-    };
   }, [showModal, showSuccessModal]);
 
   const initialValues = {
@@ -107,11 +104,18 @@ function UpdatePassword() {
                 <div className="text-red-600 text-sm mt-3">{error}</div>
               )}
               <div className="mt-5 flex gap-3">
-                <button 
+                <button
                   className="flex items-center justify-center gap-2 w-full bg-primary text-white rounded-md font-bold"
                   type="submit"
                 >
-                  {isLoading ? <ClipLoader color="#fff" size={22} /> : <><FaCircleCheck />Save</>}
+                  {isLoading ? (
+                    <ClipLoader color="#fff" size={22} />
+                  ) : (
+                    <>
+                      <FaCircleCheck />
+                      Save
+                    </>
+                  )}
                 </button>
                 <button
                   type="button"

@@ -105,13 +105,12 @@ function Faqs() {
               )}
             </div>
           ))}
-          
           {/* Load More Button */}
           {displayCount < faqsData.length && (
             <div className="flex justify-center mt-5">
               <p
                 onClick={loadMore}
-                className="bg-customOrange-mediumOrange text-primary cursor-pointer w-full px-4 py-2 rounded-md hover:bg-opacity-90 transition"
+                className="text-center text-15 font-bold bg-customOrange-mediumOrange text-primary cursor-pointer w-full px-4 py-2 rounded-md hover:bg-opacity-90 transition"
               >
                 {isLoading ? <ClipLoader size={22} color="#fff"/>:"Load More....."}
               </p>

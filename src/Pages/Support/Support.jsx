@@ -63,11 +63,10 @@ function Support() {
     }
   };
 
-  // ✅ Fixed ContactCard to correctly render SVG icons
   const ContactCard = ({ icon, title, value, link }) => (
     <div className="flex items-center justify-between bg-gray-100 p-4 rounded-md mb-6">
       <div className="flex items-center gap-4">
-        <div className="w-10 h-10 flex items-center justify-center">{icon}</div> {/* Fix for SVG display */}
+        <div className="w-10 h-10 flex items-center justify-center">{icon}</div>
         <div>
           <h3 className="font-bold">{title}</h3>
           <a href={link} className="text-gray-400 mt-3 text-15">
@@ -94,11 +93,9 @@ function Support() {
       <h1 className="font-bold text-center text-lg pt-10">
         Send us Your Problem and we are <br /> contact with you
       </h1>
-
       <div className="flex justify-center gap-5">
         <section className="bg-white rounded-md drop-shadow-lg p-5 w-300 md:w-400 lg:w-400 h-72 mt-10">
           <h2 className="font-bold text-17 mb-3 mt-2">Contact information</h2>
-          {/* ✅ Passing SVG Components */}
           <ContactCard icon={<PhoneNum />} title="Call us" value="+ 9876543234344" />
           <ContactCard icon={<EmailAddress />} title="Email" value="Vertex@gmail.com" link="mailto:Vertex@gmail.com" />
         </section>
@@ -148,7 +145,6 @@ function Support() {
           </Formik>
         </section>
       </div>
-
       {/* Success Modal */}
       <SuccessModal isOpen={showModal} onClose={() => setShowModal(false)}>
         <div className="flex flex-col items-center justify-center w-400">
@@ -162,5 +158,4 @@ function Support() {
     </div>
   );
 }
-
 export default Support;

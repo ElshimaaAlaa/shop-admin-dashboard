@@ -32,6 +32,7 @@ import RecivedOrders from "./Orders/Recived Orders";
 import OrderDetails from "./Orders/OrderDetails";
 import CancelOrder from "./Orders/CancelOrder";
 import RefundRequests from "./Orders/RefundRequests";
+import AllDiscounts from "./DisCounts and Promotions/All Discounts/AllDiscounts";
 
 function App() {
   return (
@@ -39,25 +40,22 @@ function App() {
       <Routes>
         {/* Auth Routes */}
         <Route path="/" element={<Main />} />
-         <Route path="/GetDomain" element={<GetDomain />} />
+        <Route path="/GetDomain" element={<GetDomain />} />
+        
         {/* Auth */}
         <Route path="/AdminLogin" element={<AdminLogin />} />
         <Route path="/AdminLogin/ForgotPassword" element={<ForgotPassword />} />
-        <Route
-          path="/AdminLogin/VerifayPassword"
-          element={<VerifayPassword />}
-        />
-        <Route
-          path="/AdminLogin/CreateNewPassword"
-          element={<CreateNewPassword />}
-        />
+        <Route path="/AdminLogin/VerifayPassword" element={<VerifayPassword />} />
+        <Route path="/AdminLogin/CreateNewPassword" element={<CreateNewPassword />} />
+        
         {/* Register and set up store */}
         <Route path="/Register" element={<Register />} />
         <Route path="/Register/ThemeStore" element={<ThemeStore />} />
         <Route path="/Register/StoreProfile" element={<StoreProfile />} />
         <Route path="/Register/PricingPlan" element={<PricingPlan />} />
         <Route path="/Register/PaymentInfo" element={<PaymentInfo />} />
-        {/* DashBoard */}
+        
+        {/* Dashboard */}
         <Route path="/Dashboard" element={<Home />}>
           {/* Personal Information */}
           <Route path="MainInfo" element={<MainInfo />}>
@@ -66,40 +64,41 @@ function App() {
             <Route path="StoreTheme" element={<StoreTheme />} />
             <Route path="EditStoreTheme" element={<EditStoreTheme />} />
             <Route path="StoreInformation" element={<StoreInformation />} />
-            <Route
-              path="EditStoreInformation"
-              element={<EditStoreInformation />}
-            />
+            <Route path="EditStoreInformation" element={<EditStoreInformation />} />
+            <Route path="PricingPlans" element={<PricingPlan />} />
+            <Route path="PaymentInformation" element={<PaymentInfo />} />
           </Route>
+          
           {/* Categories */}
           <Route path="categories" element={<AllCategory />} />
           <Route path="addCategory" element={<AddCategory />} />
-          <Route
-            path="/Dashboard/editCategory/:id"
-            element={<EditCategory />}
-          />
+          <Route path="editCategory/:id" element={<EditCategory />} />
+          
           {/* Products */}
           <Route path="products" element={<AllProducts />} />
           <Route path="addProduct" element={<AddProduct />} />
-          <Route
-            path="/Dashboard/EditProduct/:productId"
-            element={<EditProduct />}
-          />
-          <Route
-            path="/Dashboard/products/:productId"
-            element={<ViewProduct />}
-          />
+          <Route path="EditProduct/:productId" element={<EditProduct />} />
+          <Route path="products/:productId" element={<ViewProduct />} />
+          
           {/* Orders */}
           <Route path="RecivedOrders" element={<RecivedOrders />} />
           <Route path="OrderDetails" element={<OrderDetails />} />
           <Route path="CancelOrder" element={<CancelOrder />} />
           <Route path="RefundRequests" element={<RefundRequests />} />
-          <Route path="/Dashboard/Profile" element={<Profile />} />
+          
+          {/* Profile */}
+          <Route path="Profile" element={<Profile />} />
+          
+          {/* Promotions and discount */}
+          <Route path="AllDiscounts" element={<AllDiscounts />} />
+          
+          {/* Support */}
           <Route path="support" element={<Support />} />
           <Route path="Faqs" element={<Faqs />} />
         </Route>
       </Routes>
     </BrowserRouter>
   );
+
 }
 export default App;

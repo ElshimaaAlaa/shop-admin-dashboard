@@ -1,57 +1,86 @@
-import React from "react";
+import React, { useState } from "react";
 import DeleteAccount from "../Personal Information/DeleteAccount";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import StoreTheme from "../../Svgs/StoreTheme";
+import StoreInformation from "../../Svgs/StoreInformation";
+import PricingPlan from "../../Svgs/PricingPlan";
+import PaymentMethod from "../../Svgs/PaymentMethod";
+import Profile from "../../Svgs/Profile";
 
 function InfoSideBar() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [activeItem, setActiveItem] = useState(null);
+
   const menuItems = [
     {
-      icon: "/assets/images/profile_svgrepo.com.png",
+      IconComponent: Profile,
       alt: "Personal Information Icon",
       label: "Personal Information",
-      className: "text-primary",
+      path: "",
     },
     {
-      icon: "/assets/svgs/Vector.svg",
+      IconComponent: StoreTheme,
       alt: "Store Theme Icon",
       label: "Store Theme",
-      onClick: () => navigate("StoreTheme"),
+      path: "StoreTheme",
     },
     {
-      icon: "/assets/svgs/store-1_svgrepo.com.svg",
+      IconComponent: StoreInformation,
       alt: "Store Information Icon",
       label: "Store Information",
-      onClick: () => navigate("StoreInformation"),
+      path: "StoreInformation",
     },
     {
-      icon: "/assets/svgs/pricetag2_svgrepo.com.svg",
+      IconComponent: PricingPlan,
       alt: "Pricing Plans Icon",
       label: "Pricing Plans",
+      path: "PricingPlans",
     },
     {
-      icon: "/assets/svgs/payment_svgrepo.com.svg",
+      IconComponent: PaymentMethod,
       alt: "Payment Information Icon",
       label: "Payment Information",
+      path: "PaymentInformation",
     },
   ];
 
+  const handleItemClick = (path) => {
+    navigate(path);
+    setActiveItem(path);
+  };
+
+  const isActive = (path) => {
+    const currentPath = location.pathname.split('/').pop();
+    return currentPath === path || (path === "" && location.pathname.endsWith('MainInfo'));
+  };
+
   return (
-    <section className="flex flex-col gap-7 md:gap-7 border-l p-4 md:p-10">
-      {menuItems.map((item, index) => (
-        <button
-          key={index}
-          className="flex items-center gap-3 w-full text-left hover:bg-gray-100 p-2 rounded-md transition-colors"
-          aria-label={item.label}
-          onClick={item.onClick}
-        >
-          <img src={item.icon} alt={item.alt} className="w-6 h-6" />
-          <p className={`font-semibold text-15 mt-1 ${item.className || ""}`}>
-            {item.label}
-          </p>
-        </button>
-      ))}
-      <DeleteAccount />
-    </section>
+    <aside className="w-full">
+      <div className="flex flex-col gap-10  md:gap-7 border-l p-4 md:p-10">
+        {menuItems.map(({ IconComponent, alt, label, path }, index) => (
+          <button
+            key={index}
+            className={`flex items-center gap-1${
+              isActive(path) ? "text-primary" : ""
+            }`}
+            aria-label={label}
+            onClick={() => handleItemClick(path)}
+          >
+            <div className={`w-6 h-6 me-3 ${isActive(path) ? "text-primary" : "text-gray-600"}`}>
+              <IconComponent 
+                className="w-full h-full"
+                stroke={isActive(path) ? "#E0A75E" : "#000"}
+              />
+            </div>
+            <p className={`font-semibold text-15 mt-1 ${isActive(path) ? "text-primary" : ""}`}>
+              {label}
+            </p>
+          </button>
+        ))}
+        <DeleteAccount />
+      </div>
+    </aside>
   );
 }
 export default InfoSideBar;

@@ -3,6 +3,8 @@ import FailedModal from "../../Components/Modal/Failed Modal/FailedModal";
 import { ClipLoader } from "react-spinners";
 import axios from "axios";
 import './UpdatePassword.scss'
+import { AiOutlineDelete } from "react-icons/ai";
+
 function DeleteAccount() {
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -44,7 +46,7 @@ function DeleteAccount() {
         className="flex items-center gap-3 cursor-pointer"
         onClick={() => setShowModal(true)}
       >
-        <img src="/assets/svgs/deleteIcon.svg" alt="delete-account" className="ms-2 h-5"/>
+        <AiOutlineDelete color="#DC2626" size={24} className="me-2"/>
         <p className="font-semibold text-15 mt-1 text-red-600">
           Delete Account
         </p>

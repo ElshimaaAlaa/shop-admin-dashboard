@@ -2,7 +2,8 @@ import React from "react";
 import Facebook from "../../Svgs/facebook";
 import Instegram from "../../Svgs/instegram";
 import WhatsApp from "../../Svgs/WhatsApp";
-import Twitter from "../../Svgs/twitter";
+import { FaSquareXTwitter } from "react-icons/fa6";
+
 function Footer() {
   return (
     <footer className="bg-black text-white ps-5 pe-5 lg:ps-32 lg:pe-32 pt-10 pb-10 ">
@@ -48,8 +49,8 @@ function Footer() {
         </div>
         {/* social media */}
         <div className="flex mt-5 lg:mt-0 md:mt-0">
-          <a href="/" target="_blank">
-            <Twitter/>
+          <a href="/" target="_blank" className="mt-0.5 me-0.5">
+            <FaSquareXTwitter size={28}/>
           </a>
           <a href="/" target="_blank">
             <WhatsApp/>

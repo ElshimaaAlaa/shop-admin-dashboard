@@ -12,6 +12,7 @@ import Support from "../../Svgs/Support";
 import Help from "../../Svgs/Help";
 import Logo from "../../Svgs/logo";
 import Text from "../../Svgs/text";
+import { TbDiscount } from "react-icons/tb";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
 const Sidebar = () => {
@@ -85,7 +86,6 @@ const Sidebar = () => {
           id: "orders-completed",
           label: "Invoices",
           onclick: () => navigate(""),
-          // icon: <Invoices />, 
         },
       ],
     },
@@ -98,8 +98,8 @@ const Sidebar = () => {
     },
     {
       id: "promotions",
-      label: "Promotions & Disc",
-      icon: <Home />,
+      label: "Disc and Promotion",
+      icon: <TbDiscount color="#fff" size={22} />,
     },
     {
       id: "reports",
@@ -111,6 +111,8 @@ const Sidebar = () => {
       label: "Settings",
       icon: <Settings />,
     },
+  ];
+  const bottomMenuItems = [
     {
       id: "support",
       label: "Support",
@@ -127,25 +129,134 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`sidebar bg-black overflow-hidden h-[160vh] w-20 flex flex-col gap-4 ${
+      className={`sidebar bg-black overflow-hidden h-[160vh] w-20 flex flex-col justify-between ${
         expanded ? "expanded" : ""
       }`}
       onMouseEnter={toggleSidebar}
       onMouseLeave={toggleSidebar}
     >
-      <div>
-        <div className="logo mt-5 mb-5">
-          <Logo />
+      <div className="flex flex-col gap-4">
+        <div>
+          <div className="logo mt-5 mb-5">
+            <Logo />
+          </div>
+          <div className="text">
+            <Text />
+          </div>
         </div>
-        <div className="text">
-          <Text />
-        </div>
+        
+        {menuItems.map((item) => (
+          <div key={item.id}>
+            <div
+              className={`flex items-center gap-2 cursor-pointer rounded-md hover:bg-primatyOpacity hover:p-2 hover:w-180 ${
+                openSubmenu === item.id ? "active-menu-item" : ""
+              }`}
+              onClick={() => handleItemClick(item)}
+            >
+              <span className="icon">
+                {typeof item.icon === "string" ? (
+                  <img
+                    src={item.icon || "/placeholder.svg"}
+                    alt={item.label}
+                    aria-label={item.label}
+                    style={{
+                      height: item.height,
+                      width: item.width,
+                      padding: item.padding,
+                    }}
+                    className={`${selectedItem === item.id ? "selectedImg" : ""}`}
+                  />
+                ) : (
+                  React.cloneElement(item.icon, {
+                    style: {
+                      height: item.height,
+                      width: item.width,
+                      padding: item.padding,
+                    },
+                    className: `${selectedItem === item.id ? "selectedImg" : ""}`,
+                  })
+                )}
+              </span>
+              <span
+                className={`text-white text-14 dashbordItem ${
+                  selectedItem === item.id ? "selected" : ""
+                }`}
+              >
+                {item.label}
+              </span>
+              {item.subItems && expanded && (
+                <span className="ml-auto dashbordItem">
+                  {openSubmenu === item.id ? (
+                    <ChevronUp size={16} className="text-white" />
+                  ) : (
+                    <ChevronDown size={16} className="text-white" />
+                  )}
+                </span>
+              )}
+            </div>
+            
+            {item.subItems && openSubmenu === item.id && expanded && (
+              <div className="submenu pl-8 mt-1">
+                {item.subItems.map((subItem) => (
+                  <div
+                    key={subItem.id}
+                    className={`flex items-center gap-2 cursor-pointer py-2 pl- rounded-md ${
+                      selectedItem === subItem.id ? "selected-submenu-item" : ""
+                    }`}
+                    onClick={() => handleSubItemClick(item, subItem)}
+                  >
+                    {subItem.icon && (
+                      <span className="icon">
+                        {typeof subItem.icon === "string" ? (
+                          <img
+                            src={subItem.icon || "/placeholder.svg"}
+                            alt={subItem.label}
+                            aria-label={subItem.label}
+                            style={{
+                              height: subItem.height,
+                              width: subItem.width,
+                              padding: subItem.padding,
+                            }}
+                            className={`${
+                              selectedItem === subItem.id ? "selectedImg" : ""
+                            }`}
+                          />
+                        ) : (
+                          React.cloneElement(subItem.icon, {
+                            style: {
+                              height: subItem.height,
+                              width: subItem.width,
+                              padding: subItem.padding,
+                            },
+                            className: `${
+                              selectedItem === subItem.id ? "selectedImg" : ""
+                            }`,
+                          })
+                        )}
+                      </span>
+                    )}
+                    <span
+                      className={`text-white text-14 ${
+                        selectedItem === subItem.id ? "selected" : ""
+                      }`}
+                    >
+                      {subItem.label}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
       </div>
-      {menuItems.map((item) => (
-        <div key={item.id}>
+
+      {/* Bottom section for Help and Support */}
+      <div className="mb-8 flex flex-col gap-4">
+        {bottomMenuItems.map((item) => (
           <div
+            key={item.id}
             className={`flex items-center gap-2 cursor-pointer rounded-md hover:bg-primatyOpacity hover:p-2 hover:w-180 ${
-              openSubmenu === item.id ? "active-menu-item" : ""
+              selectedItem === item.id ? "active-menu-item" : ""
             }`}
             onClick={() => handleItemClick(item)}
           >
@@ -155,20 +266,10 @@ const Sidebar = () => {
                   src={item.icon || "/placeholder.svg"}
                   alt={item.label}
                   aria-label={item.label}
-                  style={{
-                    height: item.height,
-                    width: item.width,
-                    padding: item.padding,
-                  }}
                   className={`${selectedItem === item.id ? "selectedImg" : ""}`}
                 />
               ) : (
                 React.cloneElement(item.icon, {
-                  style: {
-                    height: item.height,
-                    width: item.width,
-                    padding: item.padding,
-                  },
                   className: `${selectedItem === item.id ? "selectedImg" : ""}`,
                 })
               )}
@@ -180,71 +281,9 @@ const Sidebar = () => {
             >
               {item.label}
             </span>
-            {item.subItems && expanded && (
-              <span className="ml-auto dashbordItem">
-                {openSubmenu === item.id ? (
-                  <ChevronUp size={16} className="text-white" />
-                ) : (
-                  <ChevronDown size={16} className="text-white" />
-                )}
-              </span>
-            )}
           </div>
-          {/* Submenu items */}
-          {item.subItems && openSubmenu === item.id && expanded && (
-            <div className="submenu pl-8 mt-1">
-              {item.subItems.map((subItem) => (
-                <div
-                  key={subItem.id}
-                  className={`flex items-center gap-2 cursor-pointer py-2 pl- rounded-md ${
-                    selectedItem === subItem.id ? "selected-submenu-item" : ""
-                  }`}
-                  onClick={() => handleSubItemClick(item, subItem)}
-                >
-                  {/* Render the icon for submenu items */}
-                  {subItem.icon && (
-                    <span className="icon">
-                      {typeof subItem.icon === "string" ? (
-                        <img
-                          src={subItem.icon || "/placeholder.svg"}
-                          alt={subItem.label}
-                          aria-label={subItem.label}
-                          style={{
-                            height: subItem.height,
-                            width: subItem.width,
-                            padding: subItem.padding,
-                          }}
-                          className={`${
-                            selectedItem === subItem.id ? "selectedImg" : ""
-                          }`}
-                        />
-                      ) : (
-                        React.cloneElement(subItem.icon, {
-                          style: {
-                            height: subItem.height,
-                            width: subItem.width,
-                            padding: subItem.padding,
-                          },
-                          className: `${
-                            selectedItem === subItem.id ? "selectedImg" : ""
-                          }`,
-                        })
-                      )}
-                    </span>
-                  )}
-                  <span
-                    className={`text-white text-14 ${
-                      selectedItem === subItem.id ? "selected" : ""
-                    }`}
-                  >
-                    {subItem.label}
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };
