@@ -5,7 +5,9 @@ export const UploadImageForColor = ({
   name,
   setFieldValue,
   colorIndex,
-  defaultProductImage
+  defaultProductImage,
+  existingImage,
+  isOptional = false
 }) => {
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -16,12 +18,12 @@ export const UploadImageForColor = ({
       try {
         setFieldValue(`${name}.image`, file);
         setFieldValue(`${name}.previewImage`, reader.result);
+        if (existingImage) {
+          setFieldValue(`${name}.existingImage`, existingImage);
+        }
       } catch (error) {
         console.error("Error setting image field:", error);
       }
-    };
-    reader.onerror = () => {
-      console.error("Error reading file");
     };
     reader.readAsDataURL(file);
   };
@@ -29,8 +31,15 @@ export const UploadImageForColor = ({
   const handleRemoveImage = (e) => {
     e.stopPropagation();
     try {
-      setFieldValue(`${name}.image`, null);
-      setFieldValue(`${name}.previewImage`, null);
+      if (isOptional && existingImage) {
+        setFieldValue(`${name}.image`, null);
+        setFieldValue(`${name}.previewImage`, existingImage);
+        setFieldValue(`${name}.existingImage`, existingImage);
+      } else {
+        setFieldValue(`${name}.image`, null);
+        setFieldValue(`${name}.previewImage`, null);
+        setFieldValue(`${name}.existingImage`, null);
+      }
     } catch (error) {
       console.error("Error removing image:", error);
     }
@@ -41,7 +50,7 @@ export const UploadImageForColor = ({
       if (typeof previewImage === 'string') return previewImage;
       if (previewImage instanceof Blob) return URL.createObjectURL(previewImage);
     }
-    return defaultProductImage || null;
+    return existingImage || defaultProductImage || null;
   };
 
   const imageSrc = getImageSrc();

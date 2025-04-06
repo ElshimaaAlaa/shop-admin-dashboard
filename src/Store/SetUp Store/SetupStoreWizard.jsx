@@ -15,8 +15,8 @@ const StoreSetupWizard = () => {
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
   const initialValues = {
-    theme_primary_color: "#6200ee",
-    theme_secondary_color: "#03dac6",
+    theme_primary_color: "",
+    theme_secondary_color: "",
     theme_image: null,
     store_name: "",
     address: "",
@@ -145,16 +145,16 @@ const StoreSetupWizard = () => {
                   <div className="color-fields">
                     <InputField
                       name="theme_primary_color"
-                      label="Primary Color"
-                      type="color"
-                      className="color-picker"
+                      // label="Primary Color"
+                      // type="color"
+                      // className="color-picker"
                     />
 
                     <InputField
                       name="theme_secondary_color"
-                      label="Secondary Color"
-                      type="color"
-                      className="color-picker"
+                      // label="Secondary Color"
+                      // type="color"
+                      // className="color-picker"
                     />
                   </div>
                 </div>

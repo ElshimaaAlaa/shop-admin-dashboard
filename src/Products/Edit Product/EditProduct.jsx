@@ -13,31 +13,21 @@ import SizeFieldArray from "../Add Product/SizeFieldArray";
 import ColorFieldArray from "../Add Product/ColorFieldArray";
 import PricingSection from "../Add Product/PricingSection";
 
-const TagPill = ({ tag, onRemove }) => {
-  const stringToColor = (str) => {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      hash = str.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    const c = (hash & 0x00FFFFFF).toString(16).toUpperCase();
-    return `#${'00000'.substring(0, 6 - c.length)}${c}`;
-  };
-
-  const bgColor = stringToColor(tag.id?.toString() || tag.toString());
-  const textColor = parseInt(bgColor.replace('#', ''), 16) > 0xffffff / 1.5 
-    ? '#000000' 
-    : '#ffffff';
-
+const TagPill = ({ tag, onRemove, isExisting }) => {
   return (
     <div 
-      className="flex items-center px-3 py-1 rounded-full text-xs font-medium mr-2 mb-2"
-      style={{ backgroundColor: bgColor, color: textColor }}
+      className="flex items-center px-3 py-1 rounded-md text-14 font-medium mr-2 mb-2"
+      style={{ 
+        backgroundColor: '#EFD9A466',
+        color: '#E0A75E'
+      }}
     >
       {tag.name || tag}
+      {!isExisting && <span className="ml-1 text-xs">(new)</span>}
       <button 
         type="button" 
         onClick={() => onRemove(tag)}
-        className="ml-2 focus:outline-none hover:scale-125 transition-transform"
+        className="ml-2 text-red-600 text-15 focus:outline-none hover:scale-125 transition-transform"
         aria-label={`Remove tag ${tag.name || tag}`}
       >
         ×
@@ -49,6 +39,9 @@ const TagPill = ({ tag, onRemove }) => {
 function EditProduct() {
   const [categories, setCategories] = useState([]);
   const [availableTags, setAvailableTags] = useState([]);
+  const [tagSuggestions, setTagSuggestions] = useState([]);
+  const [tagsToAdd, setTagsToAdd] = useState([]);
+  const [tagsToRemove, setTagsToRemove] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [dynamicHeight, setDynamicHeight] = useState("h-auto");
@@ -62,22 +55,27 @@ function EditProduct() {
   );
   const [categoryType, setCategoryType] = useState(null);
 
-  useEffect(() => {
-    if (product.category_id) {
-      const selectedCategory = categories.find(
-        (cat) => cat.id === product.category_id
-      );
-      if (selectedCategory) {
-        setCategoryType(selectedCategory.type_name);
-      }
-    }
-  }, [product.category_id, categories]);
-
   const normalizeTags = (tags) => {
     if (!tags) return [];
-    return tags.map(tag => 
-      typeof tag === 'object' ? tag : { id: tag, name: `Tag ${tag}` }
-    );
+    return tags.map(tag => {
+      if (typeof tag === 'object' && tag.id) {
+        return { ...tag, id: parseInt(tag.id) };
+      }
+      if (typeof tag === 'string') {
+        return { name: tag };
+      }
+      return { id: parseInt(tag), name: `Tag ${tag}` };
+    });
+  };
+
+  const normalizeColors = (colors) => {
+    if (!colors) return [];
+    return colors.map(color => ({
+      ...color,
+      id: color.id ? parseInt(color.id) : null,
+      name: typeof color.name === 'string' ? { ar: color.name, en: color.name } : color.name,
+      existingImage: color.image || null
+    }));
   };
 
   const initialValues = {
@@ -97,35 +95,24 @@ function EditProduct() {
     discount_expire_at: product.discount_expire_at || "",
     stock: product.stock || 0,
     sizes: product.sizes || [],
-    colors: product.colors
-      ? product.colors.map((color) => ({
-          id: color.id || null,
-          name: {
-            ar: typeof color.name === 'object' 
-                ? color.name.ar 
-                : (color.name || ''),
-            en: typeof color.name === 'object' 
-                ? color.name.en 
-                : (color.name || '')
-          },
-          code: color.code || "",
-          stock: color.stock || 0,
-          price: color.price || 0,
-          image: color.image || null,
-          previewImage: color.image?.src || color.image?.url || product.images[0]?.src || '',
-          schedule_discount: color.schedule_discount || false,
-          discount_percentage: color.discount_percentage || 0,
-          discount_expire_at: color.discount_expire_at || "",
-        }))
-      : [],
+    colors: normalizeColors(product.colors || []),
     schedule_discount: product.schedule_discount || false,
+  };
+
+  const handleRemoveImage = (indexToRemove, setFieldValue, values) => {
+    const newImages = [...values.images];
+    newImages.splice(indexToRemove, 1);
+    setFieldValue("images", newImages);
+    
+    const newPreviews = [...previewImages];
+    newPreviews.splice(indexToRemove, 1);
+    setPreviewImages(newPreviews);
   };
 
   const handleSubmit = async (values) => {
     setIsLoading(true);
     const formData = new FormData();
-    
-    // Basic product information
+
     formData.append("name[ar]", values.name);
     formData.append("name[en]", values.name);
     formData.append("description[ar]", values.description);
@@ -137,14 +124,14 @@ function EditProduct() {
     formData.append("return_percentage", values.return_percentage);
     formData.append("gender", values.gender);
     
-    // Handle images
     values.images.forEach((image, index) => {
       if (image instanceof File) {
         formData.append(`images[${index}]`, image);
+      } else if (image.src) {
+        formData.append(`existing_images[${index}]`, image.src);
       }
     });
     
-    // Pricing information
     formData.append("price", values.price);
     formData.append("discount_percentage", values.discount_percentage);
     if (values.discount_expire_at) {
@@ -153,14 +140,18 @@ function EditProduct() {
     formData.append("stock", values.stock);
     formData.append("schedule_discount", values.schedule_discount);
     
-    // Handle tags - send as tags_ids[] array with indexes
     values.tags_id.forEach((tag, index) => {
-      if (tag.id) {
-        formData.append(`tags_ids[${index}]`, tag.id);
+      if (!tag.id && !product.tags?.includes(tag.name)) {
+        formData.append(`new_tags[${index}]`, tag.name);
       }
     });
-    
-    // Handle colors
+
+    tagsToRemove.forEach((tagName, index) => {
+      if (product.tags?.includes(tagName)) {
+        formData.append(`tags_to_remove[${index}]`, tagName);
+      }
+    });
+
     if (values.colors && values.colors.length > 0) {
       values.colors.forEach((color, index) => {
         if (color.id) {
@@ -175,6 +166,8 @@ function EditProduct() {
         
         if (color.image instanceof File) {
           formData.append(`colors[${index}][image]`, color.image);
+        } else if (color.existingImage) {
+          formData.append(`colors[${index}][existing_image]`, color.existingImage);
         }
         
         formData.append(
@@ -195,8 +188,7 @@ function EditProduct() {
         }
       });
     }
-    
-    // Handle sizes
+
     if (values.sizes && values.sizes.length > 0) {
       values.sizes.forEach((size, index) => {
         Object.entries(size).forEach(([field, fieldValue]) => {
@@ -209,32 +201,43 @@ function EditProduct() {
       await updateProduct(product.id, formData);
       setShowModal(true);
     } catch (error) {
-      console.error("Failed to update product:", error);
-      if (error.response) {
-        console.error("Response data:", error.response.data);
-        console.error("Response status:", error.response.status);
-        console.error("Response headers:", error.response.headers);
-      }
+      console.error("Update failed:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleImageChange = (files) => {
-    const imageUrls = files.map((file) => 
-      file instanceof File ? URL.createObjectURL(file) : file
-    );
-    setPreviewImages(imageUrls);
+  const handleRemoveTag = (tagToRemove, setFieldValue, values) => {
+    const newTags = values.tags_id.filter(tag => tag.name !== tagToRemove.name);
+    setFieldValue("tags_id", newTags);
+    
+    if (product.tags?.includes(tagToRemove.name)) {
+      setTagsToRemove(prev => [...prev, tagToRemove.name]);
+    }
+    
+    if (tagsToAdd.includes(tagToRemove.name)) {
+      setTagsToAdd(prev => prev.filter(name => name !== tagToRemove.name));
+    }
   };
 
-  const handleRemoveImage = (indexToRemove, setFieldValue, values) => {
-    const newImages = [...values.images];
-    newImages.splice(indexToRemove, 1);
-    setFieldValue("images", newImages);
+  const handleAddTag = (newTagName, setFieldValue, values) => {
+    if (!newTagName.trim()) return;
     
-    const newPreviews = [...previewImages];
-    newPreviews.splice(indexToRemove, 1);
-    setPreviewImages(newPreviews);
+    const existingTag = availableTags.find(t => 
+      t.name.toLowerCase() === newTagName.toLowerCase()
+    );
+    
+    const newTag = existingTag || { name: newTagName };
+    
+    if (!values.tags_id.some(t => 
+      t.name.toLowerCase() === newTagName.toLowerCase()
+    )) {
+      setFieldValue("tags_id", [...values.tags_id, newTag]);
+      
+      if (!product.tags?.includes(newTagName)) {
+        setTagsToAdd(prev => [...prev, newTagName]);
+      }
+    }
   };
 
   useEffect(() => {
@@ -248,7 +251,6 @@ function EditProduct() {
     };
     getCategories();
 
-    // Fetch available tags from API
     const fetchTags = async () => {
       try {
         const response = await fetch('/api/tags');
@@ -260,6 +262,29 @@ function EditProduct() {
     };
     fetchTags();
   }, []);
+
+  useEffect(() => {
+    if (product.category_id) {
+      const selectedCategory = categories.find(
+        (cat) => cat.id === product.category_id
+      );
+      if (selectedCategory) {
+        setCategoryType(selectedCategory.type_name);
+      }
+    }
+  }, [product.category_id, categories]);
+
+  useEffect(() => {
+    if (initialValues.tagInput && initialValues.tagInput.length > 1) {
+      const filtered = availableTags.filter(tag => 
+        tag.name.toLowerCase().includes(initialValues.tagInput.toLowerCase()) &&
+        !initialValues.tags_id.some(t => t.name.toLowerCase() === tag.name.toLowerCase())
+      );
+      setTagSuggestions(filtered);
+    } else {
+      setTagSuggestions([]);
+    }
+  }, [initialValues.tagInput, availableTags]);
 
   const hasColors = product.colors && product.colors.length > 0;
   const hasSizes = product.sizes && product.sizes.length > 0;
@@ -351,23 +376,15 @@ function EditProduct() {
                   </div>
                 </div>
                 
-                {/* Enhanced Tags Input */}
                 <div className="w-full mt-3">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Tags</label>
-                  
-                  {/* Display existing tags as pills */}
                   <div className="flex flex-wrap mb-2">
                     {values.tags_id.length > 0 ? (
                       values.tags_id.map((tag, index) => (
                         <TagPill
-                          key={tag.id || index}
+                          key={`${tag.name}-${index}`}
                           tag={tag}
-                          onRemove={(tagToRemove) => {
-                            const newTags = values.tags_id.filter((t, i) => 
-                              i !== index // Remove by index to handle potential duplicates
-                            );
-                            setFieldValue("tags_id", newTags);
-                          }}
+                          isExisting={product.tags?.includes(tag.name)}
+                          onRemove={() => handleRemoveTag(tag, setFieldValue, values)}
                         />
                       ))
                     ) : (
@@ -375,11 +392,10 @@ function EditProduct() {
                     )}
                   </div>
 
-                  {/* Tag input field */}
                   <div className="relative">
                     <input
                       type="text"
-                      placeholder="Add tags (press comma or enter to add)"
+                      placeholder="Add new tag (press enter to add)"
                       className="w-full p-3 border-2 bg-transparent border-gray-200 rounded-lg outline-none placeholder:text-14 focus:border-2 focus:border-primary"
                       value={values.tagInput || ""}
                       onChange={(e) => {
@@ -390,31 +406,32 @@ function EditProduct() {
                           e.preventDefault();
                           const newTagName = e.target.value.trim().replace(/,+$/, '');
                           if (newTagName) {
-                            // Check if this is an existing tag
-                            const existingTag = availableTags.find(t => 
-                              t.name.toLowerCase() === newTagName.toLowerCase()
-                            );
-                            
-                            const newTag = existingTag || { name: newTagName };
-                            
-                            // Only add if not already present
-                            if (!values.tags_id.some(t => 
-                              (t.id && t.id === newTag.id) || 
-                              (t.name && t.name.toLowerCase() === newTagName.toLowerCase())
-                            )) {
-                              setFieldValue("tags_id", [...values.tags_id, newTag]);
-                            }
+                            handleAddTag(newTagName, setFieldValue, values);
                             setFieldValue("tagInput", "");
+                            setTagSuggestions([]);
                           }
                         }
                       }}
                     />
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                      <span className="text-gray-500 text-sm">, or Enter</span>
-                    </div>
+                    {tagSuggestions.length > 0 && (
+                      <div className="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md py-1 border border-gray-200 max-h-60 overflow-auto">
+                        {tagSuggestions.map(tag => (
+                          <div 
+                            key={tag.id}
+                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                            onClick={() => {
+                              handleAddTag(tag.name, setFieldValue, values);
+                              setTagSuggestions([]);
+                              setFieldValue("tagInput", "");
+                            }}
+                          >
+                            {tag.name}
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
-
                 <Field
                   as="textarea"
                   placeholder="Description"
@@ -424,8 +441,13 @@ function EditProduct() {
               </div>
               <UploadUpdatedProductImages
                 previewImages={previewImages}
-                onImageChange={handleImageChange}
-                setFieldValue={setFieldValue}
+                onImageChange={(files) => {
+                  const imageUrls = files.map(file => 
+                    file instanceof File ? URL.createObjectURL(file) : file
+                  );
+                  setPreviewImages(imageUrls);
+                  setFieldValue("images", files);
+                }}
                 onRemoveImage={(index) => handleRemoveImage(index, setFieldValue, values)}
               />
             </div>

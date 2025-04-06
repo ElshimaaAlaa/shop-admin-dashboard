@@ -5,7 +5,7 @@ import { Plus } from "lucide-react";
 import InputField from "../../Components/InputFields/InputField";
 import { UploadImageForColor } from "../../Components/Upload Image/UploadImageForColor";
 
-const ColorFieldArray = ({ values, setFieldValue, sizeIndex, nested }) => {
+const ColorFieldArray = ({ values, setFieldValue, sizeIndex, nested, makeImageOptional = false }) => {
   const colorsPath = nested ? `sizes[${sizeIndex}].colors` : "colors";
   const colors = nested ? values.sizes[sizeIndex]?.colors : values.colors;
   const defaultProductImage = values.images?.[0]?.previewImage || values.images?.[0]?.image;
@@ -28,16 +28,24 @@ const ColorFieldArray = ({ values, setFieldValue, sizeIndex, nested }) => {
                     setFieldValue={setFieldValue}
                     colorIndex={index}
                     defaultProductImage={defaultProductImage}
+                    existingImage={color.image}
+                    isOptional={makeImageOptional}
                   />
                   <InputField 
                     name={`${colorsPath}[${index}].name.ar`} 
                     placeholder="Color Name (Ar)"
                     value={color.name?.ar || ""}
+                    onChange={(e) => {
+                      setFieldValue(`${colorsPath}[${index}].name.ar`, e.target.value);
+                    }}
                   />
                   <InputField 
                     name={`${colorsPath}[${index}].name.en`} 
                     placeholder="Color Name (En)"
                     value={color.name?.en || ""}
+                    onChange={(e) => {
+                      setFieldValue(`${colorsPath}[${index}].name.en`, e.target.value);
+                    }}
                   />
                   <InputField
                     name={`${colorsPath}[${index}].code`}
@@ -117,6 +125,7 @@ const ColorFieldArray = ({ values, setFieldValue, sizeIndex, nested }) => {
                     price: "",
                     image: null,
                     previewImage: null,
+                    existingImage: null,
                     schedule_discount: false,
                     discount_percentage: "",
                     discount_expire_at: "",
@@ -134,4 +143,5 @@ const ColorFieldArray = ({ values, setFieldValue, sizeIndex, nested }) => {
     </div>
   );
 };
+
 export default ColorFieldArray;
