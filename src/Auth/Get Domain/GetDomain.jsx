@@ -52,6 +52,7 @@ function GetDomain() {
             <AuthInputField name="email" placeholder={"Enter Email"} />
             <div className="mt-3">
               <MainBtn
+              btnType={'submit'}
                 text={
                   isLoading ? <ClipLoader size={22} color="#fff" /> : "Save"
                 }

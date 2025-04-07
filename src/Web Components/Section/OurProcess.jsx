@@ -1,15 +1,9 @@
 function OurProcess() {
   const steps = [
     {
-      number: <h1 className="text-center">01</h1>,
-      title: <h1 className="text-center">Create Your Account</h1>,
-      description: (
-        <p
-          className="text-gray-400 max-w-xs text-center m-auto text-14"
-        >
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-        </p>
-      ),
+      number: "01",
+      title: "Create Your Account",
+      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed",
       icon: (
         <div className="flex justify-center">
           <img
@@ -21,15 +15,9 @@ function OurProcess() {
       ),
     },
     {
-      number: <h1 className="text-center">02</h1>,
-      title: <h1 className="text-center">Customizable Templates</h1>,
-      description: (
-        <p
-          className="text-gray-400 max-w-xs m-auto text-center text-14"
-        >
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-        </p>
-      ),
+      number: "02",
+      title: "Customizable Templates",
+      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed",
       icon: (
         <div className="flex justify-center">
           <img
@@ -41,15 +29,9 @@ function OurProcess() {
       ),
     },
     {
-      number: <h1 className="text-center">03</h1>,
-      title: <h1 className="text-center">Choose Pricing Plan</h1>,
-      description: (
-        <p
-          className="text-gray-400 max-w-xs m-auto text-center text-14"
-        >
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-        </p>
-      ),
+      number: "03",
+      title: "Choose Pricing Plan",
+      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed",
       icon: (
         <div className="flex justify-center">
           <img
@@ -78,6 +60,7 @@ function OurProcess() {
           </span>
         </h2>
       </div>
+
       <div className="relative mt-20">
         {steps.map((step, index) => (
           <div
@@ -86,15 +69,21 @@ function OurProcess() {
               index % 2 === 1 ? "md:flex-row-reverse" : ""
             }`}
           >
+            {/* Text Section */}
             <div
               className={`flex-1 text-center ${
                 index % 2 === 1 ? "md:text-right" : "md:text-left"
               }`}
             >
-              <h3 className="text-lg md:text-xl font-bold mb-4">{step.title}</h3>
-              <p className="text-gray-400">{step.description}</p>
+              <h3 className="text-lg md:text-xl font-bold mb-4">
+                {step.title}
+              </h3>
+              <p className="text-gray-400 max-w-xs m-auto md:m-0 text-center md:text-inherit text-14">
+                {step.description}
+              </p>
             </div>
 
+            {/* Icon & Badge */}
             <div className="relative">
               {/* Hexagon shape */}
               <div className="relative w-24 h-24 md:w-32 md:h-32">
@@ -110,10 +99,12 @@ function OurProcess() {
                   </div>
                 </div>
               </div>
+
               {/* Number badge */}
               <div className="absolute -top-2 left-24 md:left-28 w-8 h-8 md:w-10 md:h-10 rounded-full bg-customOrange-darkOrange font-bold p-2 text-white flex items-center justify-center text-sm">
                 {step.number}
               </div>
+
               {/* Connecting line */}
               {index < steps.length - 1 && (
                 <div className="hidden md:block absolute top-28 left-1/2 w-px h-16 bg-orange-200"></div>
@@ -127,4 +118,5 @@ function OurProcess() {
     </section>
   );
 }
+
 export default OurProcess;
