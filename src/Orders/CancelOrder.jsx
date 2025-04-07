@@ -4,23 +4,52 @@ import { IoIosCloseCircle } from "react-icons/io";
 import FailedModal from "../Components/Modal/Failed Modal/FailedModal";
 import { ClipLoader } from "react-spinners";
 import "./OrderStyle.scss";
-function CancelOrder() {
+
+function CancelOrder({ orderId, orderStatus }) { 
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  
+  const API_BASE_URL = "https://demo.vrtex.duckdns.org/";
+
   const handleCancelOrder = async () => {
     setIsLoading(true);
+    setErrorMessage("");
+    
+    if (!orderId || !orderStatus) {
+      setErrorMessage("Missing order information");
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      const response = await axios({});
+      const response = await axios({
+        url: `${API_BASE_URL}api/shop/orders/respond-cancel-request`,
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+          "Accept-Language": "en",
+        },
+        data: {
+          order_id: orderId,
+          status: orderStatus,
+        },
+      });
+
+      if (response.status === 200) {
+        window.location.reload();
+      }
     } catch (error) {
       setIsLoading(false);
-      console.error("API call failed: ", error.message);
+      if (error.response) {
+        setErrorMessage(error.response.data.message || "Request failed");
+      } else {
+        setErrorMessage("Network error. Please try again.");
+      }
     }
   };
-  if (showModal) {
-    document.body.classList.add("no-scroll");
-  } else {
-    document.body.classList.remove("no-scroll");
-  }
+
   return (
     <div>
       <button
@@ -30,29 +59,40 @@ function CancelOrder() {
         <IoIosCloseCircle size={22} />
         Cancel
       </button>
+      
       <FailedModal isOpen={showModal} onClose={() => setShowModal(false)}>
         <div className="bg-red-50 rounded-md p-2 mt-5 mb-5">
           <IoIosCloseCircle color="#DC2626" size={30} />
         </div>
         <p className="font-bold text-center">
-          Are You Sure You Want To Cancel This <br /> Order ?
+          Are You Sure You Want To Cancel This <br /> Order?
         </p>
-        <div className="mt-5 flex items-center gap-3 ">
+        
+        {errorMessage && (
+          <p className="text-red-500 text-sm text-center mt-2">{errorMessage}</p>
+        )}
+        
+        <div className="mt-5 flex items-center gap-3">
           <button
             className="bg-gray-100 text-gray-400 rounded-md p-3 w-40 font-bold"
-            onClick={() => setShowModal(false)}
+            onClick={() => {
+              setShowModal(false);
+              setErrorMessage("");
+            }}
           >
             Cancel
           </button>
           <button
             className="bg-red-600 rounded-md text-white p-3 w-40 font-bold"
             onClick={handleCancelOrder}
+            disabled={isLoading}
           >
-            {isLoading ? <ClipLoader size={22} color="#fff" /> : "Yes , Cancel"}
+            {isLoading ? <ClipLoader size={22} color="#fff" /> : "Yes, Cancel"}
           </button>
         </div>
       </FailedModal>
     </div>
   );
 }
+
 export default CancelOrder;

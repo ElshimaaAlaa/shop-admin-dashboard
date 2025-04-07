@@ -1,51 +1,92 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { IoIosCloseCircle } from "react-icons/io";
 import FailedModal from "../Components/Modal/Failed Modal/FailedModal";
 import { ClipLoader } from "react-spinners";
 import "./OrderStyle.scss";
-function RejectRefundRequests() {
+
+function RejectRefundRequests({ orderId, orderStatus }) {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const handleRejectRefund = async () => {
+  const [errorMessage, setErrorMessage] = useState("");
+  const API_BASE_URL = "https://demo.vrtex.duckdns.org/";
+  const handleCancelOrder = async () => {
     setIsLoading(true);
+    setErrorMessage("");
     try {
-    } catch (error) {}
+      const response = await axios({
+        url: `${API_BASE_URL}api/shop/orders/respond-cancel-request`,
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+          "Accept-Language": "en",
+        },
+        data: {
+          order_id: "",
+          status: "",
+        },
+      });
+
+      if (response.status === 200) {
+        window.location.reload();
+      }
+    } catch (error) {
+      setIsLoading(false);
+      if (error.response) {
+        setErrorMessage(error.response.data.message || "Request failed");
+      } else {
+        setErrorMessage("Network error. Please try again.");
+      }
+    }
   };
-  if (showModal) {
-    document.body.classList.add("no-scroll");
-  } else {
-    document.body.classList.remove("no-scroll");
-  }
+
   return (
     <div>
-      <IoIosCloseCircle
-        size={30}
-        color="#DC2626"
-        onClick={() => setShowModal(true)}
-      />
+      <div className="  cursor-pointer">
+        <IoIosCloseCircle
+          color="#DC2626"
+          size={30}
+          className="cursor-pointer"
+          onClick={()=>setShowModal(true)}
+        />
+      </div>
+
       <FailedModal isOpen={showModal} onClose={() => setShowModal(false)}>
-        <div className="bg-red-50 rounded-md p-2 mt-5 mb-5 cursor-pointer">
-          <IoIosCloseCircle color="#DC2626" size={30} className="cursor-pointer"/>
+        <div className="bg-red-50 rounded-md p-2 mt-5 mb-5">
+          <IoIosCloseCircle color="#DC2626" size={30} />
         </div>
-        <p className="font-bold text-center text-dark">
-          Are You Sure You Want To Reject This <br /> Refund request ?
+        <p className="font-bold text-center">
+          Are You Sure You Want To Reject This <br /> Refund Request?
         </p>
-        <div className="mt-5 flex items-center gap-3 ">
+
+        {errorMessage && (
+          <p className="text-red-500 text-sm text-center mt-2">
+            {errorMessage}
+          </p>
+        )}
+
+        <div className="mt-5 flex items-center gap-3">
           <button
             className="bg-gray-100 text-gray-400 rounded-md p-3 w-40 font-bold"
-            onClick={() => setShowModal(false)}
+            onClick={() => {
+              setShowModal(false);
+              setErrorMessage("");
+            }}
           >
             Cancel
           </button>
           <button
             className="bg-red-600 rounded-md text-white p-3 w-40 font-bold"
-            onClick={handleRejectRefund}
+            onClick={handleCancelOrder}
+            disabled={isLoading}
           >
-            {isLoading ? <ClipLoader size={22} color="#fff" /> : "Yes , Reject"}
+            {isLoading ? <ClipLoader size={22} color="#fff" /> : "Yes, Cancel"}
           </button>
         </div>
       </FailedModal>
     </div>
   );
 }
+
 export default RejectRefundRequests;

@@ -82,7 +82,7 @@ function App() {
           
           {/* Orders */}
           <Route path="RecivedOrders" element={<RecivedOrders />} />
-          <Route path="RecivedOrders/:id" element={<OrderDetails />} />
+          <Route path="RecivedOrders/:orderId" element={<OrderDetails />} />
           <Route path="CancelOrder" element={<CancelOrder />} />
           <Route path="RefundRequests" element={<RefundRequests />} />
           

@@ -215,7 +215,7 @@ function RecivedOrders() {
                     className="hover:bg-gray-50 cursor-pointer"
                     onClick={()=>navigate(`/Dashboard/RecivedOrders/${order.id}`)}
                   >
-                    <td className="px-3 py-3 border-t border-r border-b text-gray-600 text-13">
+                    <td className="px-3 py-3 border-t border-r border-b text-gray-600 text-14">
                       <p className="flex items-center gap-3">
                         <input
                           type="checkbox"
@@ -224,19 +224,19 @@ function RecivedOrders() {
                         {order.order_number}
                       </p>
                     </td>
-                    <td className="flex items-center gap-2 px-6 py-3 border-t border-r text-gray-600 text-13">
+                    <td className="flex items-center gap-2 px-6 py-3 border-t border-r text-gray-600 text-14">
                       <IoCalendarNumberOutline color="#69ABB5" />
                       {order.date}
                     </td>
-                    <td className="px-6 py-3 border-t border-r text-gray-600 text-13">
+                    <td className="px-6 py-3 border-t border-r text-gray-600 text-14">
                       {order.total || "0.00"} $
                     </td>
-                    <td className="px-6 py-3 border-t border-r text-gray-600 text-13">
+                    <td className="px-6 py-3 border-t border-r text-gray-600 text-14">
                       {order.items_count || "0"}
                     </td>
                     <td className="px-6 py-3 border-t border-r">
                       <span
-                        className={`px-2 py-2 rounded-md text-13 ${
+                        className={`px-2 py-2 rounded-md text-14 ${
                           order.payment_status === "unpaid"
                             ? "bg-gray-100 text-gray-400"
                             : order.payment_status === "paid"
@@ -251,7 +251,7 @@ function RecivedOrders() {
                     </td>
                     <td className="px-6 py-3 border-t">
                       <span
-                        className={`px-2 py-2 rounded-md text-13 ${
+                        className={`px-2 py-2 rounded-md text-14 ${
                           order.status === 8
                             ? "bg-red-50 text-red-600"
                             : order.status === 2
