@@ -9,19 +9,11 @@ function CancelOrder({ orderId, orderStatus }) {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  
   const API_BASE_URL = "https://demo.vrtex.duckdns.org/";
 
   const handleCancelOrder = async () => {
     setIsLoading(true);
     setErrorMessage("");
-    
-    if (!orderId || !orderStatus) {
-      setErrorMessage("Missing order information");
-      setIsLoading(false);
-      return;
-    }
-
     try {
       const response = await axios({
         url: `${API_BASE_URL}api/shop/orders/respond-cancel-request`,
@@ -32,8 +24,8 @@ function CancelOrder({ orderId, orderStatus }) {
           "Accept-Language": "en",
         },
         data: {
-          order_id: orderId,
-          status: orderStatus,
+          order_id: orderId, 
+          status: orderStatus, 
         },
       });
 
@@ -57,7 +49,7 @@ function CancelOrder({ orderId, orderStatus }) {
         onClick={() => setShowModal(true)}
       >
         <IoIosCloseCircle size={22} />
-        Cancel
+        {orderStatus === "cancelled" ? "Cancelled" : "Cancel"}
       </button>
       
       <FailedModal isOpen={showModal} onClose={() => setShowModal(false)}>

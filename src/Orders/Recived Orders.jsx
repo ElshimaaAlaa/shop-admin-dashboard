@@ -256,7 +256,7 @@ function RecivedOrders() {
                             ? "bg-red-50 text-red-600"
                             : order.status === 2
                             ? "bg-customOrange-mediumOrange text-primary"
-                            : "bg-green-100 text-green-800"
+                            : order.status === 1 ? "bg-customOrange-mediumOrange text-primary" :""
                         }`}
                       >
                         {order.status_name || "Unknown"}

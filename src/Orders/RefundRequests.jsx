@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
-import { HiCalendarDateRange } from "react-icons/hi2";
 import { Search } from "lucide-react";
 import AcceptRefundRequests from "./Accept Refund Requests";
 import RejectRefundRequests from "./Reject Refund Requests";
@@ -27,11 +26,18 @@ function RefundRequests() {
     const fetchRefundRequest = async () => {
       setIsLoading(true);
       try {
-        const data = await refundrequests();
-        setRefundOrders(data.data || []);
-        localStorage.setItem("refundId", data.data.id);
-        console.log(data.order_number)
-        localStorage.setItem("refundStaus", data.status);
+        const response = await refundrequests();
+        setRefundOrders(response.data || []);
+        if (response.data && response.data.length > 0) {
+          localStorage.setItem("refundId", response.data[0].id);
+          localStorage.setItem("refundStatus", response.data[0].status);
+          localStorage.setItem("refundAmount", response.data[0].amount);
+          console.log("refundId", response.data[0].id);
+          console.log("refund status", response.data[0].status);
+        }
+        if (response.pagination) {
+          setPagination(response.pagination);
+        }
         setIsLoading(false);
       } catch (error) {
         setError(true);
@@ -72,7 +78,7 @@ function RefundRequests() {
           />
           <input
             type="text"
-            placeholder="Search by order number or reason"
+            placeholder="Search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-4 bg-muted/50 rounded-md text-sm focus:outline-none border-2 border-gray-200 bg-lightgray placeholder:text-15 focus:border-primary"
@@ -143,8 +149,8 @@ function RefundRequests() {
                       <div className="flex items-center gap-3">
                         <AcceptRefundRequests
                           orderId={order.id}
-                          amount={order.total}
                           currentStatus={order.status}
+                          amount={order.total}
                         />
                         <RejectRefundRequests
                           orderId={order.id}

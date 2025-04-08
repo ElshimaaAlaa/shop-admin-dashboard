@@ -5,7 +5,7 @@ import FailedModal from "../Components/Modal/Failed Modal/FailedModal";
 import { ClipLoader } from "react-spinners";
 import "./OrderStyle.scss";
 
-function RejectRefundRequests({ orderId, orderStatus }) {
+function RejectRefundRequests({ orderId , orderStatus }) {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -23,8 +23,8 @@ function RejectRefundRequests({ orderId, orderStatus }) {
           "Accept-Language": "en",
         },
         data: {
-          order_id: "",
-          status: "",
+          order_id: orderId,
+          status: orderStatus,
         },
       });
 
@@ -40,7 +40,6 @@ function RejectRefundRequests({ orderId, orderStatus }) {
       }
     }
   };
-
   return (
     <div>
       <div className="  cursor-pointer">
@@ -51,7 +50,6 @@ function RejectRefundRequests({ orderId, orderStatus }) {
           onClick={()=>setShowModal(true)}
         />
       </div>
-
       <FailedModal isOpen={showModal} onClose={() => setShowModal(false)}>
         <div className="bg-red-50 rounded-md p-2 mt-5 mb-5">
           <IoIosCloseCircle color="#DC2626" size={30} />
@@ -88,5 +86,4 @@ function RejectRefundRequests({ orderId, orderStatus }) {
     </div>
   );
 }
-
 export default RejectRefundRequests;

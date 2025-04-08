@@ -91,7 +91,7 @@ const Sidebar = () => {
     },
     {
       id: "clients",
-      label: "Clients",
+      label: "Customers",
       icon: <Clients />,
       height: "30px",
       padding: "3px",
