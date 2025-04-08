@@ -1,24 +1,20 @@
-import React, { useState } from "react";
-import FailedModal from "../../Components/Modal/Failed Modal/FailedModal";
 import axios from "axios";
+import React, { useState } from "react";
+import FailedModal from "../Components/Modal/Failed Modal/FailedModal";
 import { ClipLoader } from "react-spinners";
-import "./DeleteModal.scss";
-function DeleteCategory({ id, onDelete }) {
+import "./customerStyle.scss";
+function DeleteCustomer({ onDelete, id }) {
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const API_BASE_URL = "https://";
   const live_shop_domain = localStorage.getItem("live_shop_domain");
   const role = localStorage.getItem("role");
-  const handleDeleteCategory = async () => {
+  const handleDeleteCustomer = async () => {
     setIsLoading(true);
-    if (!id) {
-      console.error("ID is missing");
-      return; // Prevent the API call if ID is missing
-    }
     try {
       const response = await axios({
+        url: `${API_BASE_URL}${live_shop_domain}/api/${role}/delete-customer/${id}`,
         method: "GET",
-        url: `${API_BASE_URL}${live_shop_domain}/api/${role}/categories/delete/${id}`,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -26,15 +22,15 @@ function DeleteCategory({ id, onDelete }) {
       if (response.status === 200) {
         onDelete(id);
         setIsLoading(true);
-        console.log("Category deleted successfully");
+        console.log("customer deleted successfully");
         setShowModal(true);
       } else {
-        console.error("Failed to delete category");
+        console.error("Failed to delete customer");
         setShowModal(false);
         setIsLoading(false);
       }
     } catch (error) {
-      console.error("Failed to delete category", error);
+      console.error("Failed to delete customer", error);
       setShowModal(false);
       setIsLoading(false);
     }
@@ -62,7 +58,7 @@ function DeleteCategory({ id, onDelete }) {
           />
         </div>
         <p className="font-bold w-72 text-center">
-          Are You Sure You Want To Delete This Category ?
+          Are You Sure You Want To Delete This Customer ?
         </p>
         <div className="flex gap-3 mt-5 mb-3">
           <button
@@ -73,7 +69,7 @@ function DeleteCategory({ id, onDelete }) {
           </button>
           <button
             className="rounded text-white bg-customred font-bold p-3 w-32"
-            onClick={handleDeleteCategory}
+            onClick={handleDeleteCustomer}
           >
             {isLoading ? (
               <ClipLoader color="#fff" size={"22px"} className="text-center" />
@@ -86,4 +82,4 @@ function DeleteCategory({ id, onDelete }) {
     </div>
   );
 }
-export default DeleteCategory;
+export default DeleteCustomer;

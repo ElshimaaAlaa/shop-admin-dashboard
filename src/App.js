@@ -33,6 +33,8 @@ import OrderDetails from "./Orders/OrderDetails";
 import CancelOrder from "./Orders/CancelOrder";
 import RefundRequests from "./Orders/RefundRequests";
 import AllDiscounts from "./DisCounts and Promotions/All Discounts/AllDiscounts";
+import AllCustomers from "./Customers/AllCustomers";
+import CustomerDetail from "./Customers/CustomerDetail";
 
 function App() {
   return (
@@ -85,7 +87,9 @@ function App() {
           <Route path="RecivedOrders/:orderId" element={<OrderDetails />} />
           <Route path="CancelOrder" element={<CancelOrder />} />
           <Route path="RefundRequests" element={<RefundRequests />} />
-          
+          {/* Customers */}
+          <Route path="AllCustomers" element={<AllCustomers/>}/>
+          <Route path="AllCustomers/:customerId" element={<CustomerDetail/>}/>
           {/* Profile */}
           <Route path="Profile" element={<Profile />} />
           

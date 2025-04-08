@@ -95,6 +95,7 @@ const Sidebar = () => {
       icon: <Clients />,
       height: "30px",
       padding: "3px",
+      onclick: () => navigate("AllCustomers"),
     },
     {
       id: "promotions",
@@ -144,7 +145,7 @@ const Sidebar = () => {
             <Text />
           </div>
         </div>
-        
+
         {menuItems.map((item) => (
           <div key={item.id}>
             <div
@@ -164,7 +165,9 @@ const Sidebar = () => {
                       width: item.width,
                       padding: item.padding,
                     }}
-                    className={`${selectedItem === item.id ? "selectedImg" : ""}`}
+                    className={`${
+                      selectedItem === item.id ? "selectedImg" : ""
+                    }`}
                   />
                 ) : (
                   React.cloneElement(item.icon, {
@@ -173,7 +176,9 @@ const Sidebar = () => {
                       width: item.width,
                       padding: item.padding,
                     },
-                    className: `${selectedItem === item.id ? "selectedImg" : ""}`,
+                    className: `${
+                      selectedItem === item.id ? "selectedImg" : ""
+                    }`,
                   })
                 )}
               </span>
@@ -194,7 +199,7 @@ const Sidebar = () => {
                 </span>
               )}
             </div>
-            
+
             {item.subItems && openSubmenu === item.id && expanded && (
               <div className="submenu pl-8 mt-1">
                 {item.subItems.map((subItem) => (

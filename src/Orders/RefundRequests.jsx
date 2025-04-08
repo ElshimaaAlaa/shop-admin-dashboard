@@ -7,6 +7,8 @@ import { refundrequests } from "../ApiServices/refund-requests";
 import ReactPaginate from "react-paginate";
 import { ClipLoader } from "react-spinners";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { IoCalendarNumberOutline } from "react-icons/io5";
+
 function RefundRequests() {
   const [refundOrders, setRefundOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -134,7 +136,8 @@ function RefundRequests() {
                         {order.order_number}
                       </p>
                     </td>
-                    <td className="px-6 py-3 border-t text-14 text-gray-600">
+                    <td className="px-6 py-3 border-t text-14 text-gray-600 flex items-center gap-2">
+                      <IoCalendarNumberOutline color="#69ABB5" />
                       {order.request_refund_date}
                     </td>
                     <td className="px-6 py-3 border-t border-l text-gray-600 text-14">
