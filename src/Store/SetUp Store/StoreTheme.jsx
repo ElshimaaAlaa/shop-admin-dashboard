@@ -26,7 +26,7 @@ function ThemeStore() {
   const initialValues = {
     theme_primary_color: "",
     theme_secondary_color: "",
-    theme_image: null,
+    image: null,
     banners: [],
     bannerPreviews: [],
   };
@@ -38,7 +38,7 @@ function ThemeStore() {
     theme_secondary_color: Yup.string()
       .required("Secondary color is required")
       .matches(/^#[0-9A-F]{6}$/i, "Invalid hex color format"),
-    theme_image: Yup.mixed()
+    image: Yup.mixed()
       .required("Theme image is required")
       .test(
         "fileSize",
@@ -75,7 +75,7 @@ function ThemeStore() {
       const formData = new FormData();
       formData.append("theme_primary_color", values.theme_primary_color);
       formData.append("theme_secondary_color", values.theme_secondary_color);
-      formData.append("theme_image", values.theme_image);
+      formData.append("image", values.image);
 
       values.banners.forEach((banner, index) => {
         formData.append(`banners[${index}]`, banner);
@@ -143,10 +143,10 @@ function ThemeStore() {
             <Form className="w-full">
               <div className="mb-6">
                 <LogoUpload
-                  name="theme_image"
+                  name="image"
                   setFieldValue={(field, value) => {
-                    if (field === "theme_image") {
-                      setFieldValue("theme_image", value);
+                    if (field === "image") {
+                      setFieldValue("image", value);
                       if (value) {
                         if (previewImage) URL.revokeObjectURL(previewImage);
                         setPreviewImage(URL.createObjectURL(value));
@@ -155,7 +155,7 @@ function ThemeStore() {
                       }
                     }
                   }}
-                  error={touched.theme_image && errors.theme_image}
+                  error={touched.image && errors.image}
                   accept="image/jpeg, image/png"
                 />
               </div>

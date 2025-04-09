@@ -1,4 +1,4 @@
-import { Formik, Form, Field } from "formik";
+import { Formik, Form } from "formik";
 import React, { useState, useEffect } from "react";
 import InputField from "../../Components/InputFields/InputField";
 import { ImageUpload } from "../../Components/Upload Image/UploadImage";
@@ -19,16 +19,12 @@ const StoreSetupWizard = () => {
   const initialValues = {
     theme_primary_color: "",
     theme_secondary_color: "",
-    theme_image: null,
+    image: null,
     store_name: "",
     address: "",
     bio: "",
     banners: [],
     plan_id: null,
-    // plan_name: '',
-    // plan_price: 0,
-    // plan_period: '',
-    // plan_description: ''
   };
 
   const validationSchema = Yup.object().shape({
@@ -38,7 +34,7 @@ const StoreSetupWizard = () => {
     theme_secondary_color: Yup.string()
       .required("Secondary color is required")
       .matches(/^#[0-9A-F]{6}$/i, "Invalid hex color format"),
-    theme_image: Yup.mixed()
+    image: Yup.mixed()
       .required("Theme image is required")
       .test(
         "fileSize",
@@ -103,7 +99,7 @@ const StoreSetupWizard = () => {
       // Theme data
       formData.append("theme_primary_color", values.theme_primary_color);
       formData.append("theme_secondary_color", values.theme_secondary_color);
-      formData.append("image", values.theme_image);
+      formData.append("image", values.image);
 
       // Store info
       formData.append("store_name", values.store_name);
@@ -189,17 +185,17 @@ const StoreSetupWizard = () => {
                 <div className="form-section">
                   <h3>Theme Image</h3>
                   <ImageUpload
-                    name="theme_image"
+                    name="image"
                     previewImage={previewImage}
                     onImageChange={(event) => {
                       const file = event.target.files[0];
                       if (file) {
                         if (previewImage) URL.revokeObjectURL(previewImage);
                         setPreviewImage(URL.createObjectURL(file));
-                        setFieldValue("theme_image", file);
+                        setFieldValue("image", file);
                       }
                     }}
-                    error={touched.theme_image && errors.theme_image}
+                    error={touched.image && errors.image}
                     accept="image/jpeg, image/png"
                   />
                 </div>
