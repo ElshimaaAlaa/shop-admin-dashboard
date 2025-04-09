@@ -54,7 +54,7 @@ function StoreTheme() {
         <div className="flex flex-col md:flex-row items-center justify-between mb-6">
           <h1 className="font-bold text-xl mb-4 md:mb-0">Store Theme</h1>
           <button
-            onClick={handleEditClick}
+            // onClick={handleEditClick}
             className="text-white font-semibold flex items-center justify-center gap-3 bg-primary p-3 w-24 rounded-md"
             aria-label="Edit personal information"
           >

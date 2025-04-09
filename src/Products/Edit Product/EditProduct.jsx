@@ -12,7 +12,7 @@ import { VscPercentage } from "react-icons/vsc";
 import SizeFieldArray from "../Add Product/SizeFieldArray";
 import ColorFieldArray from "../Add Product/ColorFieldArray";
 import PricingSection from "../Add Product/PricingSection";
-
+import { ClipLoader } from "react-spinners";
 const TagPill = ({ tag, onRemove, isExisting }) => {
   return (
     <div 
@@ -46,26 +46,26 @@ function EditProduct() {
   const [showModal, setShowModal] = useState(false);
   const [dynamicHeight, setDynamicHeight] = useState("h-auto");
   const [isDiscountScheduled, setIsDiscountScheduled] = useState(false);
+  const [isInitializing, setIsInitializing] = useState(true);
   const { state } = useLocation();
   const navigate = useNavigate();
-  const product = state || {};
+  const product = state?.product || {};
 
   const [previewImages, setPreviewImages] = useState(
-    state?.images?.map((img) => img.src) || []
+    product?.images?.map((img) => img.src || "/assets/images/default-product.png") || []
   );
   const [categoryType, setCategoryType] = useState(null);
 
+  useEffect(() => {
+    console.log("Received product data:", product);
+  }, [product]);
+
   const normalizeTags = (tags) => {
     if (!tags) return [];
-    return tags.map(tag => {
-      if (typeof tag === 'object' && tag.id) {
-        return { ...tag, id: parseInt(tag.id) };
-      }
-      if (typeof tag === 'string') {
-        return { name: tag };
-      }
-      return { id: parseInt(tag), name: `Tag ${tag}` };
-    });
+    return tags.map(tag => ({
+      ...(typeof tag === 'object' ? tag : { name: tag }),
+      id: tag.id ? parseInt(tag.id) : null
+    }));
   };
 
   const normalizeColors = (colors) => {
@@ -73,8 +73,12 @@ function EditProduct() {
     return colors.map(color => ({
       ...color,
       id: color.id ? parseInt(color.id) : null,
-      name: typeof color.name === 'string' ? { ar: color.name, en: color.name } : color.name,
-      existingImage: color.image || null
+      name: typeof color.name === 'string' ? 
+        { ar: color.name, en: color.name } : 
+        color.name || { ar: "", en: "" },
+      existingImage: color.image || null,
+      previewImage: color.image || null,
+      image: null
     }));
   };
 
@@ -113,6 +117,7 @@ function EditProduct() {
     setIsLoading(true);
     const formData = new FormData();
 
+    // Basic product info
     formData.append("name[ar]", values.name);
     formData.append("name[en]", values.name);
     formData.append("description[ar]", values.description);
@@ -124,6 +129,7 @@ function EditProduct() {
     formData.append("return_percentage", values.return_percentage);
     formData.append("gender", values.gender);
     
+    // Handle main product images
     values.images.forEach((image, index) => {
       if (image instanceof File) {
         formData.append(`images[${index}]`, image);
@@ -132,6 +138,7 @@ function EditProduct() {
       }
     });
     
+    // Pricing info
     formData.append("price", values.price);
     formData.append("discount_percentage", values.discount_percentage);
     if (values.discount_expire_at) {
@@ -140,6 +147,7 @@ function EditProduct() {
     formData.append("stock", values.stock);
     formData.append("schedule_discount", values.schedule_discount);
     
+    // Handle tags
     values.tags_id.forEach((tag, index) => {
       if (!tag.id && !product.tags?.includes(tag.name)) {
         formData.append(`new_tags[${index}]`, tag.name);
@@ -152,6 +160,7 @@ function EditProduct() {
       }
     });
 
+    // Handle colors with their images
     if (values.colors && values.colors.length > 0) {
       values.colors.forEach((color, index) => {
         if (color.id) {
@@ -189,6 +198,7 @@ function EditProduct() {
       });
     }
 
+    // Handle sizes
     if (values.sizes && values.sizes.length > 0) {
       values.sizes.forEach((size, index) => {
         Object.entries(size).forEach(([field, fieldValue]) => {
@@ -258,6 +268,8 @@ function EditProduct() {
         setAvailableTags(data);
       } catch (error) {
         console.error('Failed to fetch tags', error);
+      } finally {
+        setIsInitializing(false);
       }
     };
     fetchTags();
@@ -299,6 +311,21 @@ function EditProduct() {
     }
   }, [hasColors, hasSizes]);
 
+  const validate = (values) => {
+    const errors = {};
+    if (!values.name) errors.name = "Required";
+    if (!values.category_id) errors.category_id = "Required";
+    return errors;
+  };
+
+  if (isInitializing) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <ClipLoader color="#E0A75E" size={50} />
+      </div>
+    );
+  }
+
   return (
     <div className={`bg-gray-100 flex flex-col ${dynamicHeight} relative`}>
       <Helmet>
@@ -310,41 +337,53 @@ function EditProduct() {
       </h1>
       <Formik
         initialValues={initialValues}
-        enableReinitialize
+        enableReinitialize={true}
+        validate={validate}
         onSubmit={handleSubmit}
       >
-        {({ setFieldValue, values, setTouched, touched }) => (
+        {({ setFieldValue, values, setTouched, touched, errors }) => (
           <Form className="flex flex-col flex-grow">
             <div className="flex gap-5 mx-10">
               <div className="bg-white p-5 rounded-md w-full">
                 <h2 className="font-bold mb-5">Basic Information</h2>
                 <div className="flex gap-4">
-                  <InputField placeholder="Product Name" name="name" />
-                  <Field
-                    name="category_id"
-                    as="select"
-                    className="w-full p-3 border-2 h-14 bg-transparent border-gray-200 rounded-lg outline-none placeholder:text-14 focus:border-2 focus:border-primary"
-                    value={values.category_id}
-                    onChange={(e) => {
-                      const categoryId = e.target.value;
-                      setFieldValue("category_id", categoryId);
-                      const selectedCategory = categories.find(
-                        (cat) => cat.id === Number(categoryId)
-                      );
-                      if (selectedCategory) {
-                        setCategoryType(selectedCategory.type_name);
-                      } else {
-                        setCategoryType(null);
-                      }
-                    }}
-                  >
-                    <option value="">Select Category</option>
-                    {categories.map((category) => (
-                      <option key={category.id} value={category.id}>
-                        {category.name}
-                      </option>
-                    ))}
-                  </Field>
+                  <InputField 
+                    placeholder="Product Name" 
+                    name="name" 
+                    error={errors.name}
+                  />
+                  <div className="w-full">
+                    <Field
+                      name="category_id"
+                      as="select"
+                      className={`w-full p-3 border-2 h-14 bg-transparent rounded-lg outline-none placeholder:text-14 focus:border-2 ${
+                        errors.category_id ? 'border-red-500' : 'border-gray-200 focus:border-primary'
+                      }`}
+                      value={values.category_id}
+                      onChange={(e) => {
+                        const categoryId = e.target.value;
+                        setFieldValue("category_id", categoryId);
+                        const selectedCategory = categories.find(
+                          (cat) => cat.id === Number(categoryId)
+                        );
+                        if (selectedCategory) {
+                          setCategoryType(selectedCategory.type_name);
+                        } else {
+                          setCategoryType(null);
+                        }
+                      }}
+                    >
+                      <option value="">Select Category</option>
+                      {categories.map((category) => (
+                        <option key={category.id} value={category.id}>
+                          {category.name}
+                        </option>
+                      ))}
+                    </Field>
+                    {errors.category_id && (
+                      <div className="text-red-500 text-sm mt-1">{errors.category_id}</div>
+                    )}
+                  </div>
                 </div>
                 <div className="flex items-center gap-4 mt-3">
                   <InputField name={"tag_number"} placeholder={"Tag Number"} />
@@ -361,7 +400,7 @@ function EditProduct() {
                   </Field>
                 </div>
                 <div className="flex gap-4 mt-3 mb-3">
-                  <div className="relative flex items-center w-810 border-2 bg-transparent border-gray-200 rounded-md  focus-within:border-primary">
+                  <div className="relative flex items-center w-810 border-2 bg-transparent border-gray-200 rounded-md focus-within:border-primary">
                     <span className="h-full w-10 text-center pt-4 ps-2 bg-gray-100 absolute rounded-tl-md rounded-bl-md">
                       <VscPercentage className="text-xl text-gray-600 font-bold" />
                     </span>
@@ -381,7 +420,7 @@ function EditProduct() {
                     {values.tags_id.length > 0 ? (
                       values.tags_id.map((tag, index) => (
                         <TagPill
-                          key={`${tag.name}-${index}`}
+                          key={`${tag.id || tag.name}-${index}`}
                           tag={tag}
                           isExisting={product.tags?.includes(tag.name)}
                           onRemove={() => handleRemoveTag(tag, setFieldValue, values)}
