@@ -1,6 +1,10 @@
 import { FaArrowRightLong, FaArrowLeftLong, FaCheck } from "react-icons/fa6";
 import StepIndicator from "./StepIndicator";
-
+import { ClipLoader } from "react-spinners";
+import { useState } from "react";
+import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet";
 const PLANS = [
   {
     id: 1,
@@ -13,8 +17,9 @@ const PLANS = [
       "Up to 50 products",
       "Basic analytics",
       "Email support",
-      "Community access"
-    ]
+      "Community access",
+    ],
+    icon:"/assets/svgs/Featured icon.svg"
   },
   {
     id: 2,
@@ -27,8 +32,9 @@ const PLANS = [
       "Up to 500 products",
       "Advanced analytics",
       "Priority support",
-      "Marketing tools"
-    ]
+      "Marketing tools",
+    ],
+    icon:"/assets/svgs/Featured icon (1).svg"
   },
   {
     id: 3,
@@ -41,62 +47,110 @@ const PLANS = [
       "Unlimited products",
       "Advanced reporting",
       "24/7 support",
-      "Custom domain"
-    ]
-  }
+      "Custom domain",
+    ],
+    icon:"/assets/svgs/Featured icon (2).svg"
+  },
 ];
 
-export default function PricingPlan({ onNext, onBack, formData, updateFormData }) {
+export default function PricingPlan({
+  onNext,
+  onBack,
+  formData = {},
+  updateFormData,
+}) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState(null);
+  const navigate = useNavigate();
+  const steps = [
+    { number: 1, title: "Store Theme" },
+    { number: 2, title: "Store Profile" },
+    { number: 3, title: "Pricing Plan" },
+  ];
+
   const handlePlanSelect = (planId) => {
-    updateFormData('plan_id', planId);
+    const plan = PLANS.find((p) => p.id === planId);
+    if (plan) {
+      setSelectedPlan(plan);
+      if (updateFormData) {
+        updateFormData("plan_id", plan.id);
+        updateFormData("plan_name", plan.name);
+        updateFormData("plan_price", plan.price);
+        updateFormData("plan_period", plan.period);
+        updateFormData("plan_description", plan.description);
+      }
+      console.log(plan.id)
+    }
+    
   };
 
-  const handleNext = () => {
-    if (!formData.plan_id) {
+  const handleNext = async () => {
+    if (!selectedPlan) {
       alert("Please select a plan");
       return;
     }
-    onNext();
+
+    setIsLoading(true);
+    
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+       navigate('/Register/PaymentInfo')
+      if (onNext) {
+        onNext({
+          plan_id: selectedPlan.id,
+          plan_name: selectedPlan.name,
+          plan_price: selectedPlan.price,
+          plan_period: selectedPlan.period,
+          plan_description: selectedPlan.description
+        });
+      }
+    } catch (error) {
+      console.error("Error submitting plan:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-customBlue-mediumBlue via-customOrange-mediumOrange to-customOrange-mediumOrange p-6 flex items-center justify-center">
+      <Helmet>
+        <title>Set Up Store </title>
+      </Helmet>
       <div className="w-full lg:w-750 md:w-700px bg-white rounded-lg shadow-lg">
-        {/* Header and Step Indicator */}
         <div className="flex justify-center my-7">
           <img src="/assets/svgs/vertex.svg" alt="logo" className="w-28" />
         </div>
-        <div className="flex items-center mb-6 ps-6">
-          <div className="bg-white border-[6px] border-primary text-dark font-bold rounded-full h-10 w-10 p-5 flex items-center justify-center text-xs mr-2">
-            3/4
+        <div className="flex items-center gap-3 mb-5 px-6">
+          <div className="rounded-full border-[5px] border-primary p-2 font-bold">
+            1/3
           </div>
-          <p className="text-15 font-bold">
+          <h3 className="text-15 font-bold">
             Let's Get Started To Set Up Your Own Store.
-          </p>
+          </h3>
         </div>
-        <StepIndicator currentStep={3} />
-        
-        {/* Plans */}
+        <StepIndicator currentStep={3} steps={steps} />
+
         <h2 className="text-17 font-bold text-center mt-3">
           Our Product Packages
         </h2>
         <p className="text-12 mt-1 text-gray-600 text-center mb-8">
           Choose The Perfect Plan For Your Needs
         </p>
+        
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 px-6 mb-8">
           {PLANS.map((plan) => (
             <div
               key={plan.id}
               className={`border rounded-lg p-4 cursor-pointer transition-all ${
-                formData.plan_id === plan.id
-                  ? "border-primary shadow-lg"
+                selectedPlan?.id === plan.id
+                  ? "border-primary shadow-lg bg-primary/5"
                   : "border-gray-200 hover:border-gray-300"
               }`}
               onClick={() => handlePlanSelect(plan.id)}
             >
               <div className="flex flex-col items-center mb-4">
                 <img
-                  src={`/assets/svgs/Featured icon (${plan.id-1}).svg`}
+                  src={plan.icon}
                   alt={`${plan.name} plan`}
                   className="w-9"
                 />
@@ -104,7 +158,8 @@ export default function PricingPlan({ onNext, onBack, formData, updateFormData }
                   {plan.name}
                 </p>
                 <h3 className="text-3xl font-bold mt-3">
-                  ${plan.price}<span className="text-sm text-gray-400">{plan.period}</span>
+                  ${plan.price}
+                  <span className="text-sm text-gray-400">{plan.period}</span>
                 </h3>
                 <p className="text-xs text-gray-400 mt-3">{plan.description}</p>
               </div>
@@ -117,36 +172,63 @@ export default function PricingPlan({ onNext, onBack, formData, updateFormData }
                   </li>
                 ))}
               </ul>
-
               <button
                 className={`w-full py-2 rounded-md font-bold ${
-                  formData.plan_id === plan.id
+                  selectedPlan?.id === plan.id
                     ? "bg-primary text-white"
                     : "bg-gray-100 text-gray-500"
                 }`}
               >
-                {formData.plan_id === plan.id ? "Selected" : "Select Plan"}
+                {selectedPlan?.id === plan.id ? "Selected" : "Select Plan"}
               </button>
             </div>
           ))}
         </div>
 
-        {/* Navigation */}
         <div className="flex justify-between mt-4 my-5 mx-5">
           <button
-            onClick={onBack}
-            className="flex items-center gap-3 text-dark px-6"
+            onClick={()=>navigate('/Register/StoreProfile')}
+            className="flex items-center font-bold gap-3 text-dark px-6 py-2"
           >
             <FaArrowLeftLong size={15} /> Back
           </button>
           <button
             onClick={handleNext}
-            className="flex items-center gap-3 bg-primary text-white px-6 py-2 rounded-md"
+            className="flex items-center justify-center gap-3 w-32 bg-primary text-white px-6 py-2 rounded-md hover:bg-primary-dark transition-colors"
+            disabled={isLoading}
           >
-            Next <FaArrowRightLong />
+            {isLoading ? (
+              <ClipLoader size={22} color="#fff" />
+            ) : (
+              <>
+                Next <FaArrowRightLong />
+              </>
+            )}
           </button>
         </div>
       </div>
     </div>
   );
 }
+PricingPlan.propTypes = {
+  onNext: PropTypes.func,
+  onBack: PropTypes.func,
+  formData: PropTypes.shape({
+    plan_id: PropTypes.number,
+    plan_name: PropTypes.string,
+    plan_price: PropTypes.number,
+    plan_period: PropTypes.string,
+    plan_description: PropTypes.string,
+  }),
+  updateFormData: PropTypes.func.isRequired,
+};
+
+PricingPlan.defaultProps = {
+  formData: {
+    plan_id: null,
+    plan_name: "",
+    plan_price: 0,
+    plan_period: "",
+    plan_description: "",
+  },
+};

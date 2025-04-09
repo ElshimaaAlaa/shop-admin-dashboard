@@ -1,13 +1,14 @@
 import React, { useCallback, useState } from "react";
+import { FaTrashAlt } from "react-icons/fa";
 
 const BannerUpload = ({
-  banners,
-  bannerPreviews,
+  banners = [],
   setFieldValue,
   errors,
   touched,
 }) => {
   const [isDragging, setIsDragging] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState({});
 
   const handleDragEnter = useCallback((e) => {
     e.preventDefault();
@@ -26,34 +27,36 @@ const BannerUpload = ({
     e.stopPropagation();
   }, []);
 
+  const simulateUpload = (index) => {
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += 10;
+      setUploadProgress(prev => ({ ...prev, [index]: progress }));
+      if (progress >= 100) clearInterval(interval);
+    }, 100);
+  };
+
   const handleDrop = useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
-
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+    if (e.dataTransfer.files?.length > 0) {
       handleFiles(e.dataTransfer.files);
     }
   }, []);
 
   const handleFileInputChange = (e) => {
-    if (e.target.files && e.target.files.length > 0) {
+    if (e.target.files?.length > 0) {
       handleFiles(e.target.files);
     }
   };
 
   const handleFiles = (files) => {
     const fileList = Array.from(files);
+    const startIndex = banners.length;
+    
+    fileList.forEach((_, i) => simulateUpload(startIndex + i));
     setFieldValue("banners", [...banners, ...fileList]);
-
-    // Revoke previous preview URLs
-    bannerPreviews.forEach((preview) => URL.revokeObjectURL(preview));
-
-    // Create new preview URLs
-    setFieldValue("bannerPreviews", [
-      ...bannerPreviews,
-      ...fileList.map((file) => URL.createObjectURL(file)),
-    ]);
   };
 
   const removeBanner = (index) => {
@@ -61,22 +64,22 @@ const BannerUpload = ({
     updatedBanners.splice(index, 1);
     setFieldValue("banners", updatedBanners);
 
-    URL.revokeObjectURL(bannerPreviews[index]);
-    setFieldValue(
-      "bannerPreviews",
-      bannerPreviews.filter((_, i) => i !== index)
-    );
+    setUploadProgress(prev => {
+      const updated = { ...prev };
+      delete updated[index];
+      return updated;
+    });
   };
 
   return (
-    <div className="form-section">
-        <h3 className="font-bold text-14 mb-2">Upload Banners File</h3>
+    <div className="w-full mb-6 px-6">
+      <h3 className="text-16 font-semibold mb-3">Upload Banner Files</h3>
       <div
         className={`border-2 border-dashed border-primary rounded-md p-4 text-center cursor-pointer transition-colors ${
           isDragging
             ? "border-primary bg-primary/10"
             : "border-gray-300 hover:border-gray-400"
-        } ${touched.banners && errors.banners ? "border-red-500" : ""}`}
+        } ${touched?.banners && errors?.banners ? "border-red-500" : ""}`}
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
         onDragOver={handleDragOver}
@@ -91,56 +94,58 @@ const BannerUpload = ({
           onChange={handleFileInputChange}
           className="hidden"
         />
-        <div className="flex items-center">
+        <div className="flex items-center ">
           <img
             src="/assets/svgs/upload-file_svgrepo.com.svg"
-            alt="upload-image-file"
-            className="w-6 me-3"
+            alt="upload"
+            className="w-6 mr-3"
           />
-          <p className="text-13 text-gray-400">
-            {isDragging ? "Drop your banners here" : "Drag & Drop Banners Here"}
+          <p className="text-13 text-gray-600">
+            {isDragging ? "Drop files here" : "Drag & drop banners OR"}
           </p>
-          <p className="text-13 text-gray-400 ms-1">OR</p>
           <button
             type="button"
-            className="text-primary hover:text-primary-dark text-13 ms-3 font-bold"
+            className="text-primary hover:text-primary-dark text-14 ml-2 font-bold"
           >
-            Browse Files
+            Browse files
           </button>
         </div>
       </div>
 
-      {touched.banners && errors.banners && (
+      {touched?.banners && errors?.banners && (
         <p className="text-red-500 text-xs mt-1">{errors.banners}</p>
       )}
 
-      {bannerPreviews.length > 0 && (
+      {banners.length > 0 && (
         <div className="mt-4">
-          <h4 className="text-sm font-medium text-gray-700 mb-2">
-            Uploaded Banners:
-          </h4>
-          <div className="grid grid-cols-2 gap-3">
-            {bannerPreviews.map((preview, index) => (
-              <div key={index} className="relative group">
-                <img
-                  src={preview}
-                  alt={`Banner ${index + 1}`}
-                  className="w-full h-32 object-cover rounded-md border border-gray-200"
-                />
+          <h4 className="text-sm font-medium text-gray-600 mb-2">Uploaded Files:</h4>
+          <ul className="space-y-2">
+            {banners.map((file, index) => (
+              <li
+                key={index}
+                className="border border-gray-200 rounded-md p-3 flex items-center justify-between"
+              >
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-gray-700 truncate">
+                    {file.name}
+                  </p>
+                  <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+                    <div
+                      className="bg-primary h-2 rounded-full transition-all"
+                      style={{ width: `${uploadProgress[index] || 0}%` }}
+                    ></div>
+                  </div>
+                </div>
                 <button
                   type="button"
-                  className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                   onClick={() => removeBanner(index)}
-                  aria-label="Remove banner"
+                  className="text-red-500 hover:text-red-700 ml-3"
                 >
-                  ×
+                  <FaTrashAlt size={16} />
                 </button>
-                <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-xs p-1 truncate">
-                  {banners[index]?.name || `Banner ${index + 1}`}
-                </div>
-              </div>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       )}
     </div>

@@ -25,29 +25,40 @@ function AllProducts() {
     prev_page_url: null
   });
   const navigate = useNavigate();
+
   useEffect(() => {
     const getProducts = async () => {
       setIsLoading(true);
       try {
         const response = await fetchProducts(currentPage);
-        console.log("API Response:", response); 
-        if (response && response.data) {
+        if (Array.isArray(response)) {
+          setProducts(response);
+          setPagination({
+            total: response.length,
+            count: response.length,
+            per_page: 10,
+            current_page: 1,
+            total_pages: Math.ceil(response.length / 10),
+            next_page_url: null,
+            prev_page_url: null
+          });
+        } else if (response?.data) {
           setProducts(response.data);
           setPagination(response.pagination || {
             total: response.data.length,
             count: response.data.length,
             per_page: 10,
             current_page: 1,
-            total_pages: 1,
+            total_pages: Math.ceil(response.data.length / 10),
             next_page_url: null,
             prev_page_url: null
           });
         } else {
-          console.error("Unexpected API response structure:", response);
-          setProducts(response || []); 
+          console.warn("Unexpected API response structure:", response);
+          setProducts([]);
           setPagination({
-            total: response?.length || 0,
-            count: response?.length || 0,
+            total: 0,
+            count: 0,
             per_page: 10,
             current_page: 1,
             total_pages: 1,
@@ -59,6 +70,15 @@ function AllProducts() {
         setError(true);
         console.error("API call failed: ", error);
         setProducts([]);
+        setPagination({
+          total: 0,
+          count: 0,
+          per_page: 10,
+          current_page: 1,
+          total_pages: 1,
+          next_page_url: null,
+          prev_page_url: null
+        });
       } finally {
         setIsLoading(false);
       }
@@ -81,6 +101,12 @@ function AllProducts() {
       product?.name?.toLowerCase()?.includes(searchQuery.toLowerCase())
     );
   }, [products, searchQuery]);
+
+  const paginatedProducts = useMemo(() => {
+    const startIndex = (pagination.current_page - 1) * pagination.per_page;
+    const endIndex = startIndex + pagination.per_page;
+    return filteredProducts.slice(startIndex, endIndex);
+  }, [filteredProducts, pagination]);
 
   return (
     <div className="bg-gray-100 h-150vh mx-10 pt-5">
@@ -142,10 +168,10 @@ function AllProducts() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredProducts.map((product) => (
+                  {paginatedProducts.map((product) => (
                     <tr key={product.id}>
                       <td
-                        className="px-3 py-3 cursor-pointer border-t border-r w-250 text-gray-600"
+                        className="px-3 py-3 text-15 cursor-pointer border-t border-r w-250 text-gray-600"
                         onClick={() => navigate(`/Dashboard/products/${product.id}`)}
                       >
                         <p className="flex items-center gap-3">
@@ -155,7 +181,7 @@ function AllProducts() {
                           />
                           <img
                             src={
-                              product.images?.[0]?.src || "fallback-image-url"
+                              product.images?.[0]?.src || "/assets/images/default-product.png"
                             }
                             alt={product.name}
                             className="w-7 h-7 object-cover rounded-full"
@@ -163,18 +189,18 @@ function AllProducts() {
                           {product.name}
                         </p>
                       </td>
-                      <td className="flex gap-3 px-6 py-3 border-gray-200 border-t border-r w-250 text-gray-600">
+                      <td className="flex gap-3 px-6 py-3 text-15 border-gray-200 border-t border-r w-250 text-gray-600">
                         <img
-                          src={product.category?.image}
+                          src={product.category?.image || "/assets/images/default-category.png"}
                           alt="category-image"
                           className="w-7 h-7 object-cover rounded-full"
                         />
                         {product.category?.name}
                       </td>
-                      <td className="px-6 py-3 border-t border-r w-250 text-gray-600">
-                        {product.price}
+                      <td className="px-6 py-3 text-15 border-t border-r w-250 text-gray-600">
+                        {product.price?.toFixed(2) || "0.00"} $
                       </td>
-                      <td className="px-6 py-3 border-t border-r w-250 text-gray-600">
+                      <td className="px-6 py-3 text-15 border-t border-r w-250 text-gray-600">
                         {product.stock}
                       </td>
                       <td
@@ -184,7 +210,7 @@ function AllProducts() {
                         <div className="flex items-center gap-1">
                           {product.colors?.slice(0, 4).map((color) => (
                             <div
-                              key={color.id}
+                              key={color.id || color.code}
                               className="w-8 h-8 rounded-full -ms-4"
                               style={{ backgroundColor: color.code }}
                             />
@@ -200,11 +226,12 @@ function AllProducts() {
                         <div className="flex items-center">
                           <button
                             className="p-1"
-                            onClick={() =>
+                            onClick={(e) => {
+                              e.stopPropagation();
                               navigate(`/Dashboard/EditProduct/${product.id}`, {
-                                state: product,
-                              })
-                            }
+                                state: { product },
+                              });
+                            }}
                           >
                             <img
                               src="/assets/svgs/editIcon.svg"
@@ -223,23 +250,23 @@ function AllProducts() {
                 </tbody>
               </table>
             </div>
-              <ReactPaginate
-                pageCount={pagination.total_pages}
-                onPageChange={({ selected }) => setCurrentPage(selected + 1)}
-                forcePage={pagination.current_page - 1}
-                containerClassName="flex items-center justify-end mt-5 text-gray-500"
-                pageClassName="mx-1 px-3 py-1 rounded"
-                activeClassName="bg-customOrange-lightOrange text-primary"
-                previousLabel={<ChevronLeft className="w-4 h-4 text-center" />}
-                nextLabel={<ChevronRight className="w-4 h-4" />}
-                previousClassName={`mx-1 px-3 py-1 font-bold text-primary text-18 ${
-                  !pagination.prev_page_url ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-                nextClassName={`mx-1 px-3 py-1 font-bold text-primary text-18 ${
-                  !pagination.next_page_url ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-                disabledClassName="opacity-50 cursor-not-allowed"
-              />
+            <ReactPaginate
+              pageCount={pagination.total_pages}
+              onPageChange={({ selected }) => setCurrentPage(selected + 1)}
+              forcePage={pagination.current_page - 1}
+              containerClassName="flex items-center justify-end mt-5 text-gray-500"
+              pageClassName="mx-1 px-3 py-1 rounded"
+              activeClassName="bg-customOrange-lightOrange text-primary"
+              previousLabel={<ChevronLeft className="w-4 h-4 text-center" />}
+              nextLabel={<ChevronRight className="w-4 h-4" />}
+              previousClassName={`mx-1 px-3 py-1 font-bold text-primary text-18 ${
+                !pagination.prev_page_url ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+              nextClassName={`mx-1 px-3 py-1 font-bold text-primary text-18 ${
+                !pagination.next_page_url ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+              disabledClassName="opacity-50 cursor-not-allowed"
+            />
           </>
         )}
       </div>

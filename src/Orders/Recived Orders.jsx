@@ -33,7 +33,6 @@ function ReceivedOrders() {
     prev_page_url: null,
   });
 
-  // Debounce search input
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearchQuery(searchQuery);
@@ -70,27 +69,21 @@ function ReceivedOrders() {
     </div>
   );
 
-  const highlightMatch = (text, searchTerm) => {
-    if (!searchTerm || !text) return text;
-    const regex = new RegExp(`(${searchTerm})`, 'gi');
-    return text.toString().replace(regex, '<mark>$1</mark>');
-  };
-
   const filteredOrders = Array.isArray(orders)
     ? orders.filter((order) => {
         if (!debouncedSearchQuery) return true;
-        
+
         const searchTerm = debouncedSearchQuery.toLowerCase();
         const fieldsToSearch = [
-          order.order_number?.toString().toLowerCase() || '',
-          order.status_name?.toString().toLowerCase() || '',
-          order.payment_status?.toString().toLowerCase() || '',
-          order.total?.toString().toLowerCase() || '',
-          order.date?.toString().toLowerCase() || '',
-          order.items_count?.toString().toLowerCase() || ''
+          order.order_number?.toString().toLowerCase() || "",
+          order.status_name?.toString().toLowerCase() || "",
+          order.payment_status?.toString().toLowerCase() || "",
+          order.total?.toString().toLowerCase() || "",
+          order.date?.toString().toLowerCase() || "",
+          order.items_count?.toString().toLowerCase() || "",
         ];
 
-        return fieldsToSearch.some(field => field.includes(searchTerm));
+        return fieldsToSearch.some((field) => field.includes(searchTerm));
       })
     : [];
 
@@ -204,7 +197,7 @@ function ReceivedOrders() {
           {searchQuery && (
             <button
               onClick={() => {
-                setSearchQuery('');
+                setSearchQuery("");
                 setIsSearching(false);
               }}
               className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
@@ -231,7 +224,9 @@ function ReceivedOrders() {
           </div>
         ) : filteredOrders.length === 0 ? (
           <div className="text-gray-400 text-center mt-10">
-            {debouncedSearchQuery ? "No orders match your search." : "No orders found."}
+            {debouncedSearchQuery
+              ? "No orders match your search."
+              : "No orders found."}
           </div>
         ) : (
           <>
@@ -261,32 +256,30 @@ function ReceivedOrders() {
                     <tr
                       key={order.id}
                       className="hover:bg-gray-50 cursor-pointer"
-                      onClick={() => navigate(`/Dashboard/ReceivedOrders/${order.id}`)}
+                      onClick={() =>
+                        navigate(`/Dashboard/RecivedOrders/${order.id}`)
+                      }
                     >
-                      <td 
-                        className="px-3 py-3 border-t border-r border-b text-gray-600 text-14"
-                        dangerouslySetInnerHTML={{
-                          __html: highlightMatch(order.order_number, debouncedSearchQuery) || '-'
-                        }}
-                      />
+                      <td className="px-3  py-3 border-t border-r border-b text-gray-600 text-14">
+                        <p className="flex items-center gap-2">
+                          <input
+                            type="checkbox"
+                            className="form-checkbox h-4 w-4"
+                            aria-label="Select all categories"
+                          />
+                          {order.order_number}
+                        </p>
+                      </td>
                       <td className="flex items-center gap-2 px-6 py-3 border-t border-r text-gray-600 text-14">
                         <IoCalendarNumberOutline color="#69ABB5" />
-                        <span dangerouslySetInnerHTML={{
-                          __html: highlightMatch(order.date, debouncedSearchQuery) || '-'
-                        }} />
+                        {order.date}
                       </td>
-                      <td 
-                        className="px-6 py-3 border-t border-r text-gray-600 text-14"
-                        dangerouslySetInnerHTML={{
-                          __html: highlightMatch(order.total ? `${order.total} $` : '0.00 $', debouncedSearchQuery)
-                        }}
-                      />
-                      <td 
-                        className="px-6 py-3 border-t border-r text-gray-600 text-14"
-                        dangerouslySetInnerHTML={{
-                          __html: highlightMatch(order.items_count, debouncedSearchQuery) || '0'
-                        }}
-                      />
+                      <td className="px-6 py-3 border-t border-r text-gray-600 text-14">
+                        {order.total} $
+                      </td>
+                      <td className="px-6 py-3 border-t border-r text-gray-600 text-14">
+                        {order.items_count}
+                      </td>
                       <td className="px-6 py-3 border-t border-r">
                         <span
                           className={`px-2 py-2 rounded-md text-14 ${
@@ -298,10 +291,9 @@ function ReceivedOrders() {
                               ? "text-red-600 bg-red-50"
                               : ""
                           }`}
-                          dangerouslySetInnerHTML={{
-                            __html: highlightMatch(order.payment_status, debouncedSearchQuery) || '-'
-                          }}
-                        />
+                        >
+                          {order.payment_status}
+                        </span>
                       </td>
                       <td className="px-6 py-3 border-t">
                         <span
@@ -310,14 +302,13 @@ function ReceivedOrders() {
                               ? "bg-red-50 text-red-600"
                               : order.status === 2
                               ? "bg-customOrange-mediumOrange text-primary"
-                              : order.status === 1 
+                              : order.status === 1
                               ? "bg-customOrange-mediumOrange text-primary"
                               : ""
                           }`}
-                          dangerouslySetInnerHTML={{
-                            __html: highlightMatch(order.status_name, debouncedSearchQuery) || 'Unknown'
-                          }}
-                        />
+                        >
+                          {order.status_name}
+                        </span>
                       </td>
                     </tr>
                   ))}
@@ -351,5 +342,4 @@ function ReceivedOrders() {
     </div>
   );
 }
-
 export default ReceivedOrders;

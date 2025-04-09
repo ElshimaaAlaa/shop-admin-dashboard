@@ -45,7 +45,7 @@ function OrderDetails() {
       }
     };
     fetchOrderDetails();
-  }, [error.message, live_shop_domain, orderId, role]);
+  }, [live_shop_domain, orderId, role]);
 
   const icons = [
     { icon: <PhoneNum /> },

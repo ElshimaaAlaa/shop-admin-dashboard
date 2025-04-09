@@ -3,7 +3,7 @@ import React from "react";
 const UploadUpdatedProductImages = ({ previewImages, onImageChange, setFieldValue }) => {
   return (
     <div className="bg-white p-5 rounded-md w-2/4 h-80">
-      <h2 className="font-bold mb-3">Category Icon / Image</h2>
+      <h2 className="font-bold mb-3">Product Icon / Image</h2>
       <div className="bg-transparent w-full border-2 border-dashed outline-none h-48 p-1 rounded-md">
         <input
           type="file"

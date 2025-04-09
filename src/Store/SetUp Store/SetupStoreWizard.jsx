@@ -5,6 +5,8 @@ import { ImageUpload } from "../../Components/Upload Image/UploadImage";
 import * as Yup from "yup";
 import { setUpStore } from "../../ApiServices/setUpStore";
 import "./setUpStoreStyle.scss";
+import { ClipLoader } from "react-spinners";
+import PricingPlan from "./PricingPlan";
 
 const StoreSetupWizard = () => {
   const [step, setStep] = useState(1);
@@ -22,6 +24,11 @@ const StoreSetupWizard = () => {
     address: "",
     bio: "",
     banners: [],
+    plan_id: null,
+    // plan_name: '',
+    // plan_price: 0,
+    // plan_period: '',
+    // plan_description: ''
   };
 
   const validationSchema = Yup.object().shape({
@@ -33,11 +40,15 @@ const StoreSetupWizard = () => {
       .matches(/^#[0-9A-F]{6}$/i, "Invalid hex color format"),
     theme_image: Yup.mixed()
       .required("Theme image is required")
-      .test("fileSize", "File too large (max 5MB)", (value) => 
-        value && value.size <= 5 * 1024 * 1024
+      .test(
+        "fileSize",
+        "File too large (max 5MB)",
+        (value) => value && value.size <= 5 * 1024 * 1024
       )
-      .test("fileType", "Unsupported format (JPEG/PNG only)", (value) => 
-        value && ["image/jpeg", "image/png"].includes(value.type)
+      .test(
+        "fileType",
+        "Unsupported format (JPEG/PNG only)",
+        (value) => value && ["image/jpeg", "image/png"].includes(value.type)
       ),
     store_name: Yup.string()
       .required("Store name is required")
@@ -45,22 +56,30 @@ const StoreSetupWizard = () => {
     address: Yup.string()
       .required("Address is required")
       .min(10, "Address must be at least 10 characters"),
-    bio: Yup.string()
-      .max(500, "Bio cannot exceed 500 characters"),
+    bio: Yup.string().max(500, "Bio cannot exceed 500 characters"),
     banners: Yup.array()
       .min(1, "At least one banner is required")
-      .test("fileSize", "One or more files are too large (max 5MB each)", (files) => 
-        files && files.every(file => file.size <= 5 * 1024 * 1024)
+      .test(
+        "fileSize",
+        "One or more files are too large (max 5MB each)",
+        (files) => files && files.every((file) => file.size <= 5 * 1024 * 1024)
       )
-      .test("fileType", "Unsupported format (JPEG/PNG only)", (files) => 
-        files && files.every(file => ["image/jpeg", "image/png"].includes(file.type))
-  )});
+      .test(
+        "fileType",
+        "Unsupported format (JPEG/PNG only)",
+        (files) =>
+          files &&
+          files.every((file) => ["image/jpeg", "image/png"].includes(file.type))
+      ),
+    plan_id: Yup.number()
+      .required("Plan selection is required")
+      .oneOf([1, 2, 3], "Please select a valid plan"),
+  });
 
-  // Clean up object URLs
   useEffect(() => {
     return () => {
       if (previewImage) URL.revokeObjectURL(previewImage);
-      bannerPreviews.forEach(preview => URL.revokeObjectURL(preview));
+      bannerPreviews.forEach((preview) => URL.revokeObjectURL(preview));
     };
   }, [previewImage, bannerPreviews]);
 
@@ -70,27 +89,38 @@ const StoreSetupWizard = () => {
       return;
     }
 
+    if (step === 2) {
+      setStep(3);
+      return;
+    }
+
     setIsLoading(true);
     setSubmitError(null);
     setSubmitSuccess(false);
 
     try {
       const formData = new FormData();
+      // Theme data
       formData.append("theme_primary_color", values.theme_primary_color);
       formData.append("theme_secondary_color", values.theme_secondary_color);
-      formData.append("theme_image", values.theme_image);
+      formData.append("image", values.theme_image);
+
+      // Store info
       formData.append("store_name", values.store_name);
       formData.append("address", values.address);
       if (values.bio) formData.append("bio", values.bio);
 
+      // Plan data
+      formData.append("plan_id", values.plan_id);
+      formData.append("plan_name", values.plan_name);
+      formData.append("plan_price", values.plan_price);
+      formData.append("plan_period", values.plan_period);
+      formData.append("plan_description", values.plan_description);
+
+      // Banners
       values.banners.forEach((banner) => {
         formData.append("banners[]", banner);
       });
-
-      console.log("FormData contents:");
-      for (let [key, value] of formData.entries()) {
-        console.log(key, value);
-      }
 
       const data = await setUpStore(formData);
       console.log("API Response:", data);
@@ -120,6 +150,7 @@ const StoreSetupWizard = () => {
       <div className="step-indicator">
         <div className={`step ${step === 1 ? "active" : ""}`}>1. Theme</div>
         <div className={`step ${step === 2 ? "active" : ""}`}>2. Profile</div>
+        <div className={`step ${step === 3 ? "active" : ""}`}>3. Pricing</div>
       </div>
 
       {submitSuccess && (
@@ -135,33 +166,28 @@ const StoreSetupWizard = () => {
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ setFieldValue, values, errors, touched, isValid }) => (
+        {({ setFieldValue, values, errors, touched, isValid, dirty }) => (
           <Form className="setup-form">
             {step === 1 ? (
               <div className="form-step">
                 <div className="form-section">
                   <h3>Color Scheme</h3>
-
                   <div className="color-fields">
                     <InputField
                       name="theme_primary_color"
-                      // label="Primary Color"
-                      // type="color"
-                      // className="color-picker"
+                      label="Primary Color"
+                      placeholder="#HEXCODE"
                     />
-
                     <InputField
                       name="theme_secondary_color"
-                      // label="Secondary Color"
-                      // type="color"
-                      // className="color-picker"
+                      label="Secondary Color"
+                      placeholder="#HEXCODE"
                     />
                   </div>
                 </div>
 
                 <div className="form-section">
                   <h3>Theme Image</h3>
-
                   <ImageUpload
                     name="theme_image"
                     previewImage={previewImage}
@@ -176,10 +202,6 @@ const StoreSetupWizard = () => {
                     error={touched.theme_image && errors.theme_image}
                     accept="image/jpeg, image/png"
                   />
-
-                  {touched.theme_image && errors.theme_image && (
-                    <div className="field-error">{errors.theme_image}</div>
-                  )}
                 </div>
 
                 <div className="form-actions">
@@ -188,35 +210,21 @@ const StoreSetupWizard = () => {
                     disabled={!isValid || isLoading}
                     className="next-btn"
                   >
-                    Next
+                    {isLoading ? <ClipLoader size={22} color="#fff" /> : "Next"}
                   </button>
                 </div>
               </div>
-            ) : (
+            ) : step === 2 ? (
               <div className="form-step">
                 <div className="form-section">
                   <h3>Store Information</h3>
-
-                  <InputField
-                    name="store_name"
-                    label="Store Name"
-                    type="text"
-                  />
-
-                  <InputField name="address" label="Address" type="text" />
-
-                  <InputField
-                    name="bio"
-                    label="Bio (Optional)"
-                    type="textarea"
-                    as="textarea"
-                    rows={4}
-                  />
+                  <InputField name="store_name" />
+                  <InputField name="address" />
+                  <InputField name="bio" type="textarea" as="textarea" />
                 </div>
 
                 <div className="form-section">
                   <h3>Store Banners</h3>
-
                   <input
                     id="banners"
                     name="banners"
@@ -226,21 +234,19 @@ const StoreSetupWizard = () => {
                     onChange={(event) => {
                       const files = Array.from(event.target.files);
                       setFieldValue("banners", files);
-
-                      // Clean up previous previews
-                      bannerPreviews.forEach(preview => URL.revokeObjectURL(preview));
-                      
-                      // Create new previews
-                      const previews = files.map(file => URL.createObjectURL(file));
+                      bannerPreviews.forEach((preview) =>
+                        URL.revokeObjectURL(preview)
+                      );
+                      const previews = files.map((file) =>
+                        URL.createObjectURL(file)
+                      );
                       setBannerPreviews(previews);
                     }}
                     className="banner-upload"
                   />
-
                   {touched.banners && errors.banners && (
                     <div className="field-error">{errors.banners}</div>
                   )}
-
                   <div className="banner-previews">
                     {bannerPreviews.map((preview, index) => (
                       <div key={index} className="banner-preview-container">
@@ -256,7 +262,6 @@ const StoreSetupWizard = () => {
                             const updatedBanners = [...values.banners];
                             updatedBanners.splice(index, 1);
                             setFieldValue("banners", updatedBanners);
-                            
                             URL.revokeObjectURL(preview);
                             const updatedPreviews = [...bannerPreviews];
                             updatedPreviews.splice(index, 1);
@@ -278,23 +283,20 @@ const StoreSetupWizard = () => {
                   >
                     Back
                   </button>
-
                   <button
                     type="submit"
                     disabled={!isValid || isLoading}
-                    className="submit-btn"
+                    className="next-btn"
                   >
-                    {isLoading ? (
-                      <>
-                        <span className="spinner"></span>
-                        Saving...
-                      </>
-                    ) : (
-                      "Complete Setup"
-                    )}
+                    {isLoading ? <ClipLoader size={20} color="#fff" /> : "Next"}
                   </button>
                 </div>
               </div>
+            ) : (
+              <PricingPlan
+                onNext={() => handleSubmit(values, {})}
+                onBack={() => setStep(2)}
+              />
             )}
           </Form>
         )}

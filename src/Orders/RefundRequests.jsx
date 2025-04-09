@@ -153,7 +153,7 @@ function RefundRequests() {
                         <AcceptRefundRequests
                           orderId={order.id}
                           currentStatus={order.status}
-                          amount={order.total}
+                          amount={order.amount}
                         />
                         <RejectRefundRequests
                           orderId={order.id}

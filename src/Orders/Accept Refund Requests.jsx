@@ -3,21 +3,19 @@ import { FaCheckCircle } from "react-icons/fa";
 import { ClipLoader } from "react-spinners";
 import FailedModal from "../Components/Modal/Failed Modal/FailedModal";
 import axios from "axios";
-function AcceptRefundRequests() {
+function AcceptRefundRequests({ order_id, status, amount }) {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const API_BASE_URL = "https://";
   const live_shop_domain = localStorage.getItem("live_shop_domain");
   const role = localStorage.getItem("role");
-  const refund_id = localStorage.getItem("refundId");
-  const refund_staus = localStorage.getItem("refundStatus");
-  const amount = localStorage.getItem("refundAmount");
+
   const handleAcceptRefund = async () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
         `${API_BASE_URL}${live_shop_domain}/api/${role}/orders/respond-cancel-request`,
-        { order_id: refund_id, status: refund_staus, amount: amount },
+        { order_id: order_id, status: status, amount: amount },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
