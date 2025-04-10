@@ -24,11 +24,11 @@ const ColorFieldArray = ({ values, setFieldValue, sizeIndex, nested, makeImageOp
                 <div className="flex gap-1">
                   <UploadImageForColor
                     name={`${colorsPath}[${index}]`}
-                    previewImage={color.previewImage || color.image}
+                    previewImage={color.previewImage || color.existingImage}
                     setFieldValue={setFieldValue}
                     colorIndex={index}
                     defaultProductImage={defaultProductImage}
-                    existingImage={color.image}
+                    existingImage={color.existingImage}
                     isOptional={makeImageOptional}
                   />
                   <InputField 

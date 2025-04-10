@@ -15,33 +15,23 @@ export const UploadImageForColor = ({
 
     const reader = new FileReader();
     reader.onload = () => {
-      try {
-        setFieldValue(`${name}.image`, file);
-        setFieldValue(`${name}.previewImage`, reader.result);
-        if (existingImage) {
-          setFieldValue(`${name}.existingImage`, existingImage);
-        }
-      } catch (error) {
-        console.error("Error setting image field:", error);
-      }
+      setFieldValue(`${name}.image`, file);
+      setFieldValue(`${name}.previewImage`, reader.result);
     };
     reader.readAsDataURL(file);
   };
 
   const handleRemoveImage = (e) => {
     e.stopPropagation();
-    try {
-      if (isOptional && existingImage) {
-        setFieldValue(`${name}.image`, null);
-        setFieldValue(`${name}.previewImage`, existingImage);
-        setFieldValue(`${name}.existingImage`, existingImage);
-      } else {
-        setFieldValue(`${name}.image`, null);
-        setFieldValue(`${name}.previewImage`, null);
-        setFieldValue(`${name}.existingImage`, null);
-      }
-    } catch (error) {
-      console.error("Error removing image:", error);
+    if (isOptional) {
+      // For edit mode, just clear the new image but keep existingImage
+      setFieldValue(`${name}.image`, null);
+      setFieldValue(`${name}.previewImage`, existingImage || null);
+    } else {
+      // For create mode, clear everything
+      setFieldValue(`${name}.image`, null);
+      setFieldValue(`${name}.previewImage`, null);
+      setFieldValue(`${name}.existingImage`, null);
     }
   };
 
