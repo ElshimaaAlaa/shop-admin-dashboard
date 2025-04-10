@@ -92,6 +92,7 @@ function ThemeStore() {
           theme_primary_color: values.theme_primary_color,
           theme_secondary_color: values.theme_secondary_color,
           banners: bannersData,
+          image:previewImage,
         })
       );
       const response = await setUpStore(formData);

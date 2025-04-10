@@ -10,7 +10,7 @@ function StoreTheme() {
   const [error, setError] = useState(null);
 
   const handleEditClick = () => {
-    navigate("/Dashboard/MainInfo/EditStoreTheme", { state: storeData });
+    // navigate("/Dashboard/MainInfo/EditStoreTheme", { state: storeData });
   };
 
   const themeData = JSON.parse(localStorage.getItem("storeThemeData") || "{}");
