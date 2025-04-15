@@ -1,12 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { FaTrashAlt } from "react-icons/fa";
-
-const BannerUpload = ({
-  banners = [],
-  setFieldValue,
-  errors,
-  touched,
-}) => {
+const BannerUpload = ({ banners = [], setFieldValue, errors, touched }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [uploadProgress, setUploadProgress] = useState({});
 
@@ -31,7 +24,7 @@ const BannerUpload = ({
     let progress = 0;
     const interval = setInterval(() => {
       progress += 10;
-      setUploadProgress(prev => ({ ...prev, [index]: progress }));
+      setUploadProgress((prev) => ({ ...prev, [index]: progress }));
       if (progress >= 100) clearInterval(interval);
     }, 100);
   };
@@ -54,7 +47,7 @@ const BannerUpload = ({
   const handleFiles = (files) => {
     const fileList = Array.from(files);
     const startIndex = banners.length;
-    
+
     fileList.forEach((_, i) => simulateUpload(startIndex + i));
     setFieldValue("banners", [...banners, ...fileList]);
   };
@@ -64,7 +57,7 @@ const BannerUpload = ({
     updatedBanners.splice(index, 1);
     setFieldValue("banners", updatedBanners);
 
-    setUploadProgress(prev => {
+    setUploadProgress((prev) => {
       const updated = { ...prev };
       delete updated[index];
       return updated;
@@ -75,7 +68,7 @@ const BannerUpload = ({
     <div className="w-full mb-6 px-6">
       <h3 className="text-16 font-semibold mb-3">Upload Banner Files</h3>
       <div
-        className={`border-2 border-dashed border-primary rounded-md p-4 text-center cursor-pointer transition-colors ${
+        className={`border-2 border-dashed border-primary rounded-md p-3 text-center cursor-pointer transition-colors ${
           isDragging
             ? "border-primary bg-primary/10"
             : "border-gray-300 hover:border-gray-400"
@@ -100,7 +93,7 @@ const BannerUpload = ({
             alt="upload"
             className="w-6 mr-3"
           />
-          <p className="text-13 text-gray-600">
+          <p className="text-14 text-gray-600">
             {isDragging ? "Drop files here" : "Drag & drop banners OR"}
           </p>
           <button
@@ -118,12 +111,11 @@ const BannerUpload = ({
 
       {banners.length > 0 && (
         <div className="mt-4">
-          <h4 className="text-sm font-medium text-gray-600 mb-2">Uploaded Files:</h4>
           <ul className="space-y-2">
             {banners.map((file, index) => (
               <li
                 key={index}
-                className="border border-gray-200 rounded-md p-3 flex items-center justify-between"
+                className="border-2 bg-gray-100 border-gray-200 rounded-md p-4 flex items-center justify-between"
               >
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-gray-700 truncate">
@@ -141,7 +133,11 @@ const BannerUpload = ({
                   onClick={() => removeBanner(index)}
                   className="text-red-500 hover:text-red-700 ml-3"
                 >
-                  <FaTrashAlt size={16} />
+                  <img
+                    src="/assets/svgs/deleteIcon.svg"
+                    alt="delete category"
+                    className="w-5 ms-2 mt-4"
+                  />
                 </button>
               </li>
             ))}
@@ -151,5 +147,4 @@ const BannerUpload = ({
     </div>
   );
 };
-
 export default BannerUpload;

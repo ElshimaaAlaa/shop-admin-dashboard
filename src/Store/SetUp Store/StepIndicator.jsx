@@ -7,21 +7,21 @@ const StepIndicator = ({ currentStep, steps }) => {
       {steps.map((step) => (
         <div
           key={step.number}
-          className={`flex gap-3 w-[230px] justify-center  items-center p-4 relative ${
+          className={`flex gap-3 w-[230px] justify-center  items-center p-3 relative ${
             step.number === currentStep
-              ? "bg-orange-50 border-b border-primary  font-bold"
+              ? "bg-orange-50 border-b border-primary font-bold"
               : step.number < currentStep
               ? "text-gray-600"
               : "text-gray-400"
           }`}
         >
           <div
-            className={` rounded-full h-10 w-10 flex items-center justify-center text-sm font-medium ${
+            className={` rounded-full h-10 w-10 flex items-center justify-center text-sm font-bold ${
               step.number === currentStep
                 ? "bg-primary text-white"
                 : step.number < currentStep
                 ? "bg-customOrange-mediumOrange text-primary font-bold"
-                : "bg-gray-300 text-gray-600"
+                : "bg-gray-100 text-gray-400 font-bold"
             }`}
           >
             {step.number < currentStep ? (

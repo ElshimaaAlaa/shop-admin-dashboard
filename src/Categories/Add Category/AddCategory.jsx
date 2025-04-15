@@ -108,7 +108,7 @@ function AddCategory() {
     document.body.classList.remove("no-scroll");
   }
   return (
-    <div className="bg-gray-100 h-150vh relative">
+    <div className="bg-gray-100 min-h-screen relative">
       <Helmet>
         <title>Add Category | Vertex Dashboard</title>
       </Helmet>

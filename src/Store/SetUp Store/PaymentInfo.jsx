@@ -23,31 +23,12 @@ function PaymentInfo({ onSubmit, onBack, formData, updateFormData }) {
       .matches(/^[0-9]+$/, "Must be only digits")
       .min(10, "Must be at least 10 digits")
       .required("Phone number is required"),
-    card_holder_name: Yup.string().when("payment_method", {
-      is: "credit_card",
-      then: Yup.string().required("Card holder name is required"),
-    }),
-    card_number: Yup.string().when("payment_method", {
-      is: "credit_card",
-      then: Yup.string()
-        .required("Card number is required")
-        .matches(/^\d{16}$/, "Card number must be 16 digits"),
-    }),
-    expiration_date: Yup.string().when("payment_method", {
-      is: "credit_card",
-      then: Yup.string()
-        .required("Expiration date is required")
-        .matches(
-          /^(0[1-9]|1[0-2])\/?([0-9]{2})$/,
-          "Invalid expiration date (MM/YY)"
-        ),
-    }),
-    cvv: Yup.string().when("payment_method", {
-      is: "credit_card",
-      then: Yup.string()
-        .required("CVV is required")
-        .matches(/^\d{3,4}$/, "CVV must be 3 or 4 digits"),
-    }),
+    payment_method: Yup.string().required("Payment method is required"),
+    card_number: Yup.string().required(),
+    expiration_date: Yup.string().required(),
+    cvv: Yup.string().required(),
+    paypal_email: Yup.string().required(),
+    google_pay_token: Yup.string().required(),
   });
 
   const handleSubmit = (values) => {

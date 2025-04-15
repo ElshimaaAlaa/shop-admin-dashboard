@@ -21,6 +21,7 @@ function CustomerDetail() {
   const role = localStorage.getItem("role");
   useEffect(() => {
     const CustomerDetails = async () => {
+      setIsLoading(true);
       try {
         const response = await axios({
           url: `${API_BASE_URL}${live_shop_domain}/api/${role}/customers/${customerId}`,
@@ -30,14 +31,17 @@ function CustomerDetail() {
           },
         });
         if (response.status === 200) {
+          setIsLoading(false);
           setCustomerData(response.data.data);
           setStatistics(response.data.data.statistics);
           setOrders(response.data.data.orders);
           console.log("Customer Data:", response.data.data);
         } else {
           console.error("Failed to fetch data");
+          setIsLoading(false);
         }
       } catch (error) {
+        setIsLoading(false);
         console.error("Failed to fetch Customer", error);
       }
     };
@@ -54,12 +58,12 @@ function CustomerDetail() {
     </div>
   );
   return (
-    <div className="bg-gray-100 min-h-[150vh] pb-10 mx-10 pt-5">
+    <div className="bg-gray-100 min-h-screen pb-10 mx-10 pt-5">
       <Helmet>
         <title>Customers Details | VERTEX</title>
       </Helmet>
 
-      <div className="bg-white mb-3 p-4 rounded-md flex justify-between items-center">
+      <div className="bg-white mb-3 p-4 rounded-md flex justify-between items-center w-full">
         <h1 className="font-bold text-17">Customers Details</h1>
       </div>
       <div className="flex items-center justify-between rounded-lg border-primary bg-customOrange-mediumOrange p-4 ">
@@ -122,7 +126,7 @@ function CustomerDetail() {
             />
           </section>
           {/* Transaction History */}
-          <section className="bg-white rounded-md p-4  mt-4">
+          <section className="bg-white rounded-md p-4 mt-4 w-full">
             <h3 className="font-bold text-17">Transaction History</h3>
             {error ? (
               <div className="text-red-500 text-center mt-10">
@@ -131,8 +135,10 @@ function CustomerDetail() {
             ) : isLoading ? (
               <div className="text-gray-400 text-center mt-10">
                 <ClipLoader color="#E0A75E" />
-                <p className="mt-2">Loading Customers Data...</p>
+                <p className="mt-2">Loading Transaction History ...</p>
               </div>
+            ) : orders.length === 0 ? (
+              "No Orders data founded."
             ) : (
               <div className="border border-gray-200 rounded-lg mt-4 overflow-hidden">
                 <table className="bg-white min-w-full table">
@@ -141,9 +147,9 @@ function CustomerDetail() {
                       <th className="px-3 py-3 border-t border-b text-left cursor-pointer">
                         Invoice ID
                       </th>
-                      <th className="px-6 py-3 text-left border">Date</th>
-                      <th className="px-6 py-3 text-left border">Price</th>
-                      <th className="px-6 py-3 border text-center w-20">Pay</th>
+                      <th className="px-3 py-3 text-left border">Date</th>
+                      <th className="px-3 py-3 text-left border">Price</th>
+                      <th className="px-3 py-3 border text-left w-20">Pay</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -162,7 +168,7 @@ function CustomerDetail() {
                           {order.total} $
                         </td>
                         <td className="px-3 py-3 border-t text-gray-600 border-r text-15 w-250">
-                          {order.payment_method}
+                          {order.payment_method || "N/A"}
                         </td>
                       </tr>
                     ))}

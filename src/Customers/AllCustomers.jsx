@@ -123,7 +123,7 @@ function AllCustomers() {
   );
 
   return (
-    <div className="bg-gray-100 min-h-[150vh] pb-10 mx-10 pt-5">
+    <div className="bg-gray-100 min-h-screen pb-10 mx-10 pt-5">
       <Helmet>
         <title>Customers | VERTEX</title>
       </Helmet>

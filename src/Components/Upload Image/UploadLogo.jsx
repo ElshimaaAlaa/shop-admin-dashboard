@@ -1,6 +1,4 @@
-import React, { useState } from 'react';
-import { FaTrashAlt } from 'react-icons/fa';
-
+import React, { useState } from "react";
 const LogoUpload = ({ name, setFieldValue, error }) => {
   const [file, setFile] = useState(null);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -34,7 +32,7 @@ const LogoUpload = ({ name, setFieldValue, error }) => {
       <p className="text-16 font-semibold mb-3">Upload Logo File</p>
       <label
         htmlFor="logo-upload"
-        className="flex items-center border-2 border-dashed border-primary rounded-md p-5 cursor-pointer text-gray-500 text-sm"
+        className="flex items-center border-2 border-dashed border-primary rounded-md p-3 cursor-pointer text-gray-600 text-13"
       >
         <input
           type="file"
@@ -44,15 +42,22 @@ const LogoUpload = ({ name, setFieldValue, error }) => {
           className="hidden"
           onChange={handleFileChange}
         />
-        <span className="flex items-center gap-2">
-          <img src='/assets/svgs/upload-file_svgrepo.com.svg' alt='upload logo' className='w-6'/>
-          Drag & Drop Your logo File Here OR <span className="text-primary font-bold">Browse Files</span>
+        <span className="flex items-center gap-2 text-gray-600 ">
+          <img
+            src="/assets/svgs/upload-file_svgrepo.com.svg"
+            alt="upload logo"
+            className="w-6"
+          />
+          Drag & Drop Your logo File Here OR
+          <span className="text-primary font-bold">Browse Files</span>
         </span>
       </label>
       {file && (
-        <div className="bg-gray-50 mt-3 rounded-lg p-4 flex items-center justify-between">
+        <div className="bg-gray-100 mt-3 rounded-md border-2 border-gray-200 p-4 flex items-center justify-between">
           <div className="w-full">
-            <p className="text-sm font-semibold text-gray-700 mb-2">{file.name}</p>
+            <p className="text-sm font-semibold text-gray-700 mb-2">
+              {file.name}
+            </p>
             <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
               <div
                 className="bg-primary h-full transition-all duration-300"
@@ -61,12 +66,16 @@ const LogoUpload = ({ name, setFieldValue, error }) => {
             </div>
             <p className="text-xs text-gray-500 mt-1">{uploadProgress}% done</p>
           </div>
-          <button 
-            type="button" 
-            onClick={handleRemove} 
+          <button
+            type="button"
+            onClick={handleRemove}
             className="text-red-500 hover:text-red-700 ml-4"
           >
-            <FaTrashAlt size={18} />
+            <img
+              src="/assets/svgs/deleteIcon.svg"
+              alt="delete category"
+              className="w-5 ms-2"
+            />
           </button>
         </div>
       )}

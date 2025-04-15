@@ -1,10 +1,12 @@
 import axios from "axios";
-
+const API_BASE_URL = "https://";
+const live_shop_domain = localStorage.getItem("live_shop_domain");
+const role = localStorage.getItem("role");
 export const setUpStore = async (formData) => {
   try {
     const response = await axios({
       method: "POST",
-      url: "https://demo.vrtex.duckdns.org/api/shop/setup-store",
+      url: `${API_BASE_URL}${live_shop_domain}/api/${role}/setup-store`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
         'Content-Type': 'multipart/form-data'

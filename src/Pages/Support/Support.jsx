@@ -11,11 +11,13 @@ import { LuSend } from "react-icons/lu";
 import MainBtn from "../../Components/Main Button/MainBtn";
 import EmailAddress from "../../Svgs/EmailAddress";
 import PhoneNum from "../../Svgs/PhoneNum";
+import { settings } from "../../ApiServices/Settings";
 
 function Support() {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState(null);
+  const [settingData, setSettingData] = useState([]);
 
   const initialValues = {
     name: "",
@@ -54,7 +56,12 @@ function Support() {
     setIsLoading(true);
     setError(null);
     try {
-      await sendSupport(values.name, values.email, values.phone, values.message);
+      await sendSupport(
+        values.name,
+        values.email,
+        values.phone,
+        values.message
+      );
       setShowModal(true);
     } catch (error) {
       setError("Failed to send the message. Please try again.");
@@ -74,10 +81,21 @@ function Support() {
           </a>
         </div>
       </div>
-      <img src="/assets/svgs/arrow_forward.svg" alt="arrow" className="w-6 h-4" />
+      <img
+        src="/assets/svgs/arrow_forward.svg"
+        alt="arrow"
+        className="w-6 h-4"
+      />
     </div>
   );
-
+  useEffect(() => {
+    const fetchGeneralSetting = async () => {
+      const data = await settings();
+      console.log('settings data',data);
+      setSettingData(data);
+    };
+    fetchGeneralSetting();
+  }, []);
   return (
     <div className="bg-white min-h-screen">
       <Helmet>
@@ -96,18 +114,39 @@ function Support() {
       <div className="flex justify-center gap-5">
         <section className="bg-white rounded-md drop-shadow-lg p-5 w-300 md:w-400 lg:w-400 h-72 mt-10">
           <h2 className="font-bold text-17 mb-3 mt-2">Contact information</h2>
-          <ContactCard icon={<PhoneNum />} title="Call us" value="+ 9876543234344" />
-          <ContactCard icon={<EmailAddress />} title="Email" value="Vertex@gmail.com" link="mailto:Vertex@gmail.com" />
+          <ContactCard
+            icon={<PhoneNum />}
+            title="Call us"
+            value={settingData.phone}
+          />
+          <ContactCard
+            icon={<EmailAddress />}
+            title="Email"
+            value={settingData.email}
+            link="mailto:Vertex@gmail.com"
+          />
         </section>
 
         <section className="bg-customOrange-mediumOrange p-7 mt-10 w-400 md:w-500px lg:w-450 rounded-md">
           <div className="flex justify-center">
-            <img src="/assets/svgs/chats.svg" alt="messages" className="w-16 mb-2" />
+            <img
+              src="/assets/svgs/chats.svg"
+              alt="messages"
+              className="w-16 mb-2"
+            />
           </div>
-          <h2 className="font-bold text-lg text-center mb-1">Send your problem</h2>
-          <p className="text-gray-400 text-15 text-center mb-2">We are here to help you</p>
+          <h2 className="font-bold text-lg text-center mb-1">
+            Send your problem
+          </h2>
+          <p className="text-gray-400 text-15 text-center mb-2">
+            We are here to help you
+          </p>
 
-          <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
+          <Formik
+            initialValues={initialValues}
+            onSubmit={handleSubmit}
+            validationSchema={validationSchema}
+          >
             {({ errors, touched }) => (
               <Form className="flex flex-col gap-3">
                 <AuthInputField name="name" placeholder="Name" />
@@ -126,7 +165,9 @@ function Support() {
                       : "border-gray-200 focus:border-primary"
                   }`}
                 />
-                {error && <p className="text-red-500 text-center mt-2">{error}</p>}
+                {error && (
+                  <p className="text-red-500 text-center mt-2">{error}</p>
+                )}
                 <MainBtn
                   btnType={"submit"}
                   text={
@@ -148,9 +189,17 @@ function Support() {
       {/* Success Modal */}
       <SuccessModal isOpen={showModal} onClose={() => setShowModal(false)}>
         <div className="flex flex-col items-center justify-center w-400">
-          <img src="/assets/images/success.png" alt="success" className="w-32 mt-6" />
+          <img
+            src="/assets/images/success.png"
+            alt="success"
+            className="w-32 mt-6"
+          />
           <p className="font-bold mt-5">Message sent successfully!</p>
-          <button className="bg-primary text-white p-2 w-40 mt-4 rounded-md" type="button" onClick={() => setShowModal(false)}>
+          <button
+            className="bg-primary text-white p-2 w-40 mt-4 rounded-md"
+            type="button"
+            onClick={() => setShowModal(false)}
+          >
             Done!
           </button>
         </div>

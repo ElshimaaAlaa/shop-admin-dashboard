@@ -90,7 +90,7 @@ function EditCategory() {
     document.body.classList.remove("no-scroll");
   }
   return (
-    <div className="bg-gray-100 h-150vh flex flex-col relative">
+    <div className="bg-gray-100 min-h-screen flex flex-col relative">
       <Helmet>
         <title>Edit Category - VERTEX</title>
         <meta name="description" content="Edit category details in VERTEX" />

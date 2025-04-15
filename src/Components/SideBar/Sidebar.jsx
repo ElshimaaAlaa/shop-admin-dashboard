@@ -93,7 +93,7 @@ const Sidebar = () => {
       id: "clients",
       label: "Customers",
       icon: <Clients />,
-      height: "30px",
+      height: "26px",
       padding: "3px",
       onclick: () => navigate("AllCustomers"),
     },
@@ -130,7 +130,7 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`sidebar bg-black overflow-hidden h-[160vh] w-20 flex flex-col justify-between ${
+      className={`sidebar bg-black w-20  flex flex-col items-center justify-between ${
         expanded ? "expanded" : ""
       }`}
       onMouseEnter={toggleSidebar}
