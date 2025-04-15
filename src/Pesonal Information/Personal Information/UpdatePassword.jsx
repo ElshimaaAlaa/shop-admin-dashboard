@@ -30,7 +30,6 @@ function UpdatePassword() {
     password: "",
     password_confirmation: "",
   };
-
   const validationSchema = Yup.object({
     password: Yup.string()
       .min(8, "Password must be at least 8 characters long")
@@ -62,7 +61,7 @@ function UpdatePassword() {
   return (
     <div>
       <button
-        className="flex items-center gap-2 border border-primary rounded-lg p-3 text-primary mt-5"
+        className="flex items-center gap-2 border border-primary rounded-md p-3 text-primary mt-5"
         onClick={() => setShowModal(true)}
         aria-label="Update password"
       >

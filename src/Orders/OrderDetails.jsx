@@ -54,13 +54,16 @@ function OrderDetails() {
   ];
 
   return (
-    <div className="bg-gray-100 h-150vh pb-10 mx-10 pt-5">
+    <div className="bg-gray-100 min-h-screen pb-10 mx-10 pt-5">
       <Helmet>
         <title>Orders Details | VERTEX</title>
       </Helmet>
       <div className="bg-white mb-5 p-4 rounded-md flex justify-between items-center">
         <h1 className="font-bold text-17">Order Details</h1>
-        <CancelOrder orderId={orderDetail.id} orderStatus={orderDetail.status} />
+        <CancelOrder
+          orderId={orderDetail.id}
+          orderStatus={orderDetail.status}
+        />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
@@ -68,22 +71,31 @@ function OrderDetails() {
           <section className="border border-gray-200 rounded-md p-4 bg-white">
             <div className="flex justify-between">
               <h2 className="font-bold text-17">
-                Order ID: <span className="text-14">{orderDetail.order_number}</span>
+                Order ID:
+                <span className="text-14">{orderDetail.order_number}</span>
               </h2>
-              <p className={`px-2 py-2 rounded-md text-13 ${
-                orderDetail.status === 1
-                  ? "bg-customOrange-mediumOrange text-primary"
-                  : orderDetail.status_name === "Refunded"
-                  ? "bg-red-50 text-red-600"
-                  : ""
-              }`}>
+              <p
+                className={`px-2 py-2 rounded-md text-13 ${
+                  orderDetail.status === 1
+                    ? "bg-customOrange-mediumOrange text-primary"
+                    : orderDetail.status_name === "Refunded"
+                    ? "bg-red-50 text-red-600"
+                    : ""
+                }`}
+              >
                 {orderDetail.status_name}
               </p>
             </div>
             {orderDetail.history?.map((statusItem, index) => (
-              <div key={index} className="flex items-center justify-between mt-5 first:mt-5">
+              <div
+                key={index}
+                className="flex items-center justify-between mt-5 first:mt-5"
+              >
                 <p className="text-14 flex gap-2 items-center">
-                  <FaCheckCircle size={20} color={statusItem.active ? "#E0A75E" : "#D1D5DB"} />
+                  <FaCheckCircle
+                    size={20}
+                    color={statusItem.active ? "#E0A75E" : "#D1D5DB"}
+                  />
                   {statusItem.status_name}
                 </p>
                 <span className="text-gray-400 text-10">
@@ -101,15 +113,17 @@ function OrderDetails() {
               </div>
               <div>
                 <h4 className="text-gray-400 text-15">Payment</h4>
-                <p className={`px-2 py-2 rounded-md text-13 mt-1 ${
-                  orderDetail.payment_status === "unpaid"
-                    ? "bg-gray-100 text-gray-400"
-                    : orderDetail.payment_status === "paid"
-                    ? "text-[#28A513] bg-[#E7F6E5]"
-                    : orderDetail.payment_status === "refund"
-                    ? "text-red-600 bg-red-50"
-                    : ""
-                }`}>
+                <p
+                  className={`px-2 py-2 rounded-md text-13 mt-1 ${
+                    orderDetail.payment_status === "unpaid"
+                      ? "bg-gray-100 text-gray-400"
+                      : orderDetail.payment_status === "paid"
+                      ? "text-[#28A513] bg-[#E7F6E5]"
+                      : orderDetail.payment_status === "refund"
+                      ? "text-red-600 bg-red-50"
+                      : ""
+                  }`}
+                >
                   {orderDetail.payment_status}
                 </p>
               </div>
@@ -141,12 +155,13 @@ function OrderDetails() {
                     <td className="px-3 py-3 w-[214px] border-t border-r text-13">
                       {item.quantity}
                     </td>
-                    <td className="px-3 py-3 w-[214px] border-t border-r text-13">
-                      {item.colors?.map((color) => (
+                    <td className="px-5 py-3 w-[214px] border-t border-r text-13">
+                      {item.product.colors?.map((color) => (
                         <div
                           key={color.id}
-                          className="w-8 h-8 rounded-full -ms-4"
+                          className="w-8 h-8 rounded-full -ms-3 inline-block"
                           style={{ backgroundColor: color.code }}
+                          title={color.name}
                         />
                       ))}
                     </td>
@@ -154,18 +169,25 @@ function OrderDetails() {
                 ))}
               </tbody>
             </table>
-            <section className="bg-gray-100 rounded-lg px-3 py-5 mt-4 flex flex-col gap-8">
+            <section className="bg-gray-100 rounded-lg px-3 py-5 mt-4 flex flex-col gap-7">
               <div className="flex items-center justify-between">
                 <p className="text-15">Subtotal</p>
-                <p className="text-gray-400 text-15">{orderDetail.sub_total}</p>
+                <p className="text-gray-400 text-15">
+                  $ {orderDetail.sub_total || 0}
+                </p>
               </div>
               <div className="flex items-center justify-between">
                 <p className="text-15">Shipping</p>
-                <p className="text-gray-400 text-15">{orderDetail.shipping}</p>
+                <p className="text-gray-400 text-15">
+                  $ {orderDetail.shipping || 0}
+                </p>
               </div>
-              <div className="flex items-center justify-between">
-                <p className="text-15">Total</p>
-                <p className="text-gray-400 text-15">{orderDetail.total}</p>
+              {/* <hr/> */}
+              <div className="flex items-center justify-between border-t-3">
+                <p className="text-15 mt-5">Total</p>
+                <p className="text-gray-400 text-15">
+                  $ {orderDetail.total || 0}
+                </p>
               </div>
             </section>
           </section>
@@ -175,11 +197,16 @@ function OrderDetails() {
               <p className="text-16 mt-6">Payment</p>
               <div className="space-y-2">
                 {orderDetail.transactions?.map((method, index) => (
-                  <div key={`transaction-${index}`} className="flex justify-between">
-                    <span className="text-gray-400 text-14">
-                      {method.payment_method}
+                  <div
+                    key={`transaction-${index}`}
+                    className="flex justify-between"
+                  >
+                    <span className="text-gray-400 text-15">
+                      {method.payment_method || "N/A"}
                     </span>
-                    <span className="text-gray-600">{method.amount}</span>
+                    <span className="text-gray-600">
+                      $ {method.amount || 0}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -190,7 +217,7 @@ function OrderDetails() {
           <div className="grid grid-cols-1 gap-5">
             <section className="border border-gray-200 rounded-md p-4 bg-white">
               <h2 className="font-bold text-15">Shipping Address</h2>
-              <p className="text-11 mt-2">
+              <p className="text-12 mt-2">
                 {orderDetail.shipping_address || "Not Available"}
               </p>
             </section>
@@ -216,25 +243,30 @@ function OrderDetails() {
               <div className="bg-gray-100 border border-gray-200 rounded-md p-2">
                 <div className="flex justify-between items-center">
                   <p className="text-15">Order Total</p>
-                  <p></p>
+                  <p className="text-gray-400 text-15">0</p>
                 </div>
                 <div className="flex justify-between items-center mt-5">
                   <p className="text-15">Return Total</p>
-                  <p></p>
+                  <p className="text-gray-400 text-15">0</p>
                 </div>
                 <hr className="border-gray-300 my-2" />
                 <div className="flex justify-between items-center mt-5">
                   <p className="text-15">Paid by customer</p>
-                  <p></p>
+                  <p className="text-gray-400 text-15">0</p>
                 </div>
-                <div>
+                <div className="flex items-center justify-between">
                   <p className="text-15 mt-5">Refunded</p>
-                  <p></p>
+                  <p className="text-gray-400 text-15">0</p>
                 </div>
                 <hr className="border-gray-300 my-2" />
-                <div className="mt-5">
-                  <p>Balance</p>
-                  <span className="text-gray-500 text-13">(customer owes you)</span>
+                <div className="mt-5 flex justify-between">
+                  <div>
+                    <p>Balance</p>
+                    <span className="text-gray-500 text-13">
+                      (customer owes you)
+                    </span>
+                  </div>
+                  <p className="text-gray-400 text-15">0</p>
                 </div>
               </div>
             </section>

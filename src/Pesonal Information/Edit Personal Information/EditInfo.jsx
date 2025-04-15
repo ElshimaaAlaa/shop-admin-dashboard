@@ -142,7 +142,7 @@ function EditInfo() {
                 <button
                   type="button"
                   className="bg-gray-200 text-gray-500  p-3 w-32 rounded-md"
-                  onClick={() => navigate("/Home/MainInfo")}
+                  onClick={() => navigate("/Dashboard/MainInfo")}
                 >
                   Cancel
                 </button>

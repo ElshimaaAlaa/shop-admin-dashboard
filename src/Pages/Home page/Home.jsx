@@ -14,7 +14,7 @@ function Home() {
         <Sidebar />
         <div className="flex-1 ml-0">
           <Navbar />
-          <div className="mt-0 bg-gray-100 ">
+          <div className="mt-0 bg-gray-100 min-h-screen">
             <Outlet />
           </div>
         </div>

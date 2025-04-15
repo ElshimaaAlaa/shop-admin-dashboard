@@ -5,7 +5,7 @@ import FailedModal from "../Components/Modal/Failed Modal/FailedModal";
 import { ClipLoader } from "react-spinners";
 import "./OrderStyle.scss";
 
-function RejectRefundRequests({ orderId , orderStatus }) {
+function RejectRefundRequests({ orderId, orderStatus }) {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -40,6 +40,11 @@ function RejectRefundRequests({ orderId , orderStatus }) {
       }
     }
   };
+  if (showModal) {
+    document.body.classList.add("no-scroll");
+  } else {
+    document.body.classList.remove("no-scroll");
+  }
   return (
     <div>
       <div className="  cursor-pointer">
@@ -47,7 +52,7 @@ function RejectRefundRequests({ orderId , orderStatus }) {
           color="#DC2626"
           size={30}
           className="cursor-pointer"
-          onClick={()=>setShowModal(true)}
+          onClick={() => setShowModal(true)}
         />
       </div>
       <FailedModal isOpen={showModal} onClose={() => setShowModal(false)}>
