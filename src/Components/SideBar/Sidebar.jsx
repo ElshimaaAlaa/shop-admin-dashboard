@@ -101,6 +101,7 @@ const Sidebar = () => {
       id: "promotions",
       label: "Disc and Promotion",
       icon: <TbDiscount color="#fff" size={22} />,
+      onclick : ()=>navigate('AllDiscounts')
     },
     {
       id: "reports",

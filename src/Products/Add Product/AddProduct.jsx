@@ -23,7 +23,6 @@ const AddProduct = () => {
   const [previewImages, setPreviewImages] = useState([]);
   const [isDiscountScheduled, setIsDiscountScheduled] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [dynamicHeight, setDynamicHeight] = useState("h-auto");
 
   const initialValues = {
     name: "",
@@ -249,16 +248,6 @@ const AddProduct = () => {
     setFieldValue("tags_ids", selectedTags);
   };
 
-  useEffect(() => {
-    if (categoryType === "Both") {
-      setDynamicHeight("h-[400vh]");
-    } else if (categoryType === "Color" || categoryType === "Size") {
-      setDynamicHeight("h-[300vh]");
-    } else {
-      setDynamicHeight("h-[150vh]");
-    }
-  }, [categoryType]);
-
   if (showModal) {
     document.body.classList.add("no-scroll");
   } else {
@@ -266,7 +255,7 @@ const AddProduct = () => {
   }
 
   return (
-    <div className={`bg-gray-100 flex flex-col ${dynamicHeight} relative`}>
+    <div className={`bg-gray-100 pb-32 min-h-screen relative`}>
       <Helmet>
         <title>Add New Product - VERTEX</title>
         <meta name="description" content="Add a new product to VERTEX" />

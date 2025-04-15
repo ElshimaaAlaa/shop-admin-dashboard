@@ -44,7 +44,6 @@ function EditProduct() {
   const [tagsToRemove, setTagsToRemove] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [dynamicHeight, setDynamicHeight] = useState("h-auto");
   const [isDiscountScheduled, setIsDiscountScheduled] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true);
   const { state } = useLocation();
@@ -301,16 +300,6 @@ function EditProduct() {
   const hasColors = product.colors && product.colors.length > 0;
   const hasSizes = product.sizes && product.sizes.length > 0;
 
-  useEffect(() => {
-    if (hasSizes && hasColors) {
-      setDynamicHeight("h-[400vh]");
-    } else if (hasSizes || hasColors) {
-      setDynamicHeight("h-[300vh]");
-    } else {
-      setDynamicHeight("h-[150vh]");
-    }
-  }, [hasColors, hasSizes]);
-
   const validate = (values) => {
     const errors = {};
     if (!values.name) errors.name = "Required";
@@ -327,7 +316,7 @@ function EditProduct() {
   }
 
   return (
-    <div className={`bg-gray-100 flex flex-col ${dynamicHeight} relative`}>
+    <div className={`bg-gray-100 flex flex-col min-h-screen pb-32 relative`}>
       <Helmet>
         <title>Edit Product - VERTEX</title>
         <meta name="description" content="Edit product details in VERTEX" />

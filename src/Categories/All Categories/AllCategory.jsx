@@ -13,7 +13,7 @@ function AllCategory() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5);
+  const [itemsPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 

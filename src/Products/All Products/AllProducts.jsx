@@ -109,7 +109,7 @@ function AllProducts() {
   }, [filteredProducts, pagination]);
 
   return (
-    <div className="bg-gray-100 h-150vh mx-10 pt-5">
+    <div className="bg-gray-100 min-h-screen mx-10 pt-5">
       <Helmet>
         <title>All Products | VERTEX</title>
       </Helmet>
