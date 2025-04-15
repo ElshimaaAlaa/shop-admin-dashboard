@@ -1,20 +1,45 @@
 import React, { useState } from "react";
 import FailedModal from "../../Components/Modal/Failed Modal/FailedModal";
 import { ClipLoader } from "react-spinners";
-import { RiDeleteBin6Fill } from "react-icons/ri";
+import axios from "axios";
 function DeleteDiscount({ onDelete, id }) {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const API_BASE_URL = "https://";
+  const live_shop_domain = localStorage.getItem("live_shop_domain");
+  const role = localStorage.getItem("role");
+
   const handleDeleteDiscount = async () => {
     setIsLoading(true);
     try {
-    } catch (error) {}
+      const response = await axios({
+        url: `${API_BASE_URL}${live_shop_domain}/api/${role}/promotions/delete/${id}`,
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      if (response.status === 200) {
+        console.log("success delete promotions");
+        setIsLoading(false)
+        setShowModal(false)
+      }
+    } catch (error) {
+      console.error("Failed to delete promotions", error);
+      setIsLoading(false)
+        setShowModal(false)
+    }
   };
   return (
     <div>
-      <button className="h-6 w-6 p-1" onClick={() => setShowModal(true)}>
-        <RiDeleteBin6Fill className="h-4 w-4 text-red-600" size={18}/>
-      </button>
+      <div className=" cursor-pointer" onClick={() => setShowModal(true)}>
+        <img
+          src="/assets/svgs/deleteIcon.svg"
+          alt="delete category"
+          className="w-5 ms-2"
+        />
+      </div>
+
       <FailedModal isOpen={showModal} onClose={() => setShowModal(false)}>
         <div className="p-5">
           <img
