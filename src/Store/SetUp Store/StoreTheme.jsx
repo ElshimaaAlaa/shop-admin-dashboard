@@ -92,12 +92,13 @@ function ThemeStore() {
           theme_primary_color: values.theme_primary_color,
           theme_secondary_color: values.theme_secondary_color,
           banners: bannersData,
-          image:previewImage,
+          image: previewImage,
         })
       );
       const response = await setUpStore(formData);
       if (response?.status === true || response?.code === 200) {
         console.log("Navigation to StoreProfile");
+        console.log("response", response);
         navigate("/Register/StoreProfile", { replace: true });
       } else {
         throw new Error(response?.message || "Theme setup failed");

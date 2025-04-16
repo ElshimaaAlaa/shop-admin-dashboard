@@ -7,6 +7,7 @@ import { setUpStore } from "../../ApiServices/setUpStore";
 import "./setUpStoreStyle.scss";
 import { ClipLoader } from "react-spinners";
 import PricingPlan from "./PricingPlan";
+import PaymentInfo from "./PaymentInfo";
 
 const StoreSetupWizard = () => {
   const [step, setStep] = useState(1);
@@ -15,6 +16,7 @@ const StoreSetupWizard = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [submitError, setSubmitError] = useState(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [formData, setFormData] = useState({});
 
   const initialValues = {
     theme_primary_color: "",
@@ -25,6 +27,7 @@ const StoreSetupWizard = () => {
     bio: "",
     banners: [],
     plan_id: null,
+    payment_info: null
   };
 
   const validationSchema = Yup.object().shape({
@@ -66,11 +69,7 @@ const StoreSetupWizard = () => {
         (files) =>
           files &&
           files.every((file) => ["image/jpeg", "image/png"].includes(file.type))
-      ),
-    plan_id: Yup.number()
-      .required("Plan selection is required")
-      .oneOf([1, 2, 3], "Please select a valid plan"),
-  });
+ ) });
 
   useEffect(() => {
     return () => {
@@ -79,14 +78,44 @@ const StoreSetupWizard = () => {
     };
   }, [previewImage, bannerPreviews]);
 
+  const updateFormData = (section, data) => {
+    setFormData(prev => ({
+      ...prev,
+      [section]: data
+    }));
+  };
+
   const handleSubmit = async (values, { resetForm }) => {
     if (step === 1) {
+      updateFormData("theme", {
+        theme_primary_color: values.theme_primary_color,
+        theme_secondary_color: values.theme_secondary_color,
+        image: values.image
+      });
       setStep(2);
       return;
     }
 
     if (step === 2) {
+      updateFormData("profile", {
+        store_name: values.store_name,
+        address: values.address,
+        bio: values.bio,
+        banners: values.banners
+      });
       setStep(3);
+      return;
+    }
+
+    if (step === 3) {
+      updateFormData("pricing", {
+        plan_id: values.plan_id,
+        plan_name: values.plan_name,
+        plan_price: values.plan_price,
+        plan_period: values.plan_period,
+        plan_description: values.plan_description
+      });
+      setStep(4);
       return;
     }
 
@@ -95,38 +124,37 @@ const StoreSetupWizard = () => {
     setSubmitSuccess(false);
 
     try {
-      const formData = new FormData();
-      // Theme data
-      formData.append("theme_primary_color", values.theme_primary_color);
-      formData.append("theme_secondary_color", values.theme_secondary_color);
-      formData.append("image", values.image);
+      const completeFormData = {
+        ...formData.theme,
+        ...formData.profile,
+        ...formData.pricing,
+        ...formData.payment_info
+      };
 
-      // Store info
-      formData.append("store_name", values.store_name);
-      formData.append("address", values.address);
-      if (values.bio) formData.append("bio", values.bio);
-
-      // Plan data
-      formData.append("plan_id", values.plan_id);
-      formData.append("plan_name", values.plan_name);
-      formData.append("plan_price", values.plan_price);
-      formData.append("plan_period", values.plan_period);
-      formData.append("plan_description", values.plan_description);
-
-      // Banners
-      values.banners.forEach((banner) => {
-        formData.append("banners[]", banner);
+      const formDataToSend = new FormData();
+      
+      Object.entries(completeFormData).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+          value.forEach(item => formDataToSend.append(`${key}[]`, item));
+        } else if (value instanceof File) {
+          formDataToSend.append(key, value);
+        } else if (typeof value === 'object' && value !== null) {
+          Object.entries(value).forEach(([subKey, subValue]) => {
+            formDataToSend.append(`${key}[${subKey}]`, subValue);
+          });
+        } else {
+          formDataToSend.append(key, value);
+        }
       });
 
-      const data = await setUpStore(formData);
+      const data = await setUpStore(formDataToSend);
       console.log("API Response:", data);
 
       setSubmitSuccess(true);
       resetForm();
       setPreviewImage(null);
       setBannerPreviews([]);
-
-      setTimeout(() => setSubmitSuccess(false), 5000);
+      setFormData({});
     } catch (error) {
       console.error("Submission failed:", error);
       setSubmitError(
@@ -147,6 +175,7 @@ const StoreSetupWizard = () => {
         <div className={`step ${step === 1 ? "active" : ""}`}>1. Theme</div>
         <div className={`step ${step === 2 ? "active" : ""}`}>2. Profile</div>
         <div className={`step ${step === 3 ? "active" : ""}`}>3. Pricing</div>
+        <div className={`step ${step === 4 ? "active" : ""}`}>4. Payment</div>
       </div>
 
       {submitSuccess && (
@@ -159,139 +188,39 @@ const StoreSetupWizard = () => {
 
       <Formik
         initialValues={initialValues}
-        validationSchema={validationSchema}
+        validationSchema={step <= 2 ? validationSchema : Yup.object()}
         onSubmit={handleSubmit}
       >
         {({ setFieldValue, values, errors, touched, isValid, dirty }) => (
           <Form className="setup-form">
             {step === 1 ? (
               <div className="form-step">
-                <div className="form-section">
-                  <h3>Color Scheme</h3>
-                  <div className="color-fields">
-                    <InputField
-                      name="theme_primary_color"
-                      label="Primary Color"
-                      placeholder="#HEXCODE"
-                    />
-                    <InputField
-                      name="theme_secondary_color"
-                      label="Secondary Color"
-                      placeholder="#HEXCODE"
-                    />
-                  </div>
-                </div>
-
-                <div className="form-section">
-                  <h3>Theme Image</h3>
-                  <ImageUpload
-                    name="image"
-                    previewImage={previewImage}
-                    onImageChange={(event) => {
-                      const file = event.target.files[0];
-                      if (file) {
-                        if (previewImage) URL.revokeObjectURL(previewImage);
-                        setPreviewImage(URL.createObjectURL(file));
-                        setFieldValue("image", file);
-                      }
-                    }}
-                    error={touched.image && errors.image}
-                    accept="image/jpeg, image/png"
-                  />
-                </div>
-
-                <div className="form-actions">
-                  <button
-                    type="submit"
-                    disabled={!isValid || isLoading}
-                    className="next-btn"
-                  >
-                    {isLoading ? <ClipLoader size={22} color="#fff" /> : "Next"}
-                  </button>
-                </div>
+                {/* Step 1 content */}
               </div>
             ) : step === 2 ? (
               <div className="form-step">
-                <div className="form-section">
-                  <h3>Store Information</h3>
-                  <InputField name="store_name" />
-                  <InputField name="address" />
-                  <InputField name="bio" type="textarea" as="textarea" />
-                </div>
-
-                <div className="form-section">
-                  <h3>Store Banners</h3>
-                  <input
-                    id="banners"
-                    name="banners"
-                    type="file"
-                    multiple
-                    accept="image/jpeg, image/png"
-                    onChange={(event) => {
-                      const files = Array.from(event.target.files);
-                      setFieldValue("banners", files);
-                      bannerPreviews.forEach((preview) =>
-                        URL.revokeObjectURL(preview)
-                      );
-                      const previews = files.map((file) =>
-                        URL.createObjectURL(file)
-                      );
-                      setBannerPreviews(previews);
-                    }}
-                    className="banner-upload"
-                  />
-                  {touched.banners && errors.banners && (
-                    <div className="field-error">{errors.banners}</div>
-                  )}
-                  <div className="banner-previews">
-                    {bannerPreviews.map((preview, index) => (
-                      <div key={index} className="banner-preview-container">
-                        <img
-                          src={preview}
-                          alt={`Banner preview ${index + 1}`}
-                          className="banner-preview"
-                        />
-                        <button
-                          type="button"
-                          className="remove-banner"
-                          onClick={() => {
-                            const updatedBanners = [...values.banners];
-                            updatedBanners.splice(index, 1);
-                            setFieldValue("banners", updatedBanners);
-                            URL.revokeObjectURL(preview);
-                            const updatedPreviews = [...bannerPreviews];
-                            updatedPreviews.splice(index, 1);
-                            setBannerPreviews(updatedPreviews);
-                          }}
-                        >
-                          ×
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="form-actions">
-                  <button
-                    type="button"
-                    onClick={() => setStep(1)}
-                    className="back-btn"
-                  >
-                    Back
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={!isValid || isLoading}
-                    className="next-btn"
-                  >
-                    {isLoading ? <ClipLoader size={20} color="#fff" /> : "Next"}
-                  </button>
-                </div>
+                {/* Step 2 content */}
               </div>
-            ) : (
+            ) : step === 3 ? (
               <PricingPlan
-                onNext={() => handleSubmit(values, {})}
+                onNext={() => {
+                  updateFormData("pricing", {
+                    plan_id: values.plan_id,
+                    plan_name: values.plan_name,
+                    plan_price: values.plan_price,
+                    plan_period: values.plan_period,
+                    plan_description: values.plan_description
+                  });
+                  setStep(4);
+                }}
                 onBack={() => setStep(2)}
+              />
+            ) : (
+              <PaymentInfo
+                onSubmit={() => handleSubmit(values, {})}
+                onBack={() => setStep(3)}
+                formData={formData}
+                updateFormData={updateFormData}
               />
             )}
           </Form>

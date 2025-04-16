@@ -5,6 +5,7 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import { setUpStore } from "../../ApiServices/setUpStore";
 const PLANS = [
   {
     id: 1,
@@ -19,7 +20,7 @@ const PLANS = [
       "Email support",
       "Community access",
     ],
-    icon:"/assets/svgs/Featured icon.svg"
+    icon: "/assets/svgs/Featured icon.svg"
   },
   {
     id: 2,
@@ -34,7 +35,7 @@ const PLANS = [
       "Priority support",
       "Marketing tools",
     ],
-    icon:"/assets/svgs/Featured icon (1).svg"
+    icon: "/assets/svgs/Featured icon (1).svg"
   },
   {
     id: 3,
@@ -49,7 +50,7 @@ const PLANS = [
       "24/7 support",
       "Custom domain",
     ],
-    icon:"/assets/svgs/Featured icon (2).svg"
+    icon: "/assets/svgs/Featured icon (2).svg"
   },
 ];
 
@@ -61,6 +62,7 @@ export default function PricingPlan({
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
   const steps = [
     { number: 1, title: "Store Theme" },
@@ -72,40 +74,44 @@ export default function PricingPlan({
     const plan = PLANS.find((p) => p.id === planId);
     if (plan) {
       setSelectedPlan(plan);
+      setError(null);
       if (updateFormData) {
         updateFormData("plan_id", plan.id);
-        updateFormData("plan_name", plan.name);
-        updateFormData("plan_price", plan.price);
-        updateFormData("plan_period", plan.period);
-        updateFormData("plan_description", plan.description);
       }
-      console.log(plan.id)
     }
-    
   };
 
   const handleNext = async () => {
     if (!selectedPlan) {
-      alert("Please select a plan");
+      setError("Please select a plan");
       return;
     }
 
     setIsLoading(true);
+    setError(null);
     
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-       navigate('/Register/PaymentInfo')
-      if (onNext) {
-        onNext({
-          plan_id: selectedPlan.id,
-          plan_name: selectedPlan.name,
-          plan_price: selectedPlan.price,
-          plan_period: selectedPlan.period,
-          plan_description: selectedPlan.description
-        });
+      const formDataToSend = new FormData();
+      formDataToSend.append('plan_id', selectedPlan.id);
+      
+      if (formData.store_name) formDataToSend.append('store_name', formData.store_name);
+      if (formData.store_description) formDataToSend.append('store_description', formData.store_description);
+      if (formData.store_theme) formDataToSend.append('store_theme', formData.store_theme);
+      if (formData.store_logo) formDataToSend.append('store_logo', formData.store_logo);
+      const response = await setUpStore(formDataToSend);
+      if (response) {
+        console.log('response princing plan' , response)
+        navigate('/Register/PaymentInfo');
+        if (onNext) {
+          onNext({
+            plan_id: selectedPlan.id,
+            ...response.data 
+          });
+        }
       }
     } catch (error) {
-      console.error("Error submitting plan:", error);
+      console.error("Error setting up store:", error);
+      setError(error.message || "Failed to setup store. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -114,7 +120,7 @@ export default function PricingPlan({
   return (
     <div className="min-h-screen bg-gradient-to-r from-customBlue-mediumBlue via-customOrange-mediumOrange to-customOrange-mediumOrange p-6 flex items-center justify-center">
       <Helmet>
-        <title>Set Up Store </title>
+        <title>Set Up Store</title>
       </Helmet>
       <div className="w-full lg:w-750 md:w-700px bg-white rounded-lg shadow-lg">
         <div className="flex justify-center my-7">
@@ -136,6 +142,12 @@ export default function PricingPlan({
         <p className="text-12 mt-1 text-gray-600 text-center mb-8">
           Choose The Perfect Plan For Your Needs
         </p>
+        
+        {error && (
+          <div className="mx-6 mb-4 p-2 bg-red-100 text-red-700 text-sm rounded">
+            {error}
+          </div>
+        )}
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 px-6 mb-8">
           {PLANS.map((plan) => (
@@ -187,7 +199,7 @@ export default function PricingPlan({
 
         <div className="flex justify-between mt-4 my-5 mx-5">
           <button
-            onClick={()=>navigate('/Register/StoreProfile')}
+            onClick={() => navigate('/Register/StoreProfile')}
             className="flex items-center font-bold gap-3 text-dark px-6 py-2"
           >
             <FaArrowLeftLong size={15} /> Back
@@ -210,6 +222,7 @@ export default function PricingPlan({
     </div>
   );
 }
+
 PricingPlan.propTypes = {
   onNext: PropTypes.func,
   onBack: PropTypes.func,
@@ -219,6 +232,10 @@ PricingPlan.propTypes = {
     plan_price: PropTypes.number,
     plan_period: PropTypes.string,
     plan_description: PropTypes.string,
+    store_name: PropTypes.string,
+    store_description: PropTypes.string,
+    store_theme: PropTypes.string,
+    store_logo: PropTypes.any,
   }),
   updateFormData: PropTypes.func.isRequired,
 };
@@ -230,5 +247,9 @@ PricingPlan.defaultProps = {
     plan_price: 0,
     plan_period: "",
     plan_description: "",
+    store_name: "",
+    store_description: "",
+    store_theme: "",
+    store_logo: null,
   },
 };

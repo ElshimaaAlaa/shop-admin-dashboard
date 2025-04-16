@@ -63,6 +63,8 @@ const StoreProfile = () => {
 
       if (response.status === true || response.code === 200) {
         localStorage.removeItem("storeProfileData");
+        console.log("response store profile", response);
+
         setTimeout(() => navigate("/Register/PricingPlan"), 1500);
         localStorage.setItem(
           "storeProfileData",

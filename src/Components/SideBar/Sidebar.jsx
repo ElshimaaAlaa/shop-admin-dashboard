@@ -101,7 +101,7 @@ const Sidebar = () => {
       id: "promotions",
       label: "Disc and Promotion",
       icon: <TbDiscount color="#fff" size={22} />,
-      onclick : ()=>navigate('AllDiscounts')
+      onclick: () => navigate("AllDiscounts"),
     },
     {
       id: "reports",
@@ -112,6 +112,23 @@ const Sidebar = () => {
       id: "settings",
       label: "Settings",
       icon: <Settings />,
+      subItems: [
+        {
+          id: "shipping-providers",
+          label: "Shipping Providers",
+          onclick: () => navigate("ShippingProviders"),
+        },
+        {
+          id: "payment-methods",
+          label: "Payment Methods",
+          onclick: () => navigate(""),
+        },
+        {
+          id: "Customers-support-questions",
+          label: "Customers Support Questions",
+          onclick: () => navigate(""),
+        },
+      ],
     },
   ];
   const bottomMenuItems = [

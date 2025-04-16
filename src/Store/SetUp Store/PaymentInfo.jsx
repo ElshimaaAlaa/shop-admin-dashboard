@@ -1,15 +1,28 @@
 import { Form, Formik, Field } from "formik";
-import React from "react";
+import React, { useState } from "react";
 import * as Yup from "yup";
 import InputField from "../../Components/InputFields/InputField";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { Helmet } from "react-helmet";
-function PaymentInfo({ onSubmit, onBack, formData, updateFormData }) {
+import { setUpStore } from "../../ApiServices/setUpStore";
+import { ClipLoader } from "react-spinners";
+import { useNavigate } from "react-router-dom";
+
+function PaymentInfo({
+  onSubmit,
+  onBack,
+  formData,
+  updateFormData = () => {},
+}) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
+  const navigate = useNavigate();
+
   const initialValues = {
     name: "",
     email: "",
-    phone_number: "",
-    payment_method: "credit_card",
+    phone: "",
+    payment_method: "",
     card_holder_name: "",
     card_number: "",
     expiration_date: "",
@@ -19,22 +32,13 @@ function PaymentInfo({ onSubmit, onBack, formData, updateFormData }) {
   const validationSchema = Yup.object({
     name: Yup.string().required("Name is required"),
     email: Yup.string().email("Invalid email").required("Email is required"),
-    phone_number: Yup.string()
-      .matches(/^[0-9]+$/, "Must be only digits")
-      .min(10, "Must be at least 10 digits")
-      .required("Phone number is required"),
+    phone: Yup.string().required("Phone number is required"),
     payment_method: Yup.string().required("Payment method is required"),
-    card_number: Yup.string().required(),
-    expiration_date: Yup.string().required(),
-    cvv: Yup.string().required(),
-    paypal_email: Yup.string().required(),
-    google_pay_token: Yup.string().required(),
+    card_holder_name: Yup.string(),
+    card_number: Yup.string().required("Card number is required"),
+    expiration_date: Yup.string().required("Expiration date is required"),
+    card_cvv: Yup.string().required("CVV is required"),
   });
-
-  const handleSubmit = (values) => {
-    updateFormData("payment_info", values);
-    onSubmit();
-  };
 
   const paymentMethods = [
     {
@@ -51,12 +55,48 @@ function PaymentInfo({ onSubmit, onBack, formData, updateFormData }) {
     },
   ];
 
+  const handleSubmit = async (values) => {
+    setIsLoading(true);
+    setSubmitError(null);
+    try {
+      const selectedMethod = paymentMethods.find(
+        (method) => method.id === values.payment_method
+      );
+
+      const formDataToSend = new FormData();
+      formDataToSend.append("name", values.name);
+      formDataToSend.append("phone", values.phone);
+      formDataToSend.append("email", values.email);
+      formDataToSend.append(
+        "payment_method",
+        selectedMethod ? selectedMethod.label : values.payment_method
+      );
+      formDataToSend.append("card_holder_name", values.card_holder_name);
+      formDataToSend.append("card_number", values.card_number);
+      formDataToSend.append("card_exp_date", values.expiration_date);
+      formDataToSend.append("card_cvv", values.card_cvv);
+
+      const response = await setUpStore(formDataToSend);
+      console.log("response payment info", response);
+      navigate("/Register/ShippingProvider");
+    } catch (error) {
+      console.error("Submission failed:", error);
+      setSubmitError(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to complete store setup"
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-r from-customBlue-mediumBlue via-customOrange-mediumOrange to-customOrange-mediumOrange p-6 flex items-center justify-center">
       <Helmet>
-        <title>Set Up Store </title>
+        <title>Set Up Store</title>
       </Helmet>
-      <div className="w-full lg:w-600px md:w-600px bg-white rounded-lg shadow-lg">
+      <div className="w-full lg:w-[600px] md:w-[600px] bg-white rounded-lg shadow-lg">
         <div className="flex justify-center my-7">
           <img src="/assets/svgs/vertex.svg" alt="logo" className="w-28" />
         </div>
@@ -65,6 +105,12 @@ function PaymentInfo({ onSubmit, onBack, formData, updateFormData }) {
           <h2 className="text-17 font-bold">Enter Your Payment Info</h2>
           <p className="text-14 text-gray-500">To Complete the Process</p>
         </div>
+
+        {submitError && (
+          <div className="alert alert-error mx-6 my-4 p-3 rounded-md bg-red-100 text-red-700">
+            {submitError}
+          </div>
+        )}
 
         <Formik
           initialValues={initialValues}
@@ -78,22 +124,22 @@ function PaymentInfo({ onSubmit, onBack, formData, updateFormData }) {
                 <InputField name="name" placeholder="Name" />
                 <InputField name="email" placeholder="Email" type="email" />
               </div>
-              <div className="flex gap-3 mt-3">
+              <div className="flex gap-3 mt-3 w-[274px]">
                 <InputField
-                  name="phone_number"
+                  name="phone"
                   placeholder="Phone Number"
                   type="tel"
                 />
               </div>
 
               <h2 className="font-bold mt-4 mb-3">Payment Method</h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
                 {paymentMethods.map((method) => (
                   <label
                     key={method.id}
-                    className={`rounded-md p-3 flex items-center gap-2 text-13 cursor-pointer transition-colors ${
+                    className={`rounded-lg p-3 flex items-center gap-2 font-bold text-14 cursor-pointer transition-colors ${
                       values.payment_method === method.id
-                        ? "bg-primary-light border border-primary"
+                        ? "bg-primary-light border border-primary bg-customOrange-mediumOrange"
                         : "bg-gray-100 hover:bg-gray-200"
                     }`}
                   >
@@ -106,16 +152,36 @@ function PaymentInfo({ onSubmit, onBack, formData, updateFormData }) {
                         setFieldValue("payment_method", method.id)
                       }
                     />
-                    <img src={method.icon} alt={method.label} className="w-6" />
+                    <img
+                      src={method.icon}
+                      alt={method.label}
+                      className="w-10"
+                    />
                     {method.label}
                   </label>
                 ))}
               </div>
 
-              {values.payment_method === "credit_card" && (
-                <div className="mt-4 bg-gray-50 rounded-md p-4 border border-gray-200">
-                  <h2 className="font-bold mb-3">Card Details</h2>
-                  <div className="flex gap-3">
+              {values.payment_method && (
+                <div className="bg-gray-100 p-4 rounded-md">
+                  <h4 className="font-bold mt-4 mb-3">Payment Data</h4>
+                  <div className="flex items-center gap-3">
+                    <InputField name="card_cvv" placeholder="CVV" />
+                    <Field
+                      name="expiration_date"
+                      placeholder="MM/YY"
+                      type="date"
+                      className={`w-full h-14 p-3 border-2 rounded-md outline-none transition-all duration-200 placeholder:text-14 focus:border-primary`}
+                      onChange={(e) => {
+                        let value = e.target.value;
+                        if (value.length === 2 && !value.includes("/")) {
+                          value = value + "/";
+                        }
+                        setFieldValue("expiration_date", value);
+                      }}
+                    />
+                  </div>
+                  <div className="flex items-center gap-3 mt-3">
                     <InputField
                       name="card_holder_name"
                       placeholder="Card Holder Name"
@@ -123,22 +189,8 @@ function PaymentInfo({ onSubmit, onBack, formData, updateFormData }) {
                     <InputField
                       name="card_number"
                       placeholder="Card Number"
-                      type="text"
-                      maxLength="16"
-                    />
-                  </div>
-                  <div className="flex gap-3 mt-3">
-                    <InputField
-                      name="expiration_date"
-                      placeholder="Expiration Date (MM/YY)"
-                      type="text"
-                      maxLength="5"
-                    />
-                    <InputField
-                      name="cvv"
-                      placeholder="CVV"
-                      type="text"
-                      maxLength="4"
+                      type="tel"
+                      inputMode="numeric"
                     />
                   </div>
                 </div>
@@ -147,16 +199,23 @@ function PaymentInfo({ onSubmit, onBack, formData, updateFormData }) {
               <div className="flex items-center gap-3 justify-end my-5">
                 <button
                   type="button"
-                  onClick={onBack}
+                  onClick={() => navigate("/Register/PaymentInfo")}
                   className="bg-gray-100 text-gray-400 w-36 rounded-md px-6 py-2 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
+                  disabled={isLoading}
                   className="bg-primary text-white flex w-36 justify-center text-16 items-center rounded-md px-6 py-2 gap-3 hover:bg-primary-dark transition-colors"
                 >
-                  Pay Now <FaArrowRightLong />
+                  {isLoading ? (
+                    <ClipLoader size={20} color="#fff" />
+                  ) : (
+                    <>
+                      Pay Now <FaArrowRightLong />
+                    </>
+                  )}
                 </button>
               </div>
             </Form>
@@ -166,5 +225,4 @@ function PaymentInfo({ onSubmit, onBack, formData, updateFormData }) {
     </div>
   );
 }
-
 export default PaymentInfo;
