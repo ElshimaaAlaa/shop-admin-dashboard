@@ -2,32 +2,31 @@ import React, { useState } from "react";
 import axios from "axios";
 import { ClipLoader } from "react-spinners";
 import FailedModal from "../../Components/Modal/Failed Modal/FailedModal";
-import "./style.scss";
-function DeleteShipping({ id, onDelete }) {
+function DeletePayment({ id, onDelete }) {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const API_BASE_URL = "https://";
   const live_shop_domain = localStorage.getItem("live_shop_domain");
   const role = localStorage.getItem("role");
 
-  const handleDeleteShippingProvider = async () => {
+  const handleDeletePaymentMathod = async () => {
     setIsLoading(true);
     try {
       const response = await axios({
-        url: `${API_BASE_URL}${live_shop_domain}/api/${role}/shipping-providers/delete/${id}`,
+        url: `${API_BASE_URL}${live_shop_domain}/api/${role}/payment-methods/delete/${id}`,
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
       if (response.status === 200) {
-        console.log("success delete Shipping provider");
+        console.log("success delete Payment method");
         setIsLoading(false);
         setShowModal(false);
         window.location.reload();
       }
     } catch (error) {
-      console.error("Failed to delete Shipping provider", error);
+      console.error("Failed to delete Payment method", error);
       setIsLoading(false);
       setShowModal(false);
     }
@@ -55,7 +54,7 @@ function DeleteShipping({ id, onDelete }) {
           />
         </div>
         <p className="font-bold w-72 text-center">
-          Are You Sure You Want To Delete This Shipping Provider ?
+          Are You Sure You Want To Delete This Payment Method ?
         </p>
         <div className="flex gap-3 mt-5 mb-3">
           <button
@@ -66,7 +65,7 @@ function DeleteShipping({ id, onDelete }) {
           </button>
           <button
             className="rounded text-white bg-customred font-bold p-3 w-32"
-            onClick={handleDeleteShippingProvider}
+            onClick={handleDeletePaymentMathod}
           >
             {isLoading ? (
               <ClipLoader color="#fff" size={"22px"} className="text-center" />
@@ -79,4 +78,4 @@ function DeleteShipping({ id, onDelete }) {
     </div>
   );
 }
-export default DeleteShipping;
+export default DeletePayment;

@@ -38,6 +38,7 @@ import CustomerDetail from "./Customers/CustomerDetail";
 import AddDiscounts from "./DisCounts and Promotions/Add Discounts/AddDiscounts";
 import ShippingProvider from "./Store/SetUp Store/ShippingProvider";
 import ShippingProviders from "./Settings/Shipping Providers/ShippingProviders";
+import PaymentMethods from "./Settings/Payment Methods/PaymentMethods";
 
 function App() {
   return (
@@ -118,6 +119,7 @@ function App() {
           <Route path="Faqs" element={<Faqs />} />
           {/* settings */}
           <Route path="ShippingProviders" element={<ShippingProviders />} />
+          <Route path="PaymentMethods" element={<PaymentMethods/>}/>
         </Route>
       </Routes>
     </BrowserRouter>

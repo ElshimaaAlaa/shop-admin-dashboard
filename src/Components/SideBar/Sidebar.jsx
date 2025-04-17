@@ -121,7 +121,7 @@ const Sidebar = () => {
         {
           id: "payment-methods",
           label: "Payment Methods",
-          onclick: () => navigate(""),
+          onclick: () => navigate("PaymentMethods"),
         },
         {
           id: "Customers-support-questions",

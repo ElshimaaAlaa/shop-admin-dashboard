@@ -5,17 +5,15 @@ import { Plus } from "lucide-react";
 import { ClipLoader } from "react-spinners";
 import ReactPaginate from "react-paginate";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { fetchShippingProviders } from "../../ApiServices/ShippingProviders";
-import DeleteShipping from "./DeleteShipping";
-import AddShippingProvider from "./AddShippingProvider";
-import { FaShippingFast } from "react-icons/fa";
-
-function ShippingProviders() {
+import { fetchPaymentMethods } from "../../ApiServices/PaymentMethods";
+import { MdPayment } from "react-icons/md";
+import DeletePayment from "./DletePayment";
+function PaymentMethods() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [shippingData, setShippingData] = useState([]);
+  const [paymentData, setPaymentData] = useState([]);
   const [pagination, setPagination] = useState({
     current_page: 1,
     per_page: 10,
@@ -27,12 +25,12 @@ function ShippingProviders() {
     const getShippingProviders = async () => {
       setIsLoading(true);
       try {
-        const response = await fetchShippingProviders(
+        const response = await fetchPaymentMethods(
           searchQuery,
           pagination.current_page,
           pagination.per_page
         );
-        setShippingData(response.data || []);
+        setPaymentData(response.data || []);
         setPagination(
           response.pagination || {
             current_page: 1,
@@ -44,7 +42,7 @@ function ShippingProviders() {
       } catch (error) {
         console.error("Error fetching shipping providers:", error);
         setError(true);
-        setShippingData([]);
+        setPaymentData([]);
       } finally {
         setIsLoading(false);
       }
@@ -66,17 +64,17 @@ function ShippingProviders() {
   return (
     <div className="bg-gray-100 flex flex-col min-h-screen ">
       <Helmet>
-        <title>Shipping Providers | vertex</title>
+        <title>Payment Methods | vertex</title>
       </Helmet>
       <h1 className="font-bold rounded-md p-5 text-17 mx-10 bg-white mt-5">
-        Shipping Providers
+        Payment Methods
       </h1>
       <div className="rounded-md bg-customOrange-mediumOrange border mt-3 border-primary p-4 mx-10 flex items-center justify-between">
         <div className="flex items-center gap-1">
-          <FaShippingFast color="#E0A75E" size={22}/>
-          <p className="text-gray-500 text-14">Shipping Providers</p>
+          <MdPayment color="#E0A75E" size={22} />
+          <p className="text-gray-500 text-14">Payment Methods</p>
         </div>
-        <p>{shippingData.length}</p>
+        <p>{paymentData.length}</p>
       </div>
       <div className="bg-white rounded-md p-5 mx-10 my-3">
         <SearchBar
@@ -86,7 +84,7 @@ function ShippingProviders() {
               size={20}
             />
           }
-          text={"Add Shipping Provider"}
+          text={"Add Payment Method"}
           onclick={() => setShowModal(true)}
           value={searchQuery}
           onchange={(e) => {
@@ -94,10 +92,10 @@ function ShippingProviders() {
             setPagination((prev) => ({ ...prev, current_page: 1 }));
           }}
         />
-        <AddShippingProvider
+        {/* <AddSPaymentMethod
           isOpen={showModal}
           onClose={() => setShowModal(false)}
-        />
+        /> */}
         {error ? (
           <div className="text-red-500 text-center mt-10">
             Failed to fetch data. Please try again.
@@ -106,11 +104,11 @@ function ShippingProviders() {
           <div className="text-gray-400 text-center mt-10">
             <ClipLoader color="#E0A75E" />
           </div>
-        ) : shippingData.length === 0 ? (
+        ) : paymentData.length === 0 ? (
           <div className="text-gray-400 text-center mt-10">
             {searchQuery
-              ? "No shipping providers match your search."
-              : "No shipping providers found."}
+              ? "No payment methods match your search."
+              : "No payment methods found."}
           </div>
         ) : (
           <>
@@ -125,7 +123,7 @@ function ShippingProviders() {
                           className="form-checkbox h-4 w-4"
                           aria-label="Select all categories"
                         />
-                        Shipping Providers
+                        Payment Methods
                       </p>
                     </th>
                     <th className="px-6 py-3 border text-center w-12">
@@ -134,7 +132,7 @@ function ShippingProviders() {
                   </tr>
                 </thead>
                 <tbody>
-                  {shippingData.map((item) => (
+                  {paymentData.map((item) => (
                     <tr key={item.id} className="border-t hover:bg-gray-50">
                       <td className="px-3 py-3 border-t text-14 border-r cursor-pointer">
                         <p className="flex items-center gap-3">
@@ -148,11 +146,11 @@ function ShippingProviders() {
                       </td>
                       <td className="text-center px-3 py-3">
                         <div className="flex justify-center items-center">
-                          <DeleteShipping
+                          <DeletePayment
                             id={item.id}
                             onDelete={() => {
-                              setShippingData(
-                                shippingData.filter((d) => d.id !== item.id)
+                              setPaymentData(
+                                paymentData.filter((d) => d.id !== item.id)
                               );
                             }}
                           />
@@ -192,4 +190,4 @@ function ShippingProviders() {
     </div>
   );
 }
-export default ShippingProviders;
+export default PaymentMethods;

@@ -2,24 +2,23 @@ import axios from "axios";
 const API_BASE_URL = "https://";
 const live_shop_domain = localStorage.getItem("live_shop_domain");
 const role = localStorage.getItem("role");
-export const AddShippingj = async (name) => {
+export const fetchPaymentMethods = async () => {
   try {
     const response = await axios({
-      url: `${API_BASE_URL}${live_shop_domain}/api/${role}/shipping-providers/store`,
-      method: "POST",
+      url: `${API_BASE_URL}${live_shop_domain}/api/${role}/payment-methods`,
+      method: "GET",
       headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        // "Accept-Language": "ar",
+        "Accept-Language": "en",
+
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
-      data: { name },
     });
     if (response.status === 200) {
-      console.log("shipping added successfully");
+      console.log("success fetch payment-methods");
+      return response.data;
     }
   } catch (error) {
-    console.error("Failed to add shipping", error);
+    console.error("Failed to fetch payment-methods", error);
     throw error;
   }
 };
