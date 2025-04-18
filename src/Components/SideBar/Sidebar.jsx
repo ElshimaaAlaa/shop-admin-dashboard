@@ -14,6 +14,8 @@ import Logo from "../../Svgs/logo";
 import Text from "../../Svgs/text";
 import { TbDiscount } from "react-icons/tb";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import Discount from "../../Svgs/Discount";
+import Invoices from "../../Svgs/Invoives";
 
 const Sidebar = () => {
   const [expanded, setExpanded] = useState(false);
@@ -62,15 +64,13 @@ const Sidebar = () => {
       id: "products",
       label: "Products",
       icon: <Products />,
-      padding: "4px",
-      width: "32px",
+      padding: "3px",
       onclick: () => navigate("products"),
     },
     {
       id: "orders",
       label: "Orders",
       icon: <Orders />,
-      width: "32px",
       subItems: [
         {
           id: "orders-pending",
@@ -82,25 +82,26 @@ const Sidebar = () => {
           label: "Refund Requests",
           onclick: () => navigate("RefundRequests"),
         },
-        {
-          id: "orders-completed",
-          label: "Invoices",
-          onclick: () => navigate(""),
-        },
       ],
+    },
+    {
+      id: "invoices",
+      label: "Invoices",
+      icon: <Invoices/>,
+      padding:"4px"
     },
     {
       id: "clients",
       label: "Customers",
       icon: <Clients />,
-      height: "26px",
       padding: "3px",
       onclick: () => navigate("AllCustomers"),
     },
     {
       id: "promotions",
       label: "Disc and Promotion",
-      icon: <TbDiscount color="#fff" size={22} />,
+      icon: <Discount />,
+      padding :"5px",
       onclick: () => navigate("AllDiscounts"),
     },
     {
@@ -142,13 +143,14 @@ const Sidebar = () => {
       id: "help",
       label: "Help",
       icon: <Help />,
+      padding:"5px",
       onclick: () => navigate("Faqs"),
     },
   ];
 
   return (
     <div
-      className={`sidebar bg-black w-20  flex flex-col items-center justify-between ${
+      className={`sidebar bg-black min-h-screen w-20 flex flex-col items-center justify-between ${
         expanded ? "expanded" : ""
       }`}
       onMouseEnter={toggleSidebar}
@@ -223,7 +225,7 @@ const Sidebar = () => {
                 {item.subItems.map((subItem) => (
                   <div
                     key={subItem.id}
-                    className={`flex items-center gap-2 cursor-pointer py-2 pl- rounded-md ${
+                    className={`flex items-center gap-2 cursor-pointer rounded-md ${
                       selectedItem === subItem.id ? "selected-submenu-item" : ""
                     }`}
                     onClick={() => handleSubItemClick(item, subItem)}
@@ -274,7 +276,7 @@ const Sidebar = () => {
       </div>
 
       {/* Bottom section for Help and Support */}
-      <div className="mb-8 flex flex-col gap-4">
+      <div className="flex flex-col gap-4 pb-4">
         {bottomMenuItems.map((item) => (
           <div
             key={item.id}
