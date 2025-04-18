@@ -7,7 +7,11 @@ import { Helmet } from "react-helmet";
 import { setUpStore } from "../../ApiServices/setUpStore";
 import { ClipLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
+import CreditCard from "../../Svgs/CreditCard";
+import Paypal from "../../Svgs/Paypal";
+import Visa from "../../Svgs/Visa";
+import GooglePay from "../../Svgs/GooglePay";
 
 function PaymentInfo({
   onSubmit,
@@ -45,14 +49,14 @@ function PaymentInfo({
     {
       id: "credit_card",
       label: "Credit Card",
-      icon: "/assets/svgs/MasterCard.svg",
+      icon: <CreditCard />,
     },
-    { id: "paypal", label: "PayPal", icon: "/assets/svgs/PayPal - Long.svg" },
-    { id: "visa", label: "Visa", icon: "/assets/svgs/Visa Electron.svg" },
+    { id: "paypal", label: "PayPal", icon: <Paypal /> },
+    { id: "visa", label: "Visa", icon: <Visa /> },
     {
       id: "google_pay",
       label: "Google Pay",
-      icon: "/assets/svgs/Googlepay.svg",
+      icon: <GooglePay />,
     },
   ];
 
@@ -64,7 +68,6 @@ function PaymentInfo({
         (method) => method.id === values.payment_method
       );
 
-      // Create payment info object
       const paymentInfo = {
         name: values.name,
         phone: values.phone,
@@ -78,7 +81,6 @@ function PaymentInfo({
         card_cvv: values.card_cvv,
       };
 
-      // Update parent component with payment info
       updateFormData("payment_info", paymentInfo);
 
       const formDataToSend = new FormData();
@@ -86,7 +88,6 @@ function PaymentInfo({
         formDataToSend.append(key, value);
       });
 
-      // Include previous form data
       Object.entries(formData).forEach(([key, value]) => {
         if (!formDataToSend.has(key)) {
           formDataToSend.append(key, value);
@@ -94,9 +95,7 @@ function PaymentInfo({
       });
 
       const response = await setUpStore(formDataToSend);
-      console.log("response payment info", response);
-
-      // Call parent's onSubmit if exists
+      
       if (onSubmit) {
         onSubmit({
           ...formData,
@@ -104,16 +103,21 @@ function PaymentInfo({
           ...response.data,
         });
       }
-      localStorage.setItem("paymentInfo" ,JSON.stringify({
-        name: values.name,
-        phone: values.phone,
-        email: values.email,
-        payment_method: values.payment_method,
-        card_holder_name: values.card_holder_name,
-        card_number: values.card_number,
-        card_exp_date: values.card_exp_date,
-        card_cvv: values.card_cvv,
-      }))
+      
+      localStorage.setItem(
+        "paymentInfo",
+        JSON.stringify({
+          name: values.name,
+          phone: values.phone,
+          email: values.email,
+          payment_method: values.payment_method,
+          card_holder_name: values.card_holder_name,
+          card_number: values.card_number,
+          card_exp_date: values.expiration_date,
+          card_cvv: values.card_cvv,
+        })
+      );
+      
       navigate("/Register/ShippingProvider", {
         state: {
           ...formData,
@@ -132,6 +136,7 @@ function PaymentInfo({
       setIsLoading(false);
     }
   };
+
   return (
     <div className="min-h-screen bg-gradient-to-r from-customBlue-mediumBlue via-customOrange-mediumOrange to-customOrange-mediumOrange p-6 flex items-center justify-center">
       <Helmet>
@@ -146,13 +151,11 @@ function PaymentInfo({
           <h2 className="text-17 font-bold">Enter Your Payment Info</h2>
           <p className="text-14 text-gray-500">To Complete the Process</p>
         </div>
-
         {submitError && (
           <div className="alert alert-error mx-6 my-4 p-3 rounded-md bg-red-100 text-red-700">
             {submitError}
           </div>
         )}
-
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -172,12 +175,13 @@ function PaymentInfo({
                   type="tel"
                 />
               </div>
+              
               <h2 className="font-bold mt-4 mb-3">Payment Method</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
                 {paymentMethods.map((method) => (
                   <label
                     key={method.id}
-                    className={`rounded-lg p-3 flex items-center gap-2 font-bold text-14 cursor-pointer transition-colors ${
+                    className={`rounded-lg p-2 flex items-center gap-2 font-bold text-14 cursor-pointer transition-colors ${
                       values.payment_method === method.id
                         ? "bg-primary-light border border-primary bg-customOrange-mediumOrange"
                         : "bg-gray-100 hover:bg-gray-200"
@@ -188,19 +192,16 @@ function PaymentInfo({
                       name="payment_method"
                       value={method.id}
                       className="hidden"
-                      onChange={() =>
-                        setFieldValue("payment_method", method.id)
-                      }
+                      onChange={() => setFieldValue("payment_method", method.id)}
                     />
-                    <img
-                      src={method.icon}
-                      alt={method.label}
-                      className="w-10"
-                    />
+                    <span className="w-10 h-10 flex items-center justify-center">
+                      {method.icon}
+                    </span>
                     {method.label}
                   </label>
                 ))}
               </div>
+
               {values.payment_method && (
                 <div className="bg-gray-100 p-4 rounded-md">
                   <h4 className="font-bold mt-4 mb-3">Payment Data</h4>
@@ -209,7 +210,7 @@ function PaymentInfo({
                     <Field
                       name="expiration_date"
                       placeholder="MM/YY"
-                      type="date"
+                      type="text"
                       className={`w-full h-14 p-3 border-2 rounded-md outline-none transition-all duration-200 placeholder:text-14 focus:border-primary`}
                       onChange={(e) => {
                         let value = e.target.value;
@@ -234,6 +235,7 @@ function PaymentInfo({
                   </div>
                 </div>
               )}
+
               <div className="flex items-center gap-3 justify-end my-5">
                 <button
                   type="button"
@@ -263,6 +265,7 @@ function PaymentInfo({
     </div>
   );
 }
+
 PaymentInfo.propTypes = {
   onSubmit: PropTypes.func,
   onBack: PropTypes.func,
@@ -275,4 +278,5 @@ PaymentInfo.defaultProps = {
   onSubmit: () => {},
   onBack: () => {},
 };
+
 export default PaymentInfo;
