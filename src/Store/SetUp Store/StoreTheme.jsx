@@ -111,9 +111,8 @@ function ThemeStore() {
       setSubmitting(false);
     }
   };
-
   return (
-    <div className="p-4 sm:p-8 md:p-16 bg-gradient-to-r from-customBlue-mediumBlue via-customOrange-mediumOrange to-customOrange-mediumOrange min-h-screen flex items-center justify-center">
+    <div className="p-3 bg-gradient-to-r from-customBlue-mediumBlue via-customOrange-mediumOrange to-customOrange-mediumOrange min-h-screen flex items-center justify-center">
       <Helmet>
         <title>Set Up Store </title>
       </Helmet>

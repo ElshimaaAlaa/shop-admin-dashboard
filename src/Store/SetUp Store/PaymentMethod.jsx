@@ -1,68 +1,71 @@
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
-import { fetchShippingProviders } from "../../ApiServices/ShippingProviders";
 import { ClipLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
 import { FaArrowRightLong, FaArrowLeftLong } from "react-icons/fa6";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { setUpStore } from "../../ApiServices/setUpStore";
+import { fetchPaymentMethods } from "../../ApiServices/PaymentMethods";
 
-function ShippingProvider() {
-  const [providers, setProviders] = useState([]);
+function PaymentMethods() {
+  const [paymentMethods, setpaymentMethods] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const getShippingProviders = async () => {
+    const getPaymentMethods = async () => {
       try {
         setLoading(true);
-        const response = await fetchShippingProviders();
+        const response = await fetchPaymentMethods();
         const data = response?.data || [];
 
         if (Array.isArray(data)) {
-          setProviders(data);
+          setpaymentMethods(data);
         } else {
           console.warn("Expected array but got:", data);
-          setProviders([]);
+          setpaymentMethods([]);
         }
       } catch (error) {
         console.error(error);
-        setError("Failed to load shipping providers");
+        setError("Failed to load payment method");
       } finally {
         setLoading(false);
       }
     };
-
-    getShippingProviders();
+    getPaymentMethods();
   }, []);
 
   const initialValues = {
-    shipping_provider: []
+    payment_method: [],
   };
 
   const validationSchema = Yup.object().shape({
-    shipping_provider: Yup.array()
-      .min(1, "Please select at least one shipping provider")
+    payment_method: Yup.array().min(
+      1,
+      "Please select at least one shipping provider"
+    ),
   });
 
   const handleSubmit = async (values) => {
     setIsLoading(true);
     try {
       const formData = new FormData();
-      const providersString = values.shipping_provider.join(',');
-      formData.append('shipping_provider', providersString);
-      localStorage.setItem('shipping_provider', providersString);
+      const paymentMethodString = values.payment_method.join(",");
+      formData.append("payment_method", paymentMethodString);
+      localStorage.setItem("payment_method", paymentMethodString);
       const response = await setUpStore(formData);
-      console.log('shipping' , response)
+      console.log("payment method", response);
       if (response) {
-        navigate("/Register/PaymentMethod");
+        navigate("/Dashboard");
       }
     } catch (error) {
       console.error("Submission failed:", error);
-      setError(error.response?.data?.message || "Failed to save shipping providers");
+      setError(
+        error.response?.data?.message || "Failed to save payment method"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -71,7 +74,7 @@ function ShippingProvider() {
   return (
     <div className="min-h-screen bg-gradient-to-r from-customBlue-mediumBlue via-customOrange-mediumOrange to-customOrange-mediumOrange p-6 flex items-center justify-center">
       <Helmet>
-        <title>Set Up Store - Shipping Providers</title>
+        <title>Set Up Store - Payment Methods</title>
       </Helmet>
       <div className="w-full lg:w-[600px] md:w-[600px] bg-white rounded-lg shadow-lg">
         <div className="flex justify-center my-7">
@@ -85,7 +88,6 @@ function ShippingProvider() {
             Set UP The Shipping Providers and Shipping Rates
           </h3>
         </div>
-
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -95,7 +97,7 @@ function ShippingProvider() {
             <Form>
               {loading ? (
                 <div className="flex justify-center p-8">
-                  <ClipLoader size={30} color="#E0A75E" />
+                  <ClipLoader size={30} color="#ff6b00" />
                 </div>
               ) : error ? (
                 <div className="mx-6 p-4 bg-red-100 text-red-700 rounded-md">
@@ -104,67 +106,76 @@ function ShippingProvider() {
               ) : (
                 <>
                   <h3 className="text-15 font-bold my-5 px-6">
-                    Select Shipping Providers
+                    Select Payment Methods
                   </h3>
                   <div className="px-6 pb-6">
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                      {providers.length > 0 ? (
-                        providers.map((provider) => (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {paymentMethods.length > 0 ? (
+                        paymentMethods.map((item) => (
                           <div
-                            key={provider.id}
-                            className={`border rounded-md p-2 cursor-pointer transition-all bg-gray-100  ${
-                              values.shipping_provider.includes(provider.name)
+                            key={item.id}
+                            className={`border rounded-lg p-4 cursor-pointer transition-all ${
+                              values.payment_method.includes(item.name)
                                 ? "bg-orange-50 border-orange-300"
                                 : "border-gray-200 hover:border-gray-300"
                             }`}
                             onClick={() => {
-                              const currentProviders = [...values.shipping_provider];
-                              const providerIndex = currentProviders.indexOf(provider.name);
-                              
-                              if (providerIndex === -1) {
-                                currentProviders.push(provider.name);
+                              const currentPaymentMthods = [
+                                ...values.payment_method,
+                              ];
+                              const paymentIndex = currentPaymentMthods.indexOf(
+                                item.name
+                              );
+
+                              if (paymentIndex === -1) {
+                                currentPaymentMthods.push(item.name);
                               } else {
-                                currentProviders.splice(providerIndex, 1);
+                                currentPaymentMthods.splice(paymentIndex, 1);
                               }
-                              
-                              setFieldValue('shipping_provider', currentProviders);
+
+                              setFieldValue(
+                                "payment_method",
+                                currentPaymentMthods
+                              );
                             }}
                           >
                             <label className="inline-flex items-center cursor-pointer w-full">
                               <Field
                                 type="checkbox"
-                                name="shipping_provider"
-                                value={provider.name}
+                                name="payment_method"
+                                value={item.name}
                                 className="hidden peer"
-                                checked={values.shipping_provider.includes(provider.name)}
+                                checked={values.payment_method.includes(
+                                  item.name
+                                )}
                                 onChange={() => {}}
                               />
-                              <span className="w-4 h-4 border border-black rounded flex items-center justify-center transition-all duration-200 peer-checked:border-primary">
+                              <span className="w-5 h-5 border-2 border-gray-300 rounded flex items-center justify-center transition-all duration-200 peer-checked:border-orange-500">
                                 <svg
-                                  className="w-3 h-3 text-primary opacity-0 transition-all duration-200 peer-checked:opacity-100"
+                                  className="w-3 h-3 text-orange-500 opacity-0 transition-all duration-200 peer-checked:opacity-100"
                                   viewBox="0 0 20 20"
                                   fill="currentColor"
                                 >
                                   <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
                                 </svg>
                               </span>
-                              <span className="text-sm lg:text-base text-black ms-3">
-                                {provider.name ||
-                                  provider.name_en ||
-                                  `Provider ${provider.id}`}
+                              <span className="text-sm lg:text-base text-gray-600 ms-3">
+                                {item.name ||
+                                  item.name_en ||
+                                  `Provider ${item.id}`}
                               </span>
                             </label>
                           </div>
                         ))
                       ) : (
                         <p className="col-span-2 text-center text-gray-500 py-4">
-                          No shipping providers available
+                          No payment methods available
                         </p>
                       )}
                     </div>
-                    {errors.shipping_provider && touched.shipping_provider && (
+                    {errors.payment_method && touched.payment_method && (
                       <div className="text-red-500 text-sm mt-2 px-6">
-                        {errors.shipping_provider}
+                        {errors.payment_method}
                       </div>
                     )}
                   </div>
@@ -173,7 +184,7 @@ function ShippingProvider() {
               <div className="flex justify-between mb-5">
                 <button
                   type="button"
-                  onClick={() => navigate("/Register/ThemeStore")}
+                  onClick={() => navigate("/Register/ShippingProvider")}
                   className="flex font-bold items-center gap-3 text-dark pb-4 mx-6"
                 >
                   <FaArrowLeftLong />
@@ -182,7 +193,7 @@ function ShippingProvider() {
                 <button
                   type="submit"
                   className="bg-primary me-5 text-white rounded-md p-3 w-32 flex items-center gap-2 justify-center disabled:opacity-70"
-                  disabled={isLoading || values.shipping_provider.length === 0}
+                  disabled={isLoading || values.payment_method.length === 0}
                 >
                   {isLoading ? (
                     <ClipLoader size={22} color="#fff" />
@@ -201,5 +212,4 @@ function ShippingProvider() {
     </div>
   );
 }
-
-export default ShippingProvider;
+export default PaymentMethods;

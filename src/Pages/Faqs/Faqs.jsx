@@ -110,7 +110,7 @@ function Faqs() {
             <div className="flex justify-center mt-5">
               <p
                 onClick={loadMore}
-                className="text-center text-15 font-bold bg-customOrange-mediumOrange text-primary cursor-pointer w-full px-4 py-2 rounded-md hover:bg-opacity-90 transition"
+                className="text-center text-15 font-bold bg-primary text-white cursor-pointer w-44 px-4 py-2 rounded-lg hover:bg-opacity-90 transition"
               >
                 {isLoading ? <ClipLoader size={22} color="#fff"/>:"Load More....."}
               </p>
@@ -167,5 +167,4 @@ function Faqs() {
     </div>
   );
 }
-
 export default Faqs;

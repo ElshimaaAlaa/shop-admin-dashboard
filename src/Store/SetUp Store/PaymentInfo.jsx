@@ -7,6 +7,7 @@ import { Helmet } from "react-helmet";
 import { setUpStore } from "../../ApiServices/setUpStore";
 import { ClipLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
+import PropTypes from 'prop-types';
 
 function PaymentInfo({
   onSubmit,
@@ -26,12 +27,12 @@ function PaymentInfo({
     card_holder_name: "",
     card_number: "",
     expiration_date: "",
-    cvv: "",
+    card_cvv: "",
   };
 
   const validationSchema = Yup.object({
     name: Yup.string().required("Name is required"),
-    email: Yup.string().email("Invalid email").required("Email is required"),
+    email: Yup.string().required("Email is required"),
     phone: Yup.string().required("Phone number is required"),
     payment_method: Yup.string().required("Payment method is required"),
     card_holder_name: Yup.string(),
@@ -63,22 +64,63 @@ function PaymentInfo({
         (method) => method.id === values.payment_method
       );
 
+      // Create payment info object
+      const paymentInfo = {
+        name: values.name,
+        phone: values.phone,
+        email: values.email,
+        payment_method: selectedMethod
+          ? selectedMethod.label
+          : values.payment_method,
+        card_holder_name: values.card_holder_name,
+        card_number: values.card_number,
+        card_exp_date: values.expiration_date,
+        card_cvv: values.card_cvv,
+      };
+
+      // Update parent component with payment info
+      updateFormData("payment_info", paymentInfo);
+
       const formDataToSend = new FormData();
-      formDataToSend.append("name", values.name);
-      formDataToSend.append("phone", values.phone);
-      formDataToSend.append("email", values.email);
-      formDataToSend.append(
-        "payment_method",
-        selectedMethod ? selectedMethod.label : values.payment_method
-      );
-      formDataToSend.append("card_holder_name", values.card_holder_name);
-      formDataToSend.append("card_number", values.card_number);
-      formDataToSend.append("card_exp_date", values.expiration_date);
-      formDataToSend.append("card_cvv", values.card_cvv);
+      Object.entries(paymentInfo).forEach(([key, value]) => {
+        formDataToSend.append(key, value);
+      });
+
+      // Include previous form data
+      Object.entries(formData).forEach(([key, value]) => {
+        if (!formDataToSend.has(key)) {
+          formDataToSend.append(key, value);
+        }
+      });
 
       const response = await setUpStore(formDataToSend);
       console.log("response payment info", response);
-      navigate("/Register/ShippingProvider");
+
+      // Call parent's onSubmit if exists
+      if (onSubmit) {
+        onSubmit({
+          ...formData,
+          payment_info: paymentInfo,
+          ...response.data,
+        });
+      }
+      localStorage.setItem("paymentInfo" ,JSON.stringify({
+        name: values.name,
+        phone: values.phone,
+        email: values.email,
+        payment_method: values.payment_method,
+        card_holder_name: values.card_holder_name,
+        card_number: values.card_number,
+        card_exp_date: values.card_exp_date,
+        card_cvv: values.card_cvv,
+      }))
+      navigate("/Register/ShippingProvider", {
+        state: {
+          ...formData,
+          payment_info: paymentInfo,
+          ...response.data,
+        },
+      });
     } catch (error) {
       console.error("Submission failed:", error);
       setSubmitError(
@@ -90,7 +132,6 @@ function PaymentInfo({
       setIsLoading(false);
     }
   };
-
   return (
     <div className="min-h-screen bg-gradient-to-r from-customBlue-mediumBlue via-customOrange-mediumOrange to-customOrange-mediumOrange p-6 flex items-center justify-center">
       <Helmet>
@@ -131,7 +172,6 @@ function PaymentInfo({
                   type="tel"
                 />
               </div>
-
               <h2 className="font-bold mt-4 mb-3">Payment Method</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
                 {paymentMethods.map((method) => (
@@ -161,7 +201,6 @@ function PaymentInfo({
                   </label>
                 ))}
               </div>
-
               {values.payment_method && (
                 <div className="bg-gray-100 p-4 rounded-md">
                   <h4 className="font-bold mt-4 mb-3">Payment Data</h4>
@@ -195,11 +234,10 @@ function PaymentInfo({
                   </div>
                 </div>
               )}
-
               <div className="flex items-center gap-3 justify-end my-5">
                 <button
                   type="button"
-                  onClick={() => navigate("/Register/PaymentInfo")}
+                  onClick={() => navigate("/Register/PricingPlan")}
                   className="bg-gray-100 text-gray-400 w-36 rounded-md px-6 py-2 transition-colors"
                 >
                   Cancel
@@ -225,4 +263,16 @@ function PaymentInfo({
     </div>
   );
 }
+PaymentInfo.propTypes = {
+  onSubmit: PropTypes.func,
+  onBack: PropTypes.func,
+  formData: PropTypes.object,
+  updateFormData: PropTypes.func.isRequired,
+};
+
+PaymentInfo.defaultProps = {
+  formData: {},
+  onSubmit: () => {},
+  onBack: () => {},
+};
 export default PaymentInfo;

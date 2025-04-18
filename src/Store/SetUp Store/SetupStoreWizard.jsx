@@ -1,11 +1,8 @@
 import { Formik, Form } from "formik";
 import React, { useState, useEffect } from "react";
-import InputField from "../../Components/InputFields/InputField";
-import { ImageUpload } from "../../Components/Upload Image/UploadImage";
 import * as Yup from "yup";
 import { setUpStore } from "../../ApiServices/setUpStore";
 import "./setUpStoreStyle.scss";
-import { ClipLoader } from "react-spinners";
 import PricingPlan from "./PricingPlan";
 import PaymentInfo from "./PaymentInfo";
 
@@ -27,7 +24,7 @@ const StoreSetupWizard = () => {
     bio: "",
     banners: [],
     plan_id: null,
-    payment_info: null
+    payment_info: null,
   };
 
   const validationSchema = Yup.object().shape({
@@ -69,7 +66,8 @@ const StoreSetupWizard = () => {
         (files) =>
           files &&
           files.every((file) => ["image/jpeg", "image/png"].includes(file.type))
- ) });
+      ),
+  });
 
   useEffect(() => {
     return () => {
@@ -78,11 +76,8 @@ const StoreSetupWizard = () => {
     };
   }, [previewImage, bannerPreviews]);
 
-  const updateFormData = (section, data) => {
-    setFormData(prev => ({
-      ...prev,
-      [section]: data
-    }));
+  const updateFormData = (key, value) => {
+    setFormData((prev) => ({ ...prev, [key]: value }));
   };
 
   const handleSubmit = async (values, { resetForm }) => {
@@ -90,7 +85,7 @@ const StoreSetupWizard = () => {
       updateFormData("theme", {
         theme_primary_color: values.theme_primary_color,
         theme_secondary_color: values.theme_secondary_color,
-        image: values.image
+        image: values.image,
       });
       setStep(2);
       return;
@@ -101,7 +96,7 @@ const StoreSetupWizard = () => {
         store_name: values.store_name,
         address: values.address,
         bio: values.bio,
-        banners: values.banners
+        banners: values.banners,
       });
       setStep(3);
       return;
@@ -113,7 +108,7 @@ const StoreSetupWizard = () => {
         plan_name: values.plan_name,
         plan_price: values.plan_price,
         plan_period: values.plan_period,
-        plan_description: values.plan_description
+        plan_description: values.plan_description,
       });
       setStep(4);
       return;
@@ -128,17 +123,17 @@ const StoreSetupWizard = () => {
         ...formData.theme,
         ...formData.profile,
         ...formData.pricing,
-        ...formData.payment_info
+        ...formData.payment_info,
       };
 
       const formDataToSend = new FormData();
-      
+
       Object.entries(completeFormData).forEach(([key, value]) => {
         if (Array.isArray(value)) {
-          value.forEach(item => formDataToSend.append(`${key}[]`, item));
+          value.forEach((item) => formDataToSend.append(`${key}[]`, item));
         } else if (value instanceof File) {
           formDataToSend.append(key, value);
-        } else if (typeof value === 'object' && value !== null) {
+        } else if (typeof value === "object" && value !== null) {
           Object.entries(value).forEach(([subKey, subValue]) => {
             formDataToSend.append(`${key}[${subKey}]`, subValue);
           });
@@ -194,22 +189,20 @@ const StoreSetupWizard = () => {
         {({ setFieldValue, values, errors, touched, isValid, dirty }) => (
           <Form className="setup-form">
             {step === 1 ? (
-              <div className="form-step">
-                {/* Step 1 content */}
-              </div>
+              <div className="form-step"></div>
             ) : step === 2 ? (
-              <div className="form-step">
-                {/* Step 2 content */}
-              </div>
+              <div className="form-step"></div>
             ) : step === 3 ? (
               <PricingPlan
+                updateFormData={updateFormData}
+                formData={formData}
                 onNext={() => {
                   updateFormData("pricing", {
                     plan_id: values.plan_id,
                     plan_name: values.plan_name,
                     plan_price: values.plan_price,
                     plan_period: values.plan_period,
-                    plan_description: values.plan_description
+                    plan_description: values.plan_description,
                   });
                   setStep(4);
                 }}
@@ -217,10 +210,11 @@ const StoreSetupWizard = () => {
               />
             ) : (
               <PaymentInfo
-                onSubmit={() => handleSubmit(values, {})}
-                onBack={() => setStep(3)}
                 formData={formData}
                 updateFormData={updateFormData}
+                onSubmit={() => handleSubmit(values, {})}
+                onBack={() => setStep(3)}
+              
               />
             )}
           </Form>
@@ -229,5 +223,4 @@ const StoreSetupWizard = () => {
     </div>
   );
 };
-
 export default StoreSetupWizard;
