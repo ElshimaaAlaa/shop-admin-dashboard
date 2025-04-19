@@ -54,24 +54,25 @@ function CustomerDetail() {
         <Icon className="text-2xl text-primary" />
         <h3 className="text-gray-500 text-15">{title}</h3>
       </div>
-      <h1 className="text-3xl font-bold px-4 py-4">{totalNumber}</h1>
+      <h1 className="text-2xl font-bold px-4 py-4">$ {totalNumber}</h1>
     </div>
   );
   return (
-    <div className="bg-gray-100 min-h-screen pb-10 mx-10 pt-5">
+    <div className="bg-gray-100 pb-5 mx-10 pt-5">
       <Helmet>
         <title>Customers Details | VERTEX</title>
       </Helmet>
 
-      <div className="bg-white mb-3 p-4 rounded-md flex justify-between items-center w-full">
-        <h1 className="font-bold text-17">Customers Details</h1>
+      <div className="bg-white mb-3 p-4 rounded-md  w-full">
+        <p className="text-gray-400 text-12">Menu / Customers / Customer Details </p>
+        <h1 className="font-bold text-17 mt-2">Customers Details</h1>
       </div>
       <div className="flex items-center justify-between rounded-lg border-primary bg-customOrange-mediumOrange p-4 ">
         <h3 className="text-gray-600 text-15 flex items-center gap-2">
           <HiCurrencyDollar color="#E0A75E" size={30} />
           Current Balance
         </h3>
-        <p className="font-bold text-2xl">
+        <p className="font-bold text-xl">
           $ {customerData.personal_info?.balance}
         </p>
       </div>
@@ -84,24 +85,24 @@ function CustomerDetail() {
             <img
               src={customerData.personal_info?.image}
               alt="customer pic"
-              className="rounded-md mt-4 w-72"
+              className="rounded-md mt-4 w-72 h-52"
             />
             <div className="mt-4">
               <h4 className="text-gray-400">Name</h4>
-              <p>{customerData.personal_info?.name}</p>
+              <p className="text-14">{customerData.personal_info?.name}</p>
             </div>
             <div className="mt-4">
               <h4 className="text-gray-400">Email</h4>
-              <p>{customerData.personal_info?.email}</p>
+              <p className="text-14">{customerData.personal_info?.email}</p>
             </div>
             <div className="mt-4">
               <h4 className="text-gray-400">Phone</h4>
-              <p>{customerData.personal_info?.phone}</p>
+              <p className="text-14">{customerData.personal_info?.phone}</p>
             </div>
           </section>
           <section className="rounded-md bg-white p-4 border-2 border-gray-100 mt-3">
             <h3 className="font-bold text-17">Shipping Address</h3>
-            <p className="font-bold text-12 mt-3">
+            <p className="text-13 mt-3">
               {customerData.personal_info?.address || "No provided address"}
             </p>
           </section>
@@ -135,10 +136,9 @@ function CustomerDetail() {
             ) : isLoading ? (
               <div className="text-gray-400 text-center mt-10">
                 <ClipLoader color="#E0A75E" />
-                <p className="mt-2">Loading Transaction History ...</p>
               </div>
             ) : orders.length === 0 ? (
-              "No Orders data founded."
+              <p className="text-center mt-10 text-gray-400">No Transaction data founded.</p>
             ) : (
               <div className="border border-gray-200 rounded-lg mt-4 overflow-hidden">
                 <table className="bg-white min-w-full table">
@@ -155,7 +155,7 @@ function CustomerDetail() {
                   <tbody>
                     {orders.map((order, index) => (
                       <tr key={order.id} className="border-t hover:bg-gray-50">
-                        <td className=" px-3 py-3 border-t text-14 border-r w-250 cursor-pointer">
+                        <td className=" px-3 py-3 border-t text-gray-600 text-14 border-r w-250 cursor-pointer">
                           {order.order_number}
                         </td>
                         <td className="px-3 py-3 border-t text-gray-600 border-r text-14 w-250">

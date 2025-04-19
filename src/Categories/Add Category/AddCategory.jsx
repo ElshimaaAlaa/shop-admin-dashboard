@@ -15,7 +15,7 @@ const TypeField = () => (
     placeholder="Type"
     as="select"
     name="type"
-    className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md h-51px p-2 block focus:border-2 focus:border-primary"
+    className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md h-[54px] p-2 block focus:border-2 focus:border-primary"
   >
     <option className="option text-14">Type</option>
     <option value="1" className="option">
@@ -102,13 +102,13 @@ function AddCategory() {
       setIsLoading(false);
     }
   };
-  if(showModal){
+  if (showModal) {
     document.body.classList.add("no-scroll");
-  }else{
+  } else {
     document.body.classList.remove("no-scroll");
   }
   return (
-    <div className="bg-gray-100 min-h-screen relative">
+    <div className="bg-gray-100 h-[89vh] relative">
       <Helmet>
         <title>Add Category | Vertex Dashboard</title>
       </Helmet>
@@ -119,8 +119,9 @@ function AddCategory() {
       >
         {({ setFieldValue, values, errors, touched }) => (
           <Form className="flex flex-col">
-            <h1 className="font-bold rounded-md p-5 text-17 mx-10 bg-white mt-5 mb-3">
-              Add Category
+            <h1 className=" rounded-md p-5 mx-10 bg-white mt-5 mb-3">
+              <p className="text-gray-400 text-12">Menu / Categories / Add Category</p>
+              <h3 className="text-17 font-bold mt-2">Add Category</h3>
             </h1>
             <div className="flex gap-5 mx-10">
               <div className="bg-white p-5 rounded-md w-full">

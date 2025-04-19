@@ -90,7 +90,8 @@ function AllCategory() {
         <title>All Categories - VERTEX</title>
       </Helmet>
       <div className="bg-white p-5 rounded-md mb-3">
-        <h1 className="font-bold text-lg">Categories</h1>
+        <p className="text-gray-400 text-12">Menu / Categories</p>
+        <h1 className="font-bold text-17 mt-2">Categories</h1>
       </div>
       <div className="bg-white p-5 rounded-md">
         <SearchBar
@@ -107,7 +108,6 @@ function AllCategory() {
         ) : isLoading ? (
           <div className="text-gray-400 text-center mt-10">
             <ClipLoader color="#E0A75E" />
-            <p className="mt-2">Loading categories...</p>
           </div>
         ) : filteredCategories.length === 0 ? (
           <div className="text-gray-400 text-center mt-10">
@@ -176,7 +176,7 @@ function AllCategory() {
                           </div>
                         </td>
                         <td className="px-6 py-3 w-10 border-t border-l">
-                          <div className="flex items-center">
+                          <div className="flex items-center justify-center gap-2">
                             <button
                               aria-label={`Edit ${category.name}`}
                               onClick={() =>

@@ -63,14 +63,15 @@ function RefundRequests() {
     }));
   };
   return (
-    <div className="bg-gray-100 min-h-[150vh] mx-10 pt-5">
+    <div className="bg-gray-100 h-[89vh] mx-10 pt-5">
       <Helmet>
         <title>Refund Requests | VERTEX</title>
       </Helmet>
 
-      <h1 className="font-bold text-17 bg-white mb-3 p-4 rounded-md flex justify-between items-center">
-        Refund Requests
-      </h1>
+      <div className=" bg-white mb-3 p-4 rounded-md">
+        <p className="text-12 text-gray-400">Menu / Orders / Refund Requests</p>
+        <h1 className="font-bold text-17 mt-3">Refund Requests</h1>
+      </div>
 
       <div className="bg-white p-4 rounded-md">
         <div className="relative w-full mt-3">
@@ -92,7 +93,6 @@ function RefundRequests() {
         {isLoading ? (
           <div className="text-gray-400 text-center mt-10">
             <ClipLoader color="#E0A75E" />
-            <p className="mt-2">Loading Refunded Requests...</p>
           </div>
         ) : error ? (
           <div className="text-red-500 text-center mt-10">

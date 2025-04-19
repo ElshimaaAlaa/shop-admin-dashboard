@@ -46,11 +46,11 @@ function DeleteCategory({ id, onDelete }) {
   }
   return (
     <div>
-      <button className=" p-1" onClick={() => setShowModal(true)}>
+      <button className="mt-" onClick={() => setShowModal(true)}>
         <img
           src="/assets/svgs/deleteIcon.svg"
           alt="delete category"
-          className="w-5 ms-2"
+          className="w-5"
         />
       </button>
       <FailedModal isOpen={showModal} onClose={() => setShowModal(false)}>
@@ -66,7 +66,7 @@ function DeleteCategory({ id, onDelete }) {
         </p>
         <div className="flex gap-3 mt-5 mb-3">
           <button
-            className="rounded p-3 bg-gray-100 text-gray-500 font-bold w-32"
+            className="rounded p-3 bg-gray-100 text-gray-400 font-bold w-32"
             onClick={() => setShowModal(false)}
           >
             Cancel

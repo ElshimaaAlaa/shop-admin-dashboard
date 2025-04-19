@@ -90,14 +90,17 @@ function EditCategory() {
     document.body.classList.remove("no-scroll");
   }
   return (
-    <div className="bg-gray-100 min-h-screen flex flex-col relative">
+    <div className="bg-gray-100 h-[89vh]  flex flex-col relative">
       <Helmet>
         <title>Edit Category - VERTEX</title>
         <meta name="description" content="Edit category details in VERTEX" />
       </Helmet>
-      <h1 className="font-bold rounded-md p-5 text-17 mx-4 md:mx-10 bg-white mt-5 mb-3">
-        Edit Category
-      </h1>
+      <div className=" rounded-md p-5  mx-4 md:mx-10 bg-white mt-5 mb-3">
+        <p className="text-gray-400 text-12">
+          Menu / Categories / Edit Category
+        </p>
+        <h1 className="font-bold text-17 mt-2">Edit Category</h1>
+      </div>
       <Formik
         initialValues={initialValues}
         enableReinitialize

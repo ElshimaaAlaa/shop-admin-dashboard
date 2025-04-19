@@ -21,10 +21,10 @@ function SearchBar({onclick , value ,onchange ,text , icon}) {
         className="flex items-center gap-3 bg-primary text-white py-4 px-3 rounded-md w-72 cursor-pointer"
         onClick={onclick}
       >
-        <div >
+        <div className="font-bold">
           {icon}
         </div>
-        <p className="text-16">{text}</p>
+        <p className="text-16 font-bold">{text}</p>
       </div>
     </div>
   );

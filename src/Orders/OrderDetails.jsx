@@ -54,12 +54,15 @@ function OrderDetails() {
   ];
 
   return (
-    <div className="bg-gray-100 min-h-screen pb-10 mx-10 pt-5">
+    <div className="bg-gray-100 pb-10 mx-10 pt-5">
       <Helmet>
         <title>Orders Details | VERTEX</title>
       </Helmet>
       <div className="bg-white mb-5 p-4 rounded-md flex justify-between items-center">
-        <h1 className="font-bold text-17">Order Details</h1>
+        <div>
+          <p className="text-gray-400 text-12">Menu / Orders / Received Orders / view order</p>
+          <h1 className="font-bold text-17 mt-3">Order Details</h1>
+        </div>
         <CancelOrder
           orderId={orderDetail.id}
           orderStatus={orderDetail.status}

@@ -51,12 +51,12 @@ function ReceivedOrders() {
     <div className="bg-white rounded-md border border-gray-200 flex-1 min-w-[200px]">
       <div className="flex items-center gap-3 bg-gray-100 rounded-tl-md rounded-tr-md p-4 mb-5">
         <Icon className="text-2xl text-primary" />
-        <h3 className="text-gray-500 text-15">{title}</h3>
+        <h3 className="text-gray-600 text-14">{title}</h3>
       </div>
       <div className="flex items-center gap-4 ps-4">
-        <h1 className="text-3xl font-bold">{totalNumber}</h1>
+        <h1 className="text-2xl font-bold">{totalNumber}</h1>
         <p
-          className={`text-13 font-bold rounded-md p-1 ${
+          className={`text-13  rounded-md p-1 ${
             percentage?.includes("+")
               ? "text-[#34B41E] bg-[#E7F6E5]"
               : "text-red-600 bg-red-50"
@@ -125,13 +125,14 @@ function ReceivedOrders() {
   };
 
   return (
-    <div className="bg-gray-100 pb-4 min-h-screen mx-10 pt-5">
+    <div className="bg-gray-100 pb-4 mx-10 pt-5">
       <Helmet>
         <title>Orders | VERTEX</title>
       </Helmet>
-      <h1 className="font-bold text-17 bg-white mb-3 px-8 py-4 rounded-md">
-        Received Orders
-      </h1>
+      <div className=" bg-white mb-3 px-8 py-4 rounded-md">
+        <p className="text-gray-400 text-12">Menu / Orders / Received Orders</p>
+        <h1 className="text-17 mt-3 font-bold">Received Orders</h1>
+      </div>
 
       <div className="bg-white rounded-md p-8 mb-5">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -220,7 +221,6 @@ function ReceivedOrders() {
         ) : isLoading ? (
           <div className="text-gray-400 text-center mt-10">
             <ClipLoader color="#E0A75E" />
-            <p className="mt-2">Loading Received Orders...</p>
           </div>
         ) : filteredOrders.length === 0 ? (
           <div className="text-gray-400 text-center mt-10">

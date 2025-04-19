@@ -22,10 +22,10 @@ const CustomerItem = ({
   <div className="bg-white rounded-md border border-gray-200 flex-1 min-w-[200px]">
     <div className="flex items-center gap-3 bg-gray-100 rounded-tl-md rounded-tr-md p-4 mb-5">
       <Icon className="text-2xl text-primary" />
-      <h3 className="text-gray-500 text-15">{title}</h3>
+      <h3 className="text-gray-600 text-15">{title}</h3>
     </div>
     <div className="flex items-center gap-4 ps-4">
-      <h1 className="text-3xl font-bold">{totalNumber}</h1>
+      <h1 className="text-2xl font-bold">{totalNumber}</h1>
       <p
         className={`text-13 font-bold rounded-md p-1 ${
           percentage?.includes("+")
@@ -65,7 +65,7 @@ function AllCustomers() {
       setIsLoading(true);
       try {
         const response = await getCustomers(pagination.current_page);
-        const data = response?.data || response; 
+        const data = response?.data || response;
 
         setCustomers(data?.orders || []);
         setStatistics(
@@ -129,12 +129,15 @@ function AllCustomers() {
       </Helmet>
 
       <div className="bg-white mb-3 p-4 rounded-md flex justify-between items-center">
-        <h1 className="font-bold text-17">Customers</h1>
+        <div>
+          <p className="text-gray-400 text-12">Menu / Customers </p>
+          <h1 className="font-bold text-17 mt-2">Customers</h1>
+        </div>
         <button
-          className="flex items-center gap-2 text-white bg-primary rounded-md p-4"
-          onClick={() => navigate("/Dashboard/Support")}
+          className="flex items-center gap-2 font-bold text-white bg-primary rounded-md p-4"
+          onClick={() => navigate("/Dashboard/")}
         >
-          <IoHelpCircleOutline size={22} />
+          <IoHelpCircleOutline size={25} />
           Customers Support Questions
         </button>
       </div>

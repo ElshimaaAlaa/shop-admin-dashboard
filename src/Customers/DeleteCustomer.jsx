@@ -62,7 +62,7 @@ function DeleteCustomer({ onDelete, id }) {
         </p>
         <div className="flex gap-3 mt-5 mb-3">
           <button
-            className="rounded p-3 bg-gray-100 text-gray-500 font-bold w-32"
+            className="rounded p-3 bg-gray-100 text-gray-400 font-bold w-32"
             onClick={() => setShowModal(false)}
           >
             Cancel

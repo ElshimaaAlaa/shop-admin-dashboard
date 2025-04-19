@@ -62,11 +62,11 @@ function Faqs() {
   };
 
   return (
-    <div className="bg-white min-h-screen pb-10">
+    <div className="bg-white  pb-5">
       <Helmet>
         <title>Frequently Asked Questions | VERTEX</title>
       </Helmet>
-      <h2 className="font-bold text-center text-xl pt-10">
+      <h2 className="font-bold text-center text-xl pt-6">
         Frequently Asked Questions
       </h2>
       <p className="text-gray-400 text-center mt-3">

@@ -12,7 +12,6 @@ import Support from "../../Svgs/Support";
 import Help from "../../Svgs/Help";
 import Logo from "../../Svgs/logo";
 import Text from "../../Svgs/text";
-import { TbDiscount } from "react-icons/tb";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import Discount from "../../Svgs/Discount";
 import Invoices from "../../Svgs/Invoives";
@@ -169,7 +168,7 @@ const Sidebar = () => {
         {menuItems.map((item) => (
           <div key={item.id}>
             <div
-              className={`flex items-center gap-2 cursor-pointer rounded-md hover:bg-primatyOpacity hover:p-2 hover:w-180 ${
+              className={`flex items-center gap-2 cursor-pointer rounded-md hover:bg-primatyOpacity hover:p-2 hover:w-[190px] ${
                 openSubmenu === item.id ? "active-menu-item" : ""
               }`}
               onClick={() => handleItemClick(item)}
@@ -221,7 +220,7 @@ const Sidebar = () => {
             </div>
 
             {item.subItems && openSubmenu === item.id && expanded && (
-              <div className="submenu pl-8 mt-1">
+              <div className="submenu pl-8 mt-1 flex flex-col gap-4">
                 {item.subItems.map((subItem) => (
                   <div
                     key={subItem.id}

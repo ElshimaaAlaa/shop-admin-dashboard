@@ -97,7 +97,7 @@ function Support() {
     fetchGeneralSetting();
   }, []);
   return (
-    <div className="bg-white min-h-screen">
+    <div className="bg-white">
       <Helmet>
         <title>Support | Vertex</title>
         <meta name="description" content="Support Page" />
@@ -108,7 +108,7 @@ function Support() {
         <meta property="og:url" content="https://vertex.com/support" />
       </Helmet>
 
-      <h1 className="font-bold text-center text-lg pt-10">
+      <h1 className="font-bold text-center text-lg pt-6">
         Send us Your Problem and we are <br /> contact with you
       </h1>
       <div className="flex justify-center gap-5">
@@ -127,7 +127,7 @@ function Support() {
           />
         </section>
 
-        <section className="bg-customOrange-mediumOrange p-7 mt-10 w-400 md:w-500px lg:w-450 rounded-md">
+        <section className="bg-customOrange-mediumOrange p-5 mt-10 w-[430px] md:w-[430px] lg:w-[430px] rounded-md">
           <div className="flex justify-center">
             <img
               src="/assets/svgs/chats.svg"

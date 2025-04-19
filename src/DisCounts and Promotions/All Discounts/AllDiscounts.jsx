@@ -53,13 +53,16 @@ function AllDiscounts() {
   };
 
   return (
-    <div className="bg-gray-100 flex flex-col min-h-screen ">
+    <div className="bg-gray-100 flex flex-col h-[89vh] ">
       <Helmet>
         <title>Discounts and Promotion | vertex</title>
       </Helmet>
-      <h1 className="font-bold rounded-md p-5 text-17 mx-10 bg-white mt-5">
-        Promotions
-      </h1>
+      <div className=" rounded-md p-5 mx-10 bg-white mt-5">
+        <p className="text-gray-400 text-12">
+          Menu / Promotions & Discounts / Promotions
+        </p>
+        <h1 className="mt-2 text-17 font-bold">Promotions</h1>
+      </div>
       <div className="bg-white rounded-md p-5 mx-10 my-3">
         <SearchBar
           icon={
@@ -69,7 +72,7 @@ function AllDiscounts() {
             />
           }
           text={"Add New Promotion"}
-          onclick={()=>navigate('/Dashboard/AddDiscounts')}
+          onclick={() => navigate("/Dashboard/AddDiscounts")}
           value={searchQuery}
           onchange={(e) => {
             setSearchQuery(e.target.value);
@@ -120,12 +123,7 @@ function AllDiscounts() {
                 <tbody>
                   {discounts.map((discount) => (
                     <tr key={discount.id} className="border-t hover:bg-gray-50">
-                      <td
-                        className="px-3 py-3 border-t text-14 border-r w-250 cursor-pointer"
-                        onClick={() =>
-                          navigate(`/Dashboard/AllDiscounts/${discount.id}`)
-                        }
-                      >
+                      <td className="px-3 py-3 border-t text-gray-600 text-15 border-r w-250 cursor-pointer">
                         <p className="flex items-center gap-3">
                           <input
                             type="checkbox"
@@ -135,8 +133,8 @@ function AllDiscounts() {
                           {discount.name}
                         </p>
                       </td>
-                      <td className="px-3 py-3 border-t text-gray-600 border-r text-14 w-250">
-                        <p className="flex items-center justify-between bg-customOrange-mediumOrange rounded-md p-2 w-20">
+                      <td className="px-3 py-3 border-t text-gray-600 border-r text-16 w-250">
+                        <p className="flex items-center justify-between bg-customOrange-mediumOrange rounded-md p-2 w-16">
                           <HiOutlineShoppingCart color="#E0A75E" size={25} />
                           {discount.quantity}
                         </p>

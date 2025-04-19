@@ -54,7 +54,7 @@ export const TagsInput = ({ setFieldValue, values }) => {
               <button
                 type="button"
                 onClick={() => removeTag(index, "en")}
-                className="text-darkRed text-xl"
+                className="text-red-600 text-xl"
               >
                 &times;
               </button>
@@ -82,7 +82,7 @@ export const TagsInput = ({ setFieldValue, values }) => {
               <button
                 type="button"
                 onClick={() => removeTag(index, "ar")}
-                className="text-darkRed text-xl"
+                className="text-red-600 text-xl"
               >
                 &times;
               </button>
