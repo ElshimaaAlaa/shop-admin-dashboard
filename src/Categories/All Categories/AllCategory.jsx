@@ -13,7 +13,7 @@ function AllCategory() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
+  const [itemsPerPage] = useState(5);
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
@@ -85,7 +85,7 @@ function AllCategory() {
   };
 
   return (
-    <div className="bg-gray-100 p-4 min-h-screen md:ps-10 md:pe-10 md:pt-5">
+    <div className="bg-gray-100 p-4 h-[89vh] md:ps-10 md:pe-10 md:pt-5">
       <Helmet>
         <title>All Categories - VERTEX</title>
       </Helmet>

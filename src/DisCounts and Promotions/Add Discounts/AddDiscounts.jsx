@@ -86,14 +86,15 @@ const NewPromotion = ({ products = [], categories = [] }) => {
   };
 
   return (
-    <div className="bg-gray-100 flex flex-col min-h-screen relative">
+    <div className="bg-gray-100 flex flex-col relative">
       <Helmet>
         <title>Add New Promotion | vertex</title>
       </Helmet>
 
-      <h1 className="font-bold rounded-md p-5 text-17 mx-10 bg-white mt-5">
-        Add New Promotions
-      </h1>
+      <div className="rounded-md p-5 mx-10 bg-white mt-5">
+        <p className="text-12 text-gray-400">Menu / Product / Add Promotion</p>
+        <h1 className="mt-3 text-17 font-bold">Add New Promotions</h1>
+      </div>
 
       {error && (
         <div className="mx-10 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">

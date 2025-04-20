@@ -2,21 +2,24 @@ import axios from "axios";
 const API_BASE_URL = "https://";
 const live_shop_domain = localStorage.getItem("live_shop_domain");
 const role = localStorage.getItem("role");
-export const AddShipping = async (providerData) => {
+export const AddNewSupportQuestion = async (question, answer) => {
   try {
     const response = await axios({
-      url: `${API_BASE_URL}${live_shop_domain}/api/${role}/shipping-providers/store`,
+      url: `${API_BASE_URL}${live_shop_domain}/api/${role}/support-questions/store`,
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
+        "Accept-Language": "ar",
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
-      data: providerData,
+      data: { question, answer },
     });
-    return response.data;
+    if (response.status === 200) {
+      console.log("question added successfully");
+    }
   } catch (error) {
-    console.error("Failed to add shipping", error.response?.data || error.message);
+    console.error("Failed to add question", error);
     throw error;
   }
 };

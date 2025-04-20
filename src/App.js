@@ -40,6 +40,7 @@ import ShippingProvider from "./Store/SetUp Store/ShippingProvider";
 import ShippingProviders from "./Settings/Shipping Providers/ShippingProviders";
 import PaymentMethods from "./Settings/Payment Methods/PaymentMethods";
 import PaymentMethod from "./Store/SetUp Store/PaymentMethod";
+import SupportQuestion from "./Settings/Support Questions/SupportQuestion";
 
 function App() {
   return (
@@ -122,6 +123,7 @@ function App() {
           {/* settings */}
           <Route path="ShippingProviders" element={<ShippingProviders />} />
           <Route path="PaymentMethods" element={<PaymentMethods />} />
+          <Route path="SupportQuestion" element={<SupportQuestion/>}/>
         </Route>
       </Routes>
     </BrowserRouter>

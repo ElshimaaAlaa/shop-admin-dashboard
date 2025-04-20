@@ -64,19 +64,20 @@ function ShippingProviders() {
     document.body.classList.remove("no-scroll");
   }
   return (
-    <div className="bg-gray-100 flex flex-col min-h-screen ">
+    <div className="bg-gray-100 flex flex-col h-[89vh] ">
       <Helmet>
         <title>Shipping Providers | vertex</title>
       </Helmet>
-      <h1 className="font-bold rounded-md p-5 text-17 mx-10 bg-white mt-5">
-        Shipping Providers
-      </h1>
+      <div className="rounded-md p-5 mx-10 bg-white mt-5">
+        <p className="text-gray-400 text-12">Menu / Shipping Providers</p>
+        <h1 className="text-17 font-bold mt-2">Shipping Providers</h1>
+      </div>
       <div className="rounded-md bg-customOrange-mediumOrange border mt-3 border-primary p-4 mx-10 flex items-center justify-between">
-        <div className="flex items-center gap-1">
-          <FaShippingFast color="#E0A75E" size={22}/>
-          <p className="text-gray-500 text-14">Shipping Providers</p>
+        <div className="flex items-center gap-2">
+          <FaShippingFast color="#E0A75E" size={22} />
+          <p className="text-gray-500 text-15">Shipping Providers</p>
         </div>
-        <p>{shippingData.length}</p>
+        <p className="text-16 font-bold">{shippingData.length}</p>
       </div>
       <div className="bg-white rounded-md p-5 mx-10 my-3">
         <SearchBar
@@ -136,7 +137,7 @@ function ShippingProviders() {
                 <tbody>
                   {shippingData.map((item) => (
                     <tr key={item.id} className="border-t hover:bg-gray-50">
-                      <td className="px-3 py-3 border-t text-14 border-r cursor-pointer">
+                      <td className="px-3 py-3 border-t text-15 text-gray-500 border-r cursor-pointer">
                         <p className="flex items-center gap-3">
                           <input
                             type="checkbox"

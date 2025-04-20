@@ -3,6 +3,7 @@ import axios from "axios";
 import { ClipLoader } from "react-spinners";
 import FailedModal from "../../Components/Modal/Failed Modal/FailedModal";
 import "./style.scss";
+
 function DeleteShipping({ id, onDelete }) {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -18,31 +19,34 @@ function DeleteShipping({ id, onDelete }) {
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
         },
       });
+
       if (response.status === 200) {
-        console.log("success delete Shipping provider");
-        setIsLoading(false);
+        console.log("Successfully deleted shipping provider");
+        onDelete();
         setShowModal(false);
-        window.location.reload();
       }
     } catch (error) {
-      console.error("Failed to delete Shipping provider", error);
+      console.error("Failed to delete shipping provider", error);
+    } finally {
       setIsLoading(false);
-      setShowModal(false);
     }
   };
+
   if (showModal) {
     document.body.classList.add("no-scroll");
   } else {
     document.body.classList.remove("no-scroll");
   }
+
   return (
     <div>
-      <div className=" cursor-pointer" onClick={() => setShowModal(true)}>
+      <div className="cursor-pointer" onClick={() => setShowModal(true)}>
         <img
           src="/assets/svgs/deleteIcon.svg"
-          alt="delete category"
+          alt="delete shipping"
           className="w-5 ms-2"
         />
       </div>
@@ -55,7 +59,7 @@ function DeleteShipping({ id, onDelete }) {
           />
         </div>
         <p className="font-bold w-72 text-center">
-          Are You Sure You Want To Delete This Shipping Provider ?
+          Are You Sure You Want To Delete This Shipping Provider?
         </p>
         <div className="flex gap-3 mt-5 mb-3">
           <button
@@ -67,9 +71,10 @@ function DeleteShipping({ id, onDelete }) {
           <button
             className="rounded text-white bg-customred font-bold p-3 w-32"
             onClick={handleDeleteShippingProvider}
+            disabled={isLoading}
           >
             {isLoading ? (
-              <ClipLoader color="#fff" size={"22px"} className="text-center" />
+              <ClipLoader color="#fff" size={22} className="text-center" />
             ) : (
               "Delete"
             )}

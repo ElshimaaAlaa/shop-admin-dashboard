@@ -26,7 +26,7 @@ function ReceivedOrders() {
   const [pagination, setPagination] = useState({
     total: 0,
     count: 0,
-    per_page: 10,
+    per_page: 5,
     current_page: 1,
     total_pages: 1,
     next_page_url: null,

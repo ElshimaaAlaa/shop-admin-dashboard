@@ -1,34 +1,34 @@
 import React, { useState } from "react";
-import "./style.scss";
+import "./PaymentStyle.scss";
 import { Formik, Form } from "formik";
 import { ClipLoader } from "react-spinners";
-import { AddShipping } from "../../ApiServices/AddShipping";
+import { AddPayment } from "../../ApiServices/AddPaymentMethod";
 
-function AddShippingProvider({ isOpen, onClose }) {
+function AddPaymentMethod({ isOpen, onClose }) {
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedProviders, setSelectedProviders] = useState([]);
+  const [selectedpaymentmethod, setSelectedpaymentmethod] = useState([]);
   const [error, setError] = useState(null);
 
-  const providers = [
-    { id: 1, name_ar: "أرامكس", name_en: "Aramex", code: "aramex" },
-    { id: 2, name_ar: "دي إتش إل", name_en: "DHL", code: "dhl" },
-    { id: 3, name_ar: "فيديكس", name_en: "FedEx", code: "fedex" },
-    { id: 4, name_ar: "شحن محلي", name_en: "Local Shipping", code: "local" },
+  const PaymentMethods = [
+    { id: 1, name_ar: "Visa", name_en: "Visa", code: "visa" },
+    { id: 2, name_ar: "Credit Card", name_en: "Credit Card", code: "Credit" },
+    { id: 3, name_ar: "PayPal", name_en: "PayPal", code: "PayPal" },
+    { id: 4, name_ar: "Google Pay", name_en: "Google Pay", code: "Google" },
   ];
 
-  const handleProviderToggle = (provider) => {
-    setSelectedProviders(prev => {
-      if (prev.some(p => p.id === provider.id)) {
-        return prev.filter(p => p.id !== provider.id);
+  const handlePaymentMethodToggle = (paymentmethod) => {
+    setSelectedpaymentmethod((prev) => {
+      if (prev.some((p) => p.id === paymentmethod.id)) {
+        return prev.filter((p) => p.id !== paymentmethod.id);
       } else {
-        return [...prev, provider];
+        return [...prev, paymentmethod];
       }
     });
   };
 
   const handleSubmit = async () => {
-    if (selectedProviders.length === 0) {
-      setError("Please select at least one shipping provider");
+    if (selectedpaymentmethod.length === 0) {
+      setError("Please select at least one payment method");
       return;
     }
 
@@ -37,13 +37,13 @@ function AddShippingProvider({ isOpen, onClose }) {
 
     try {
       await Promise.all(
-        selectedProviders.map(provider => 
-          AddShipping({
+        selectedpaymentmethod.map((payment) =>
+          AddPayment({
             name: {
-              ar: provider.name_ar,
-              en: provider.name_en,
+              ar: payment.name_ar,
+              en: payment.name_en,
             },
-            code: provider.code,
+            code: payment.code,
           })
         )
       );
@@ -51,9 +51,9 @@ function AddShippingProvider({ isOpen, onClose }) {
       window.location.reload();
     } catch (error) {
       setError(
-        error.response?.data?.message || "Failed to add shipping provider(s)"
+        error.response?.data?.message || "Failed to add payment method"
       );
-      console.error("Error adding shipping provider:", error);
+      console.error("Error adding payment method:", error);
     } finally {
       setIsLoading(false);
     }
@@ -63,10 +63,13 @@ function AddShippingProvider({ isOpen, onClose }) {
 
   return (
     <div className="modal-overlay rounded">
-      <div className="modalContent modal-width rounded-md w-400" id="modal-width">
+      <div
+        className="modalContent modal-width rounded-md w-400"
+        id="modal-width"
+      >
         <div className="modal-content">
           <h3 className="font-bold text-17 px-3 py-5">
-            Add New Shipping Provider
+            Add New Payment Method(s)
           </h3>
           {error && (
             <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">
@@ -76,11 +79,13 @@ function AddShippingProvider({ isOpen, onClose }) {
           <Formik initialValues={{}} onSubmit={handleSubmit}>
             <Form className="ps-3">
               <div className="space-y-4 mb-4">
-                {providers.map((provider) => {
-                  const isSelected = selectedProviders.some(p => p.id === provider.id);
+                {PaymentMethods.map((payment) => {
+                  const isSelected = selectedpaymentmethod.some(
+                    (p) => p.id === payment.id
+                  );
                   return (
                     <label
-                      key={provider.id}
+                      key={payment.id}
                       className={`flex items-center cursor-pointer w-full p-3 rounded-lg transition-all duration-200 ${
                         isSelected
                           ? "bg-orange-100 border border-orange-300"
@@ -91,16 +96,18 @@ function AddShippingProvider({ isOpen, onClose }) {
                         type="checkbox"
                         className="hidden"
                         checked={isSelected}
-                        onChange={() => handleProviderToggle(provider)}
+                        onChange={() => handlePaymentMethodToggle(payment)}
                       />
-                      <span className={`w-4 h-4 border rounded flex items-center justify-center transition-all duration-200 ${
-                        isSelected
-                          ? 'border-primary bg-primary'
-                          : 'border-gray-400'
-                      }`}>
+                      <span
+                        className={`w-4 h-4 border rounded flex items-center justify-center transition-all duration-200 ${
+                          isSelected
+                            ? "border-primary bg-primary"
+                            : "border-gray-400"
+                        }`}
+                      >
                         <svg
                           className={`w-3 h-3 text-white transition-all duration-200 ${
-                            isSelected ? 'opacity-100' : 'opacity-0'
+                            isSelected ? "opacity-100" : "opacity-0"
                           }`}
                           viewBox="0 0 20 20"
                           fill="currentColor"
@@ -109,7 +116,7 @@ function AddShippingProvider({ isOpen, onClose }) {
                         </svg>
                       </span>
                       <span className="text-sm lg:text-base text-black ms-3">
-                        {provider.name_en} ({provider.name_ar})
+                        {payment.name_en} ({payment.name_ar})
                       </span>
                     </label>
                   );
@@ -126,7 +133,7 @@ function AddShippingProvider({ isOpen, onClose }) {
                 <button
                   type="submit"
                   className="bg-primary font-bold text-white p-2 w-28 rounded-md"
-                  disabled={isLoading || selectedProviders.length === 0}
+                  disabled={isLoading || selectedpaymentmethod.length === 0}
                 >
                   {isLoading ? <ClipLoader size={22} color="#fff" /> : "Save"}
                 </button>
@@ -138,5 +145,4 @@ function AddShippingProvider({ isOpen, onClose }) {
     </div>
   );
 }
-
-export default AddShippingProvider;
+export default AddPaymentMethod;

@@ -8,6 +8,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { fetchPaymentMethods } from "../../ApiServices/PaymentMethods";
 import { MdPayment } from "react-icons/md";
 import DeletePayment from "./DletePayment";
+import AddShippingProvider from "./AddPaymentMethods";
 function PaymentMethods() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -62,19 +63,20 @@ function PaymentMethods() {
     document.body.classList.remove("no-scroll");
   }
   return (
-    <div className="bg-gray-100 flex flex-col min-h-screen ">
+    <div className="bg-gray-100 flex flex-col h-[89vh] ">
       <Helmet>
         <title>Payment Methods | vertex</title>
       </Helmet>
-      <h1 className="font-bold rounded-md p-5 text-17 mx-10 bg-white mt-5">
-        Payment Methods
-      </h1>
+      <div className="rounded-md p-5 mx-10 bg-white mt-5">
+        <p className="text-12 text-gray-400">Menu / Payment Methods</p>
+        <h1 className="mt-3 text-17 font-bold">Payment Methods</h1>
+      </div>
       <div className="rounded-md bg-customOrange-mediumOrange border mt-3 border-primary p-4 mx-10 flex items-center justify-between">
-        <div className="flex items-center gap-1">
-          <MdPayment color="#E0A75E" size={22} />
-          <p className="text-gray-500 text-14">Payment Methods</p>
+        <div className="flex items-center gap-2">
+          <MdPayment color="#E0A75E" size={24} />
+          <p className="text-gray-500 text-15">Payment Methods</p>
         </div>
-        <p>{paymentData.length}</p>
+        <p className="font-bold text-16">{paymentData.length}</p>
       </div>
       <div className="bg-white rounded-md p-5 mx-10 my-3">
         <SearchBar
@@ -92,10 +94,10 @@ function PaymentMethods() {
             setPagination((prev) => ({ ...prev, current_page: 1 }));
           }}
         />
-        {/* <AddSPaymentMethod
+        <AddShippingProvider
           isOpen={showModal}
           onClose={() => setShowModal(false)}
-        /> */}
+        />
         {error ? (
           <div className="text-red-500 text-center mt-10">
             Failed to fetch data. Please try again.
