@@ -5,7 +5,7 @@ import clsx from "clsx";
 
 function PasswordInput({ name, placeholder, showPassword, togglePasswordVisibility }) {
   return (
-    <div className="relative mt-5 w-full">
+    <div className="relative mt-3 w-full">
       <Field name={name}>
         {({ field, meta }) => (
           <div className="relative">

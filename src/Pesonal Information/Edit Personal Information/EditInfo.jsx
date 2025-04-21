@@ -5,8 +5,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 import axios from "axios";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
-import AuthInputField from "../../Components/AuthInput Field/AuthInputField";
 import { FaCircleCheck } from "react-icons/fa6";
+import InputField from "../../Components/InputFields/InputField";
+import { AiOutlineDelete } from "react-icons/ai";
+
 function EditInfo() {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -65,7 +67,7 @@ function EditInfo() {
         <title>Edit Personal Information</title>
       </Helmet>
       <section>
-        <h1 className="font-bold text-xl">Edit Personal Information</h1>
+        <h1 className="font-bold text-[20px]">Edit Personal Information</h1>
         <Formik
           initialValues={initialValues}
           enableReinitialize
@@ -83,7 +85,7 @@ function EditInfo() {
                           : personalInfo.image
                       }
                       alt="Profile"
-                      className="w-32 h-32 rounded-md object-cover"
+                      className="w-32 h-24 rounded-md object-cover"
                     />
                     <div className="flex items-center gap-5 font-bold">
                       <input
@@ -117,11 +119,7 @@ function EditInfo() {
                         }}
                         aria-label="Delete image"
                       >
-                        <img
-                          src="/assets/svgs/deleteIcon.svg"
-                          alt="delete-account"
-                          className=" h-5"
-                        />
+                        <AiOutlineDelete color="#DC2626" size={24} />
                       </button>
                     </div>
                   </div>
@@ -131,24 +129,24 @@ function EditInfo() {
               </div>
               <div className="border p-5 rounded-md bg-gray-100 w-full">
                 <div className="flex flex-col md:flex-row gap-4">
-                  <AuthInputField placeholder="Name" name="name" />
-                  <AuthInputField placeholder="Email" name="email" />
+                  <InputField placeholder="Name" name="name" />
+                  <InputField placeholder="Email" name="email" />
                 </div>
                 <div className="mt-4">
-                  <AuthInputField placeholder="Phone" name="phone" />
+                  <InputField placeholder="Phone" name="phone" />
                 </div>
               </div>
               <div className="mt-5 flex items-center justify-end gap-3">
                 <button
                   type="button"
-                  className="bg-gray-200 text-gray-500  p-3 w-32 rounded-md"
+                  className="bg-gray-100 text-gray-400 font-bold p-3 w-32 rounded-md"
                   onClick={() => navigate("/Dashboard/MainInfo")}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="bg-primary text-white flex items-center justify-center gap-2 rounded-md p-3 w-32"
+                  className="bg-primary font-bold text-white flex items-center justify-center gap-2 rounded-md p-3 w-32"
                 >
                   {isLoading ? (
                     <ClipLoader color="#fff" size={22} />

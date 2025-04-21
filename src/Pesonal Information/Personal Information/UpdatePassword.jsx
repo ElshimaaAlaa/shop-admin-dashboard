@@ -61,7 +61,7 @@ function UpdatePassword() {
   return (
     <div>
       <button
-        className="flex items-center gap-2 border border-primary rounded-md p-3 text-primary mt-5"
+        className="flex items-center gap-2  border font-bold border-primary rounded-md p-3 text-primary mt-5"
         onClick={() => setShowModal(true)}
         aria-label="Update password"
       >
@@ -73,8 +73,8 @@ function UpdatePassword() {
         Update Password
       </button>
       <SuccessModal isOpen={showModal} onClose={() => setShowModal(false)}>
-        <div className="w-400">
-          <h1 className="text-primary text-center font-semibold text-xl p-5">
+        <div className="w-350">
+          <h1 className="text-primary text-[17px] font-bold ps-4 pt-5">
             Update Password
           </h1>
           <Formik
@@ -82,7 +82,7 @@ function UpdatePassword() {
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
           >
-            <Form className="pe-5 ps-5 pb-5">
+            <Form className="px-4 pb-3">
               <PasswordInput
                 name="password"
                 placeholder="New Password"
@@ -104,6 +104,13 @@ function UpdatePassword() {
               )}
               <div className="mt-5 flex gap-3">
                 <button
+                  type="button"
+                  className="bg-gray-100 text-gray-400 p-3 rounded-md font-bold w-full"
+                  onClick={() => setShowModal(false)}
+                >
+                  Cancel
+                </button>
+                <button
                   className="flex items-center justify-center gap-2 w-full bg-primary text-white rounded-md font-bold"
                   type="submit"
                 >
@@ -115,13 +122,6 @@ function UpdatePassword() {
                       Save
                     </>
                   )}
-                </button>
-                <button
-                  type="button"
-                  className="bg-gray-100 text-gray-400 p-3 rounded-md font-bold w-full"
-                  onClick={() => setShowModal(false)}
-                >
-                  Cancel
                 </button>
               </div>
             </Form>

@@ -57,7 +57,7 @@ function InfoSideBar() {
 
   return (
     <aside className="w-full">
-      <div className="flex flex-col gap-10  md:gap-7 border-l p-4 md:p-10">
+      <div className="flex flex-col gap-10  md:gap-10 border-l p-4 md:p-10">
         {menuItems.map(({ IconComponent, alt, label, path }, index) => (
           <button
             key={index}
@@ -73,7 +73,7 @@ function InfoSideBar() {
                 stroke={isActive(path) ? "#E0A75E" : "#000"}
               />
             </div>
-            <p className={`font-semibold text-15 mt-1 ${isActive(path) ? "text-primary" : ""}`}>
+            <p className={`font-semibold text-14 mt-1 ${isActive(path) ? "text-primary" : ""}`}>
               {label}
             </p>
           </button>
