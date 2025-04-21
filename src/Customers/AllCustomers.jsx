@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { FaSackDollar } from "react-icons/fa6";
 import { BiSupport } from "react-icons/bi";
 import { BsPeopleFill } from "react-icons/bs";
@@ -51,76 +51,64 @@ function AllCustomers() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
-  const [pagination, setPagination] = useState({
-    current_page: 1,
-    total_pages: 1,
-    per_page: 10,
-    total: 0,
-    next_page_url: null,
-    prev_page_url: null,
-  });
+  const [currentPage, setCurrentPage] = useState(0);
+  const [itemsPerPage] = useState(5);
+
+  const fetchCustomers = async () => {
+    setIsLoading(true);
+    try {
+      const response = await getCustomers(searchQuery);
+      const data = response?.data || response;
+
+      setCustomers(data?.orders || []);
+      setStatistics(
+        data?.statistics || {
+          customers: {},
+          contacts: {},
+          payments: {},
+        }
+      );
+      setIsLoading(false);
+    } catch (error) {
+      console.error("API call failed: ", error);
+      setError(true);
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchCustomers = async () => {
-      setIsLoading(true);
-      try {
-        const response = await getCustomers(pagination.current_page);
-        const data = response?.data || response;
-
-        setCustomers(data?.orders || []);
-        setStatistics(
-          data?.statistics || {
-            customers: {},
-            contacts: {},
-            payments: {},
-          }
-        );
-
-        const paginationData = data?.pagination || {
-          current_page: 1,
-          total_pages: 1,
-          per_page: 10,
-          total: 0,
-          next_page_url: null,
-          prev_page_url: null,
-        };
-
-        setPagination({
-          current_page: paginationData.current_page || 1,
-          total_pages: paginationData.total_pages || 1,
-          per_page: paginationData.per_page || 10,
-          total: paginationData.total || 0,
-          next_page_url: paginationData.next_page_url || null,
-          prev_page_url: paginationData.prev_page_url || null,
-        });
-
-        setIsLoading(false);
-      } catch (error) {
-        console.error("API call failed: ", error);
-        setError(true);
-        setIsLoading(false);
-      }
-    };
     fetchCustomers();
-  }, [pagination.current_page]);
+  }, [searchQuery]);
 
-  const handleDeleteCustomer = (customerId) => {
-    setCustomers((prevCustomer) =>
-      prevCustomer.filter((customer) => customer.id !== customerId)
+  const filteredCustomers = useMemo(() => {
+    return customers.filter(
+      (customer) =>
+        customer.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        customer.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        customer.phone?.includes(searchQuery)
     );
+  }, [customers, searchQuery]);
+
+  const indexOfLastItem = (currentPage + 1) * itemsPerPage;
+  const indexOfFirstItem = currentPage * itemsPerPage;
+  const currentItems = useMemo(() => {
+    return filteredCustomers.slice(indexOfFirstItem, indexOfLastItem);
+  }, [filteredCustomers, indexOfFirstItem, indexOfLastItem]);
+
+  const pageCount = Math.ceil(filteredCustomers.length / itemsPerPage);
+
+  const handlePageClick = ({ selected }) => {
+    setCurrentPage(selected);
   };
 
-  const handlePageClick = (data) => {
-    const selectedPage = data.selected + 1;
-    setPagination((prev) => ({ ...prev, current_page: selectedPage }));
+  const handleDeleteSuccess = (deletedId) => {
+    const updatedData = customers.filter((item) => item.id !== deletedId);
+    setCustomers(updatedData);
+    if (currentItems.length === 1 && currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+    }
+    fetchCustomers();
   };
-
-  const filteredCustomers = customers.filter(
-    (customer) =>
-      customer.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      customer.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      customer.phone?.includes(searchQuery)
-  );
 
   return (
     <div className="bg-gray-100 min-h-screen pb-10 mx-10 pt-5">
@@ -188,7 +176,10 @@ function AllCustomers() {
             type="text"
             placeholder="Search"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setCurrentPage(0); // Reset to first page when searching
+            }}
             className="w-full pl-10 pr-4 py-4 bg-muted/50 rounded-md text-sm focus:outline-none border-2 border-gray-200 bg-lightgray placeholder:text-15 focus:border-primary"
           />
         </div>
@@ -200,7 +191,6 @@ function AllCustomers() {
         ) : isLoading ? (
           <div className="text-gray-400 text-center mt-10">
             <ClipLoader color="#E0A75E" />
-            <p className="mt-2">Loading Customers Data...</p>
           </div>
         ) : filteredCustomers.length === 0 ? (
           <div className="text-gray-400 text-center mt-10">
@@ -233,7 +223,7 @@ function AllCustomers() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredCustomers.map((customer) => (
+                  {currentItems.map((customer) => (
                     <tr key={customer.id} className="border-t hover:bg-gray-50">
                       <td
                         className="px-3 py-3 border-t text-14 border-r w-250 cursor-pointer"
@@ -268,7 +258,7 @@ function AllCustomers() {
                       <td className="text-center px-3 py-3">
                         <DeleteCustomer
                           id={customer.id}
-                          onDelete={handleDeleteCustomer}
+                          onDelete={handleDeleteSuccess}
                         />
                       </td>
                     </tr>
@@ -276,31 +266,23 @@ function AllCustomers() {
                 </tbody>
               </table>
             </div>
-            <ReactPaginate
-              pageCount={pagination.total_pages}
-              onPageChange={handlePageClick}
-              forcePage={pagination.current_page - 1}
-              containerClassName="flex items-center justify-end mt-5 space-x-1"
-              pageClassName="px-3 py-1 rounded hover:bg-gray-200"
-              activeClassName="bg-customOrange-lightOrange text-primary"
-              previousLabel={<ChevronLeft className="w-4 h-4" />}
-              nextLabel={<ChevronRight className="w-4 h-4" />}
-              previousClassName={`px-3 py-1 rounded ${
-                !pagination.prev_page_url
-                  ? "opacity-50 cursor-not-allowed"
-                  : "hover:bg-gray-200"
-              }`}
-              nextClassName={`px-3 py-1 rounded ${
-                !pagination.next_page_url
-                  ? "opacity-50 cursor-not-allowed"
-                  : "hover:bg-gray-200"
-              }`}
-              disabledClassName="opacity-50 cursor-not-allowed"
-            />
+              <ReactPaginate
+                pageCount={pageCount}
+                onPageChange={handlePageClick}
+                forcePage={currentPage}
+                containerClassName="flex items-center justify-end mt-5 text-gray-500"
+                pageClassName="mx-1 px-3 py-1 rounded"
+                activeClassName="bg-customOrange-lightOrange text-primary"
+                previousLabel={<ChevronLeft className="w-4 h-4 text-center" />}
+                nextLabel={<ChevronRight className="w-4 h-4" />}
+                previousClassName="mx-1 px-3 py-1 font-bold text-primary text-18"
+                nextClassName="mx-1 px-3 py-1 font-bold text-primary text-18"
+              />
           </>
         )}
       </div>
     </div>
   );
 }
+
 export default AllCustomers;

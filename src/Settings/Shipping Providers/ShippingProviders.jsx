@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Helmet } from "react-helmet";
 import SearchBar from "../../Components/Search Bar/SearchBar";
 import { Plus } from "lucide-react";
@@ -16,59 +16,65 @@ function ShippingProviders() {
   const [error, setError] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [shippingData, setShippingData] = useState([]);
-  const [pagination, setPagination] = useState({
-    current_page: 1,
-    per_page: 10,
-    total: 0,
-    total_pages: 1,
-  });
+  const [currentPage, setCurrentPage] = useState(0); 
+  const [itemsPerPage] = useState(5);
+
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetchShippingProviders(searchQuery);
+      setShippingData(response.data || []);
+    } catch (error) {
+      console.error("Error fetching shipping providers:", error);
+      setError(true);
+      setShippingData([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const getShippingProviders = async () => {
-      setIsLoading(true);
-      try {
-        const response = await fetchShippingProviders(
-          searchQuery,
-          pagination.current_page,
-          pagination.per_page
-        );
-        setShippingData(response.data || []);
-        setPagination(
-          response.pagination || {
-            current_page: 1,
-            per_page: 10,
-            total: 0,
-            total_pages: 1,
-          }
-        );
-      } catch (error) {
-        console.error("Error fetching shipping providers:", error);
-        setError(true);
-        setShippingData([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    getShippingProviders();
-  }, [searchQuery, pagination.current_page, pagination.per_page]);
+    fetchData();
+  }, [searchQuery]);
 
-  const handlePageClick = (event) => {
-    setPagination((prev) => ({
-      ...prev,
-      current_page: event.selected + 1,
-    }));
+  const filteredShippingData = useMemo(() => {
+    return shippingData.filter((shipping) =>
+      shipping.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [shippingData, searchQuery]);
+
+  const indexOfLastItem = (currentPage + 1) * itemsPerPage;
+  const indexOfFirstItem = currentPage * itemsPerPage;
+  const currentItems = useMemo(() => {
+    return filteredShippingData.slice(indexOfFirstItem, indexOfLastItem);
+  }, [filteredShippingData, indexOfFirstItem, indexOfLastItem]);
+
+  const pageCount = Math.ceil(filteredShippingData.length / itemsPerPage);
+
+  const handlePageClick = ({ selected }) => {
+    setCurrentPage(selected);
   };
+  const handleDeleteSuccess = (deletedId) => {
+    const updatedData = shippingData.filter((item) => item.id !== deletedId);
+    setShippingData(updatedData);
+    if (currentItems.length === 1 && currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+    }
+    fetchData();
+  };
+
   if (showModal) {
     document.body.classList.add("no-scroll");
   } else {
     document.body.classList.remove("no-scroll");
   }
+
   return (
-    <div className="bg-gray-100 flex flex-col h-[89vh] ">
+    <div className="bg-gray-100 pb-10 flex flex-col h-[89vh] ">
       <Helmet>
         <title>Shipping Providers | vertex</title>
       </Helmet>
-      <div className="rounded-md p-5 mx-10 bg-white mt-5">
+      <div className="rounded-md p-5 mx-10 bg-white mt-3">
         <p className="text-gray-400 text-12">Menu / Shipping Providers</p>
         <h1 className="text-17 font-bold mt-2">Shipping Providers</h1>
       </div>
@@ -92,12 +98,15 @@ function ShippingProviders() {
           value={searchQuery}
           onchange={(e) => {
             setSearchQuery(e.target.value);
-            setPagination((prev) => ({ ...prev, current_page: 1 }));
+            setCurrentPage(0);
           }}
         />
         <AddShippingProvider
           isOpen={showModal}
-          onClose={() => setShowModal(false)}
+          onClose={() => {
+            setShowModal(false);
+            fetchData(); 
+          }}
         />
         {error ? (
           <div className="text-red-500 text-center mt-10">
@@ -135,7 +144,7 @@ function ShippingProviders() {
                   </tr>
                 </thead>
                 <tbody>
-                  {shippingData.map((item) => (
+                  {currentItems.map((item) => (
                     <tr key={item.id} className="border-t hover:bg-gray-50">
                       <td className="px-3 py-3 border-t text-15 text-gray-500 border-r cursor-pointer">
                         <p className="flex items-center gap-3">
@@ -151,11 +160,7 @@ function ShippingProviders() {
                         <div className="flex justify-center items-center">
                           <DeleteShipping
                             id={item.id}
-                            onDelete={() => {
-                              setShippingData(
-                                shippingData.filter((d) => d.id !== item.id)
-                              );
-                            }}
+                            onDelete={handleDeleteSuccess}
                           />
                         </div>
                       </td>
@@ -164,29 +169,18 @@ function ShippingProviders() {
                 </tbody>
               </table>
             </div>
-            {pagination.total_pages > 1 && (
-              <ReactPaginate
-                pageCount={pagination.total_pages}
-                onPageChange={handlePageClick}
-                forcePage={pagination.current_page - 1}
-                containerClassName="flex items-center justify-end mt-5 space-x-1"
-                pageClassName="px-3 py-1 rounded hover:bg-gray-200"
-                activeClassName="bg-customOrange-lightOrange text-primary"
-                previousLabel={<ChevronLeft className="w-4 h-4" />}
-                nextLabel={<ChevronRight className="w-4 h-4" />}
-                previousClassName={`px-3 py-1 rounded ${
-                  pagination.current_page === 1
-                    ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-gray-200"
-                }`}
-                nextClassName={`px-3 py-1 rounded ${
-                  pagination.current_page === pagination.total_pages
-                    ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-gray-200"
-                }`}
-                disabledClassName="opacity-50 cursor-not-allowed"
-              />
-            )}
+            <ReactPaginate
+              pageCount={pageCount}
+              onPageChange={handlePageClick}
+              forcePage={currentPage}
+              containerClassName="flex items-center justify-end mt-5 text-gray-500"
+              pageClassName="mx-1 px-3 py-1 rounded"
+              activeClassName="bg-customOrange-lightOrange text-primary"
+              previousLabel={<ChevronLeft className="w-4 h-4 text-center" />}
+              nextLabel={<ChevronRight className="w-4 h-4" />}
+              previousClassName="mx-1 px-3 py-1 font-bold text-primary text-18"
+              nextClassName="mx-1 px-3 py-1 font-bold text-primary text-18"
+            />
           </>
         )}
       </div>

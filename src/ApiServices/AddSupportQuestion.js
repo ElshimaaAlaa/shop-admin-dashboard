@@ -17,6 +17,7 @@ export const AddNewSupportQuestion = async (question, answer) => {
     });
     if (response.status === 200) {
       console.log("question added successfully");
+      return response.data;
     }
   } catch (error) {
     console.error("Failed to add question", error);

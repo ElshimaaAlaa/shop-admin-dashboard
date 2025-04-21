@@ -2,10 +2,10 @@ import axios from "axios";
 const API_BASE_URL = "https://";
 const live_shop_domain = localStorage.getItem("live_shop_domain");
 const role = localStorage.getItem("role");
-export const getSupportQusetions = async () => {
+export const getRequests = async () => {
   try {
     const response = await axios({
-      url: `${API_BASE_URL}/${live_shop_domain}/api/${role}/support-questions`,
+      url: `${API_BASE_URL}/${live_shop_domain}/api/${role}/support-questions?requests=1`,
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -18,14 +18,14 @@ export const getSupportQusetions = async () => {
       if (Array.isArray(response.data)) {
         return response.data;
       } else if (response.data && Array.isArray(response.data.data)) {
-        return response.data.data;
+        return response.data;
       }
       return [];
     }
     return [];
   } catch (error) {
     console.error(
-      "Failed to fetch questions:",
+      "Failed to fetch Requests:",
       error.response?.data || error.message
     );
     return [];

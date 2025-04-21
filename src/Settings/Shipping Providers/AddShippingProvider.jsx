@@ -138,5 +138,4 @@ function AddShippingProvider({ isOpen, onClose }) {
     </div>
   );
 }
-
 export default AddShippingProvider;

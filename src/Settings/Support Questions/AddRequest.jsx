@@ -3,33 +3,30 @@ import "./Style.scss";
 import { ClipLoader } from "react-spinners";
 import * as Yup from "yup";
 import { Form, Formik, Field } from "formik";
-import InputField from "../../Components/InputFields/InputField";
-import { FaCircleCheck } from "react-icons/fa6";
-import { AddNewSupportQuestion } from "../../ApiServices/AddSupportQuestion";
+import { AddNewRequest } from "../../ApiServices/AddRequest";
+import { IoMdAddCircleOutline } from "react-icons/io";
 
-function AddSupportQuestion({ isOpen, onClose, onSuccess }) {
+function AddRequest({ isOpen, onClose, onSuccess, questionId }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const initialValues = {
-    question: "",
     answer: "",
   };
 
   const validationSchema = Yup.object({
-    question: Yup.string().required("Question is required"),
-    answer: Yup.string(),
+    answer: Yup.string().required("Answer is required"),
   });
 
   const handleSubmit = async (values) => {
     setIsLoading(true);
     setError(null);
     try {
-      const newQuestion = await AddNewSupportQuestion(values.question, values.answer);
-      if (onSuccess) onSuccess(newQuestion);
+      const response = await AddNewRequest(questionId, values.answer);
+      if (onSuccess) onSuccess(response);
       onClose();
     } catch (error) {
-      setError(error.response?.data?.message || "Failed to add question");
-      console.error("Error adding question:", error);
+      setError(error.response?.data?.message || "Failed to add response");
+      console.error("Error adding response:", error);
     } finally {
       setIsLoading(false);
     }
@@ -46,7 +43,7 @@ function AddSupportQuestion({ isOpen, onClose, onSuccess }) {
             alt="chat"
             className="w-16 mb-2 mt-4"
           />
-          <h3 className="text-17 font-bold">Add Another Question</h3>
+          <h3 className="text-17 font-bold">Add Response</h3>
           {error && (
             <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">
               {error}
@@ -58,23 +55,22 @@ function AddSupportQuestion({ isOpen, onClose, onSuccess }) {
             onSubmit={handleSubmit}
           >
             <Form className="w-350 ms-3 mt-3 flex flex-col gap-3">
-              <InputField name={"question"} placeholder={"Question"} />
               <Field
                 as="textarea"
-                name={"answer"}
-                placeholder={"Response"}
-                className={`w-full h-24 p-3 border-2 rounded-md outline-none transition-all duration-200 placeholder:text-14 focus:border-primary placeholder:text-gray-400`}
+                name="answer"
+                placeholder="Your Response"
+                className="w-full h-24 p-3 border-2 rounded-md outline-none transition-all duration-200 placeholder:text-14 focus:border-primary placeholder:text-gray-400"
               />
               <button
-                type={"submit"}
-                className="bg-primary text-white font-semibold rounded-md p-3 w-full flex items-center gap-2 justify-center"
+                type="submit"
+                className="bg-primary text-white font-semibold rounded-md p-3 w-full flex items-center gap-1 justify-center disabled:opacity-50"
                 disabled={isLoading}
               >
                 {isLoading ? (
                   <ClipLoader color="#fff" size={26} />
                 ) : (
                   <>
-                    <FaCircleCheck /> {"Add Question"}
+                    <IoMdAddCircleOutline size={23} /> Add
                   </>
                 )}
               </button>
@@ -85,5 +81,4 @@ function AddSupportQuestion({ isOpen, onClose, onSuccess }) {
     </div>
   );
 }
-
-export default AddSupportQuestion;
+export default AddRequest;

@@ -56,7 +56,7 @@ function ReceivedOrders() {
       <div className="flex items-center gap-4 ps-4">
         <h1 className="text-2xl font-bold">{totalNumber}</h1>
         <p
-          className={`text-13  rounded-md p-1 ${
+          className={`text-13 font-bold rounded-md p-1 ${
             percentage?.includes("+")
               ? "text-[#34B41E] bg-[#E7F6E5]"
               : "text-red-600 bg-red-50"
@@ -99,7 +99,7 @@ function ReceivedOrders() {
           response.pagination || {
             total: response.orders?.length || 0,
             count: response.orders?.length || 0,
-            per_page: 10,
+            per_page: 5,
             current_page: 1,
             total_pages: 1,
             next_page_url: null,

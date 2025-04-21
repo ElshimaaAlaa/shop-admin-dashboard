@@ -7,6 +7,7 @@ import { getSupportQusetions } from "../../ApiServices/SupportQuestions";
 import AddSupportQuestion from "./AddSupportQuestion";
 import { ClipLoader } from "react-spinners";
 import DeleteQuestion from "./DeleteQuestion";
+import { useNavigate } from "react-router-dom";
 
 function SupportQuestion() {
   const [faqsData, setFaqsData] = useState([]);
@@ -14,13 +15,13 @@ function SupportQuestion() {
   const [openIndex, setOpenIndex] = useState(null);
   const [showAddQuestionModal, setShowAddQuestionModal] = useState(false);
   const [error, setError] = useState(null);
-
+  const navigate = useNavigate();
   const fetchSupportQuestions = async () => {
     setIsLoading(true);
     setError(null);
     try {
       const data = await getSupportQusetions();
-      setFaqsData(data);
+      setFaqsData(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Failed to fetch questions:", error);
       setError("Failed to load questions. Please try again.");
@@ -39,7 +40,14 @@ function SupportQuestion() {
   };
 
   const handleDeleteQuestion = (questionId) => {
-    setFaqsData(prevQuestions => prevQuestions.filter(q => q.id !== questionId));
+    setFaqsData((prevQuestions) =>
+      prevQuestions.filter((q) => q.id !== questionId)
+    );
+  };
+
+  const handleAddSuccess = (newQuestion) => {
+    setFaqsData((prev) => [...prev, newQuestion]);
+    fetchSupportQuestions();
   };
 
   return (
@@ -62,17 +70,22 @@ function SupportQuestion() {
             <IoMdAddCircleOutline size={24} />
             Add Question
           </button>
-          <button className="font-bold text-white flex items-center gap-3 p-3 rounded-md bg-primary w-40">
+          <button
+            className="font-bold text-white flex items-center justify-center gap-3 p-3 rounded-md bg-primary w-40"
+            onClick={() => navigate("/Dashboard/Requests")}
+          >
             <GoMail size={20} />
             Requests
           </button>
         </div>
       </div>
+
       <AddSupportQuestion
         isOpen={showAddQuestionModal}
         onClose={() => setShowAddQuestionModal(false)}
-        onSuccess={fetchSupportQuestions}
+        onSuccess={handleAddSuccess}
       />
+
       <section className="bg-white mx-10 p-5 mt-3 rounded-md">
         <h3 className="text-16 font-bold">Questions</h3>
         {isLoading ? (
@@ -85,7 +98,10 @@ function SupportQuestion() {
           <p className="mt-5 text-gray-400">No questions found</p>
         ) : (
           faqsData.slice(0, 4).map((item, index) => (
-            <div key={item.id} className="flex gap-3 justify-between">
+            <div
+              key={`${item.id}-${index}`}
+              className="flex gap-3 justify-between"
+            >
               <div
                 className={`border-2 mt-5 w-full p-5 rounded-lg transition-all duration-300 ${
                   openIndex === index
@@ -114,9 +130,9 @@ function SupportQuestion() {
               </div>
               <div>
                 <button className="border-red-600 border bg-red-50 rounded-md p-3 mt-6">
-                  <DeleteQuestion 
-                    id={item.id} 
-                    onDelete={handleDeleteQuestion} 
+                  <DeleteQuestion
+                    id={item.id}
+                    onDelete={handleDeleteQuestion}
                   />
                 </button>
               </div>

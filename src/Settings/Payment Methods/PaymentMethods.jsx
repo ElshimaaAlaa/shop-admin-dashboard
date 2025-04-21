@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Helmet } from "react-helmet";
 import SearchBar from "../../Components/Search Bar/SearchBar";
 import { Plus } from "lucide-react";
@@ -9,59 +9,68 @@ import { fetchPaymentMethods } from "../../ApiServices/PaymentMethods";
 import { MdPayment } from "react-icons/md";
 import DeletePayment from "./DletePayment";
 import AddShippingProvider from "./AddPaymentMethods";
+
 function PaymentMethods() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [paymentData, setPaymentData] = useState([]);
-  const [pagination, setPagination] = useState({
-    current_page: 1,
-    per_page: 10,
-    total: 0,
-    total_pages: 1,
-  });
+  const [currentPage, setCurrentPage] = useState(0);
+  const [itemsPerPage] = useState(10);
+
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetchPaymentMethods(searchQuery);
+      setPaymentData(response.data || []);
+    } catch (error) {
+      console.error("Error fetching payment methods:", error);
+      setError(true);
+      setPaymentData([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const getShippingProviders = async () => {
-      setIsLoading(true);
-      try {
-        const response = await fetchPaymentMethods(
-          searchQuery,
-          pagination.current_page,
-          pagination.per_page
-        );
-        setPaymentData(response.data || []);
-        setPagination(
-          response.pagination || {
-            current_page: 1,
-            per_page: 10,
-            total: 0,
-            total_pages: 1,
-          }
-        );
-      } catch (error) {
-        console.error("Error fetching shipping providers:", error);
-        setError(true);
-        setPaymentData([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    getShippingProviders();
-  }, [searchQuery, pagination.current_page, pagination.per_page]);
+    fetchData();
+  }, [searchQuery]);
 
-  const handlePageClick = (event) => {
-    setPagination((prev) => ({
-      ...prev,
-      current_page: event.selected + 1,
-    }));
+  const filteredPaymentData = useMemo(() => {
+    return paymentData.filter((payment) =>
+      payment.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [paymentData, searchQuery]);
+
+  const indexOfLastItem = (currentPage + 1) * itemsPerPage;
+  const indexOfFirstItem = currentPage * itemsPerPage;
+  const currentItems = useMemo(() => {
+    return filteredPaymentData.slice(indexOfFirstItem, indexOfLastItem);
+  }, [filteredPaymentData, indexOfFirstItem, indexOfLastItem]);
+
+  const pageCount = Math.ceil(filteredPaymentData.length / itemsPerPage);
+
+  const handlePageClick = ({ selected }) => {
+    setCurrentPage(selected);
   };
+
+  const handleDeleteSuccess = (deletedId) => {
+    const updatedData = paymentData.filter((item) => item.id !== deletedId);
+    setPaymentData(updatedData);
+    
+    if (currentItems.length === 1 && currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+    }
+    fetchData();
+  };
+
   if (showModal) {
     document.body.classList.add("no-scroll");
   } else {
     document.body.classList.remove("no-scroll");
   }
+
   return (
     <div className="bg-gray-100 flex flex-col h-[89vh] ">
       <Helmet>
@@ -76,7 +85,7 @@ function PaymentMethods() {
           <MdPayment color="#E0A75E" size={24} />
           <p className="text-gray-500 text-15">Payment Methods</p>
         </div>
-        <p className="font-bold text-16">{paymentData.length}</p>
+        <p className="font-bold text-16">{filteredPaymentData.length}</p>
       </div>
       <div className="bg-white rounded-md p-5 mx-10 my-3">
         <SearchBar
@@ -91,12 +100,15 @@ function PaymentMethods() {
           value={searchQuery}
           onchange={(e) => {
             setSearchQuery(e.target.value);
-            setPagination((prev) => ({ ...prev, current_page: 1 }));
+            setCurrentPage(0); 
           }}
         />
         <AddShippingProvider
           isOpen={showModal}
-          onClose={() => setShowModal(false)}
+          onClose={() => {
+            setShowModal(false);
+            fetchData(); 
+          }}
         />
         {error ? (
           <div className="text-red-500 text-center mt-10">
@@ -106,7 +118,7 @@ function PaymentMethods() {
           <div className="text-gray-400 text-center mt-10">
             <ClipLoader color="#E0A75E" />
           </div>
-        ) : paymentData.length === 0 ? (
+        ) : filteredPaymentData.length === 0 ? (
           <div className="text-gray-400 text-center mt-10">
             {searchQuery
               ? "No payment methods match your search."
@@ -134,7 +146,7 @@ function PaymentMethods() {
                   </tr>
                 </thead>
                 <tbody>
-                  {paymentData.map((item) => (
+                  {currentItems.map((item) => (
                     <tr key={item.id} className="border-t hover:bg-gray-50">
                       <td className="px-3 py-3 border-t text-14 border-r cursor-pointer">
                         <p className="flex items-center gap-3">
@@ -150,11 +162,7 @@ function PaymentMethods() {
                         <div className="flex justify-center items-center">
                           <DeletePayment
                             id={item.id}
-                            onDelete={() => {
-                              setPaymentData(
-                                paymentData.filter((d) => d.id !== item.id)
-                              );
-                            }}
+                            onDelete={handleDeleteSuccess}
                           />
                         </div>
                       </td>
@@ -163,33 +171,23 @@ function PaymentMethods() {
                 </tbody>
               </table>
             </div>
-            {pagination.total_pages > 1 && (
               <ReactPaginate
-                pageCount={pagination.total_pages}
+                pageCount={pageCount}
                 onPageChange={handlePageClick}
-                forcePage={pagination.current_page - 1}
-                containerClassName="flex items-center justify-end mt-5 space-x-1"
-                pageClassName="px-3 py-1 rounded hover:bg-gray-200"
+                forcePage={currentPage}
+                containerClassName="flex items-center justify-end mt-5 text-gray-500"
+                pageClassName="mx-1 px-3 py-1 rounded"
                 activeClassName="bg-customOrange-lightOrange text-primary"
-                previousLabel={<ChevronLeft className="w-4 h-4" />}
+                previousLabel={<ChevronLeft className="w-4 h-4 text-center" />}
                 nextLabel={<ChevronRight className="w-4 h-4" />}
-                previousClassName={`px-3 py-1 rounded ${
-                  pagination.current_page === 1
-                    ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-gray-200"
-                }`}
-                nextClassName={`px-3 py-1 rounded ${
-                  pagination.current_page === pagination.total_pages
-                    ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-gray-200"
-                }`}
-                disabledClassName="opacity-50 cursor-not-allowed"
+                previousClassName="mx-1 px-3 py-1 font-bold text-primary text-18"
+                nextClassName="mx-1 px-3 py-1 font-bold text-primary text-18"
               />
-            )}
           </>
         )}
       </div>
     </div>
   );
 }
+
 export default PaymentMethods;
