@@ -42,12 +42,14 @@ function ForgotPassword() {
         <meta charSet="utf-8" />
         <title>Forgot Password</title>
       </Helmet>
-      <div className="forgotpasswordContainer w-96 lg:w-450 md:w-450 sm:w-450 xs:w-450 s:w-450 bg-white rounded-lg p-6">
-        <div>
-          <img src="/assets/svgs/vertex.svg" alt="logo" className="w-44" />
-        </div>
-        <h1 className="font-bold text-xl mt-5">Forgot Password</h1>
-        <p className="text-secondary mt-3 text-15">
+      <div className="forgotpasswordContainer w-96 lg:w-450 md:w-450 sm:w-450 xs:w-450 s:w-450 bg-gray-50 rounded-lg p-6">
+        <img
+          src="/assets/svgs/vertex.svg"
+          alt="logo"
+          className="w-48 h-11 mb-5"
+        />
+        <h1 className="font-bold text-[21px] mt-3">Forgot Password</h1>
+        <p className="text-secondary mt-2 text-15">
           Please enter the email address linked with your account.
         </p>
         <Formik
@@ -56,7 +58,7 @@ function ForgotPassword() {
           onSubmit={handleSubmit}
         >
           {({ errors, touched }) => (
-            <Form className="mt-5 flex flex-col items-center w-full">
+            <Form className="mt-2 flex flex-col items-center w-full">
               <AuthInputField
                 name="email"
                 placeholder="Enter Your Email"
@@ -64,9 +66,15 @@ function ForgotPassword() {
                 error={touched.email && errors.email}
                 active={touched.email}
               />
-              <div className="mt-5 w-full">
+              <div className="mt-3 w-full">
                 <MainBtn
-                  text={isLoading ? <ClipLoader color="#fff" size={22} /> : "Send Code"}
+                  text={
+                    isLoading ? (
+                      <ClipLoader color="#fff" size={22} />
+                    ) : (
+                      "Send Code"
+                    )
+                  }
                   btnType="submit"
                   disabled={isLoading}
                 />

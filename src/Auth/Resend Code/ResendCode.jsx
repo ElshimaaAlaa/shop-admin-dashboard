@@ -4,14 +4,13 @@ function ResendCode() {
   const resndCode = async () => {
     const email = localStorage.getItem("Email Admin");
     const response = await axios({
-      url:"https://demo.vrtex.duckdns.org/api/shop/send-otp",
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        data:{email},
-      }
-    );
+      url: "https://demo.vrtex.duckdns.org/api/shop/send-otp",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: { email },
+    });
     if (response.status === 200) {
       console.log("Resend code successfully");
     } else {
@@ -22,8 +21,7 @@ function ResendCode() {
     <div>
       <p
         onClick={resndCode}
-        className="font-bold text-primary ms-1 cursor-pointer"
-        style={{fontSize:'16px'}}
+        className="font-bold text-primary text-15 cursor-pointer"
       >
         Resend
       </p>

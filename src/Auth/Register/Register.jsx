@@ -69,11 +69,15 @@ function Register() {
         <meta charSet="utf-8" />
         <title>Register</title>
       </Helmet>
-      <div className="registerContainer lg:w-450 md:w-450 sm:w-450 xs:w-450 s:w-450 bg-white">
-        <div>
-          <img src="/assets/svgs/vertex.svg" alt="logo" className="w-44 mb-5" />
-        </div>
-        <h1 className="font-bold text-2xl mt-5">Create New Account</h1>
+      <div className="registerContainer lg:w-450 md:w-450 sm:w-450 xs:w-450 s:w-450 bg-gray-50">
+        {/* <div> */}
+          <img
+            src="/assets/svgs/vertex.svg"
+            alt="logo"
+            className="w-48 h-11 mb-5"
+          />
+        {/* </div> */}
+        <h1 className="font-bold text-[21px] mt-3">Create New Account</h1>
         <Formik
           initialValues={initialValues}
           onSubmit={handleSubmit}
@@ -141,7 +145,7 @@ function Register() {
               )}
               <div className="flex items-center justify-center w-full">
                 <div className="border-t border-gray-300 flex-grow"></div>
-                <span className="mx-4 text-gray-400 text-sm">OR</span>
+                <span className="mx-4 text-gray-400 text-13 font-bold">OR</span>
                 <div className="border-t border-gray-300 flex-grow"></div>
               </div>
               <OAuth />
@@ -149,7 +153,7 @@ function Register() {
                 Have An Account ?
                 <span
                   onClick={() => navigate("/AdminLogin")}
-                  className="ms-2 text-primary font-bold text-16 cursor-pointer"
+                  className="ms-2 text-primary font-bold text-15 cursor-pointer"
                 >
                   Login
                 </span>
@@ -161,5 +165,4 @@ function Register() {
     </div>
   );
 }
-
 export default Register;

@@ -73,12 +73,14 @@ function VerifayPassword() {
         <meta charSet="utf-8" />
         <title>Verifay Password</title>
       </Helmet>
-      <div className="verivayContainer lg:w-450 md:w-450 sm:w-450 xs:w-450 s:w-450 bg-white rounded-md">
-        <div>
-          <img src="/assets/svgs/vertex.svg" alt="logo"  className="w-44"/>
-        </div>
-        <h1 className="font-bold text-xl mt-5">Verification Code</h1>
-        <p className="text-secondary mt-3 text-15">
+      <div className="verivayContainer lg:w-450 md:w-450 sm:w-450 xs:w-450 s:w-450 bg-gray-50 rounded-md">
+        <img
+          src="/assets/svgs/vertex.svg"
+          alt="logo"
+          className="w-48 h-11 mb-5"
+        />
+        <h1 className="font-bold text-[21px] mt-3">Verification Code</h1>
+        <p className="text-secondary mt-2 text-15">
           Enter the verification code we just sent on your email address.
         </p>
         <Formik
@@ -87,7 +89,7 @@ function VerifayPassword() {
           onSubmit={handleSubmit}
         >
           {({ errors, touched }) => (
-            <Form className="mt-5 flex flex-col">
+            <Form className="mt-3 flex flex-col">
               <div className="flex gap-2">
                 {Array(6)
                   .fill("")
@@ -105,12 +107,14 @@ function VerifayPassword() {
                     />
                   ))}
               </div>
-              <div className="text-black mt-5 mb-5 flex text-16">
-                <p className="me-2">Didn’t Get Code?</p>
+              <div className="text-gray-600 mt-3 mb-3 flex items-center gap-2 text-15">
+                <p className="">Didn’t Get Code?</p>
                 <ResendCode />
               </div>
               <MainBtn
-                text={loading ? <ClipLoader color="#fff" size={22} /> : "Verify"}
+                text={
+                  loading ? <ClipLoader color="#fff" size={22} /> : "Verify"
+                }
                 btnType="submit"
               />
             </Form>

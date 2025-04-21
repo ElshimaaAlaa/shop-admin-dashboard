@@ -24,7 +24,7 @@ function GetDomain() {
       await getDomain(values.email);
       setIsLoading(false);
       setTimeout(() => {
-        navigate('/AdminLogin');
+        navigate("/AdminLogin");
       }, 1500);
     } catch (error) {
       console.error(error);
@@ -37,22 +37,26 @@ function GetDomain() {
         <meta charSet="utf-8" />
         <title>Get Domain</title>
       </Helmet>
-      <div className="getDomainContainer w-96 lg:w-450 md:w-450 sm:w-80 xs:w-450 s:w-80 bg-white rounded-md">
-        <img src="/assets/svgs/vertex.svg" alt="logo" className="w-44 mb-5" />
+      <div className="getDomainContainer w-96 lg:w-450 md:w-450 sm:w-80 xs:w-450 s:w-80 bg-gray-50 rounded-md">
+        <img
+          src="/assets/svgs/vertex.svg"
+          alt="logo"
+          className="w-48 h-11 mb-5"
+        />
         <Formik
           initialValues={intialValues}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
           <Form>
-            <h1 className="font-bold text-xl mt-5">Get Your Domain</h1>
+            <h1 className="font-bold text-[21px] mt-3">Get Your Domain</h1>
             <p className="text-secondary mt-3 text-15 mb-3">
               Enter your email to get your domain and start your business
             </p>
             <AuthInputField name="email" placeholder={"Enter Email"} />
             <div className="mt-3">
               <MainBtn
-              btnType={'submit'}
+                btnType={"submit"}
                 text={
                   isLoading ? <ClipLoader size={22} color="#fff" /> : "Save"
                 }

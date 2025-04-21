@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Formik, Form} from "formik";
+import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
@@ -56,13 +56,13 @@ function CreateNewPassword() {
         <meta charSet="utf-8" />
         <title>Create New Password</title>
       </Helmet>
-      <div className="CreateNewPasswordContainer lg:w-450 md:w-450 sm:w-450 xs:w-450 s:w-450 bg-white">
-        <div>
-          <img src="/assets/svgs/vertex.svg" alt="logo" className="w-44"/>
-        </div>
-        <h1 className="font-bold mt-5 text-xl">
-          Create New Password
-        </h1>
+      <div className="CreateNewPasswordContainer lg:w-450 md:w-450 sm:w-450 xs:w-450 s:w-450 bg-gray-50">
+        <img
+          src="/assets/svgs/vertex.svg"
+          alt="logo"
+          className="w-48 h-11 mb-5"
+        />
+        <h1 className="font-bold mt-3 text-[21px]">Create New Password</h1>
         <Formik
           initialValues={initialValues}
           onSubmit={handleSubmit}
@@ -87,7 +87,7 @@ function CreateNewPassword() {
               {error && (
                 <div className="text-red-500 text-sm mb-4">{error}</div>
               )}
-              <div className="mt-5">
+              <div className="mt-3">
                 <MainBtn
                   text={
                     loading ? <ClipLoader color="#fff" size={22} /> : "Save"

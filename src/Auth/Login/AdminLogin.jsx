@@ -72,12 +72,14 @@ function AdminLogin() {
         <meta charSet="utf-8" />
         <title>Login</title>
       </Helmet>
-      <div className="loginContainer w-96 lg:w-450 md:w-450 sm:w-80 xs:w-450 s:w-80 bg-white rounded-md">
-        <div className="flex">
-          <img src="/assets/svgs/vertex.svg" alt="logo" className="w-44 mb-5" />
-        </div>
-        <div className="flex items-center">
-          <h1 className="font-bold me-3 text-2xl">Welcome Back</h1>
+      <div className="loginContainer w-96 lg:w-450 md:w-450 sm:w-80 xs:w-450 s:w-80 bg-gray-50 rounded-md">
+        <img
+          src="/assets/svgs/vertex.svg"
+          alt="logo"
+          className="w-48 h-11 mb-5"
+        />
+        <div className="flex items-center gap-3 mt-3">
+          <h1 className="font-bold text-[21px]">Welcome Back</h1>
           <img
             src="/assets/images/waving-hand_svgrepo.com.png"
             alt="welcome-back"
@@ -90,7 +92,7 @@ function AdminLogin() {
           validationSchema={validationSchema}
         >
           {({ errors, touched }) => (
-            <Form className="loginForm mt-8">
+            <Form className="loginForm mt-4">
               <AuthInputField
                 name={"email"}
                 placeholder={"Email"}
@@ -126,7 +128,7 @@ function AdminLogin() {
                         <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
                       </svg>
                     </span>
-                    <span className="text-11 lg:text-14 text-gray-600 ms-2">
+                    <span className="text-11 lg:text-13 text-gray-600 ms-1">
                       Remember Me
                     </span>
                   </label>
@@ -152,14 +154,20 @@ function AdminLogin() {
             </Form>
           )}
         </Formik>
-        <div className="flex items-center justify-center mt-8">
+        <div className="flex items-center justify-center mt-4">
           <div className="border-t border-gray-300 flex-grow"></div>
-          <span className="mx-4 text-gray-400 text-14 text-sm">OR</span>
+          <span className="mx-4 text-gray-400 text-13 font-bold">OR</span>
           <div className="border-t border-gray-300 flex-grow"></div>
         </div>
         <OAuth />
-        <p className="text-center text-gray-400 mt-3 text-15">
-          Don’t Have An Account ? <span className="ms-1 text-primary font-bold text-16 cursor-pointer" onClick={()=>navigate('/Register')}>Register</span>
+        <p className="text-center text-gray-400 text-14 mt-5">
+          Don’t Have An Account ?
+          <span
+            className="ms-1 text-primary font-bold text-15 cursor-pointer"
+            onClick={() => navigate("/Register")}
+          >
+            Register
+          </span>
         </p>
       </div>
     </div>
