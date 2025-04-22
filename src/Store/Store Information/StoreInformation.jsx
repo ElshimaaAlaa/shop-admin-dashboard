@@ -27,8 +27,8 @@ function StoreInformation() {
         />
       </Helmet>
       <section>
-        <div className="flex flex-col md:flex-row items-center justify-between mb-6">
-          <h1 className="font-bold text-xl mb-4 md:mb-0">Store Information</h1>
+        <div className="flex flex-col md:flex-row items-center justify-between mb-4">
+          <h1 className="font-bold text-[20px]">Store Information</h1>
           <button
             onClick={handleEditClick}
             className="text-white font-semibold flex items-center justify-center gap-2 bg-primary p-3 w-24 rounded-md"
@@ -41,17 +41,17 @@ function StoreInformation() {
         <div className=" border border-gray-200 rounded-md p-5 w-full">
           <div className="flex flex-col md:flex-row items-center gap-x-96">
             <div className="text-center md:text-left">
-              <h2 className="text-14  text-gray-400">Name</h2>
-              <p className="mt-2 text-14">{storeInformation.store_name}</p>
+              <h2 className="text-15  text-gray-400">Name</h2>
+              <p className="mt-2 text-15">{storeInformation.store_name}</p>
             </div>
             <div className="text-center md:text-left">
-              <h2 className="text-14  text-gray-400">Loaction</h2>
-              <p className="mt-2 text-14">{storeInformation.address}</p>
+              <h2 className="text-15 text-gray-400">Loaction</h2>
+              <p className="mt-2 text-15">{storeInformation.address}</p>
             </div>
           </div>
-          <h2 className="text-14 mt-5 text-gray-400">Bio</h2>
-          <p className="mt-2 text-14">{storeInformation.bio}</p>
-          <div className="flex flex-col lg:flex-row md:flex-row items-end gap-x-64 mt-">
+          <h2 className="text-15 mt-5 text-gray-400">Bio</h2>
+          <p className="mt-2 text-15">{storeInformation.bio}</p>
+          <div className="flex flex-col lg:flex-row md:flex-row items-end gap-x-80">
             <div>
               <p className="text-1xl font-bold mb-3 mt-7">Banners</p>
               <div className="flex flex-wrap gap-4">

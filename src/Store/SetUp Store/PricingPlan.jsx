@@ -27,7 +27,7 @@ const PLANS = [
     id: 2,
     name: "Standard",
     price: 10,
-    period: "/mo",
+    period: "/mth",
     description: "Billed monthly",
     features: [
       "All Free features",
@@ -42,7 +42,7 @@ const PLANS = [
     id: 3,
     name: "Pro",
     price: 22,
-    period: "/mo",
+    period: "/mth",
     description: "Billed monthly",
     features: [
       "All Standard features",
@@ -127,7 +127,7 @@ const PricingPlan = ({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-customBlue-mediumBlue via-customOrange-mediumOrange to-customOrange-mediumOrange p-6 flex items-center justify-center">
+    <div className="bg-gradient-to-r from-customBlue-mediumBlue via-customOrange-mediumOrange to-customOrange-mediumOrange p-6 flex items-center justify-center">
       <Helmet>
         <title>Set Up Store - Pricing Plan</title>
       </Helmet>

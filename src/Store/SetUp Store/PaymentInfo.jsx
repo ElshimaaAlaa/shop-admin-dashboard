@@ -184,7 +184,7 @@ function PaymentInfo({
                     className={`rounded-lg p-2 flex items-center gap-2 font-bold text-14 cursor-pointer transition-colors ${
                       values.payment_method === method.id
                         ? "bg-primary-light border border-primary bg-customOrange-mediumOrange"
-                        : "bg-gray-100 hover:bg-gray-200"
+                        : "bg-gray-50 hover:bg-gray-200"
                     }`}
                   >
                     <Field
@@ -203,14 +203,14 @@ function PaymentInfo({
               </div>
 
               {values.payment_method && (
-                <div className="bg-gray-100 p-4 rounded-md">
+                <div className="bg-gray-50 p-4 rounded-md">
                   <h4 className="font-bold mt-4 mb-3">Payment Data</h4>
                   <div className="flex items-center gap-3">
                     <InputField name="card_cvv" placeholder="CVV" />
                     <Field
                       name="expiration_date"
                       placeholder="MM/YY"
-                      type="text"
+                      type="date"
                       className={`w-full h-14 p-3 border-2 rounded-md outline-none transition-all duration-200 placeholder:text-14 focus:border-primary`}
                       onChange={(e) => {
                         let value = e.target.value;

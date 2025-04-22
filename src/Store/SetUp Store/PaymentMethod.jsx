@@ -150,9 +150,9 @@ function PaymentMethods() {
                                 )}
                                 onChange={() => {}}
                               />
-                              <span className="w-5 h-5 border-2 border-gray-300 rounded flex items-center justify-center transition-all duration-200 peer-checked:border-orange-500">
+                              <span className="w-5 h-5 border-2 border-gray-300 rounded flex items-center justify-center transition-all duration-200 peer-checked:border-primary">
                                 <svg
-                                  className="w-3 h-3 text-orange-500 opacity-0 transition-all duration-200 peer-checked:opacity-100"
+                                  className="w-3 h-3 text-primary opacity-0 transition-all duration-200 peer-checked:opacity-100"
                                   viewBox="0 0 20 20"
                                   fill="currentColor"
                                 >

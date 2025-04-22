@@ -127,7 +127,7 @@ function EditInfo() {
                   <p className="text-gray-500">No image available</p>
                 )}
               </div>
-              <div className="border p-5 rounded-md bg-gray-100 w-full">
+              <div className="border p-5 rounded-md bg-gray-50 w-full">
                 <div className="flex flex-col md:flex-row gap-4">
                   <InputField placeholder="Name" name="name" />
                   <InputField placeholder="Email" name="email" />

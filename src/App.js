@@ -42,6 +42,8 @@ import PaymentMethods from "./Settings/Payment Methods/PaymentMethods";
 import PaymentMethod from "./Store/SetUp Store/PaymentMethod";
 import SupportQuestion from "./Settings/Support Questions/SupportQuestion";
 import Requests from "./Settings/Support Questions/Requests";
+import Pricing from "./Store/Pricing Plan/PricingPlan";
+import Info from "./Store/Information/Info";
 
 function App() {
   return (
@@ -84,6 +86,8 @@ function App() {
             <Route path="StoreTheme" element={<StoreTheme />} />
             <Route path="EditStoreTheme" element={<EditStoreTheme />} />
             <Route path="StoreInformation" element={<StoreInformation />} />
+            <Route path="Pricing" element={<Pricing/>}/>
+            <Route path="Info" element={<Info/>}/>
             <Route
               path="EditStoreInformation"
               element={<EditStoreInformation />}

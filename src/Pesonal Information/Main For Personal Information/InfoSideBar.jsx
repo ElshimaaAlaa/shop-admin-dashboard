@@ -35,13 +35,13 @@ function InfoSideBar() {
       IconComponent: PricingPlan,
       alt: "Pricing Plans Icon",
       label: "Pricing Plans",
-      // path: "PricingPlans",
+      path: "Pricing",
     },
     {
       IconComponent: PaymentMethod,
       alt: "Payment Information Icon",
       label: "Payment Information",
-      // path: "PaymentInformation",
+      path: "Info",
     },
   ];
 

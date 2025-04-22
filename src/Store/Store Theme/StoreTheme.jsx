@@ -12,7 +12,6 @@ function StoreTheme() {
   const handleEditClick = () => {
     // navigate("/Dashboard/MainInfo/EditStoreTheme", { state: storeData });
   };
-
   const themeData = JSON.parse(localStorage.getItem("storeThemeData") || "{}");
 
   const imageUrl = themeData.theme_image
@@ -51,14 +50,14 @@ function StoreTheme() {
       </Helmet>
 
       <section>
-        <div className="flex flex-col md:flex-row items-center justify-between mb-6">
-          <h1 className="font-bold text-xl mb-4 md:mb-0">Store Theme</h1>
+        <div className="flex flex-col md:flex-row items-center justify-between mb-4">
+          <h1 className="font-bold text-[20px]">Store Theme</h1>
           <button
             // onClick={handleEditClick}
             className="text-white font-semibold flex items-center justify-center gap-3 bg-primary p-3 w-24 rounded-md"
             aria-label="Edit personal information"
           >
-            <img src="/assets/svgs/edit.svg" alt="Edit icon" className="w-6" />
+            <img src="/assets/svgs/edit.svg" alt="Edit icon" className="w-7" />
             Edit
           </button>
         </div>
@@ -72,22 +71,22 @@ function StoreTheme() {
         <div className="border border-gray-200 rounded-md p-5 w-full">
           <div className="flex flex-col md:flex-row items-center gap-x-96">
             <div className="text-center md:text-left">
-              <h2 className="text-14 text-gray-400">Primary Color</h2>
+              <h2 className="text-15 text-gray-400">Primary Color</h2>
               <div
-                className="mt-2 border-2 border-black p-3 w-16 h-8 rounded"
+                className="mt-2 border border-black p-3 w-16 h-8 rounded"
                 style={{ backgroundColor: themeData.theme_primary_color }}
               ></div>
             </div>
             <div className="text-center md:text-left">
-              <h2 className="text-14 text-gray-400">Secondary Color</h2>
+              <h2 className="text-15 text-gray-400">Secondary Color</h2>
               <div
-                className="mt-2 border-2 border-black p-3 w-16 h-8 rounded"
+                className="mt-2 border border-black p-3 w-16 h-8 rounded"
                 style={{ backgroundColor: themeData.theme_secondary_color }}
               ></div>
             </div>
           </div>
 
-          <div className="flex flex-col lg:flex-row md:flex-row items-end gap-x-64 mt-">
+          <div className="flex flex-col lg:flex-row md:flex-row items-end gap-x-80">
             <div>
               <p className="text-1xl font-bold mb-3 mt-7">Logo</p>
               {imageUrl ? (
@@ -119,5 +118,4 @@ function StoreTheme() {
     </div>
   );
 }
-
 export default StoreTheme;
