@@ -86,8 +86,8 @@ const Sidebar = () => {
     {
       id: "invoices",
       label: "Invoices",
-      icon: <Invoices/>,
-      padding:"4px"
+      icon: <Invoices />,
+      padding: "4px",
     },
     {
       id: "clients",
@@ -100,13 +100,14 @@ const Sidebar = () => {
       id: "promotions",
       label: "Disc and Promotion",
       icon: <Discount />,
-      padding :"5px",
+      padding: "5px",
       onclick: () => navigate("AllDiscounts"),
     },
     {
       id: "reports",
       label: "Reports",
       icon: <Reports />,
+      onclick: () => navigate("Analytics"),
     },
     {
       id: "settings",
@@ -142,7 +143,7 @@ const Sidebar = () => {
       id: "help",
       label: "Help",
       icon: <Help />,
-      padding:"5px",
+      padding: "5px",
       onclick: () => navigate("Faqs"),
     },
   ];

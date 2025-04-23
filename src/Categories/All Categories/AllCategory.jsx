@@ -153,7 +153,7 @@ function AllCategory() {
                             aria-label={`Select ${category.name}`}
                           />
                         </td>
-                        <td className="flex gap-3 px-6 py-3 border-t text-customGray-grayText">
+                        <td className="flex gap-3 px-6 py-3 border-t text-gray-600">
                           <img
                             src={category.image || "/path/to/default-image.png"}
                             alt={category.name}

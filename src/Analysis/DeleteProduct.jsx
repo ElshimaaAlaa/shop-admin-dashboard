@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
-import FailedModal from "../../Components/Modal/Failed Modal/FailedModal";
 import { ClipLoader } from "react-spinners";
+import FailedModal from "../Components/Modal/Failed Modal/FailedModal";
 import "./DeleteModal.scss";
-function DeleteProduct({ id, onDelete }) {
+function Delete({ id, onDelete }) {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const API_BASE_URL = "https://";
@@ -80,4 +80,4 @@ function DeleteProduct({ id, onDelete }) {
     </div>
   );
 }
-export default DeleteProduct;
+export default Delete;

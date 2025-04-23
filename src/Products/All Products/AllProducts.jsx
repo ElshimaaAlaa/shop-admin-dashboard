@@ -14,108 +14,78 @@ function AllProducts() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5);
   const [searchQuery, setSearchQuery] = useState("");
-  const [pagination, setPagination] = useState({
-    total: 0,
-    count: 0,
-    per_page: 10,
-    current_page: 1,
-    total_pages: 1,
-    next_page_url: null,
-    prev_page_url: null
-  });
   const navigate = useNavigate();
 
   useEffect(() => {
     const getProducts = async () => {
       setIsLoading(true);
       try {
-        const response = await fetchProducts(currentPage);
+        const response = await fetchProducts();
         if (Array.isArray(response)) {
           setProducts(response);
-          setPagination({
-            total: response.length,
-            count: response.length,
-            per_page: 10,
-            current_page: 1,
-            total_pages: Math.ceil(response.length / 10),
-            next_page_url: null,
-            prev_page_url: null
-          });
         } else if (response?.data) {
           setProducts(response.data);
-          setPagination(response.pagination || {
-            total: response.data.length,
-            count: response.data.length,
-            per_page: 10,
-            current_page: 1,
-            total_pages: Math.ceil(response.data.length / 10),
-            next_page_url: null,
-            prev_page_url: null
-          });
         } else {
           console.warn("Unexpected API response structure:", response);
           setProducts([]);
-          setPagination({
-            total: 0,
-            count: 0,
-            per_page: 10,
-            current_page: 1,
-            total_pages: 1,
-            next_page_url: null,
-            prev_page_url: null
-          });
         }
       } catch (error) {
         setError(true);
         console.error("API call failed: ", error);
         setProducts([]);
-        setPagination({
-          total: 0,
-          count: 0,
-          per_page: 10,
-          current_page: 1,
-          total_pages: 1,
-          next_page_url: null,
-          prev_page_url: null
-        });
       } finally {
         setIsLoading(false);
       }
     };
     getProducts();
-  }, [currentPage]);
+  }, []);
 
   const handleDeleteProduct = (productId) => {
-    setProducts(prevProducts => prevProducts.filter(product => product.id !== productId));
-    setPagination(prev => ({
-      ...prev,
-      total: prev.total - 1,
-      count: prev.count - 1
-    }));
+    setProducts((prevProducts) => {
+      const updatedProducts = prevProducts.filter(
+        (product) => product.id !== productId
+      );
+      if (
+        updatedProducts.length <= (currentPage - 1) * itemsPerPage &&
+        currentPage > 1
+      ) {
+        setCurrentPage(currentPage - 1);
+      }
+      return updatedProducts;
+    });
   };
 
   const filteredProducts = useMemo(() => {
     if (!products || !Array.isArray(products)) return [];
-    return products.filter(product => 
-      product?.name?.toLowerCase()?.includes(searchQuery.toLowerCase())
+    return products.filter(
+      (product) =>
+        product?.name?.toLowerCase()?.includes(searchQuery.toLowerCase()) ||
+        product?.category?.name
+          ?.toLowerCase()
+          ?.includes(searchQuery.toLowerCase())
     );
   }, [products, searchQuery]);
 
-  const paginatedProducts = useMemo(() => {
-    const startIndex = (pagination.current_page - 1) * pagination.per_page;
-    const endIndex = startIndex + pagination.per_page;
-    return filteredProducts.slice(startIndex, endIndex);
-  }, [filteredProducts, pagination]);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredProducts.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
 
   return (
-    <div className="bg-gray-100 min-h-screen mx-10 pt-5">
+    <div className="bg-gray-100 h-[89vh] mx-10 pt-5">
       <Helmet>
         <title>All Products | VERTEX</title>
       </Helmet>
-      <h1 className="font-bold text-17 bg-white mb-3 p-4 rounded-md">
-        Products
-      </h1>
+
+      <div className="bg-white mb-3 p-4 rounded-md">
+        <p className="text-gray-400 text-13">Menu / Products</p>
+        <h1 className="font-bold text-17 mt-3">Products</h1>
+      </div>
+
       <div className="bg-white p-5 rounded-md">
         <SearchBar
           onclick={() => navigate("/Dashboard/addProduct")}
@@ -129,114 +99,121 @@ function AllProducts() {
             />
           }
         />
-        
+
         {error ? (
           <div className="text-red-500 text-center mt-10">
-            Failed to fetch data. Please try again.
+            Failed to fetch products. Please try again.
           </div>
         ) : isLoading ? (
-          <div className="text-gray-400 text-center mt-10">
-            <ClipLoader color="#E0A75E" />
-            <p className="mt-2">Loading Products...</p>
+          <div className="flex justify-center mt-10">
+            <ClipLoader color="#E0A75E" size={40} />
           </div>
         ) : filteredProducts.length === 0 ? (
           <div className="text-gray-400 text-center mt-10">
-            {searchQuery ? "No products match your search." : "No products found."}
+            {searchQuery
+              ? "No products match your search."
+              : "No products available."}
           </div>
         ) : (
           <>
-            <div className="border overflow-hidden rounded-md mt-5">
-              <table className="bg-white min-w-full table">
+            <div className="border border-gray-200 rounded-lg overflow-hidden mt-5">
+              <table className="min-w-full divide-y divide-gray-200">
                 <thead>
                   <tr>
-                    <th className="flex items-center gap-4 px-3 py-3 text-left border-r w-300">
-                      <input
-                        type="checkbox"
-                        className="form-checkbox h-4 w-4 me-3"
-                      />
-                      <p>Product</p>
+                    <th className="px-3 py-3 border-b border-r ">
+                      <p className="flex items-center gap-3">
+                        <input
+                          type="checkbox"
+                          className="form-checkbox h-4 w-4 rounded text-primary focus:ring-primary border-gray-300"
+                        />
+                        Product
+                      </p>
                     </th>
-                    <th className="px-6 py-3 text-left w-250">Category</th>
-                    <th className="px-6 py-3 text-left border-r border-l w-250">
-                      Price
-                    </th>
-                    <th className="px-6 py-3 text-left border-r w-250">Stock</th>
-                    <th className="px-6 py-3 text-left border-r w-32">Colors</th>
-                    <th className="px-6 py-3 border-gray-200 text-left w-5">
-                      Actions
-                    </th>
+                    <th className="px-3 py-3 border-b border-r text-left">Category</th>
+                    <th className="px-3 py-3 border-r border-b text-left">Price</th>
+                    <th className="px-3 py-3 border-r border-b text-left">Stock</th>
+                    <th className="px-3 py-3 border-r text-left border-b ">Colors</th>
+                    <th className="px-3 py-3 border-b">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {paginatedProducts.map((product) => (
-                    <tr key={product.id}>
+                  {currentItems.map((product) => (
+                    <tr key={product.id} className="hover:bg-gray-50">
                       <td
-                        className="px-3 py-3 text-15 cursor-pointer border-t border-r w-250 text-gray-600"
-                        onClick={() => navigate(`/Dashboard/products/${product.id}`)}
+                        className="px-3 py-3 border-t border-r text-gray-600 text-15 cursor-pointer"
+                        onClick={() =>
+                          navigate(`/Dashboard/products/${product.id}`)
+                        }
                       >
-                        <p className="flex items-center gap-3">
+                        <div className="flex items-center gap-3">
                           <input
                             type="checkbox"
-                            className="form-checkbox h-5 w-4 me-3"
+                            className="form-checkbox h-4 w-4 rounded text-primary focus:ring-primary border-gray-300"
                           />
                           <img
+                            className="h-7 w-7 rounded-full object-cover"
                             src={
-                              product.images?.[0]?.src || "/assets/images/default-product.png"
+                              product.images?.[0]?.src ||
+                              "/assets/images/default-product.png"
                             }
                             alt={product.name}
-                            className="w-7 h-7 object-cover rounded-full"
                           />
                           {product.name}
-                        </p>
+                        </div>
                       </td>
-                      <td className="flex gap-3 px-6 py-3 text-15 border-gray-200 border-t border-r w-250 text-gray-600">
-                        <img
-                          src={product.category?.image || "/assets/images/default-category.png"}
-                          alt="category-image"
-                          className="w-7 h-7 object-cover rounded-full"
-                        />
-                        {product.category?.name}
+                      <td className="px-3 py-3 border-t border-l text-gray-600 text-15">
+                        <div className="flex items-center gap-3">
+                          <img
+                            className="h-7 w-7 rounded-full object-cover"
+                            src={
+                              product.category?.image ||
+                              "/assets/images/default-category.png"
+                            }
+                            alt={product.category?.name}
+                          />
+                          {product.category?.name}
+                        </div>
                       </td>
-                      <td className="px-6 py-3 text-15 border-t border-r w-250 text-gray-600">
-                        {product.price?.toFixed(2) || "0.00"} $
+                      <td className="px-3 py-3 text-gray-600 text-15 border-t border-l w-200">
+                        ${product.price?.toFixed(2) || "0.00"}
                       </td>
-                      <td className="px-6 py-3 text-15 border-t border-r w-250 text-gray-600">
-                        {product.stock}
+                      <td className="px-3 text-gray-600 text-15 py-3 border-t border-l w-200">
+                      {product.stock}
                       </td>
                       <td
-                        className="px-6 py-3 border-t border-r w-250 cursor-pointer"
-                        onClick={() => navigate(`/Dashboard/products/${product.id}`)}
+                        className="px-6 py-3 border-t border-l"
                       >
-                        <div className="flex items-center gap-1">
-                          {product.colors?.slice(0, 4).map((color) => (
+                        <div className="flex">
+                          {product.colors?.slice(0, 4).map((color, idx) => (
                             <div
-                              key={color.id || color.code}
-                              className="w-8 h-8 rounded-full -ms-4"
+                              key={idx}
+                              className="w-8 h-8 -ms-3 rounded-full border-2 border-white"
                               style={{ backgroundColor: color.code }}
+                              title={color.name}
                             />
                           ))}
                           {product.colors?.length > 4 && (
-                            <div className="w-8 h-8 font-bold flex items-center justify-center rounded-full bg-gray-200 text-13 -ms-4">
+                            <div className="w-8 h-8 -ms-3 rounded-full bg-gray-200 border-2 border-white flex items-center justify-center text-xs font-bold">
                               +{product.colors.length - 4}
                             </div>
                           )}
                         </div>
                       </td>
-                      <td className="px-6 py-3 border-t">
-                        <div className="flex items-center">
+                      <td className="py-3 border-t border-l">
+                        <div className="flex justify-center items-center gap-2">
                           <button
-                            className="p-1"
                             onClick={(e) => {
                               e.stopPropagation();
                               navigate(`/Dashboard/EditProduct/${product.id}`, {
                                 state: { product },
                               });
                             }}
+                            className="text-primary hover:text-primary-dark"
                           >
                             <img
                               src="/assets/svgs/editIcon.svg"
-                              alt="edit product"
-                              className="w-7"
+                              alt="Edit"
+                              className="w-6 h-6"
                             />
                           </button>
                           <DeleteProduct
@@ -250,23 +227,28 @@ function AllProducts() {
                 </tbody>
               </table>
             </div>
-            <ReactPaginate
-              pageCount={pagination.total_pages}
-              onPageChange={({ selected }) => setCurrentPage(selected + 1)}
-              forcePage={pagination.current_page - 1}
-              containerClassName="flex items-center justify-end mt-5 text-gray-500"
-              pageClassName="mx-1 px-3 py-1 rounded"
-              activeClassName="bg-customOrange-lightOrange text-primary"
-              previousLabel={<ChevronLeft className="w-4 h-4 text-center" />}
-              nextLabel={<ChevronRight className="w-4 h-4" />}
-              previousClassName={`mx-1 px-3 py-1 font-bold text-primary text-18 ${
-                !pagination.prev_page_url ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-              nextClassName={`mx-1 px-3 py-1 font-bold text-primary text-18 ${
-                !pagination.next_page_url ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-              disabledClassName="opacity-50 cursor-not-allowed"
-            />
+            <div className="flex items-center justify-end  bg-white sm:px-6">
+              <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-end">
+                <ReactPaginate
+                  pageCount={Math.ceil(filteredProducts.length / itemsPerPage)}
+                  onPageChange={({ selected }) => setCurrentPage(selected + 1)}
+                  forcePage={currentPage - 1}
+                  containerClassName="flex items-center justify-end mt-5 text-gray-500"
+                  pageClassName="mx-1 px-3 py-1 rounded"
+                  pageLinkClassName="page-link"
+                  activeClassName="bg-customOrange-lightOrange text-primary"
+                  activeLinkClassName="active-link"
+                  previousClassName="mx-1 px-3 py-1 font-bold text-primary text-18 "
+                  nextClassName="mx-1 px-3 py-1 font-bold text-primary text-18"
+                  previousLabel={<ChevronLeft className="h-4 w-4 text-center" />}
+                  nextLabel={<ChevronRight className="h-4 w-4" />}
+                  breakLabel="..."
+                  breakClassName="px-3 py-1 text-gray-700"
+                  marginPagesDisplayed={1}
+                  pageRangeDisplayed={3}
+                />
+              </div>
+            </div>
           </>
         )}
       </div>

@@ -44,6 +44,7 @@ import SupportQuestion from "./Settings/Support Questions/SupportQuestion";
 import Requests from "./Settings/Support Questions/Requests";
 import Pricing from "./Store/Pricing Plan/PricingPlan";
 import Info from "./Store/Information/Info";
+import Analytics from "./Analysis/Analytics";
 
 function App() {
   return (
@@ -130,6 +131,8 @@ function App() {
           <Route path="PaymentMethods" element={<PaymentMethods />} />
           <Route path="SupportQuestion" element={<SupportQuestion/>}/>
           <Route path="Requests" element={<Requests/>}/>
+          {/* Analysis */}
+          <Route path="Analytics" element={<Analytics/>}/>
         </Route>
       </Routes>
     </BrowserRouter>
