@@ -24,7 +24,7 @@ function Navbar() {
         </div>
       </div>
       {/* Navbar bottom items */}
-      <div className="relative flex items-center justify-between px-4 lg:px-32 pt-2 pb-3 bg-white shadow-sm">
+      <div className="relative flex items-center justify-between px-4 lg:px-20 pt-2 pb-3 bg-white shadow-sm">
         <div>
           <img src="/assets/svgs/vertex.svg" alt="logo" className="w-36" />
         </div>

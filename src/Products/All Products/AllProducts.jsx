@@ -187,13 +187,13 @@ function AllProducts() {
                           {product.colors?.slice(0, 4).map((color, idx) => (
                             <div
                               key={idx}
-                              className="w-8 h-8 -ms-3 rounded-full border-2 border-white"
+                              className="w-8 h-8 -ms-3 rounded-full"
                               style={{ backgroundColor: color.code }}
                               title={color.name}
                             />
                           ))}
                           {product.colors?.length > 4 && (
-                            <div className="w-8 h-8 -ms-3 rounded-full bg-gray-200 border-2 border-white flex items-center justify-center text-xs font-bold">
+                            <div className="w-8 h-8 -ms-3 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold">
                               +{product.colors.length - 4}
                             </div>
                           )}

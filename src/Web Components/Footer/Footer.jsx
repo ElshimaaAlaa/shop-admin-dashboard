@@ -6,7 +6,7 @@ import { FaSquareXTwitter } from "react-icons/fa6";
 
 function Footer() {
   return (
-    <footer className="bg-black text-white ps-5 pe-5 lg:ps-32 lg:pe-32 pt-10 pb-10 ">
+    <footer className="bg-black text-white ps-5 pe-5 lg:ps-20 lg:pe-20 pt-10 pb-10 ">
       {/* footer top items */}
       <div className="flex flex-col items-center lg:flex-row md:flex-row md:justify-between lg:justify-between lg:items-center">
         {/* Logo Section */}

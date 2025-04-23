@@ -16,7 +16,7 @@ function AboutUs() {
   }, [images.length]);
 
   return (
-    <section className="ps-5 pe-5 mt-10 flex flex-col-reverse items-center md:flex-row md:items-center md:ps-5 md:pe-5 lg:pe-32 lg:ps-32 lg:flex-row lg:items-center">
+    <section className="ps-5 pe-5 mt-10 flex flex-col-reverse items-center md:flex-row md:items-center md:ps-5 md:pe-5 lg:pe-20 lg:ps-20 lg:flex-row lg:items-center">
       <div>
         <img
           src={images[currentImageIndex]}

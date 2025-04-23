@@ -37,7 +37,7 @@ function ContactUsSection() {
       .required("Message is required"),
   });
   return (
-    <section className="ps-3 pe-3 mt-40 flex flex-col lg:pe-32 lg:ps-32 lg:flex-row lg:justify-between md:flex-row md:items-center lg:mt-0 md:mt-0 pb-20 pt-20 bg-customOrange-mediumOrange relative ">
+    <section className="ps-3 pe-3 mt-40 flex flex-col lg:pe-20 lg:ps-20 lg:flex-row lg:justify-between md:flex-row md:items-center lg:mt-0 md:mt-0 pb-20 pt-20 bg-customOrange-mediumOrange relative ">
       {/* contact info */}
       <div className=" absolute -top-28 ">
         <img

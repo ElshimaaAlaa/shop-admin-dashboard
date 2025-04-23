@@ -2,9 +2,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 function Header() {
   return (
-    <header className="ps-5 pe-5 lg:ps-32 lg:pe-32 lg:pt-40 flex flex-col items-center pt-48 md:flex-row lg:flex-row lg:justify-between ">
+    <header className="ps-5 pe-5 lg:ps-20 lg:pe-20 lg:pt-40 flex flex-col items-center pt-48 md:flex-row lg:flex-row lg:justify-between ">
       <div>
-        <h1 className=" leading-normal lg:w-450 text-4xl font-bold lg:leading-normal lg:text-5xl md:text-3xl md:leading-normal">
+        <h1 className=" leading-normal lg:w-400 text-4xl font-bold lg:leading-normal lg:text-4xl md:text-3xl md:leading-normal">
           We bring
           <span className="text-primary ms-3 me-3">
             rapid solutions
@@ -48,7 +48,7 @@ function Header() {
           src="/assets/images/header-image.png"
           alt="Business solutions illustration"
           loading="lazy"
-          className="lg:pe-20 mt-10 lg:mt-0 md:ms-5 md:w- md:pe-10 w-550"
+          className="lg:pe-28 mt-10 lg:mt-0 md:ms-5 md:w- md:pe-10 w-550"
         />
       </div>
     </header>

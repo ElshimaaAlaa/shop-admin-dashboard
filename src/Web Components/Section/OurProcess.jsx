@@ -45,7 +45,7 @@ function OurProcess() {
   ];
 
   return (
-    <section className="px-5 lg:px-32 mt-10">
+    <section className="px-5 lg:px-20 mt-10">
       <div>
         <p
           className="text-primary bg-customOrange-lightOrange p-2 w-32 text-center rounded"
@@ -65,20 +65,20 @@ function OurProcess() {
         {steps.map((step, index) => (
           <div
             key={index}
-            className={`flex flex-col md:flex-row items-center md:items-start gap-8 mb-16 ${
+            className={`flex flex-col md:flex-row items-center md:items- gap-8 mb-16 ${
               index % 2 === 1 ? "md:flex-row-reverse" : ""
             }`}
           >
             {/* Text Section */}
             <div
               className={`flex-1 text-center ${
-                index % 2 === 1 ? "md:text-right" : "md:text-left"
+                index % 2 === 1 ? "" : ""
               }`}
             >
-              <h3 className="text-lg md:text-xl font-bold mb-4">
+              <h3 className="text-lg md:text-xl font-bold mb-4 text-center">
                 {step.title}
               </h3>
-              <p className="text-gray-400 max-w-xs m-auto md:m-0 text-center md:text-inherit text-14">
+              <p className="text-gray-400  m-auto max-w-80 text-14">
                 {step.description}
               </p>
             </div>

@@ -46,7 +46,7 @@ function OpinionSection() {
   };
 
   return (
-    <section className="opinion-section px-5 lg:px-32 mt-10 mb-20">
+    <section className="opinion-section px-5 lg:px-20 mt-10 mb-20">
       {/* Header */}
       <p className="text-primary bg-customOrange-mediumOrange p-3 rounded-md w-32 text-center text-sm md:text-base">
         Opinions

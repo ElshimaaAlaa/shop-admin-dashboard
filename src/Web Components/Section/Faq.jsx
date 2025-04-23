@@ -20,7 +20,7 @@ function Faq() {
     fetchFaqs();
   }, []);
   return (
-    <section className="ps-5 pe-5 lg:ps-32 lg:pe-32 pt-20 pb-10">
+    <section className="ps-5 pe-5 lg:ps-20 lg:pe-20 pt-20 pb-10">
       <p className="bg-customOrange-mediumOrange text-primary w-20 text-center p-3 rounded-md">
         FAQ
       </p>
