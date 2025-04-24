@@ -76,18 +76,18 @@ function PaymentMethods() {
       <Helmet>
         <title>Payment Methods | vertex</title>
       </Helmet>
-      <div className="rounded-md p-5 mx-10 bg-white mt-5">
+      <div className="rounded-md p-5 mx-7 bg-white mt-5">
         <p className="text-12 text-gray-400">Menu / Payment Methods</p>
         <h1 className="mt-3 text-17 font-bold">Payment Methods</h1>
       </div>
-      <div className="rounded-md bg-customOrange-mediumOrange border mt-3 border-primary p-4 mx-10 flex items-center justify-between">
+      <div className="rounded-md bg-customOrange-mediumOrange border mt-3 border-primary p-4 mx-7 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <MdPayment color="#E0A75E" size={24} />
           <p className="text-gray-500 text-15">Payment Methods</p>
         </div>
         <p className="font-bold text-16">{filteredPaymentData.length}</p>
       </div>
-      <div className="bg-white rounded-md p-5 mx-10 my-3">
+      <div className="bg-white rounded-md p-5 mx-7 my-3">
         <SearchBar
           icon={
             <Plus

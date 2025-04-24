@@ -54,11 +54,11 @@ function OrderDetails() {
   ];
 
   return (
-    <div className="bg-gray-100 pb-10 mx-10 pt-5">
+    <div className="bg-gray-100 pb-10 mx-7 pt-5">
       <Helmet>
         <title>Orders Details | VERTEX</title>
       </Helmet>
-      <div className="bg-white mb-5 p-4 rounded-md flex justify-between items-center">
+      <div className="bg-white mb-3 p-4 rounded-md flex justify-between items-center">
         <div>
           <p className="text-gray-400 text-12">Menu / Orders / Received Orders / view order</p>
           <h1 className="font-bold text-17 mt-3">Order Details</h1>
@@ -172,7 +172,7 @@ function OrderDetails() {
                 ))}
               </tbody>
             </table>
-            <section className="bg-gray-100 rounded-lg px-3 py-5 mt-4 flex flex-col gap-7">
+            <section className="bg-gray-50 rounded-lg px-3 py-5 mt-4 flex flex-col gap-7">
               <div className="flex items-center justify-between">
                 <p className="text-15">Subtotal</p>
                 <p className="text-gray-400 text-15">
@@ -243,7 +243,7 @@ function OrderDetails() {
             </section>
             <section className="border border-gray-200 rounded-md p-4 bg-white">
               <h2 className="font-bold text-15 mb-3">Balance</h2>
-              <div className="bg-gray-100 border border-gray-200 rounded-md p-2">
+              <div className="bg-gray-50 border border-gray-200 rounded-md p-2">
                 <div className="flex justify-between items-center">
                   <p className="text-15">Order Total</p>
                   <p className="text-gray-400 text-15">0</p>

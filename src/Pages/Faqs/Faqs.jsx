@@ -62,27 +62,27 @@ function Faqs() {
   };
 
   return (
-    <div className="bg-white  pb-5">
+    <div className="bg-white pb-5">
       <Helmet>
         <title>Frequently Asked Questions | VERTEX</title>
       </Helmet>
-      <h2 className="font-bold text-center text-xl pt-6">
+      <h2 className="font-bold text-center text-17 mt-8">
         Frequently Asked Questions
       </h2>
-      <p className="text-gray-400 text-center mt-3">
+      <p className="text-gray-400 text-center mt-2 text-15">
         We're here to help with any questions you have about plans, pricing,
         <br /> and supported features.
       </p>
-      <div className="flex justify-center gap-5">
+      <div className="flex justify-center gap-5 mx-20">
         {/* FAQ Section */}
-        <section className="mt-5 w-500px">
+        <section className="mt-5 w-700">
           {faqsData.slice(0, displayCount).map((item, index) => (
             <div
               key={index}
-              className={`border-2 mt-5 p-5 rounded-lg transition-all duration-300 ${
+              className={`mt-5 p-5 bg-gray-50 rounded-lg transition-all duration-300 ${
                 openIndex === index
                   ? "border-2 border-primary"
-                  : "border-2 border-gray-200 bg-customGray-grayLine"
+                  : "bg-gray-50"
               }`}
             >
               <div
@@ -119,18 +119,18 @@ function Faqs() {
         </section>
         
         {/* Add Question Section */}
-        <section className="bg-customOrange-mediumOrange rounded-md p-5 w-430 h-full mt-10">
+        <section className="bg-customOrange-mediumOrange rounded-md p-5 w-500 h-full mt-10">
           <div className="flex justify-center">
             <img
               src="/assets/svgs/chat-round-dots_svgrepo.com.svg"
               alt="chat"
-              className="w-16 mb-2"
+              className="w-14 mt-4 mb-2"
             />
           </div>
-          <h2 className="font-bold text-lg text-center mb-1">
+          <h2 className="font-bold text-17 text-center mb-1">
             Add Another Question
           </h2>
-          <p className="text-gray-400 text-15 text-center mb-3">
+          <p className="text-gray-400 text-14 text-center mb-3">
             We are here to help you
           </p>
           <Formik

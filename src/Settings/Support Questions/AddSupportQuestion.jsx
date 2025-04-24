@@ -44,7 +44,7 @@ function AddSupportQuestion({ isOpen, onClose, onSuccess }) {
           <img
             src="/assets/svgs/chat-round-dots_svgrepo.com.svg"
             alt="chat"
-            className="w-16 mb-2 mt-4"
+            className="w-14 my-4"
           />
           <h3 className="text-17 font-bold">Add Another Question</h3>
           {error && (
@@ -71,7 +71,7 @@ function AddSupportQuestion({ isOpen, onClose, onSuccess }) {
                 disabled={isLoading}
               >
                 {isLoading ? (
-                  <ClipLoader color="#fff" size={26} />
+                  <ClipLoader color="#fff" size={33} />
                 ) : (
                   <>
                     <FaCircleCheck /> {"Add Question"}
@@ -85,5 +85,4 @@ function AddSupportQuestion({ isOpen, onClose, onSuccess }) {
     </div>
   );
 }
-
 export default AddSupportQuestion;

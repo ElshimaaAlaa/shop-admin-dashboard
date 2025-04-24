@@ -16,6 +16,7 @@ function SupportQuestion() {
   const [showAddQuestionModal, setShowAddQuestionModal] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+
   const fetchSupportQuestions = async () => {
     setIsLoading(true);
     setError(null);
@@ -39,15 +40,18 @@ function SupportQuestion() {
     setOpenIndex(openIndex === index ? null : index);
   };
 
-  const handleDeleteQuestion = (questionId) => {
-    setFaqsData((prevQuestions) =>
-      prevQuestions.filter((q) => q.id !== questionId)
-    );
+  const handleDeleteQuestion = async (questionId) => {
+    setFaqsData(prevQuestions => prevQuestions.filter(q => q.id !== questionId));
+    try {
+      await fetchSupportQuestions();
+    } catch (error) {
+      console.error("Failed to refresh questions after deletion:", error);
+    }
   };
 
   const handleAddSuccess = (newQuestion) => {
-    setFaqsData((prev) => [...prev, newQuestion]);
-    fetchSupportQuestions();
+    setFaqsData(prev => [...prev, newQuestion]);
+    fetchSupportQuestions(); 
   };
 
   return (
@@ -55,7 +59,7 @@ function SupportQuestion() {
       <Helmet>
         <title>Support Questions | vertex</title>
       </Helmet>
-      <div className="rounded-md p-5 mx-10 bg-white mt-5 flex items-center justify-between">
+      <div className="rounded-md p-5 mx-7 bg-white mt-5 flex items-center justify-between">
         <div>
           <p className="text-gray-400 text-12">
             Menu / Customers / Support Questions
@@ -86,7 +90,7 @@ function SupportQuestion() {
         onSuccess={handleAddSuccess}
       />
 
-      <section className="bg-white mx-10 p-5 mt-3 rounded-md">
+      <section className="bg-white mx-7 p-5 mt-3 rounded-md">
         <h3 className="text-16 font-bold">Questions</h3>
         {isLoading ? (
           <div className="flex justify-center mt-5">

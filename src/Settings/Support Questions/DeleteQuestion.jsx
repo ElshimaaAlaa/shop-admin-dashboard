@@ -25,7 +25,6 @@ function DeleteQuestion({ id, onDelete }) {
       if (response.status === 200) {
         console.log("Successfully deleted Question");
         onDelete();
-        window.location.reload();
         setShowModal(false);
       }
     } catch (error) {

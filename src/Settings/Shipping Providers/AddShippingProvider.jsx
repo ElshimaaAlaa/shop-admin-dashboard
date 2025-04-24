@@ -10,6 +10,7 @@ function AddShippingProvider({ isOpen, onClose }) {
   const [error, setError] = useState(null);
 
   const providers = [
+    //fetched from end point when back end complete it
     { id: 1, name_ar: "أرامكس", name_en: "Aramex", code: "aramex" },
     { id: 2, name_ar: "دي إتش إل", name_en: "DHL", code: "dhl" },
     { id: 3, name_ar: "فيديكس", name_en: "FedEx", code: "fedex" },
@@ -17,9 +18,9 @@ function AddShippingProvider({ isOpen, onClose }) {
   ];
 
   const handleProviderToggle = (provider) => {
-    setSelectedProviders(prev => {
-      if (prev.some(p => p.id === provider.id)) {
-        return prev.filter(p => p.id !== provider.id);
+    setSelectedProviders((prev) => {
+      if (prev.some((p) => p.id === provider.id)) {
+        return prev.filter((p) => p.id !== provider.id);
       } else {
         return [...prev, provider];
       }
@@ -31,13 +32,12 @@ function AddShippingProvider({ isOpen, onClose }) {
       setError("Please select at least one shipping provider");
       return;
     }
-
     setIsLoading(true);
     setError(null);
 
     try {
       await Promise.all(
-        selectedProviders.map(provider => 
+        selectedProviders.map((provider) =>
           AddShipping({
             name: {
               ar: provider.name_ar,
@@ -48,7 +48,6 @@ function AddShippingProvider({ isOpen, onClose }) {
         )
       );
       onClose();
-      window.location.reload();
     } catch (error) {
       setError(
         error.response?.data?.message || "Failed to add shipping provider(s)"
@@ -63,9 +62,12 @@ function AddShippingProvider({ isOpen, onClose }) {
 
   return (
     <div className="modal-overlay rounded">
-      <div className="modalContent modal-width rounded-md w-400" id="modal-width">
+      <div
+        className="modalContent modal-width rounded-md w-400"
+        id="modal-width"
+      >
         <div className="modal-content">
-          <h3 className="font-bold text-17 px-3 py-5">
+          <h3 className="font-bold text-16 px-3 py-5">
             Add New Shipping Provider
           </h3>
           {error && (
@@ -77,13 +79,15 @@ function AddShippingProvider({ isOpen, onClose }) {
             <Form className="ps-3">
               <div className="space-y-4 mb-4">
                 {providers.map((provider) => {
-                  const isSelected = selectedProviders.some(p => p.id === provider.id);
+                  const isSelected = selectedProviders.some(
+                    (p) => p.id === provider.id
+                  );
                   return (
                     <label
                       key={provider.id}
                       className={`flex items-center cursor-pointer w-full p-3 rounded-lg transition-all duration-200 ${
                         isSelected
-                          ? "bg-orange-100 border border-orange-300"
+                          ? "bg-customOrange-mediumOrange border-2 border-primary"
                           : "bg-gray-100 hover:bg-gray-50 border border-transparent"
                       }`}
                     >
@@ -93,14 +97,16 @@ function AddShippingProvider({ isOpen, onClose }) {
                         checked={isSelected}
                         onChange={() => handleProviderToggle(provider)}
                       />
-                      <span className={`w-4 h-4 border rounded flex items-center justify-center transition-all duration-200 ${
-                        isSelected
-                          ? 'border-primary bg-primary'
-                          : 'border-gray-400'
-                      }`}>
+                      <span
+                        className={`w-4 h-4 border-2 rounded flex items-center justify-center transition-all duration-200 ${
+                          isSelected
+                            ? "border-primary bg-primary"
+                            : "border-black"
+                        }`}
+                      >
                         <svg
                           className={`w-3 h-3 text-white transition-all duration-200 ${
-                            isSelected ? 'opacity-100' : 'opacity-0'
+                            isSelected ? "opacity-100" : "opacity-0"
                           }`}
                           viewBox="0 0 20 20"
                           fill="currentColor"
@@ -115,17 +121,17 @@ function AddShippingProvider({ isOpen, onClose }) {
                   );
                 })}
               </div>
-              <div className="flex justify-end gap-2">
+              <div className="flex justify-end gap-2 mt-3">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="bg-gray-200 text-gray-400 font-bold p-2 w-28 rounded-md"
+                  className="bg-gray-100 text-gray-400 font-bold p-3 w-28 rounded-md"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="bg-primary font-bold text-white p-2 w-28 rounded-md"
+                  className="bg-primary font-bold text-white p-3 w-28 rounded-md"
                   disabled={isLoading || selectedProviders.length === 0}
                 >
                   {isLoading ? <ClipLoader size={22} color="#fff" /> : "Save"}

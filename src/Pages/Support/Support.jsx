@@ -71,12 +71,12 @@ function Support() {
   };
 
   const ContactCard = ({ icon, title, value, link }) => (
-    <div className="flex items-center justify-between bg-gray-100 p-4 rounded-md mb-6">
-      <div className="flex items-center gap-4">
+    <div className="flex items-center justify-between bg-gray-50 p-4 rounded-md mb-6">
+      <div className="flex gap-4">
         <div className="w-10 h-10 flex items-center justify-center">{icon}</div>
         <div>
-          <h3 className="font-bold">{title}</h3>
-          <a href={link} className="text-gray-400 mt-3 text-15">
+          <h3 className="font-bold text-16 mb-2">{title}</h3>
+          <a href={link} className="text-gray-400 mt-5 text-15">
             {value}
           </a>
         </div>
@@ -91,7 +91,7 @@ function Support() {
   useEffect(() => {
     const fetchGeneralSetting = async () => {
       const data = await settings();
-      console.log('settings data',data);
+      console.log("settings data", data);
       setSettingData(data);
     };
     fetchGeneralSetting();
@@ -108,12 +108,14 @@ function Support() {
         <meta property="og:url" content="https://vertex.com/support" />
       </Helmet>
 
-      <h1 className="font-bold text-center text-lg pt-6">
+      <h1 className="font-bold text-center text-17 mt-6">
         Send us Your Problem and we are <br /> contact with you
       </h1>
-      <div className="flex justify-center gap-5">
-        <section className="bg-white rounded-md drop-shadow-lg p-5 w-300 md:w-400 lg:w-400 h-72 mt-10">
-          <h2 className="font-bold text-17 mb-3 mt-2">Contact information</h2>
+      <div className="flex justify-center gap-5 mx-20">
+        <section className="bg-white rounded-md drop-shadow-lg p-5 w-550 h-72 mt-10">
+          <h2 className="font-bold text-17 mb-3 mt-2 relative pb-1 gradient-border-bottom">
+            Contact information
+          </h2>
           <ContactCard
             icon={<PhoneNum />}
             title="Call us"
@@ -127,18 +129,18 @@ function Support() {
           />
         </section>
 
-        <section className="bg-customOrange-mediumOrange p-5 mt-10 w-[430px] md:w-[430px] lg:w-[430px] rounded-md">
+        <section className="bg-customOrange-mediumOrange p-5 mt-10 w-[430px] md:w-[430px] lg:w-500 rounded-md">
           <div className="flex justify-center">
             <img
               src="/assets/svgs/chats.svg"
               alt="messages"
-              className="w-16 mb-2"
+              className="w-14 mt-4 mb-2"
             />
           </div>
-          <h2 className="font-bold text-lg text-center mb-1">
+          <h2 className="font-bold text-17 text-center mb-1">
             Send your problem
           </h2>
-          <p className="text-gray-400 text-15 text-center mb-2">
+          <p className="text-gray-400 text-14 text-center mb-2">
             We are here to help you
           </p>
 

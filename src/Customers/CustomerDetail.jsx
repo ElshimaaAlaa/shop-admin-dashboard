@@ -58,7 +58,7 @@ function CustomerDetail() {
     </div>
   );
   return (
-    <div className="bg-gray-100 pb-5 mx-10 pt-5">
+    <div className="bg-gray-100  mx-7 py-5">
       <Helmet>
         <title>Customers Details | VERTEX</title>
       </Helmet>

@@ -9,7 +9,7 @@ function AddPaymentMethod({ isOpen, onClose }) {
   const [selectedpaymentmethod, setSelectedpaymentmethod] = useState([]);
   const [error, setError] = useState(null);
 
-  const PaymentMethods = [
+  const PaymentMethods = [//fetched form end poitn when back end complete it
     { id: 1, name_ar: "Visa", name_en: "Visa", code: "visa" },
     { id: 2, name_ar: "Credit Card", name_en: "Credit Card", code: "Credit" },
     { id: 3, name_ar: "PayPal", name_en: "PayPal", code: "PayPal" },
@@ -48,7 +48,7 @@ function AddPaymentMethod({ isOpen, onClose }) {
         )
       );
       onClose();
-      window.location.reload();
+      // window.location.reload();
     } catch (error) {
       setError(
         error.response?.data?.message || "Failed to add payment method"
@@ -68,7 +68,7 @@ function AddPaymentMethod({ isOpen, onClose }) {
         id="modal-width"
       >
         <div className="modal-content">
-          <h3 className="font-bold text-17 px-3 py-5">
+          <h3 className="font-bold text-16 px-3 py-5">
             Add New Payment Method(s)
           </h3>
           {error && (
@@ -88,7 +88,7 @@ function AddPaymentMethod({ isOpen, onClose }) {
                       key={payment.id}
                       className={`flex items-center cursor-pointer w-full p-3 rounded-lg transition-all duration-200 ${
                         isSelected
-                          ? "bg-orange-100 border border-orange-300"
+                          ? "bg-customOrange-mediumOrange border-2 border-primary"
                           : "bg-gray-100 hover:bg-gray-50 border border-transparent"
                       }`}
                     >
@@ -99,10 +99,10 @@ function AddPaymentMethod({ isOpen, onClose }) {
                         onChange={() => handlePaymentMethodToggle(payment)}
                       />
                       <span
-                        className={`w-4 h-4 border rounded flex items-center justify-center transition-all duration-200 ${
+                        className={`w-4 h-4 border-2 rounded flex items-center justify-center transition-all duration-200 ${
                           isSelected
                             ? "border-primary bg-primary"
-                            : "border-gray-400"
+                            : "border-black"
                         }`}
                       >
                         <svg
@@ -122,17 +122,17 @@ function AddPaymentMethod({ isOpen, onClose }) {
                   );
                 })}
               </div>
-              <div className="flex justify-end gap-2">
+              <div className="flex justify-end gap-2 mt-3">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="bg-gray-200 text-gray-400 font-bold p-2 w-28 rounded-md"
+                  className="bg-gray-100 text-gray-400 font-bold p-3 w-28 rounded-md"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="bg-primary font-bold text-white p-2 w-28 rounded-md"
+                  className="bg-primary font-bold text-white p-3 w-28 rounded-md"
                   disabled={isLoading || selectedpaymentmethod.length === 0}
                 >
                   {isLoading ? <ClipLoader size={22} color="#fff" /> : "Save"}

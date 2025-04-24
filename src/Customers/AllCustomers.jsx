@@ -111,7 +111,7 @@ function AllCustomers() {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen pb-10 mx-10 pt-5">
+    <div className="bg-gray-100 min-h-screen pb-10 mx-7 pt-5">
       <Helmet>
         <title>Customers | VERTEX</title>
       </Helmet>
@@ -122,10 +122,10 @@ function AllCustomers() {
           <h1 className="font-bold text-17 mt-2">Customers</h1>
         </div>
         <button
-          className="flex items-center gap-2 font-bold text-white bg-primary rounded-md p-4"
-          onClick={() => navigate("/Dashboard/")}
+          className="flex items-center gap-1 font-bold text-white bg-primary rounded-md p-4"
+          onClick={() => navigate("/Dashboard/SupportQuestion")}
         >
-          <IoHelpCircleOutline size={25} />
+          <IoHelpCircleOutline size={27} />
           Customers Support Questions
         </button>
       </div>
@@ -266,18 +266,18 @@ function AllCustomers() {
                 </tbody>
               </table>
             </div>
-              <ReactPaginate
-                pageCount={pageCount}
-                onPageChange={handlePageClick}
-                forcePage={currentPage}
-                containerClassName="flex items-center justify-end mt-5 text-gray-500"
-                pageClassName="mx-1 px-3 py-1 rounded"
-                activeClassName="bg-customOrange-lightOrange text-primary"
-                previousLabel={<ChevronLeft className="w-4 h-4 text-center" />}
-                nextLabel={<ChevronRight className="w-4 h-4" />}
-                previousClassName="mx-1 px-3 py-1 font-bold text-primary text-18"
-                nextClassName="mx-1 px-3 py-1 font-bold text-primary text-18"
-              />
+            <ReactPaginate
+              pageCount={pageCount}
+              onPageChange={handlePageClick}
+              forcePage={currentPage}
+              containerClassName="flex items-center justify-end mt-5 text-gray-500"
+              pageClassName="mx-1 px-3 py-1 rounded"
+              activeClassName="bg-customOrange-lightOrange text-primary"
+              previousLabel={<ChevronLeft className="w-4 h-4 text-center" />}
+              nextLabel={<ChevronRight className="w-4 h-4" />}
+              previousClassName="mx-1 px-3 py-1 font-bold text-primary text-18"
+              nextClassName="mx-1 px-3 py-1 font-bold text-primary text-18"
+            />
           </>
         )}
       </div>

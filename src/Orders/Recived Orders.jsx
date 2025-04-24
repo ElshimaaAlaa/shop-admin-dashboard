@@ -125,7 +125,7 @@ function ReceivedOrders() {
   };
 
   return (
-    <div className="bg-gray-100 pb-4 mx-10 pt-5">
+    <div className="bg-gray-100 py-5 mx-7 ">
       <Helmet>
         <title>Orders | VERTEX</title>
       </Helmet>

@@ -22,7 +22,7 @@ function Analytics() {
         console.log(response);
         setAnalyticsData(response);
         setStatistics(response);
-        setProductData(response.popular_products)
+        setProductData(response.popular_products);
         setIsLoading(false);
       } catch (error) {
         setError(error);

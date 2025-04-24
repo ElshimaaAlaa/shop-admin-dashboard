@@ -51,6 +51,7 @@ const Sidebar = () => {
       id: "dashboard",
       label: "Dashboard",
       icon: <Home />,
+      onclick: () => navigate("Analytics"),
     },
     {
       id: "categories",
@@ -221,7 +222,7 @@ const Sidebar = () => {
             </div>
 
             {item.subItems && openSubmenu === item.id && expanded && (
-              <div className="submenu pl-8 mt-1 flex flex-col gap-4">
+              <div className="submenu pl-8 mt-1 flex flex-col gap-2">
                 {item.subItems.map((subItem) => (
                   <div
                     key={subItem.id}

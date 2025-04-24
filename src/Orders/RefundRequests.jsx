@@ -63,7 +63,7 @@ function RefundRequests() {
     }));
   };
   return (
-    <div className="bg-gray-100 h-[89vh] mx-10 pt-5">
+    <div className="bg-gray-100 h-[89vh] mx-7 pt-5">
       <Helmet>
         <title>Refund Requests | VERTEX</title>
       </Helmet>

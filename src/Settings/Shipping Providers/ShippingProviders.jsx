@@ -62,30 +62,28 @@ function ShippingProviders() {
     }
     fetchData();
   };
-
   if (showModal) {
     document.body.classList.add("no-scroll");
   } else {
     document.body.classList.remove("no-scroll");
   }
-
   return (
     <div className="bg-gray-100 pb-10 flex flex-col h-[89vh] ">
       <Helmet>
         <title>Shipping Providers | vertex</title>
       </Helmet>
-      <div className="rounded-md p-5 mx-10 bg-white mt-3">
+      <div className="rounded-md p-5 mx-7 bg-white mt-5">
         <p className="text-gray-400 text-12">Menu / Shipping Providers</p>
         <h1 className="text-17 font-bold mt-2">Shipping Providers</h1>
       </div>
-      <div className="rounded-md bg-customOrange-mediumOrange border mt-3 border-primary p-4 mx-10 flex items-center justify-between">
+      <div className="rounded-md bg-customOrange-mediumOrange border mt-3 border-primary p-4 mx-7 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <FaShippingFast color="#E0A75E" size={22} />
           <p className="text-gray-500 text-15">Shipping Providers</p>
         </div>
         <p className="text-16 font-bold">{shippingData.length}</p>
       </div>
-      <div className="bg-white rounded-md p-5 mx-10 my-3">
+      <div className="bg-white rounded-md p-5 mx-7 my-3">
         <SearchBar
           icon={
             <Plus

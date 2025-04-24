@@ -41,9 +41,9 @@ function AddRequest({ isOpen, onClose, onSuccess, questionId }) {
           <img
             src="/assets/svgs/chat-round-dots_svgrepo.com.svg"
             alt="chat"
-            className="w-16 mb-2 mt-4"
+            className="w-14 my-4"
           />
-          <h3 className="text-17 font-bold">Add Response</h3>
+          <h3 className="text-16 font-bold">Add Response</h3>
           {error && (
             <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">
               {error}
