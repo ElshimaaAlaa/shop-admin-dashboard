@@ -7,13 +7,32 @@ import { fetchAnalyticsData } from "../ApiServices/Analytics";
 import { ClipLoader } from "react-spinners";
 import Delete from "./DeleteProduct";
 import { useNavigate } from "react-router-dom";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+
 function Analytics() {
-  const [analyticsData, setAnalyticsData] = useState([]);
-  const [statistics, setStatistics] = useState([]);
+  const [analyticsData, setAnalyticsData] = useState({
+    monthly_expended: [],
+    monthly_income: [],
+    monthly_profit: [],
+    overview: {},
+    popular_products: [],
+  });
+  const [statistics, setStatistics] = useState({});
   const [productData, setProductData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [activeChart, setActiveChart] = useState("expended");
   const navigate = useNavigate();
+
   useEffect(() => {
     const getAnalyticsData = async () => {
       setIsLoading(true);
@@ -22,7 +41,7 @@ function Analytics() {
         console.log(response);
         setAnalyticsData(response);
         setStatistics(response);
-        setProductData(response.popular_products);
+        setProductData(response.popular_products || []);
         setIsLoading(false);
       } catch (error) {
         setError(error);
@@ -32,6 +51,31 @@ function Analytics() {
     };
     getAnalyticsData();
   }, []);
+
+  const prepareChartData = () => {
+    const months = Array.from({ length: 12 }, (_, i) => i + 1);
+    return months.map((month) => {
+      const expendedItem = analyticsData.monthly_expended?.find(
+        (item) => item.month === month
+      ) || { expended: "0.00" };
+      const incomeItem = analyticsData.monthly_income?.find(
+        (item) => item.month === month
+      ) || { income: "0.00" };
+      const profitItem = analyticsData.monthly_profit?.find(
+        (item) => item.month === month
+      ) || { profit: "0.00" };
+
+      return {
+        name: `Month ${month}`,
+        expended: parseFloat(expendedItem.expended),
+        income: parseFloat(incomeItem.income),
+        profit: parseFloat(profitItem.profit),
+      };
+    });
+  };
+
+  const chartData = prepareChartData();
+
   const ReportsItem = ({
     icon: Icon,
     title,
@@ -59,6 +103,7 @@ function Analytics() {
       <p className="text-xs text-gray-400 mt-3 mb-3 ps-4">{duration}</p>
     </div>
   );
+
   const handleDeleteProduct = (productId) => {
     setProductData((prevProducts) => {
       const updatedProducts = prevProducts.filter(
@@ -67,8 +112,9 @@ function Analytics() {
       return updatedProducts;
     });
   };
+
   return (
-    <div className="bg-gray-100 h-[89vh] mx-10 pt-5">
+    <div className="bg-gray-100 min-h-[89vh] mx-10 pt-5 pb-10">
       <Helmet>
         <title>Reports | VERTEX</title>
       </Helmet>
@@ -100,8 +146,107 @@ function Analytics() {
             duration={`Last month: ${0}`}
           />
         </section>
-        {/* analysis section */}
-        {/* section products */}
+
+        {/* Analytics Chart Section with Recharts */}
+        <section className="mt-8 border border-gray-100 rounded-md p-4">
+          <div className="flex justify-between items-center mb-2">
+            <h3 className="font-bold text-17">Monthly Trend</h3>
+            <div className="flex gap-2 border-1 border-gray-100 rounded-md">
+              <button
+                onClick={() => setActiveChart("expended")}
+                className={`p-3 w-24 rounded text-14 font-medium ${
+                  activeChart === "expended"
+                    ? "bg-primary text-white"
+                    : " text-gray-400"
+                }`}
+              >
+                Expend
+              </button>
+              <button
+                onClick={() => setActiveChart("income")}
+                className={`p-3 w-24 rounded text-14 font-medium ${
+                  activeChart === "income"
+                    ? "bg-primary text-white"
+                    : " text-gray-400"
+                }`}
+              >
+                Income
+              </button>
+              <button
+                onClick={() => setActiveChart("profit")}
+                className={`p-3 w-24 rounded text-14 font-medium ${
+                  activeChart === "profit"
+                    ? "bg-primary text-white"
+                    : " text-gray-400"
+                }`}
+              >
+                Profit
+              </button>
+            </div>
+          </div>
+
+          <div className="bg-white h-96">
+            {isLoading ? (
+              <div className="flex justify-center items-center h-full">
+                <ClipLoader color="#E0A75E" size={40} />
+              </div>
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={chartData}
+                  margin={{
+                    top: 20,
+                    right: 30,
+                    left: 20,
+                    bottom: 5,
+                  }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis tickFormatter={(value) => `$${value}`} />
+                  <Tooltip
+                    formatter={(value) => [
+                      `$${value}`,
+                      activeChart === "expended"
+                        ? "Expenditure"
+                        : activeChart === "income"
+                        ? "Income"
+                        : "Profit",
+                    ]}
+                    labelFormatter={(label) => label}
+                  />
+                  <Legend />
+                  {activeChart === "expended" && (
+                    <Bar
+                      dataKey="expended"
+                      name="Expenditure"
+                      fill="#8884d8"
+                      radius={[4, 4, 0, 0]}
+                    />
+                  )}
+                  {activeChart === "income" && (
+                    <Bar
+                      dataKey="income"
+                      name="Income"
+                      fill="#82ca9d"
+                      radius={[4, 4, 0, 0]}
+                    />
+                  )}
+                  {activeChart === "profit" && (
+                    <Bar
+                      dataKey="profit"
+                      name="Profit"
+                      fill="#ffc658"
+                      radius={[4, 4, 0, 0]}
+                    />
+                  )}
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+        </section>
+
+        {/* Products Section (unchanged) */}
         <section>
           <h3 className="font-bold text-17 mt-6 mb-3">Top Selling Products</h3>
           {error ? (
@@ -224,4 +369,5 @@ function Analytics() {
     </div>
   );
 }
+
 export default Analytics;

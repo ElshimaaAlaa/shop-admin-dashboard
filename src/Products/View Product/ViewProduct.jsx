@@ -13,9 +13,9 @@ const InventoryItem = ({ label, value }) => (
 const ColorItem = React.memo(({ color }) => (
   <div className="flex gap-10 items-center">
     <div>
-      <h2 className="text-gray-400">Color</h2>
+      <h2 className="text-gray-400 text-15">Color</h2>
       <div
-        className="w-16 h-8 mt-1 rounded-md"
+        className="w-14 h-7 mt-1 rounded-md"
         style={{ backgroundColor: color.code }}
       ></div>
     </div>
@@ -60,21 +60,22 @@ function ViewProduct() {
   const hasSizes = productData.sizes && productData.sizes.length > 0;
 
   return (
-    <div className="bg-gray-100 min-h-screen flex flex-col">
+    <div className="bg-gray-100 min-h-screen flex flex-col mx-7">
       <Helmet>
         <title>View Product - VERTEX</title>
         <meta name="description" content="View product details in VERTEX" />
       </Helmet>
-      <h1 className="font-bold text-lg bg-white p-4 rounded-md mx-10 mt-5 mb-3">
-        View Product
-      </h1>
+      <div className="bg-white p-4 rounded-md mt-5 mb-3">
+        <p className="text-gray-400 text-12">Menu / Products / View Product</p>
+        <h1 className="text-17 mt-3 font-bold">View Product</h1>
+      </div>
       <div className="flex flex-col">
-        <div className="flex gap-5 mx-10">
+        <div className="flex gap-5">
           {/* Product Basic Information */}
           <div className="bg-white p-5 rounded-md w-full">
-            <h2 className="font-bold mb-3 text-17">Basic Information</h2>
-            <div className="w-full bg-transparent border border-gray-200 rounded-md ps-2 pt-2 pb-2 block">
-              <div className="flex items-center p-3 w-560px justify-between">
+            <h2 className="font-bold mb-3 text-16">Basic Information</h2>
+            <div className="w-full bg-transparent border border-gray-200 rounded-md ps-2 pt-4 pb-2 block">
+              <div className="flex items-center px-3 w-560px justify-between">
                 <InventoryItem label="Product Name" value={productData.name} />
                 <InventoryItem
                   label="Category Name"
@@ -88,7 +89,7 @@ function ViewProduct() {
                 />
                 <InventoryItem label="Gender" value={productData.gender} />
               </div>
-              <div className="flex items-center justify-between w-485px p-3">
+              <div className="flex items-center justify-between w-485px px-3">
                 <InventoryItem
                   label="Amount percentage (upon return)"
                   value={productData.return_percentage}
@@ -96,7 +97,7 @@ function ViewProduct() {
                 <InventoryItem label="Stock" value={productData.stock} />
               </div>
               <div className="p-3">
-                <h2 className="text-gray-500">Tags</h2>
+                <h2 className="text-gray-400 text-15">Tags</h2>
                 <div className="flex flex-wrap items-center gap-2 ">
                   {productData.tags?.length ? (
                     productData.tags.map((tag, index) => (
@@ -114,7 +115,7 @@ function ViewProduct() {
                   )}
                 </div>
               </div>
-              <div className="p-3">
+              <div className="px-3">
                 <InventoryItem
                   label="Description"
                   value={productData.description}
@@ -124,7 +125,7 @@ function ViewProduct() {
           </div>
           {/* Product Image & Thumbnails */}
           <div className="bg-white rounded-md w-2/4 p-5 h-72">
-            <p className="font-bold text-17">Product Icons / Images</p>
+            <p className="font-bold text-16">Product Icons / Images</p>
             <div className="image-section">
               {mainImage ? (
                 <div className="main-image">
@@ -160,9 +161,9 @@ function ViewProduct() {
           </div>
         </div>
         {/* Stock & Pricing Information */}
-        <div className="flex gap-5 my-5 mx-10">
+        <div className="flex gap-5 my-3">
           <div className="w-full bg-white p-5 rounded-md">
-            <h2 className="font-bold mb-3 text-17">Pricing</h2>
+            <h2 className="font-bold mb-3 text-16">Pricing</h2>
             <div className="bg-transparent border border-gray-200 rounded-md ps-2 pt-2 pb-2  block">
               <div className="flex items-center p-3 w-500px justify-between">
                 <InventoryItem
@@ -171,7 +172,7 @@ function ViewProduct() {
                 />
                 <InventoryItem label="Cost" value={productData.cost} />
               </div>
-              <div className="flex items-center gap p-3 w-530px justify-between">
+              <div className="flex items-center gap px-3 w-530px justify-between">
                 <InventoryItem
                   label="Revenue"
                   value={`${productData.revenue} $`}
@@ -192,8 +193,8 @@ function ViewProduct() {
           <div className="w-2/4 h-72"></div>
         </div>
         {(hasColors || hasSizes) && (
-          <div className="w-900 p-5 mb-7 mx-10 bg-white rounded-md">
-            <h2 className="font-bold mb-5 text-17">Inventory</h2>
+          <div className="w-[920px] p-5 mb-7 bg-white rounded-md">
+            <h2 className="font-bold mb-5 text-16">Inventory</h2>
             {hasColors && (
               <div>
                 <div>

@@ -7,13 +7,13 @@ import ColorFieldArray from "./ColorFieldArray";
 
 const SizeFieldArray = ({ values, setFieldValue, hasNestedColors }) => {
   return (
-    <div className="bg-white p-5 rounded-md mt-5 mx-10 w-890">
-      <h2 className="font-bold mb-5">Inventory</h2>
+    <div className="bg-white p-5 rounded-md mt-3 mx-7 w-[915px]">
+      <h2 className="font-bold mb-3">Inventory</h2>
       <FieldArray name="sizes">
         {({ push, remove }) => (
           <>
             {values.sizes.map((size, index) => (
-              <div key={index} className="flex flex-col gap-4 mb-4 bg-gray-100 p-5 rounded-md">
+              <div key={index} className="flex flex-col gap-4 mb-4 bg-gray-50 p-5 rounded-md">
                 <div className="flex gap-2">
                   <InputField
                     name={`sizes[${index}].name`}

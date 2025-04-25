@@ -45,6 +45,8 @@ import Requests from "./Settings/Support Questions/Requests";
 import Pricing from "./Store/Pricing Plan/PricingPlan";
 import Info from "./Store/Information/Info";
 import Analytics from "./Analysis/Analytics";
+import AllInvoices from "./Invoices/AllInvoices";
+import InvoiceDetails from "./Invoices/InvoiceDetails";
 
 function App() {
   return (
@@ -87,8 +89,8 @@ function App() {
             <Route path="StoreTheme" element={<StoreTheme />} />
             <Route path="EditStoreTheme" element={<EditStoreTheme />} />
             <Route path="StoreInformation" element={<StoreInformation />} />
-            <Route path="Pricing" element={<Pricing/>}/>
-            <Route path="Info" element={<Info/>}/>
+            <Route path="Pricing" element={<Pricing />} />
+            <Route path="Info" element={<Info />} />
             <Route
               path="EditStoreInformation"
               element={<EditStoreInformation />}
@@ -129,10 +131,13 @@ function App() {
           {/* settings */}
           <Route path="ShippingProviders" element={<ShippingProviders />} />
           <Route path="PaymentMethods" element={<PaymentMethods />} />
-          <Route path="SupportQuestion" element={<SupportQuestion/>}/>
-          <Route path="Requests" element={<Requests/>}/>
+          <Route path="SupportQuestion" element={<SupportQuestion />} />
+          <Route path="Requests" element={<Requests />} />
           {/* Analysis */}
-          <Route path="Analytics" element={<Analytics/>}/>
+          <Route path="Analytics" element={<Analytics />} />
+          {/* invoices */}
+          <Route path="AllInvoices" element={<AllInvoices />} />
+          <Route path="AllInvoices/:id" element={<InvoiceDetails />} />
         </Route>
       </Routes>
     </BrowserRouter>

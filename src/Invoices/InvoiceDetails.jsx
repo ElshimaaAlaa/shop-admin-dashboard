@@ -1,0 +1,245 @@
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { Helmet } from "react-helmet";
+import { useParams } from "react-router-dom";
+import { ClipLoader } from "react-spinners";
+function InvoiceDetails() {
+  const API_BASE_URL = "https://";
+  const live_shop_domain = localStorage.getItem("live_shop_domain");
+  const role = localStorage.getItem("role");
+  const [data, setData] = useState([]);
+  const { id } = useParams();
+  const [error, setError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+    const getInvoicesDetails = async () => {
+      setIsLoading(true);
+      try {
+        const response = await axios({
+          url: `${API_BASE_URL}${live_shop_domain}/api/${role}/invoices/${id}`,
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            "Accept-Language": "ar",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        if (response.status === 200) {
+          console.log(response.data);
+          setData(response.data.data);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error(error);
+        setError(error);
+        setIsLoading(false);
+      }
+    };
+    getInvoicesDetails();
+  }, [id]);
+  return (
+    <div className="bg-gray-100 pb-10 pt-5 flex flex-col min-h-[89vh] mx-7">
+      <Helmet>
+        <title>Invoice Details | vertex</title>
+      </Helmet>
+      <div className="rounded-md p-5 bg-white">
+        <p className="text-gray-400 text-12">Menu / Invoice Details</p>
+        <h1 className="mt-2 text-17 font-bold">Invoice Details</h1>
+      </div>
+      <section className="rounded-xl border-1 border-gray-200 p-6 bg-white mt-3">
+        <div className="flex justify-between rounded-xl border-2 border-primary bg-customOrange-mediumOrange py-8 px-5 ">
+          <div className="">
+            <div>
+              <img
+                src="/assets/svgs/vertex.svg"
+                alt="logo"
+                className="h-12 w-56"
+              />
+            </div>
+            <div className="flex items-center justify-between mt-10 gap-14 ms-6">
+              <div>
+                <p className="text-gray-500 text-15">Issued on</p>
+                <p className="text-15 mt-2">{data.date}</p>
+              </div>
+              <div>
+                <p className="text-gray-500 text-15">Payment Due</p>
+                <p className="mt-2 text-15">{data.payment_date}</p>
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col items-end gap-4">
+            <p className="text-gray-500 text-15 text-right">Invoice No.</p>
+            <p className="font-bold text-2xl">{data.invoice_number}</p>
+            <p
+              className={`px-2 py-2 text-center w-16 rounded-md text-14 ${
+                data.payment_status === "unpaid"
+                  ? "bg-gray-500 text-white"
+                  : data.payment_status === "paid"
+                  ? "text-white bg-[#28A513]"
+                  : data.payment_status === "refund"
+                  ? "text-white bg-red-600"
+                  : ""
+              }`}
+            >
+              {data.payment_status}
+            </p>
+          </div>
+        </div>
+        {/* issue from nad for */}
+        <div className="mt-8 flex items-center gap-32">
+          <div className="flex flex-col gap-5">
+            <h2 className="font-bold text-16">Issue From :</h2>
+            <p className="flex items-center gap-8 text-15">
+              Name
+              <span className="text-gray-500">
+                {data.customer_name || "N/A"}
+              </span>
+            </p>
+            <p className="flex items-center gap-8 text-15">
+              Email
+              <span className="text-gray-500">
+                {data.customer_email || "N/A"}
+              </span>
+            </p>
+            <p className="flex items-center gap-8 text-15">
+              Phone
+              <span className="text-gray-500">
+                {data.customer_phone || "N/A"}
+              </span>
+            </p>
+          </div>
+          <div className="flex flex-col gap-4">
+            <h2 className="font-bold text-16">Issue For :</h2>
+            <p className="flex items-center gap-8 text-15">
+              Name
+              <span className="text-gray-500">
+                {data.issued_for?.name || "N/A"}
+              </span>
+            </p>
+            <p className="flex items-center gap-8 text-15">
+              Email
+              <span className="text-gray-500">
+                {data.issued_for?.email || "N/A"}
+              </span>
+            </p>
+            <p className="flex items-center gap-8 text-15">
+              Phone
+              <span className="text-gray-500">
+                {data.issued_for?.phone || "N/A"}
+              </span>
+            </p>
+          </div>
+        </div>
+        <section>
+          <h2 className="font-bold text-17 mt-8 mb-4">Products</h2>
+          {/* table of products */}
+          {error ? (
+            <div className="text-red-500 text-center mt-10">
+              Failed to fetch products. Please try again.
+            </div>
+          ) : isLoading ? (
+            <div className="flex justify-center mt-10">
+              <ClipLoader color="#E0A75E" size={40} />
+            </div>
+          ) : data.products?.length === 0 ? (
+            <div className="text-gray-400 text-center mt-10">
+              No products available
+            </div>
+          ) : (
+            <>
+              <div className="overflow-hidden ">
+                <table className="min-w-full">
+                  <thead>
+                    <tr className="bg-gray-100">
+                      <th className="text-left text-gray-600 font-light px-3 py-3 ">
+                        Items
+                      </th>
+                      <th className="text-gray-600 font-light py-3 text-left">
+                        Qty.
+                      </th>
+                      <th className="text-gray-600 font-light py-3 text-left">
+                        Price
+                      </th>
+                      <th className="text-gray-600 font-light py-3 text-left">
+                        Total
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data?.products?.map((product) => (
+                      <tr key={product.id} className="hover:bg-gray-50">
+                        <td className="px-3 py-3 text-16">
+                          <div className="">
+                            <div className="flex gap-3">
+                              <img
+                                className="h-7 w-7 rounded-full object-cover"
+                                src={
+                                  product.images?.[0]?.src ||
+                                  "/assets/images/product.png"
+                                }
+                                alt={product.product_name}
+                              />
+                              {product.product_name}
+                            </div>
+
+                            <div className=" flex flex-col ms-12">
+                              <span className="text-gray-500 text-13">
+                                size : {product.size}
+                              </span>
+                              <span className="text-gray-500 text-13">
+                                color :
+                                <span
+                                  style={{
+                                    display: "inline-block",
+                                    width: "15px",
+                                    height: "15px",
+                                    backgroundColor: product.color,
+                                    borderRadius: "50%",
+                                    marginLeft: "5px",
+                                    verticalAlign: "middle",
+                                    border: "1px solid #ddd",
+                                  }}
+                                  title={product.color}
+                                ></span>
+                              </span>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-3 py-3 text-15">
+                          {product.quantity}
+                        </td>
+                        <td className="px-3 py-3 text-15 ">
+                          {product.price?.toFixed(2) || "0.00"} $
+                        </td>
+                        <td className="px-3 text-15 py-3">{data.total}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
+        </section>
+        {/* subtotal */}
+        <section className="flex justify-end">
+          <div className="flex flex-col gap-5 mt-7 w-400 justify-end bg-gray-100 rounded-xl p-5">
+            <p className="text-15 flex items-center justify-between">
+              Subtotal
+              <span className="text-gray-500">{data.sub_total || 0} $</span>
+            </p>
+            <p className="text-15 flex items-center justify-between">
+              Shipping
+              <span className="text-gray-500">{data.shipping_price}</span>
+            </p>
+            <hr />
+            <p className="text-15 flex items-center justify-between">
+              Total<span className="text-gray-500">{data.total || 0} $</span>
+            </p>
+          </div>
+        </section>
+      </section>
+    </div>
+  );
+}
+export default InvoiceDetails;

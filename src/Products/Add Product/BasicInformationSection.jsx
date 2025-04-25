@@ -11,8 +11,8 @@ const BasicInformationSection = ({
   handleCategoryChange,
   handleTagChange,
 }) => (
-  <div className="bg-white p-5 rounded-md w-full">
-    <h2 className="font-bold mb-5">Basic Information</h2>
+  <div className="bg-white p-5 rounded-md w-full mx-7">
+    <h2 className="font-bold mb-3 text-16">Basic Information</h2>
     <div className="flex gap-4">
       <InputField name="name" placeholder="Product Name" />
       <Field

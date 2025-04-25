@@ -11,7 +11,7 @@ const ColorFieldArray = ({ values, setFieldValue, sizeIndex, nested, makeImageOp
   const defaultProductImage = values.images?.[0]?.previewImage || values.images?.[0]?.image;
 
   return (
-    <div className={`${nested ? 'ml-8 pl-4 border-l-2 border-gray-200' : 'bg-white p-5 rounded-md mt-5 mx-10 w-900'}`}>
+    <div className={`${nested ? 'ml-8 pl-4 border-l-2 border-gray-200' : 'bg-white p-5 rounded-md mt-5 mx-7 w-[915px]'}`}>
       {!nested && <h2 className="font-bold mb-5">Inventory</h2>}
       <FieldArray name={colorsPath}>
         {({ push, remove }) => (
@@ -19,7 +19,7 @@ const ColorFieldArray = ({ values, setFieldValue, sizeIndex, nested, makeImageOp
             {colors?.map((color, index) => (
               <div
                 key={index}
-                className="flex flex-col gap-4 mb-4 bg-gray-100 p-5 rounded-md"
+                className="flex flex-col gap-4 mb-4 bg-gray-50 p-5 rounded-md"
               >
                 <div className="flex gap-1">
                   <UploadImageForColor

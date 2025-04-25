@@ -89,6 +89,7 @@ const Sidebar = () => {
       label: "Invoices",
       icon: <Invoices />,
       padding: "4px",
+      onclick: () => navigate("AllInvoices"),
     },
     {
       id: "clients",
