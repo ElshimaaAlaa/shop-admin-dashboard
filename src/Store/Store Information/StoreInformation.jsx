@@ -28,7 +28,7 @@ function StoreInformation() {
       </Helmet>
       <section>
         <div className="flex flex-col md:flex-row items-center justify-between mb-4">
-          <h1 className="font-bold text-[20px]">Store Information</h1>
+          <h1 className="font-bold text-[19px]">Store Information</h1>
           <button
             onClick={handleEditClick}
             className="text-white font-semibold flex items-center justify-center gap-2 bg-primary p-3 w-24 rounded-md"
@@ -55,7 +55,7 @@ function StoreInformation() {
             <div>
               <p className="text-1xl font-bold mb-3 mt-7">Banners</p>
               <div className="flex flex-wrap gap-4">
-                {banner.banners &&
+                {banner.banners && 
                   Array.isArray(banner.banners) &&
                   banner.banners.map((file, index) => (
                     <div key={index}>

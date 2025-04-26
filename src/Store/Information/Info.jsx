@@ -4,10 +4,12 @@ import CreditCard from "../../Svgs/CreditCard";
 import Paypal from "../../Svgs/Paypal";
 import Visa from "../../Svgs/Visa";
 import GooglePay from "../../Svgs/GooglePay";
+import { IoCopyOutline } from "react-icons/io5";
 
 function Info() {
   const paymentInfo = JSON.parse(localStorage.getItem("paymentInfo") || "{}");
   const paymentMethod = localStorage.getItem("payment_method") || "";
+  
   const renderPaymentMethodIcon = () => {
     switch (paymentMethod.toLowerCase()) {
       case "credit card":
@@ -38,13 +40,26 @@ function Info() {
     }
   };
 
+  const copyPhoneNumber = () => {
+    if (paymentInfo.phone) {
+      navigator.clipboard.writeText(paymentInfo.phone)
+        .then(() => {
+          alert("Phone number copied to clipboard!");
+        })
+        .catch((err) => {
+          console.error("Failed to copy phone number: ", err);
+          alert("Failed to copy phone number");
+        });
+    }
+  };
+
   return (
     <div>
       <Helmet>
         <title>Store Payment Information</title>
       </Helmet>
       <div className="flex flex-col md:flex-row items-center justify-between mb-4">
-        <h1 className="font-bold text-[20px]">Payment Information</h1>
+        <h1 className="font-bold text-[19px]">Payment Information</h1>
         <button
           className="text-white font-semibold flex items-center justify-center gap-2 bg-primary p-3 w-24 rounded-md"
           aria-label="Edit personal information"
@@ -67,10 +82,24 @@ function Info() {
         </div>
         <div className="mb-3">
           <h3 className="text-gray-400 text-15">Phone</h3>
-          <p className="font-medium text-15 mt-1">{paymentInfo.phone || "Not provided"}</p>
+          <div className="flex items-center gap-3">
+            <p className="font-medium text-15 mt-1">
+              {paymentInfo.phone || "Not provided"}
+            </p>
+            {paymentInfo.phone && (
+              <button 
+                onClick={copyPhoneNumber}
+                className="text-blue-500 hover:text-blue-700 text-sm flex items-center gap-1"
+                title="Copy phone number"
+              >
+               <IoCopyOutline color="#E0A75E" size={16}/>
+              </button>
+            )}
+          </div>
         </div>
 
-        <h4 className="font-semibold text-16 mb-3">Payment Method</h4>
+        {/* Rest of your component remains the same */}
+        <h4 className="font-semibold text-16 mb-3 mt-4">Payment Method</h4>
         <div className="p-3 bg-gray-50 rounded-lg flex items-center gap-2 w-44">
           {renderPaymentMethodIcon()}
           <p className="font-bold">{formatPaymentMethodText()}</p>
@@ -108,4 +137,5 @@ function Info() {
     </div>
   );
 }
+
 export default Info;

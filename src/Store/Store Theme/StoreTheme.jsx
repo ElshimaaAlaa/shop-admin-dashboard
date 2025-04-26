@@ -51,7 +51,7 @@ function StoreTheme() {
 
       <section>
         <div className="flex flex-col md:flex-row items-center justify-between mb-4">
-          <h1 className="font-bold text-[20px]">Store Theme</h1>
+          <h1 className="font-bold text-[19px]">Store Theme</h1>
           <button
             // onClick={handleEditClick}
             className="text-white font-semibold flex items-center justify-center gap-3 bg-primary p-3 w-24 rounded-md"

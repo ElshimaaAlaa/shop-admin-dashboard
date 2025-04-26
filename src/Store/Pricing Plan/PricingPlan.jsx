@@ -102,10 +102,10 @@ function Pricing() {
 
       <div className="">
         <div className="flex justify-between">
-          <h1 className="text-[20px] font-bold">Your Current Plan</h1>
+          <h1 className="text-[19px] font-bold">Your Current Plan</h1>
           <button
             onClick={() => navigate("/Register/PricingPlan")}
-            className="bg-primary font-bold w-44 text-white p-3 rounded-md hover:bg-primary-dark transition-colors"
+            className="bg-primary  w-44 text-white p-3 rounded-md hover:bg-primary-dark transition-colors"
           >
             Change Plan
           </button>

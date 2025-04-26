@@ -1,8 +1,12 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Helmet } from "react-helmet";
 import { useParams } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import "./invoiceStyle.scss"
+
 function InvoiceDetails() {
   const API_BASE_URL = "https://";
   const live_shop_domain = localStorage.getItem("live_shop_domain");
@@ -11,6 +15,9 @@ function InvoiceDetails() {
   const { id } = useParams();
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+  const invoiceRef = useRef();
+
   useEffect(() => {
     const getInvoicesDetails = async () => {
       setIsLoading(true);
@@ -26,7 +33,6 @@ function InvoiceDetails() {
           },
         });
         if (response.status === 200) {
-          console.log(response.data);
           setData(response.data.data);
           setIsLoading(false);
         }
@@ -38,6 +44,39 @@ function InvoiceDetails() {
     };
     getInvoicesDetails();
   }, [id]);
+
+  const downloadPdf = () => {
+    setIsGeneratingPdf(true);
+    const input = invoiceRef.current;
+    
+    // Add temporary class for PDF styling
+    input.classList.add("printing-pdf");
+    
+    html2canvas(input, {
+      scale: 2, // Higher quality
+      logging: false,
+      useCORS: true,
+      scrollY: -window.scrollY,
+    }).then((canvas) => {
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const imgProps = pdf.getImageProperties(imgData);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`invoice_${data.invoice_number || id}.pdf`);
+      
+      // Remove temporary class
+      input.classList.remove("printing-pdf");
+      setIsGeneratingPdf(false);
+    }).catch((error) => {
+      console.error("Error generating PDF:", error);
+      setIsGeneratingPdf(false);
+      input.classList.remove("printing-pdf");
+    });
+  };
+
   return (
     <div className="bg-gray-100 pb-10 pt-5 flex flex-col min-h-[89vh] mx-7">
       <Helmet>
@@ -45,10 +84,30 @@ function InvoiceDetails() {
       </Helmet>
       <div className="rounded-md p-5 bg-white">
         <p className="text-gray-400 text-12">Menu / Invoice Details</p>
-        <h1 className="mt-2 text-17 font-bold">Invoice Details</h1>
+        <div className="flex justify-between items-center">
+          <h1 className="mt-2 text-17 font-bold">Invoice Details</h1>
+          <button
+            onClick={downloadPdf}
+            disabled={isGeneratingPdf || isLoading}
+            className="bg-primary text-white p-3 w-52  rounded-md flex items-center justify-center gap-2 hover:bg-primary-dark transition-colors disabled:opacity-50"
+          >
+            {isGeneratingPdf ? (
+              <ClipLoader color="#ffffff"  size={22} />
+            ) : (
+              <>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+                Download Invoice
+              </>
+            )}
+          </button>
+        </div>
       </div>
-      <section className="rounded-xl border-1 border-gray-200 p-6 bg-white mt-3">
-        <div className="flex justify-between rounded-xl border-2 border-primary bg-customOrange-mediumOrange py-8 px-5 ">
+      
+      <section ref={invoiceRef} className="rounded-xl border-1 border-gray-200 py-6 px-10 bg-white mt-3">
+        {/* Invoice Header */}
+        <div className="flex justify-between rounded-xl border-2 border-primary bg-customOrange-mediumOrange py-8 ps-3 pe-7">
           <div className="">
             <div>
               <img
@@ -86,8 +145,9 @@ function InvoiceDetails() {
             </p>
           </div>
         </div>
-        {/* issue from nad for */}
-        <div className="mt-8 flex items-center gap-32">
+
+        {/* Issue From and For */}
+        <div className="mt-8 flex items-center gap-32 mx-3">
           <div className="flex flex-col gap-5">
             <h2 className="font-bold text-16">Issue From :</h2>
             <p className="flex items-center gap-8 text-15">
@@ -131,9 +191,10 @@ function InvoiceDetails() {
             </p>
           </div>
         </div>
+
+        {/* Products Table */}
         <section>
-          <h2 className="font-bold text-17 mt-8 mb-4">Products</h2>
-          {/* table of products */}
+          <h2 className="font-bold text-17 mt-8 mb-4 mx-3">Products</h2>
           {error ? (
             <div className="text-red-500 text-center mt-10">
               Failed to fetch products. Please try again.
@@ -148,11 +209,11 @@ function InvoiceDetails() {
             </div>
           ) : (
             <>
-              <div className="overflow-hidden ">
+              <div className="overflow-hidden mx-3">
                 <table className="min-w-full">
                   <thead>
                     <tr className="bg-gray-100">
-                      <th className="text-left text-gray-600 font-light px-3 py-3 ">
+                      <th className="text-left text-gray-600 font-light px-3 py-3">
                         Items
                       </th>
                       <th className="text-gray-600 font-light py-3 text-left">
@@ -183,7 +244,7 @@ function InvoiceDetails() {
                               {product.product_name}
                             </div>
 
-                            <div className=" flex flex-col ms-12">
+                            <div className="flex flex-col ms-12">
                               <span className="text-gray-500 text-13">
                                 size : {product.size}
                               </span>
@@ -209,10 +270,12 @@ function InvoiceDetails() {
                         <td className="px-3 py-3 text-15">
                           {product.quantity}
                         </td>
-                        <td className="px-3 py-3 text-15 ">
+                        <td className="px-3 py-3 text-15">
                           {product.price?.toFixed(2) || "0.00"} $
                         </td>
-                        <td className="px-3 text-15 py-3">{data.total}</td>
+                        <td className="px-3 text-15 py-3">
+                          {(product.price * product.quantity)?.toFixed(2) || "0.00"} $
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -221,20 +284,20 @@ function InvoiceDetails() {
             </>
           )}
         </section>
-        {/* subtotal */}
+        {/* Totals Section */}
         <section className="flex justify-end">
           <div className="flex flex-col gap-5 mt-7 w-400 justify-end bg-gray-100 rounded-xl p-5">
             <p className="text-15 flex items-center justify-between">
               Subtotal
-              <span className="text-gray-500">{data.sub_total || 0} $</span>
+              <span className="text-gray-500">{data.sub_total?.toFixed(2) || "0.00"} $</span>
             </p>
             <p className="text-15 flex items-center justify-between">
               Shipping
-              <span className="text-gray-500">{data.shipping_price}</span>
+              <span className="text-gray-500">{data.shipping_price?.toFixed(2) || "0.00"} $</span>
             </p>
             <hr />
-            <p className="text-15 flex items-center justify-between">
-              Total<span className="text-gray-500">{data.total || 0} $</span>
+            <p className="text-15 flex items-center justify-between font-bold">
+              Total<span className="text-gray-500">{data.total?.toFixed(2) || "0.00"} $</span>
             </p>
           </div>
         </section>
@@ -242,4 +305,5 @@ function InvoiceDetails() {
     </div>
   );
 }
+
 export default InvoiceDetails;
