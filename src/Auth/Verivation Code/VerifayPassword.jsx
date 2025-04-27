@@ -73,7 +73,7 @@ function VerifayPassword() {
         <meta charSet="utf-8" />
         <title>Verifay Password</title>
       </Helmet>
-      <div className="verivayContainer lg:w-450 md:w-450 sm:w-450 xs:w-450 s:w-450 bg-gray-50 rounded-md">
+      <div className="verivayContainer w-96 lg:w-450 md:w-450 sm:w-450 xs:w-450 s:w-450 bg-gray-50 rounded-md">
         <img
           src="/assets/svgs/vertex.svg"
           alt="logo"
@@ -89,7 +89,7 @@ function VerifayPassword() {
           onSubmit={handleSubmit}
         >
           {({ errors, touched }) => (
-            <Form className="mt-3 flex flex-col">
+            <Form className="mt-3 flex flex-col ">
               <div className="flex gap-2">
                 {Array(6)
                   .fill("")

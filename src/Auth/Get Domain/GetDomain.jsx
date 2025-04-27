@@ -37,7 +37,7 @@ function GetDomain() {
         <meta charSet="utf-8" />
         <title>Get Domain</title>
       </Helmet>
-      <div className="getDomainContainer w-96 lg:w-450 md:w-450 sm:w-80 xs:w-450 s:w-80 bg-gray-50 rounded-md">
+      <div className="getDomainContainer w-[350px] p-5 lg:p-7 md:p-7 lg:w-450 md:w-450 sm:w-80 xs:w-450 s:w-80 bg-gray-50 rounded-md">
         <img
           src="/assets/svgs/vertex.svg"
           alt="logo"

@@ -1,8 +1,8 @@
 import React from "react";
-import Facebook from '../../Svgs/facebook';
-import Google from '../../Svgs/Google'
+import Facebook from "../../Svgs/facebook";
+import Google from "../../Svgs/Google";
 import { GoogleAuthProvider, FacebookAuthProvider } from "firebase/auth";
-import SocialMediaAuth from "../../ApiServices/SocialMediaAuth"
+import SocialMediaAuth from "../../ApiServices/SocialMediaAuth";
 function OAuth() {
   const googleProvider = new GoogleAuthProvider();
   const facebookProvider = new FacebookAuthProvider();
@@ -16,22 +16,20 @@ function OAuth() {
   };
   return (
     <div>
-      <div
-        className="flex justify-center gap-4 mt-5"
-      >
+      <div className="flex justify-center gap-4 mt-5">
         <button
-          className="text-10 md:text-11 lg:text-11 w-200 flex items-center gap-2 bg-white p-3 rounded-lg text-darkGray font-bold border-1 border-borderColor cursor-pointer"
+          className="text-10 md:text-11 lg:text-11 w-200 flex items-center gap-2 bg-white p-3 rounded-lg text-gray-600 font-bold border-1 border-borderColor cursor-pointer"
           onClick={() => handleOnClick(facebookProvider)}
         >
           <Facebook />
-          Sign in With Facebook
+          Facebook
         </button>
         <button
-          className="text-10 md:text-11 lg:text-11 flex w-200 items-center gap-4 bg-white p-3 rounded-lg text-darkGray font-bold border-1 border-borderColor cursor-pointer"
+          className="text-10 md:text-11 lg:text-11 flex w-200 items-center gap-4 bg-white p-3 rounded-lg text-gray-600 font-bold border-1 border-borderColor cursor-pointer"
           onClick={() => handleOnClick(googleProvider)}
         >
           <Google />
-          Sign in With Google
+          Google
         </button>
       </div>
     </div>
