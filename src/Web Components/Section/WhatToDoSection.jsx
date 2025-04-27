@@ -34,7 +34,7 @@ function WhatToDoSection() {
       >
         WHAT WE DO ?
       </p>
-      <h1 className="font-bold text-3xl mt-4">
+      <h1 className="font-bold text-xl mt-4">
         Why choose Vertex? It is designed specifically
         <span className="ms-2 text-primary">to meet your needs.</span>
       </h1>

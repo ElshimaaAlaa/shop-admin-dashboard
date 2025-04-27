@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 function Header() {
   return (
-    <header className="ps-5 pe-5 lg:ps-20 lg:pe-20 lg:pt-40 flex flex-col items-center pt-48 md:flex-row lg:flex-row lg:justify-between ">
+    <header className="ps-5 pe-5 lg:px-20 lg:pt-40 flex flex-col items-center pt-48 md:flex-row lg:flex-row ">
       <div>
         <h1 className=" leading-normal lg:w-400 text-4xl font-bold lg:leading-normal lg:text-4xl md:text-3xl md:leading-normal">
           We bring
@@ -11,7 +11,7 @@ function Header() {
           </span>
           for your business
         </h1>
-        <p className="text-secondary leading-normal lg:w-96 md:w-96  mb-5">
+        <p className="text-gray-400  leading-normal lg:w-2/4 md:w-96  mb-5">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
           eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
           minim veniam
@@ -48,7 +48,7 @@ function Header() {
           src="/assets/images/header-image.png"
           alt="Business solutions illustration"
           loading="lazy"
-          className="lg:pe-28 mt-10 lg:mt-0 md:ms-5 md:w- md:pe-10 w-550"
+          className="lg:pe-24 w-700 mt-10 lg:mt-0 md:ms-5  md:pe- "
         />
       </div>
     </header>

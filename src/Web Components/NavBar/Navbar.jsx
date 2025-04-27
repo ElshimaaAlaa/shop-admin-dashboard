@@ -20,7 +20,7 @@ function Navbar() {
           <a href="/" target="_blank" className="text-sm underline">
             Vertex@gmail.com
           </a>
-          <img src="/assets/images/email.png" alt="email" className="w-6 h-6" />
+          <img src="/assets/images/email.png" alt="email" className="w-7 mt-1 h-5" />
         </div>
       </div>
       {/* Navbar bottom items */}

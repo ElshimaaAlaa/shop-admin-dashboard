@@ -2,7 +2,7 @@ import React from "react";
 import Facebook from "../../Svgs/facebook";
 import Instegram from "../../Svgs/instegram";
 import WhatsApp from "../../Svgs/WhatsApp";
-import { FaSquareXTwitter } from "react-icons/fa6";
+import { FaXTwitter } from "react-icons/fa6";
 
 function Footer() {
   return (
@@ -48,9 +48,9 @@ function Footer() {
           <p className="text-13">© 2024 Cadet UI. All Rights Reserved.</p>
         </div>
         {/* social media */}
-        <div className="flex mt-5 lg:mt-0 md:mt-0">
-          <a href="/" target="_blank" className="mt-0.5 me-0.5">
-            <FaSquareXTwitter size={28}/>
+        <div className="flex gap-3 mt-5 lg:mt-0 md:mt-0">
+          <a href="/" target="_blank" className="mt-1.5">
+            <FaXTwitter size={23}/>
           </a>
           <a href="/" target="_blank">
             <WhatsApp/>

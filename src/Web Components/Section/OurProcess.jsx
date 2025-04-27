@@ -48,12 +48,11 @@ function OurProcess() {
     <section className="px-5 lg:px-20 mt-10">
       <div>
         <p
-          className="text-primary bg-customOrange-lightOrange p-2 w-32 text-center rounded"
-          style={{ fontSize: "18px" }}
+          className="text-primary text-17 bg-customOrange-lightOrange p-2 w-32 text-center rounded"
         >
           Our Process
         </p>
-        <h2 className="text-2xl md:text-3xl font-bold mt-5 text-center md:text-left">
+        <h2 className="text-xl md:text-xl font-bold mt-5 text-center md:text-left">
           Here's How You Can Design Your
           <span className="text-primary block md:inline ms-3">
             Own E-commerce Website

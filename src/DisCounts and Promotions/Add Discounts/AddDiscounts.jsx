@@ -14,9 +14,21 @@ const CATEGORIES_API_URL = "https://";
 const live_shop_domain = localStorage.getItem("live_shop_domain");
 const role = localStorage.getItem("role");
 
+// Helper function to format date as Y-m-d
+const formatDate = (date) => {
+  const d = new Date(date);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 // Validation Schema
 const promotionSchema = Yup.object().shape({
-  name: Yup.string().required("Promotion name is required"),
+  name: Yup.object().shape({
+    en: Yup.string().required("English promotion name is required"),
+    ar: Yup.string().required("Arabic promotion name is required"),
+  }),
   total_price: Yup.number()
     .required("Total price is required")
     .positive("Total price must be positive"),
@@ -29,10 +41,10 @@ const promotionSchema = Yup.object().shape({
     .of(
       Yup.object().shape({
         product_id: Yup.string().required("Product is required"),
-        quantity: Yup.number()
-          .required("Quantity is required")
-          .positive("Quantity must be positive")
-          .integer("Quantity must be an integer"),
+        quantity: Yup.string()
+          // .required("Quantity is required")
+          // .positive("Quantity must be positive")
+          // .integer("Quantity must be an integer"),
       })
     )
     .min(1, "At least one product is required"),
@@ -45,7 +57,6 @@ const NewPromotion = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch products and categories on component mount
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -87,38 +98,43 @@ const NewPromotion = () => {
     fetchData();
   }, []);
 
-  // Initial Values
   const initialValues = {
-    name: "",
+    name: {
+      en: "",
+      ar: ""
+    },
     total_price: "",
     start_date: null,
     end_date: null,
     items: [{ product_id: "", quantity: "" }],
     category_id: "",
+    quantity:""
   };
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
-      // Format the data for API
-      const formattedData = {
-        ...values,
-        start_date: values.start_date.toISOString(),
-        end_date: values.end_date.toISOString(),
-        items: values.items.reduce((acc, item, index) => {
-          return {
-            ...acc,
-            [`items[${index}][product_id]`]: item.product_id,
-            [`items[${index}][quantity]`]: item.quantity,
-          };
-        }, {}),
-      };
+      const formData = new FormData();
+      
+      // Add simple fields
+      formData.append('name[en]', values.name.en);
+      formData.append('name[ar]', values.name.ar);
+      formData.append('total_price', values.total_price);
+      formData.append('start_date', formatDate(values.start_date));
+      formData.append('end_date', formatDate(values.end_date));
+      formData.append('category_id', values.category_id);
+formData.append("quantity",values.quantity)
+      // Add items in the format items[0][product_id], items[0][quantity]
+      values.items.forEach((item, index) => {
+        formData.append(`items[${index}][product_id]`, item.product_id);
+        formData.append(`items[${index}][quantity]`, item.quantity);
+      });
 
-      const response = await axios.post(API_BASE_URL, formattedData, {
+      const response = await axios.post(API_BASE_URL, formData, {
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'multipart/form-data',
           live_shop_domain: live_shop_domain,
           role: role,
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
 
@@ -126,7 +142,12 @@ const NewPromotion = () => {
       setError("");
       resetForm();
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to create promotion");
+      console.error("Error submitting form:", err.response?.data);
+      const errorMessage = err.response?.data?.message || 
+                         (err.response?.data?.errors ? 
+                          Object.values(err.response.data.errors).join(', ') : 
+                          "Failed to create promotion");
+      setError(errorMessage);
       setSuccess("");
     } finally {
       setSubmitting(false);
@@ -170,14 +191,46 @@ const NewPromotion = () => {
         onSubmit={handleSubmit}
       >
         {({ values, errors, touched, isSubmitting, setFieldValue }) => (
-          <Form className="mx-10 my-3 ">
+          <Form className="mx-10 my-3">
             <div className="bg-white rounded-md p-4">
               <div>
-                <InputField
-                  name="name"
-                  label="Promotion Name"
-                  placeholder="Enter promotion name"
-                />
+                <div className="mb-3">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Promotion Name (English)
+                  </label>
+                  <Field
+                    name="name.en"
+                    type="text"
+                    placeholder="Enter English promotion name"
+                    className="w-full h-14 p-2 border-2 rounded-md outline-none"
+                  />
+                  {errors.name?.en && touched.name?.en && (
+                    <div className="text-red-500 text-sm">{errors.name.en}</div>
+                  )}
+                </div>
+
+                <div className="mb-3">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Promotion Name (Arabic)
+                  </label>
+                  <Field
+                    name="name.ar"
+                    type="text"
+                    placeholder="Enter Arabic promotion name"
+                    className="w-full h-14 p-2 border-2 rounded-md outline-none text-right"
+                    dir="rtl"
+                  />
+                  <Field
+                    name="quantity"
+                    type="text"
+                    placeholder="Enter Arabic promotion name"
+                    className="w-full h-14 p-2 border-2 rounded-md outline-none text-right"
+                    // dir="rtl"
+                  />
+                  {errors.name?.ar && touched.name?.ar && (
+                    <div className="text-red-500 text-sm">{errors.name.ar}</div>
+                  )}
+                </div>
 
                 <div className="flex gap-4 mt-3">
                   <div className="w-full">
@@ -212,6 +265,7 @@ const NewPromotion = () => {
                       endDate={values.end_date}
                       placeholderText="Select start date"
                       className="w-full h-14 p-2 border-2 rounded-md outline-none"
+                      dateFormat="yyyy-MM-dd"
                     />
                     {errors.start_date && touched.start_date && (
                       <div className="text-red-500 text-sm">
@@ -232,6 +286,7 @@ const NewPromotion = () => {
                       minDate={values.start_date}
                       placeholderText="Select end date"
                       className="w-full h-14 p-2 border-2 rounded-md outline-none"
+                      dateFormat="yyyy-MM-dd"
                     />
                     {errors.end_date && touched.end_date && (
                       <div className="text-red-500 text-sm">
@@ -271,13 +326,24 @@ const NewPromotion = () => {
 
               <div className="bg-customOrange-mediumOrange rounded-md p-4 my-5">
                 <FieldArray name="items">
-                  {() => (
+                  {({ push, remove }) => (
                     <div className="space-y-4">
                       {values.items.map((item, index) => (
                         <div key={index}>
-                          <h4 className="font-medium mb-3 text-primary">
-                            Product {index + 1}
-                          </h4>
+                          <div className="flex justify-between items-center">
+                            <h4 className="font-medium mb-3 text-primary">
+                              Product {index + 1}
+                            </h4>
+                            {index > 0 && (
+                              <button
+                                type="button"
+                                onClick={() => remove(index)}
+                                className="text-red-500 text-sm"
+                              >
+                                Remove
+                              </button>
+                            )}
+                          </div>
                           <div className="">
                             <div className="flex items-center gap-3 mb-3">
                               <div className="w-full">

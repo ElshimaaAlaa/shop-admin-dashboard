@@ -147,7 +147,7 @@ function InvoiceDetails() {
         </div>
 
         {/* Issue From and For */}
-        <div className="mt-8 flex items-center gap-32 mx-3">
+        <div className="mt-8 flex items-center gap-32 mx-1">
           <div className="flex flex-col gap-5">
             <h2 className="font-bold text-16">Issue From :</h2>
             <p className="flex items-center gap-8 text-15">
@@ -194,7 +194,7 @@ function InvoiceDetails() {
 
         {/* Products Table */}
         <section>
-          <h2 className="font-bold text-17 mt-8 mb-4 mx-3">Products</h2>
+          <h2 className="font-bold text-17 mt-8 mb-4 mx-1">Products</h2>
           {error ? (
             <div className="text-red-500 text-center mt-10">
               Failed to fetch products. Please try again.
@@ -209,10 +209,10 @@ function InvoiceDetails() {
             </div>
           ) : (
             <>
-              <div className="overflow-hidden mx-3">
+              <div className="overflow-hidden mx-1">
                 <table className="min-w-full">
                   <thead>
-                    <tr className="bg-gray-100">
+                    <tr className="bg-gray-50">
                       <th className="text-left text-gray-600 font-light px-3 py-3">
                         Items
                       </th>
@@ -229,7 +229,7 @@ function InvoiceDetails() {
                   </thead>
                   <tbody>
                     {data?.products?.map((product) => (
-                      <tr key={product.id} className="hover:bg-gray-50">
+                      <tr key={product.id}>
                         <td className="px-3 py-3 text-16">
                           <div className="">
                             <div className="flex gap-3">
@@ -286,7 +286,7 @@ function InvoiceDetails() {
         </section>
         {/* Totals Section */}
         <section className="flex justify-end">
-          <div className="flex flex-col gap-5 mt-7 w-400 justify-end bg-gray-100 rounded-xl p-5">
+          <div className="flex flex-col gap-5 mt-7 w-400 justify-end bg-gray-50 rounded-xl p-5">
             <p className="text-15 flex items-center justify-between">
               Subtotal
               <span className="text-gray-500">{data.sub_total?.toFixed(2) || "0.00"} $</span>
@@ -296,7 +296,7 @@ function InvoiceDetails() {
               <span className="text-gray-500">{data.shipping_price?.toFixed(2) || "0.00"} $</span>
             </p>
             <hr />
-            <p className="text-15 flex items-center justify-between font-bold">
+            <p className="text-15 flex items-center justify-between">
               Total<span className="text-gray-500">{data.total?.toFixed(2) || "0.00"} $</span>
             </p>
           </div>
@@ -305,5 +305,4 @@ function InvoiceDetails() {
     </div>
   );
 }
-
 export default InvoiceDetails;

@@ -38,7 +38,7 @@ function AboutUs() {
           </span>
           in a more effective way
         </h1>
-        <p className="text-secondary lg:w-85 mt-3">
+        <p className="text-gray-400 text-14 lg:w-85 mt-3">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
           eiusmod tempor
         </p>

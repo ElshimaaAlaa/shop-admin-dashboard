@@ -24,7 +24,7 @@ function Faq() {
       <p className="bg-customOrange-mediumOrange text-primary w-20 text-center p-3 rounded-md">
         FAQ
       </p>
-      <h1 className="font-bold text-2xl leading-normal lg:leading-normal mt-5 lg:text-2xl lg:w-3/4 md:text-2xl md:w-full">
+      <h1 className="font-bold text-2xl leading-normal lg:leading-normal mt-5 lg:text-xl lg:w-2/4 md:text-2xl md:w-full">
         If you don’t see an answer to your question, you can
         <span className="text-primary ms-2">
           send us an email from our contact form

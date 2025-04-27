@@ -51,12 +51,12 @@ function OpinionSection() {
       <p className="text-primary bg-customOrange-mediumOrange p-3 rounded-md w-32 text-center text-sm md:text-base">
         Opinions
       </p>
-      <h1 className="text-xl md:text-2xl lg:text-2xl font-bold mt-5 text-center md:text-left">
+      <h1 className="text-xl font-bold mt-5 text-center md:text-left">
         What Our Clients Say About Us
       </h1>
 
       {/* Carousel */}
-      <div className="carousel-container mt-7">
+      <div className="carousel-container mt-5">
         <Carousel
           responsive={responsive}
           infinite={true}
