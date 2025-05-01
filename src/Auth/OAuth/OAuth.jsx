@@ -22,14 +22,14 @@ function OAuth() {
           onClick={() => handleOnClick(facebookProvider)}
         >
           <Facebook />
-          Facebook
+          sign up with Facebook
         </button>
         <button
           className="text-10 md:text-11 lg:text-11 flex w-200 items-center gap-4 bg-white p-3 rounded-lg text-gray-600 font-bold border-1 border-borderColor cursor-pointer"
           onClick={() => handleOnClick(googleProvider)}
         >
           <Google />
-          Google
+          sign up with Google
         </button>
       </div>
     </div>

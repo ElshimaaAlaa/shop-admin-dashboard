@@ -10,28 +10,109 @@ import Footer from "../../Components/Footer/Footer";
 import { ImageUpload } from "../../Components/Upload Image/UploadImage";
 import { TagsInput } from "../../Components/Tag Input/TagInput";
 import InputField from "../../Components/InputFields/InputField";
-const TypeField = () => (
-  <Field
-    placeholder="Type"
-    as="select"
-    name="type"
-    className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md h-[54px] p-2 block focus:border-2 focus:border-primary"
-  >
-    <option className="option text-14">Type</option>
-    <option value="1" className="option">
-      Standard
-    </option>
-    <option value="2" className="option">
-      Color-Only
-    </option>
-    <option value="3" className="option">
-      Size-Only
-    </option>
-    <option value="4" className="option">
-      Color & Size
-    </option>
-  </Field>
-);
+
+const CustomDropdown = ({
+  options,
+  value,
+  onChange,
+  placeholder = "Select an option",
+  name,
+  error,
+  touched,
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = React.useRef(null);
+
+  const selectedOption = options.find(opt => opt.value === value);
+
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setIsOpen(false);
+    }
+  };
+
+  React.useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  return (
+    <div className="relative w-full" ref={dropdownRef}>
+      <div
+        className={`w-full bg-transparent outline-none border-2 rounded-md h-[54px] p-2 flex items-center justify-between cursor-pointer ${
+          error && touched ? "border-red-500" : "border-gray-200"
+        } focus:border-2 focus:border-primary`}
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <span className={value ? "text-black" : "text-gray-400"}>
+          {selectedOption ? selectedOption.label : placeholder}
+        </span>
+        <svg
+          className={`w-5 h-5 transition-transform duration-200 ${
+            isOpen ? "transform rotate-180" : ""
+          }`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
+      </div>
+      
+      {isOpen && (
+        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-auto">
+          {options.map((option) => (
+            <div
+              key={option.value}
+              className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${
+                value === option.value ? "bg-primary bg-opacity-10" : ""
+              }`}
+              onClick={() => {
+                onChange(name, option.value);
+                setIsOpen(false);
+              }}
+            >
+              {option.label}
+            </div>
+          ))}
+        </div>
+      )}
+      
+      {error && touched && (
+        <div className="text-red-500 text-xs mt-1">{error}</div>
+      )}
+    </div>
+  );
+};
+
+const TypeField = ({ field, form, ...props }) => {
+  const options = [
+    { value: "1", label: "Standard" },
+    { value: "2", label: "Color-Only" },
+    { value: "3", label: "Size-Only" },
+    { value: "4", label: "Color & Size" },
+  ];
+
+  return (
+    <CustomDropdown
+      options={options}
+      value={field.value}
+      onChange={form.setFieldValue}
+      name={field.name}
+      placeholder="Type"
+      error={form.errors[field.name]}
+      touched={form.touched[field.name]}
+    />
+  );
+};
 
 function AddCategory() {
   const navigate = useNavigate();
@@ -102,11 +183,13 @@ function AddCategory() {
       setIsLoading(false);
     }
   };
+
   if (showModal) {
     document.body.classList.add("no-scroll");
   } else {
     document.body.classList.remove("no-scroll");
   }
+
   return (
     <div className="bg-gray-100 h-[89vh] relative">
       <Helmet>
@@ -119,24 +202,27 @@ function AddCategory() {
       >
         {({ setFieldValue, values, errors, touched }) => (
           <Form className="flex flex-col">
-            <h1 className=" rounded-md p-5 mx-10 bg-white mt-5 mb-3">
+            <h1 className=" rounded-md p-5 mx-4 bg-white mt-5 mb-3">
               <p className="text-gray-400 text-12">Menu / Categories / Add Category</p>
               <h3 className="text-17 font-bold mt-2">Add Category</h3>
             </h1>
-            <div className="flex gap-5 mx-10">
+            <div className="flex gap-5 mx-4">
               <div className="bg-white p-5 rounded-md w-full">
                 <h2 className="font-bold mb-5">Basic Information</h2>
                 <div className="flex items-center gap-4">
                   <InputField placeholder="Category Name" name="name" />
-                  <TypeField />
+                  <Field name="type" component={TypeField} />
                 </div>
                 <TagsInput setFieldValue={setFieldValue} values={values} />
                 <Field
                   as="textarea"
                   placeholder="Description"
                   name="description"
-                  className={`w-full bg-transparent outline-none border-2 rounded-md p-2 h-24 mt-3 block placeholder:text-14 focus:border-primary`}
+                  className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md p-2 h-24 mt-3 block placeholder:text-14 focus:border-primary"
                 />
+                {errors.description && touched.description && (
+                  <div className="text-red-500 text-xs mt-1">{errors.description}</div>
+                )}
               </div>
               <div className="bg-white p-4 rounded-md w-2/4 h-72">
                 <h2 className="font-bold mb-3">Category Icon / Image</h2>
@@ -151,6 +237,9 @@ function AddCategory() {
                     }
                   }}
                 />
+                {errors.image && touched.image && (
+                  <div className="text-red-500 text-xs mt-1">{errors.image}</div>
+                )}
               </div>
             </div>
             <Footer
@@ -184,4 +273,5 @@ function AddCategory() {
     </div>
   );
 }
+
 export default AddCategory;

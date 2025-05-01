@@ -1,6 +1,6 @@
 export const ImageUpload = ({ previewImage, onImageChange, name }) => {
   return (
-    <div className="border-2 w-full border-dashed bg-gray-100 border-gray-400 rounded-md p-1 h-52 flex items-center justify-center">
+    <div className="border-2 w-full border-dashed bg-gray-50 border-gray-400 rounded-md p-1 h-52 flex items-center justify-center">
       <input
         type="file"
         name={name}

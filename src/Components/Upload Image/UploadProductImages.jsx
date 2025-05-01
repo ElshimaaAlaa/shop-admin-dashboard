@@ -1,5 +1,4 @@
 import React from "react";
-
 export const UploadProductImage = ({ previewImages, onImageChange }) => {
   return (
     <>

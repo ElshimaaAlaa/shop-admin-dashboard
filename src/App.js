@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { PulseLoader } from "react-spinners";
 import AllCategory from "./Categories/All Categories/AllCategory";
 import Home from "./Pages/Home page/Home";
 import AddCategory from "./Categories/Add Category/AddCategory";
@@ -49,6 +51,28 @@ import AllInvoices from "./Invoices/AllInvoices";
 import InvoiceDetails from "./Invoices/InvoiceDetails";
 
 function App() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate loading delay (e.g. 2 seconds)
+    const timer = setTimeout(() => setLoading(false), 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) {
+    return (
+      <div
+        style={{
+          height: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <PulseLoader color="#E0A75E" size={17} />
+      </div>
+    );
+  }
   return (
     <BrowserRouter>
       <Routes>

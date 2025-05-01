@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Formik, Form, Field } from "formik";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
@@ -8,6 +8,85 @@ import Footer from "../../Components/Footer/Footer";
 import { ImageUpload } from "../../Components/Upload Image/UploadUpdatedImage";
 import InputField from "../../Components/InputFields/InputField";
 import "./style.scss";
+
+const CustomDropdown = ({
+  options,
+  value,
+  onChange,
+  placeholder = "Select an option",
+  name,
+  error,
+  touched,
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = React.useRef(null);
+
+  const selectedOption = options.find(opt => opt.value === value);
+
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setIsOpen(false);
+    }
+  };
+
+  React.useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  return (
+    <div className="relative w-full" ref={dropdownRef}>
+      <div
+        className={`w-full bg-transparent outline-none border-2 rounded-md h-[54px] p-2 flex items-center justify-between cursor-pointer ${
+          error && touched ? "border-red-500" : "border-gray-200"
+        } focus:border-2 focus:border-primary`}
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <span className={value ? "text-black" : "text-gray-400"}>
+          {selectedOption ? selectedOption.label : placeholder}
+        </span>
+        <svg
+          className={`w-5 h-5 transition-transform duration-200 ${
+            isOpen ? "transform rotate-180" : ""
+          }`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
+      </div>
+      
+      {isOpen && (
+        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-auto">
+          {options.map((option) => (
+            <div
+              key={option.value}
+              className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${
+                value === option.value ? "bg-primary bg-opacity-10" : ""
+              }`}
+              onClick={() => {
+                onChange(name, option.value);
+                setIsOpen(false);
+              }}
+            >
+              {option.label}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 function EditCategory() {
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -17,18 +96,24 @@ function EditCategory() {
   const [error, setError] = useState(null);
   const category = state || {};
 
+  // Debug the incoming category data
+  useEffect(() => {
+    console.log("Category data received:", category);
+    console.log("Current type value:", category?.type);
+  }, [category]);
+
   const initialTagsEn = category?.tags?.en || [];
   const initialTagsAr = category?.tags?.ar || [];
 
   const initialValues = {
     name: category?.name || "",
     description: category?.description || "",
-    type: category?.type || "",
+    type: category?.type?.toString() || "", // Ensure type is string
     image: null,
     tagsEn: initialTagsEn,
-    tagsAr: initialTagsAr, // Old Arabic tags
-    newTagEn: "", // For adding new English tags
-    newTagAr: "", // For adding new Arabic tags
+    tagsAr: initialTagsAr,
+    newTagEn: "",
+    newTagAr: "",
   };
 
   const handleSubmit = async (values) => {
@@ -42,16 +127,13 @@ function EditCategory() {
       formData.append("description[en]", values.description);
       formData.append("type", values.type);
 
-      // Combine old and new tags for submission
       const allTagsEn = values.tagsEn;
       const allTagsAr = values.tagsAr;
 
-      // Append English tags to FormData
       allTagsEn.forEach((tag, index) => {
         formData.append(`tags[en][${index}]`, tag);
       });
 
-      // Append Arabic tags to FormData
       allTagsAr.forEach((tag, index) => {
         formData.append(`tags[ar][${index}]`, tag);
       });
@@ -70,7 +152,6 @@ function EditCategory() {
     }
   };
 
-  // Tag Component
   const Tag = ({ tag, onDelete }) => (
     <div className="flex items-center bg-customOrange-mediumOrange text-primary rounded-md p-4 m-1">
       <span>{tag}</span>
@@ -84,18 +165,46 @@ function EditCategory() {
       </button>
     </div>
   );
+
+  const TypeField = ({ field, form, ...props }) => {
+    const options = [
+      { value: "1", label: "Standard" },
+      { value: "2", label: "Color-Only" },
+      { value: "3", label: "Size-Only" },
+      { value: "4", label: "Color & Size" },
+    ];
+
+    // Debug the current field value
+    console.log("TypeField current value:", field.value);
+
+    return (
+      <CustomDropdown
+        options={options}
+        value={field.value?.toString()} // Ensure value is string
+        onChange={(name, value) => {
+          form.setFieldValue(name, value);
+        }}
+        name={field.name}
+        placeholder="Choose Type"
+        error={form.errors[field.name]}
+        touched={form.touched[field.name]}
+      />
+    );
+  };
+
   if (showModal) {
     document.body.classList.add("no-scroll");
   } else {
     document.body.classList.remove("no-scroll");
   }
+
   return (
-    <div className="bg-gray-100 h-[89vh]  flex flex-col relative">
+    <div className="bg-gray-100 h-[89vh] flex flex-col relative">
       <Helmet>
         <title>Edit Category - VERTEX</title>
         <meta name="description" content="Edit category details in VERTEX" />
       </Helmet>
-      <div className=" rounded-md p-5  mx-4 md:mx-10 bg-white mt-5 mb-3">
+      <div className="rounded-md p-5 mx-4 md:mx-10 bg-white mt-5 mb-3">
         <p className="text-gray-400 text-12">
           Menu / Categories / Edit Category
         </p>
@@ -103,13 +212,12 @@ function EditCategory() {
       </div>
       <Formik
         initialValues={initialValues}
-        enableReinitialize
+        enableReinitialize={true}
         onSubmit={handleSubmit}
       >
         {({ setFieldValue, values }) => (
           <Form className="flex flex-col">
             <div className="flex flex-col md:flex-row gap-5 mx-4 md:mx-10">
-              {/* Basic Information Section */}
               <div className="bg-white p-5 rounded-md w-full">
                 <h2 className="font-bold mb-5">Basic Information</h2>
                 <div className="flex flex-col md:flex-row items-center gap-4 mb-3">
@@ -118,21 +226,8 @@ function EditCategory() {
                     placeholder="Category Name"
                     aria-label="Category name"
                   />
-                  <Field
-                    name="type"
-                    as="select"
-                    className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md h-51px p-2 block placeholder:text-14 focus:border-primary"
-                    aria-label="Category type"
-                    value={values.type}
-                  >
-                    <option value="">Choose Type</option>
-                    <option value="1">Standard</option>
-                    <option value="2">Color-Only</option>
-                    <option value="3">Size-Only</option>
-                    <option value="4">Color & Size</option>
-                  </Field>
+                  <Field name="type" component={TypeField} />
                 </div>
-                {/* English Tags */}
                 <div className="mb-3 p-2 flex w-full h-14 bg-transparent outline-none border-2 border-gray-200 rounded-md placeholder:text-14 focus:border-primary">
                   <div className="flex">
                     {values.tagsEn.map((tag, index) => (
@@ -167,10 +262,8 @@ function EditCategory() {
                     className="bg-transparent outline-none placeholder:text-14"
                   />
                 </div>
-                {/* Arabic Tags */}
                 <div className="p-2 h-14 flex w-full bg-transparent outline-none border-2 border-gray-200 rounded-md placeholder:text-14 focus:border-primary">
-                  <div className="flex ">
-                    {/* Display old and new Arabic tags together */}
+                  <div className="flex">
                     {values.tagsAr.map((tag, index) => (
                       <Tag
                         key={`ar-${index}`}
@@ -211,7 +304,6 @@ function EditCategory() {
                   aria-label="Category description"
                 />
               </div>
-              {/* Image Upload Section */}
               <div className="bg-white p-5 rounded-md w-full md:w-1/2 h-80">
                 <h2 className="font-bold mb-5">Category Icon / Image</h2>
                 <ImageUpload
@@ -240,7 +332,6 @@ function EditCategory() {
           </Form>
         )}
       </Formik>
-      {/* Success Modal */}
       <SuccessModal isOpen={showModal}>
         <div className="flex flex-col justify-center w-370 items-center">
           <img
@@ -263,4 +354,5 @@ function EditCategory() {
     </div>
   );
 }
+
 export default EditCategory;

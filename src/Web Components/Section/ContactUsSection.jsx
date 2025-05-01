@@ -79,7 +79,7 @@ function ContactUsSection() {
       <div>
         <p className="text-primary text-16">Contact us</p>
         <h1 className="font-bold text-xl mt-5">Get In Touch With Us </h1>
-        <p className="text-gray-600 text-14 mt-5 mb-5 lg:w-450 w-full md:w-390">
+        <p className="text-gray-600 text-14 mt-3 mb-5 lg:w-450 w-full md:w-390">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do Lorem
           ipsum dolor sit amet, consectetur adipiscing elit, sed do
         </p>

@@ -85,7 +85,7 @@ function AllCategory() {
   };
 
   return (
-    <div className="bg-gray-100 p-4 h-[89vh] md:ps-10 md:pe-10 md:pt-5">
+    <div className="bg-gray-100 p-4 h-[89vh] md:pt-5">
       <Helmet>
         <title>All Categories - VERTEX</title>
       </Helmet>

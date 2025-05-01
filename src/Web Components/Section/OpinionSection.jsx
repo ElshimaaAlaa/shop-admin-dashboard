@@ -125,14 +125,14 @@ function OpinionSection() {
       {/* Navigation Arrows */}
       <div className="flex items- justify-center mt-10 gap-5">
         <button
-          className="bg-primary text-white p-2 w-16 font-bold rounded-full text-lg md:text-2xl"
+          className="bg-primary text-white p-2 w-11 h-11 font-bold rounded-full text-lg md:text-lg"
           onClick={handlePrev}
           aria-label="Previous testimonial"
         >
           &#8592;
         </button>
         <button
-          className="bg-primary text-white p-2 w-16 font-bold rounded-full text-lg md:text-2xl"
+          className="bg-primary text-white p-2 w-11 h-11 font-bold rounded-full text-lg md:text-lg"
           onClick={handleNext}
           aria-label="Next testimonial"
         >

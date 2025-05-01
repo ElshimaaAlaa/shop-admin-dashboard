@@ -105,7 +105,7 @@ function Info() {
           <p className="font-bold">{formatPaymentMethodText()}</p>
         </div>
         <h4 className="font-semibold text-16 my-4">Payment Info</h4>
-        <div className="flex flex-col md:flex-row  gap-x-72 mb-4">
+        <div className="flex flex-col md:flex-row  gap-x-[345px] mb-4">
           <div>
             <h3 className="text-gray-400 text-15">Card Holder Name</h3>
             <p className="font-medium text-15 mt-1">
