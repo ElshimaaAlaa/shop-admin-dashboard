@@ -67,7 +67,7 @@ function EditInfo() {
         <title>Edit Personal Information</title>
       </Helmet>
       <section>
-        <h1 className="font-bold text-[20px]">Edit Personal Information</h1>
+        <h1 className="font-bold text-[18px]">Edit Personal Information</h1>
         <Formik
           initialValues={initialValues}
           enableReinitialize
@@ -75,9 +75,9 @@ function EditInfo() {
         >
           {({ setFieldValue }) => (
             <Form>
-              <div className="my-5 gap-3">
+              <div className="my-3 gap-3">
                 {selectedImage || personalInfo?.image ? (
-                  <div className="flex flex-col md:flex-row justify-between items-center gap-4 border rounded-md p-5">
+                  <div className="flex flex-col md:flex-row justify-between items-center gap-4 border rounded-md p-3">
                     <img
                       src={
                         selectedImage
@@ -85,7 +85,7 @@ function EditInfo() {
                           : personalInfo.image
                       }
                       alt="Profile"
-                      className="w-32 h-24 rounded-md object-cover"
+                      className="w-36 h-24 rounded-md object-cover"
                     />
                     <div className="flex items-center gap-5 font-bold">
                       <input
@@ -101,7 +101,7 @@ function EditInfo() {
                       />
                       <label
                         htmlFor="imageUpload"
-                        className="cursor-pointer flex items-center gap-3"
+                        className="cursor-pointer text-14 flex items-center gap-2"
                       >
                         <img
                           src="/assets/images/upload.png"
@@ -127,7 +127,7 @@ function EditInfo() {
                   <p className="text-gray-500">No image available</p>
                 )}
               </div>
-              <div className="border p-5 rounded-md bg-gray-50 w-full">
+              <div className="border p-3 rounded-md bg-gray-50 w-full">
                 <div className="flex flex-col md:flex-row gap-4">
                   <InputField placeholder="Name" name="name" />
                   <InputField placeholder="Email" name="email" />

@@ -50,11 +50,11 @@ function StoreTheme() {
       </Helmet>
 
       <section>
-        <div className="flex flex-col md:flex-row items-center justify-between mb-4">
-          <h1 className="font-bold text-[19px]">Store Theme</h1>
+        <div className="flex flex-col md:flex-row items-center justify-between">
+          <h1 className="font-bold text-[18px]">Store Theme</h1>
           <button
             // onClick={handleEditClick}
-            className="text-white font-semibold flex items-center justify-center gap-3 bg-primary p-3 w-24 rounded-md"
+            className="text-white font-semibold flex items-center justify-center gap-3 bg-primary p-2 w-24 rounded-md"
             aria-label="Edit personal information"
           >
             <img src="/assets/svgs/edit.svg" alt="Edit icon" className="w-7" />
@@ -67,8 +67,7 @@ function StoreTheme() {
             {error}
           </div>
         )}
-
-        <div className="border border-gray-200 rounded-md p-5 w-full">
+        <div className="border border-gray-200 rounded-md p-5 w-full mt-3">
           <div className="flex flex-col md:flex-row items-center gap-x-96">
             <div className="text-center md:text-left">
               <h2 className="text-15 text-gray-400">Primary Color</h2>
@@ -86,9 +85,9 @@ function StoreTheme() {
             </div>
           </div>
 
-          <div className="flex flex-col lg:flex-row md:flex-row items-end gap-x-80">
+          <div className="flex flex-col lg:flex-row md:flex-row items-end gap-x-[335px]">
             <div>
-              <p className="text-1xl font-bold mb-3 mt-7">Logo</p>
+              <p className="text-17 font-bold mb-3 mt-7">Logo</p>
               {imageUrl ? (
                 <img src={imageUrl} alt="theme logo" className="w-52" />
               ) : (
@@ -96,20 +95,20 @@ function StoreTheme() {
               )}
             </div>
 
-            <div className="flex items-center gap-10 mb-3">
+            <div className="flex items-center gap-8 mb-3">
               <div
                 className="flex items-center gap-2 cursor-pointer"
                 onClick={handleViewImage}
               >
                 <FaRegEye color="#E0A75E" size={20} />
-                <p>View</p>
+                <p className="text-15">View</p>
               </div>
               <div
                 className="flex items-center gap-2 cursor-pointer"
                 onClick={handleDownloadImage}
               >
                 <IoDownloadOutline color="#E0A75E" size={20} />
-                <p>Download</p>
+                <p className="text-15">Download</p>
               </div>
             </div>
           </div>

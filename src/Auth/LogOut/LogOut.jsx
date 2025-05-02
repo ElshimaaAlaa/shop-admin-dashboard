@@ -4,6 +4,8 @@ import FailedModal from "../../Components/Modal/Failed Modal/FailedModal";
 import { ClipLoader } from "react-spinners";
 import { logOut } from "../../ApiServices/LogOut";
 import { useNavigate } from "react-router-dom";
+import { MdLogout } from "react-icons/md";
+
 function LogOut() {
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -23,19 +25,15 @@ function LogOut() {
   return (
     <div>
       <p
-        className="text-gray-500 flex items-center gap-3 p-2 text-17 hover:bg-gray-50 cursor-pointer"
+        className="text-gray-500 flex items-center gap-3 p-2 text-15 mt-2 hover:bg-gray-50 cursor-pointer"
         onClick={() => setShowModal(true)}
       >
         <MdOutlineLogout className="text-red-600 h-6 w-6" />
         Log Out
       </p>
       <FailedModal isOpen={showModal} onClose={() => setShowModal(false)}>
-        <div className="p-5">
-          <img
-            src="/assets/images/delete_svgrepo.com.png"
-            alt="delete-img"
-            className="h-14 w-14 p-1"
-          />
+        <div className="bg-red-50 p-3 rounded-md text-red-600 my-6">
+          <MdLogout size={26} />
         </div>
         <p className="font-bold w-72 text-center">
           Are You Sure You Want To Logout ?

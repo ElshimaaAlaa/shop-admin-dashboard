@@ -112,19 +112,19 @@ function Support() {
         Send us Your Problem and we are <br /> contact with you
       </h1>
       <div className="flex justify-center gap-5 mx-20">
-        <section className="bg-white rounded-md drop-shadow-lg p-5 w-550 h-72 mt-10">
+        <section className="bg-white rounded-md drop-shadow-lg p-5 w-500px h-72 mt-10">
           <h2 className="font-bold text-17 mb-3 mt-2 relative pb-1 gradient-border-bottom">
             Contact information
           </h2>
           <ContactCard
             icon={<PhoneNum />}
             title="Call us"
-            value={settingData.phone}
+            value={settingData.phone || "Not provided"}
           />
           <ContactCard
             icon={<EmailAddress />}
             title="Email"
-            value={settingData.email}
+            value={settingData.email || "Not provided"}
             link="mailto:Vertex@gmail.com"
           />
         </section>

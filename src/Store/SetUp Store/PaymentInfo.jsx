@@ -240,14 +240,14 @@ function PaymentInfo({
                 <button
                   type="button"
                   onClick={() => navigate("/Register/PricingPlan")}
-                  className="bg-gray-100 text-gray-400 w-36 rounded-md px-6 py-2 transition-colors"
+                  className="bg-gray-100 font-bold text-gray-400 w-36 rounded-md px-6 py-3 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="bg-primary text-white flex w-36 justify-center text-16 items-center rounded-md px-6 py-2 gap-3 hover:bg-primary-dark transition-colors"
+                  className="bg-primary font-bold text-white flex w-36 justify-center text-16 items-center rounded-md px-6 py-3 gap-3 hover:bg-primary-dark transition-colors"
                 >
                   {isLoading ? (
                     <ClipLoader size={20} color="#fff" />

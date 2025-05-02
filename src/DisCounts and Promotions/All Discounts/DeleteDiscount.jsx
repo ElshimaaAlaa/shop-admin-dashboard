@@ -3,6 +3,7 @@ import FailedModal from "../../Components/Modal/Failed Modal/FailedModal";
 import { ClipLoader } from "react-spinners";
 import axios from "axios";
 import "./DiscountStyle.scss";
+
 function DeleteDiscount({ onDelete, id }) {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -24,6 +25,7 @@ function DeleteDiscount({ onDelete, id }) {
         console.log("success delete promotions");
         setIsLoading(false);
         setShowModal(false);
+        onDelete(); 
       }
     } catch (error) {
       console.error("Failed to delete promotions", error);
@@ -31,11 +33,13 @@ function DeleteDiscount({ onDelete, id }) {
       setShowModal(false);
     }
   };
+
   if (showModal) {
     document.body.classList.add("no-scroll");
   } else {
     document.body.classList.remove("no-scroll");
   }
+
   return (
     <div>
       <div className=" cursor-pointer" onClick={() => setShowModal(true)}>
@@ -79,4 +83,5 @@ function DeleteDiscount({ onDelete, id }) {
     </div>
   );
 }
+
 export default DeleteDiscount;

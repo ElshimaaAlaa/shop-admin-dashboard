@@ -13,13 +13,13 @@ function Info() {
   const renderPaymentMethodIcon = () => {
     switch (paymentMethod.toLowerCase()) {
       case "credit card":
-        return <CreditCard className="w-8 h-8" />;
+        return <CreditCard className="w-11 h-11" />;
       case "paypal":
-        return <Paypal className="w-8 h-8" />;
+        return <Paypal className="w-11 h-11" />;
       case "visa":
-        return <Visa className="w-8 h-8" />;
+        return <Visa className="w-11 h-11" />;
       case "google pay":
-        return <GooglePay className="w-8 h-8" />;
+        return <GooglePay className="w-11 h-11" />;
       default:
         return null;
     }
@@ -52,16 +52,15 @@ function Info() {
         });
     }
   };
-
   return (
     <div>
       <Helmet>
         <title>Store Payment Information</title>
       </Helmet>
-      <div className="flex flex-col md:flex-row items-center justify-between mb-4">
-        <h1 className="font-bold text-[19px]">Payment Information</h1>
+      <div className="flex flex-col md:flex-row items-center justify-between mb-3">
+        <h1 className="font-bold text-[18px]">Payment Information</h1>
         <button
-          className="text-white font-semibold flex items-center justify-center gap-2 bg-primary p-3 w-24 rounded-md"
+          className="text-white font-semibold flex items-center justify-center gap-2 bg-primary p-2 w-24 rounded-md"
           aria-label="Edit personal information"
         >
           <img src="/assets/svgs/edit.svg" alt="Edit icon" className="w-6" />
@@ -92,20 +91,19 @@ function Info() {
                 className="text-blue-500 hover:text-blue-700 text-sm flex items-center gap-1"
                 title="Copy phone number"
               >
-               <IoCopyOutline color="#E0A75E" size={16}/>
+               <IoCopyOutline color="#E0A75E" size={15}/>
               </button>
             )}
           </div>
         </div>
-
         {/* Rest of your component remains the same */}
-        <h4 className="font-semibold text-16 mb-3 mt-4">Payment Method</h4>
-        <div className="p-3 bg-gray-50 rounded-lg flex items-center gap-2 w-44">
+        <h4 className="font-semibold text-16 mb-3 mt-5">Payment Method</h4>
+        <div className="p-2 bg-gray-50 rounded-lg flex items-center gap-2 w-40">
           {renderPaymentMethodIcon()}
-          <p className="font-bold">{formatPaymentMethodText()}</p>
+          <p className="text-14">{formatPaymentMethodText()}</p>
         </div>
         <h4 className="font-semibold text-16 my-4">Payment Info</h4>
-        <div className="flex flex-col md:flex-row  gap-x-[345px] mb-4">
+        <div className="flex flex-col md:flex-row  gap-x-[370px] mb-4">
           <div>
             <h3 className="text-gray-400 text-15">Card Holder Name</h3>
             <p className="font-medium text-15 mt-1">
@@ -119,7 +117,7 @@ function Info() {
             </p>
           </div>
         </div>
-        <div className="flex flex-col md:flex-row gap-x-96 mb-4">
+        <div className="flex flex-col md:flex-row gap-x-[460px] mb-4">
           <div>
             <h3 className="text-gray-400 text-14">CVV</h3>
             <p className="font-medium text-15 mt-1">
@@ -137,5 +135,4 @@ function Info() {
     </div>
   );
 }
-
 export default Info;

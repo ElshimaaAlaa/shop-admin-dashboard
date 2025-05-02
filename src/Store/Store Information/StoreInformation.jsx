@@ -28,10 +28,10 @@ function StoreInformation() {
       </Helmet>
       <section>
         <div className="flex flex-col md:flex-row items-center justify-between mb-4">
-          <h1 className="font-bold text-[19px]">Store Information</h1>
+          <h1 className="font-bold text-[18px]">Store Information</h1>
           <button
             onClick={handleEditClick}
-            className="text-white font-semibold flex items-center justify-center gap-2 bg-primary p-3 w-24 rounded-md"
+            className="text-white font-semibold flex items-center justify-center gap-2 bg-primary p-2 w-24 rounded-md"
             aria-label="Edit personal information"
           >
             <img src="/assets/svgs/edit.svg" alt="Edit icon" className="w-6" />
@@ -73,11 +73,11 @@ function StoreInformation() {
             <div className="flex items-center gap-10 mb-3">
               <div className="flex items-center gap-2">
                 <FaRegEye color="#E0A75E" size={20} />
-                <p>View</p>
+                <p className="text-15">View</p>
               </div>
               <div className="flex items-center gap-2">
                 <IoDownloadOutline color="#E0A75E" size={20} />
-                <p>Download</p>
+                <p className="text-15">Download</p>
               </div>
             </div>
           </div>

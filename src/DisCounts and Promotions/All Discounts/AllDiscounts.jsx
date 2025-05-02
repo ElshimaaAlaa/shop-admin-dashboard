@@ -10,6 +10,7 @@ import ReactPaginate from "react-paginate";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import SearchBar from "../../Components/Search Bar/SearchBar";
 import { Plus } from "lucide-react";
+
 function AllDiscounts() {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
@@ -18,31 +19,39 @@ function AllDiscounts() {
   const [discounts, setDiscounts] = useState([]);
   const [pagination, setPagination] = useState({
     current_page: 1,
-    per_page: 10,
+    per_page: 5,
     total: 0,
     total_pages: 1,
   });
 
-  useEffect(() => {
-    const getPromotions = async () => {
-      setIsLoading(true);
-      setError(false);
-      try {
-        const response = await fetchPromotions(
-          searchQuery,
-          pagination.current_page,
-          pagination.per_page
-        );
-        setDiscounts(response.data);
-        setPagination(response.pagination);
-      } catch (error) {
-        console.error("Error fetching promotions:", error);
-        setError(true);
-      } finally {
-        setIsLoading(false);
+  const fetchData = async () => {
+    setIsLoading(true);
+    setError(false);
+    try {
+      const response = await fetchPromotions(
+        searchQuery,
+        pagination.current_page,
+        pagination.per_page
+      );
+      setDiscounts(response.data);
+      setPagination(response.pagination);
+      if (response.data.length === 0 && pagination.current_page > 1) {
+        setPagination((prev) => ({
+          ...prev,
+          current_page: prev.current_page - 1,
+        }));
+        return; 
       }
-    };
-    getPromotions();
+    } catch (error) {
+      console.error("Error fetching promotions:", error);
+      setError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
   }, [searchQuery, pagination.current_page]);
 
   const handlePageClick = (event) => {
@@ -52,12 +61,16 @@ function AllDiscounts() {
     }));
   };
 
+  const handleDeleteSuccess = () => {
+    fetchData();
+  };
+
   return (
-    <div className="bg-gray-100 flex flex-col h-[89vh] mx-7">
+    <div className="bg-gray-100 flex flex-col h-[89vh] mx-5">
       <Helmet>
         <title>Discounts and Promotion | vertex</title>
       </Helmet>
-      <div className=" rounded-md p-5 bg-white mt-5">
+      <div className=" rounded-md p-5 bg-white mt-4">
         <p className="text-gray-400 text-12">
           Menu / Promotions & Discounts / Promotions
         </p>
@@ -99,7 +112,7 @@ function AllDiscounts() {
               <table className="bg-white min-w-full table">
                 <thead>
                   <tr>
-                    <th className="px-3 py-3 border-t border-b text-left cursor-pointer w-200">
+                    <th className="px-3 py-3 border-t border-b text-15 text-left w-200">
                       <p className="flex items-center gap-3">
                         <input
                           type="checkbox"
@@ -109,13 +122,13 @@ function AllDiscounts() {
                         Promotions
                       </p>
                     </th>
-                    <th className="px-6 py-3 text-left border w-200">
+                    <th className="px-3 py-3 text-left text-15 border w-200">
                       Products Number
                     </th>
-                    <th className="px-6 py-3 text-left border w-200">
+                    <th className="px-3 py-3 text-left border text-15 w-200">
                       End Date
                     </th>
-                    <th className="px-6 py-3 border text-center w-12">
+                    <th className="px-6 py-3 border text-center text-15 w-12">
                       Actions
                     </th>
                   </tr>
@@ -123,7 +136,7 @@ function AllDiscounts() {
                 <tbody>
                   {discounts.map((discount) => (
                     <tr key={discount.id} className="border-t hover:bg-gray-50">
-                      <td className="px-3 py-3 border-t text-gray-600 text-15 border-r w-250 cursor-pointer">
+                      <td className="px-3 py-3 border-t text-gray-600 text-15 border-r w-250 ">
                         <p className="flex items-center gap-3">
                           <input
                             type="checkbox"
@@ -133,27 +146,23 @@ function AllDiscounts() {
                           {discount.name}
                         </p>
                       </td>
-                      <td className="px-3 py-3 border-t text-gray-600 border-r text-16 w-250">
-                        <p className="flex items-center justify-between bg-customOrange-mediumOrange rounded-md p-2 w-16">
-                          <HiOutlineShoppingCart color="#E0A75E" size={25} />
+                      <td className="px-3 py-2 border-t text-gray-600 border-r text-14 w-250">
+                        <p className="flex items-center justify-between bg-customOrange-mediumOrange rounded-md p-2 w-20">
+                          <HiOutlineShoppingCart color="#E0A75E" size={22} />
                           {discount.quantity}
                         </p>
                       </td>
-                      <td className="px-3 py-3 border-t text-gray-600 border-r text-14 w-250">
+                      <td className="px-3 py-3 border-t text-gray-600 border-r text-12 w-250">
                         <p className="flex items-center gap-2">
-                          <IoCalendarNumberOutline color="#69ABB5" size={13} />
+                          <IoCalendarNumberOutline color="#69ABB5" size={14} />
                           {discount.end_date || "N/A"}
                         </p>
                       </td>
-                      <td className="text-center px-3 py-3">
+                      <td className="text-center px- py-3">
                         <div className="flex justify-center items-center">
                           <DeleteDiscount
                             id={discount.id}
-                            onDelete={() => {
-                              setDiscounts(
-                                discounts.filter((d) => d.id !== discount.id)
-                              );
-                            }}
+                            onDelete={handleDeleteSuccess}
                           />
                         </div>
                       </td>

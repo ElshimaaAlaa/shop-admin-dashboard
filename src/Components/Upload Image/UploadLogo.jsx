@@ -53,7 +53,7 @@ const LogoUpload = ({ name, setFieldValue, error }) => {
         </span>
       </label>
       {file && (
-        <div className="bg-gray-100 mt-3 rounded-md border-2 border-gray-200 p-4 flex items-center justify-between">
+        <div className="bg-gray-50 mt-3 rounded-md border-2 border-gray-200 p-4 flex items-center justify-between">
           <div className="w-full">
             <p className="text-sm font-semibold text-gray-700 mb-2">
               {file.name}

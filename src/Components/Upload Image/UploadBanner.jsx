@@ -115,7 +115,7 @@ const BannerUpload = ({ banners = [], setFieldValue, errors, touched }) => {
             {banners.map((file, index) => (
               <li
                 key={index}
-                className="border-2 bg-gray-100 border-gray-200 rounded-md p-4 flex items-center justify-between"
+                className="border-2 bg-gray-50 border-gray-200 rounded-md p-4 flex items-center justify-between"
               >
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-gray-700 truncate">

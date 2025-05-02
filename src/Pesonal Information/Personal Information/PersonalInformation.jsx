@@ -38,13 +38,13 @@ function PersonalInformation() {
         />
       </Helmet>
       <section>
-        <div className="flex flex-col md:flex-row items-center justify-between mb-6">
-          <h1 className="font-bold text-[20px] mb-4 md:mb-0">
+        <div className="flex flex-col md:flex-row items-center justify-between">
+          <h1 className="font-bold text-[18px]">
             Personal Information
           </h1>
           <button
             onClick={() => navigate("EditInfo", { state: personalInfo })}
-            className="text-white font-semibold flex items-center justify-center gap-3 bg-primary p-3 w-24 rounded-md"
+            className="text-white font-semibold flex items-center justify-center gap-3 bg-primary p-2 w-24 rounded-md"
             aria-label="Edit personal information"
           >
             <img src="/assets/svgs/edit.svg" alt="Edit icon" className="w-7" />
@@ -56,26 +56,26 @@ function PersonalInformation() {
             {error}
           </div>
         )}
-        <div className="flex flex-col md:flex-row items-center gap-5 my-5 border rounded-md p-5 w-full">
+        <div className="flex flex-col md:flex-row items-center gap-5 my-3 border rounded-md p-3 w-full">
           <img
             src={personalInfo.image || "/assets/images/default-profile.png"}
             alt="User profile"
-            className="rounded-xl w-32 h-24 md:w:24 md:h-24 object-cover"
+            className="rounded-lg w-32 h-24 md:w:24 md:h-24 object-cover"
             onError={(e) => {
               e.target.src = "/assets/images/default-profile.png";
             }}
           />
-          <div className="text-center md:text-left">
-            <h2 className="font-semibold mt-3">
+          <div className="text-center md:text-left flex flex-col gap-1">
+            <h2 className="font-semibold">
               {personalInfo?.name || "N/A"}
             </h2>
-            <p className="text-gray-400 mt-2">
+            <p className="text-gray-400 text-14">
               {personalInfo?.role || "Vertex CEO"}
             </p>
           </div>
         </div>
         {/* Name, Phone, and Email Section */}
-        <div className="border rounded-md p-5 w-full">
+        <div className="border rounded-md p-3 w-full">
           <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-96">
             <div>
               <p className="text-gray-400 text-15">Name</p>

@@ -1,15 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import HamburgerMenu from "./HamburgerMenu";
 import DesktopButtons from "./DesktopButtons";
 import { useNavigate } from "react-router-dom";
+import { settings } from "../../ApiServices/Settings";
 function Navbar() {
   const navigate = useNavigate();
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const settingsData = await settings();
+        setData(settingsData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchSettings();
+  }, []);
   return (
     <section className="fixed w-full z-10">
       {/* Top item of navbar */}
       <div className="bg-black text-white flex flex-col items-center lg:flex-row lg:justify-center lg:items-center gap-5 p-3 font-light">
         <div className="flex gap-3 items-center justify-center -mb-3 lg:mb-0 md:mb-0">
-          <p className="text-sm underline">+96665147896 / +96665125478</p>
+          <p className="text-sm underline">{data.phone || "not provided"}</p>
           <img
             src="/assets/images/mdi_phone-outline.png"
             alt="phone"
@@ -18,9 +31,13 @@ function Navbar() {
         </div>
         <div className="flex gap-3 items-center justify-center">
           <a href="/" target="_blank" className="text-sm underline">
-            Vertex@gmail.com
+            {data.email || "not provided"}
           </a>
-          <img src="/assets/images/email.png" alt="email" className="w-7 mt-1 h-5" />
+          <img
+            src="/assets/images/email.png"
+            alt="email"
+            className="w-7 mt-1 h-5"
+          />
         </div>
       </div>
       {/* Navbar bottom items */}
@@ -29,12 +46,12 @@ function Navbar() {
           <img src="/assets/svgs/vertex.svg" alt="logo" className="w-36" />
         </div>
         <HamburgerMenu
-          onLoginClick={() =>navigate('/GetDomain')}
-          onRegisterClick={() =>navigate('/Register')}
+          onLoginClick={() => navigate("/GetDomain")}
+          onRegisterClick={() => navigate("/Register")}
         />
         <DesktopButtons
-          onLoginClick={() =>navigate('/GetDomain')}
-          onRegisterClick={() =>navigate('/Register')}
+          onLoginClick={() => navigate("/GetDomain")}
+          onRegisterClick={() => navigate("/Register")}
         />
       </div>
     </section>

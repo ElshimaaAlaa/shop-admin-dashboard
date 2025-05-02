@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
 
@@ -91,8 +89,8 @@ function MonthlyTrendChart({ monthlyExpended, monthlyIncome, monthlyProfit }) {
             <Bar
               dataKey={activeTab}
               fill="#5EADB5"
-              radius={[20, 20, 0, 0]}
-              barSize={30} // Reduced bar width
+              radius={[20, 20, 20, 20]}
+              barSize={30}
             />
           </BarChart>
         </ResponsiveContainer>
@@ -100,5 +98,4 @@ function MonthlyTrendChart({ monthlyExpended, monthlyIncome, monthlyProfit }) {
     </div>
   )
 }
-
 export default MonthlyTrendChart

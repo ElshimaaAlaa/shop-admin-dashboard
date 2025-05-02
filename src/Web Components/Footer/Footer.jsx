@@ -1,10 +1,23 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Facebook from "../../Svgs/facebook";
 import Instegram from "../../Svgs/instegram";
 import WhatsApp from "../../Svgs/WhatsApp";
 import { FaXTwitter } from "react-icons/fa6";
+import { settings } from "../../ApiServices/Settings";
 
 function Footer() {
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    const fetchSettingData = async () => {
+      try {
+        const settingsData = await settings();
+        setData(settingsData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchSettingData();
+  }, []);
   return (
     <footer className="bg-black text-white ps-5 pe-5 lg:ps-20 lg:pe-20 pt-10 pb-10 ">
       {/* footer top items */}
@@ -21,7 +34,7 @@ function Footer() {
         <div className="flex flex-col items-center gap-4 md:flex-row lg:flex-row lg:-10">
           {/* Phone Section */}
           <div className="flex items-center gap-2">
-            <p className="text-sm md:text-13">+96665147896 / +96665125478</p>
+            <p className="text-sm md:text-13">{data.phone || "not provided"}</p>
             <img
               src="/assets/images/mdi_phone-outline.png"
               alt="phone"
@@ -31,7 +44,7 @@ function Footer() {
           {/* Email Section */}
           <div className="flex items-center gap-2">
             <a href="/" target="_blank" className="text-sm md:text-13 ">
-              Vertex@gmail.com
+            {data.email || "not provided"}
             </a>
             <img
               src="/assets/images/email.png"
@@ -50,10 +63,10 @@ function Footer() {
         {/* social media */}
         <div className="flex gap-3 mt-5 lg:mt-0 md:mt-0">
           <a href="/" target="_blank" className="mt-1.5">
-            <FaXTwitter size={23}/>
+            <FaXTwitter size={23} />
           </a>
           <a href="/" target="_blank">
-            <WhatsApp/>
+            <WhatsApp />
           </a>
           <a href="/" target="_blank">
             <Facebook />

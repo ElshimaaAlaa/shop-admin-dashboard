@@ -112,7 +112,7 @@ function ShippingProvider() {
                         providers.map((provider) => (
                           <div
                             key={provider.id}
-                            className={`border rounded-md p-2 cursor-pointer transition-all bg-gray-100  ${
+                            className={`border rounded-md p-2 cursor-pointer transition-all bg-gray-50  ${
                               values.shipping_provider.includes(provider.name)
                                 ? "bg-orange-50 border-orange-300"
                                 : "border-gray-200 hover:border-gray-300"
@@ -148,7 +148,7 @@ function ShippingProvider() {
                                   <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
                                 </svg>
                               </span>
-                              <span className="text-sm lg:text-base text-black ms-3">
+                              <span className="text-14 text-black ms-3">
                                 {provider.name ||
                                   provider.name_en ||
                                   `Provider ${provider.id}`}
@@ -157,7 +157,7 @@ function ShippingProvider() {
                           </div>
                         ))
                       ) : (
-                        <p className="col-span-2 text-center text-gray-500 py-4">
+                        <p className="col-span-2 text-center text-gray-400 text-15 py-4">
                           No shipping providers available
                         </p>
                       )}
@@ -201,5 +201,4 @@ function ShippingProvider() {
     </div>
   );
 }
-
 export default ShippingProvider;

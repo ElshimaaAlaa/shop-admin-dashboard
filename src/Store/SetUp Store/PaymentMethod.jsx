@@ -114,7 +114,7 @@ function PaymentMethods() {
                         paymentMethods.map((item) => (
                           <div
                             key={item.id}
-                            className={`border rounded-lg p-4 cursor-pointer transition-all ${
+                            className={`border rounded-lg p-2 bg-gray-50 cursor-pointer transition-all ${
                               values.payment_method.includes(item.name)
                                 ? "bg-orange-50 border-orange-300"
                                 : "border-gray-200 hover:border-gray-300"
@@ -150,7 +150,7 @@ function PaymentMethods() {
                                 )}
                                 onChange={() => {}}
                               />
-                              <span className="w-5 h-5 border-2 border-gray-300 rounded flex items-center justify-center transition-all duration-200 peer-checked:border-primary">
+                              <span className="w-4 h-4 border-2 border-black rounded flex items-center justify-center transition-all duration-200 peer-checked:border-primary">
                                 <svg
                                   className="w-3 h-3 text-primary opacity-0 transition-all duration-200 peer-checked:opacity-100"
                                   viewBox="0 0 20 20"
@@ -159,7 +159,7 @@ function PaymentMethods() {
                                   <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
                                 </svg>
                               </span>
-                              <span className="text-sm lg:text-base text-gray-600 ms-3">
+                              <span className="text-14 text-black ms-3">
                                 {item.name ||
                                   item.name_en ||
                                   `Provider ${item.id}`}

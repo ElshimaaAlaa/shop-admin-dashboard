@@ -1,11 +1,11 @@
 .maincontainer {
-  height: 100vh;
+  height: 105vh;
   position: relative;
   background-image: url("/Auth/Login/mainBg.png");
   background-repeat: repeat-x;
   background-size: 40% auto;
   background-position: top center;
-  padding: 25px 10px 40px 10px;
+  padding: 20px 10px 40px 10px;
   &::before {
     content: "";
     position: absolute;

@@ -9,8 +9,10 @@ import PhoneNum from "../../Svgs/PhoneNum";
 import EmailAddress from "../../Svgs/EmailAddress";
 import Location from "../../Svgs/Location";
 import { sendSupport } from "../../ApiServices/Support";
+import { settings } from "../../ApiServices/Settings";
 function ContactUsSection() {
   const [isLoading, setIsLoading] = useState(false);
+  const [data, setdata] = useState([]);
   const [error, setError] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const initialValues = {
@@ -65,7 +67,18 @@ function ContactUsSection() {
       setError(error);
     }
   };
-
+  //fetch general settings
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const settingsData = await settings();
+        setdata(settingsData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchSettings();
+  }, []);
   return (
     <section className="ps-3 pe-3 mt-40 flex flex-col lg:gap-20 lg:px-20 lg:flex-row  md:flex-row md:items-center lg:mt-0 md:mt-0 pb-20 pt-20 bg-customOrange-mediumOrange relative ">
       {/* contact info */}
@@ -85,7 +98,7 @@ function ContactUsSection() {
         </p>
         <p className="flex items-center gap-3 text-15">
           <PhoneNum />
-          +9876543234344
+          {data.phone || "not provided"}
         </p>
         <a
           href="/"
@@ -93,11 +106,11 @@ function ContactUsSection() {
           className="flex gap-3 items-center mt-3 text-15"
         >
           <EmailAddress />
-          Vertex@gmail.com
+          {data.email || "not provided"}
         </a>
         <p className="flex items-center gap-3 mt-3 text-15">
           <Location />
-          Saudi arabia , alreyad
+          {data.address || "Saudi arabia , alreyad"}
         </p>
       </div>
       {/* contact form */}

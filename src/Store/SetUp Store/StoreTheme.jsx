@@ -125,7 +125,7 @@ function ThemeStore() {
             1/3
           </div>
           <h3 className="text-15 font-bold">
-            Let’s Get Started To Set Up Your Own Store .{" "}
+            Let’s Get Started To Set Up Your Own Store .
           </h3>
         </div>
         <StepIndicator currentStep={1} steps={steps} />

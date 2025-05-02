@@ -51,7 +51,7 @@ function OpinionSection() {
       <p className="text-primary bg-customOrange-mediumOrange p-3 rounded-md w-32 text-center text-sm md:text-base">
         Opinions
       </p>
-      <h1 className="text-xl font-bold mt-5 text-center md:text-left">
+      <h1 className="text-[19px] font-bold mt-5 text-center md:text-left">
         What Our Clients Say About Us
       </h1>
 
@@ -77,7 +77,7 @@ function OpinionSection() {
                   src={testimonial.userImage}
                   alt={`${testimonial.name}'s profile`}
                   loading="lazy"
-                  className="w-24 h-24 object-cover rounded-full lg:rounded-md md:rounded-md md:w-330 md:object-fill md:h-52 lg:w-48 lg:h-48"
+                  className="w-20 h-20 object-cover rounded-full lg:rounded-md md:rounded-md md:w-330 md:object-fill md:h-52 lg:w-48 lg:h-48"
                 />
               </div>
               <div className="flex-1">
@@ -94,7 +94,7 @@ function OpinionSection() {
                   />
                 </svg>
 
-                <h3 className="mt-4 text-sm md:text-lg w-full">
+                <h3 className="mt-4 text-15 font-bold w-full">
                   {testimonial.testimonial}
                 </h3>
                 <img
@@ -104,10 +104,10 @@ function OpinionSection() {
                   className="mt-3 w-24 md:w-28 lg:w-52"
                 />
                 <div className="flex gap-3 items-center mt-3">
-                  <p className="font-bold text-sm md:text-base">
+                  <p className="font-bold text-14">
                     {testimonial.name}
                   </p>
-                  <p className="text-gray-500 text-xs md:text-sm mt-1">
+                  <p className="text-gray-500 text-13 mt-1">
                     {testimonial.role}
                   </p>
                   <img

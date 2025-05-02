@@ -29,8 +29,7 @@ function WhatToDoSection() {
   return (
     <section className="ps-5 pe-5 mt-20 mb-20 lg:pe-20 lg:ps-20">
       <p
-        style={{ fontSize: "16px" }}
-        className="text-primary bg-customOrange-lightOrange p-2 rounded w-40 text-center cursor-pointer"
+        className="text-primary text-15 bg-customOrange-lightOrange p-2 rounded w-40 text-center cursor-pointer"
       >
         WHAT WE DO ?
       </p>

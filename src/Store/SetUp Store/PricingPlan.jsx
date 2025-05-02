@@ -197,7 +197,7 @@ const PricingPlan = ({
                 className={`w-full py-2 rounded-md font-bold ${
                   selectedPlan?.id === plan.id
                     ? "bg-primary text-white"
-                    : "bg-gray-100 text-gray-500"
+                    : "bg-gray-100 text-gray-400"
                 }`}
               >
                 {selectedPlan?.id === plan.id ? "Selected" : "Select Plan"}

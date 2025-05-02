@@ -61,7 +61,7 @@ function UpdatePassword() {
   return (
     <div>
       <button
-        className="flex items-center gap-2  border border-primary rounded-md p-3 text-primary mt-5"
+        className="flex items-center gap-2 border-2 border-primary rounded-md p-3 text-primary mt-5"
         onClick={() => setShowModal(true)}
         aria-label="Update password"
       >
@@ -74,7 +74,7 @@ function UpdatePassword() {
       </button>
       <SuccessModal isOpen={showModal} onClose={() => setShowModal(false)}>
         <div className="w-350">
-          <h1 className="text-primary text-[17px] font-bold ps-4 pt-5">
+          <h1 className="text-primary text-[17px] font-bold ps-3 pt-5">
             Update Password
           </h1>
           <Formik
@@ -82,7 +82,7 @@ function UpdatePassword() {
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
           >
-            <Form className="px-4 pb-3">
+            <Form className="ps-2 pb-3">
               <PasswordInput
                 name="password"
                 placeholder="New Password"
