@@ -6,6 +6,7 @@ import { ClipLoader } from "react-spinners";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import "./invoiceStyle.scss"
+import { FaCircleCheck } from "react-icons/fa6";
 
 function InvoiceDetails() {
   const API_BASE_URL = "https://";
@@ -48,12 +49,10 @@ function InvoiceDetails() {
   const downloadPdf = () => {
     setIsGeneratingPdf(true);
     const input = invoiceRef.current;
-    
-    // Add temporary class for PDF styling
     input.classList.add("printing-pdf");
     
     html2canvas(input, {
-      scale: 2, // Higher quality
+      scale: 2,
       logging: false,
       useCORS: true,
       scrollY: -window.scrollY,
@@ -66,8 +65,6 @@ function InvoiceDetails() {
       
       pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
       pdf.save(`invoice_${data.invoice_number || id}.pdf`);
-      
-      // Remove temporary class
       input.classList.remove("printing-pdf");
       setIsGeneratingPdf(false);
     }).catch((error) => {
@@ -78,11 +75,11 @@ function InvoiceDetails() {
   };
 
   return (
-    <div className="bg-gray-100 pb-10 pt-5 flex flex-col min-h-[89vh] mx-7">
+    <div className="bg-gray-100 pb-10 pt-3 flex flex-col min-h-[89vh] mx-3">
       <Helmet>
         <title>Invoice Details | vertex</title>
       </Helmet>
-      <div className="rounded-md p-5 bg-white">
+      <section className="rounded-md p-5 bg-white">
         <p className="text-gray-400 text-12">Menu / Invoice Details</p>
         <div className="flex justify-between items-center">
           <h1 className="mt-2 text-17 font-bold">Invoice Details</h1>
@@ -103,9 +100,9 @@ function InvoiceDetails() {
             )}
           </button>
         </div>
-      </div>
+      </section>
       
-      <section ref={invoiceRef} className="rounded-xl border-1 border-gray-200 py-6 px-10 bg-white mt-3">
+      <section ref={invoiceRef} className="rounded-xl border-1 border-gray-200 py-6 px-5 bg-white mt-3">
         {/* Invoice Header */}
         <div className="flex justify-between rounded-xl border-2 border-primary bg-customOrange-mediumOrange py-8 ps-3 pe-7">
           <div className="">
@@ -131,7 +128,7 @@ function InvoiceDetails() {
             <p className="text-gray-500 text-15 text-right">Invoice No.</p>
             <p className="font-bold text-2xl">{data.invoice_number}</p>
             <p
-              className={`px-2 py-2 text-center w-16 rounded-md text-14 ${
+              className={`px-2 py-2 flex items-center justify-center gap-1  w-20 rounded-md text-14 ${
                 data.payment_status === "unpaid"
                   ? "bg-gray-500 text-white"
                   : data.payment_status === "paid"
@@ -141,15 +138,14 @@ function InvoiceDetails() {
                   : ""
               }`}
             >
-              {data.payment_status}
+              <FaCircleCheck size={16}/>{data.payment_status}
             </p>
           </div>
         </div>
-
         {/* Issue From and For */}
         <div className="mt-8 flex items-center gap-32 mx-1">
           <div className="flex flex-col gap-5">
-            <h2 className="font-bold text-16">Issue From :</h2>
+            <h2 className="font-bold text-16 mb-4">Issue From :</h2>
             <p className="flex items-center gap-8 text-15">
               Name
               <span className="text-gray-500">
@@ -170,7 +166,7 @@ function InvoiceDetails() {
             </p>
           </div>
           <div className="flex flex-col gap-4">
-            <h2 className="font-bold text-16">Issue For :</h2>
+            <h2 className="font-bold text-16 mb-4">Issue For :</h2>
             <p className="flex items-center gap-8 text-15">
               Name
               <span className="text-gray-500">

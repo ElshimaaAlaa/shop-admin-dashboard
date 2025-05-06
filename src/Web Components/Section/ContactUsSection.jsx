@@ -10,6 +10,7 @@ import EmailAddress from "../../Svgs/EmailAddress";
 import Location from "../../Svgs/Location";
 import { sendSupport } from "../../ApiServices/Support";
 import { settings } from "../../ApiServices/Settings";
+import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 function ContactUsSection() {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setdata] = useState([]);
@@ -148,6 +149,24 @@ function ContactUsSection() {
           </Form>
         </Formik>
       </div>
+      {/* Success Modal */}
+      <SuccessModal isOpen={showModal} onClose={() => setShowModal(false)}>
+        <div className="flex flex-col items-center justify-center w-400">
+          <img
+            src="/assets/images/success.png"
+            alt="success"
+            className="w-32 mt-6"
+          />
+          <p className="font-bold mt-5">Message sent successfully!</p>
+          <button
+            className="bg-primary text-white p-2 w-40 mt-4 rounded-md"
+            type="button"
+            onClick={() => setShowModal(false)}
+          >
+            Done!
+          </button>
+        </div>
+      </SuccessModal>
     </section>
   );
 }

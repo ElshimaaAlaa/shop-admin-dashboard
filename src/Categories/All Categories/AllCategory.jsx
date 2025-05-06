@@ -85,15 +85,15 @@ function AllCategory() {
   };
 
   return (
-    <div className="bg-gray-100 p-4 h-[89vh] md:pt-5">
+    <div className="bg-gray-100 p-4 h-[89vh] pt-3">
       <Helmet>
         <title>All Categories - VERTEX</title>
       </Helmet>
-      <div className="bg-white p-5 rounded-md mb-3">
+      <section className="bg-white p-5 rounded-md mb-3">
         <p className="text-gray-400 text-12">Menu / Categories</p>
         <h1 className="font-bold text-17 mt-2">Categories</h1>
-      </div>
-      <div className="bg-white p-5 rounded-md">
+      </section>
+      <section className="bg-white p-5 rounded-md">
         <SearchBar
           onclick={() => navigate("/Dashboard/addCategory")}
           value={searchQuery}
@@ -214,7 +214,7 @@ function AllCategory() {
             />
           </>
         )}
-      </div>
+      </section>
     </div>
   );
 }

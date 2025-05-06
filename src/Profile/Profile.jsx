@@ -73,7 +73,7 @@ export default function ProfileMenu() {
           ref={dropdownRef}
           className="absolute right-0 mt-2 w-300 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50 px-3 flex flex-col gap-3"
         >
-          <div className="flex items-center gap-4 py-3">
+          <div className="flex items-center gap-4 py-2">
             <div className="w-14 h-14 rounded-full overflow-hidden">
               <img
                 src={userImage}
@@ -89,7 +89,7 @@ export default function ProfileMenu() {
             </div>
             <ChevronUp className="w-5 h-5 font-bold text-black ml-auto" />
           </div>
-          <div className="border-t-2 border-gray-400"></div>
+          <div className="border-t-1 border-gray-400"></div>
           <button
             className="w-full flex items-center gap-3 p-2 hover:bg-gray-50"
             onClick={() => navigate("/Dashboard/MainInfo")}
@@ -140,7 +140,7 @@ export default function ProfileMenu() {
             <ChevronRight className="w-5 h-5 text-black" />
           </button>
 
-          <div className="border-t-2 border-gray-400 mt-2">
+          <div className="border-t-1 border-gray-400 mt-2">
             <LogOut />
           </div>
         </div>

@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useState } from "react"
 import { Helmet } from "react-helmet"
 import { FaSackDollar } from "react-icons/fa6"
@@ -10,7 +8,7 @@ import { ClipLoader } from "react-spinners"
 import Delete from "./DeleteProduct"
 import { useNavigate } from "react-router-dom"
 import MonthlyTrendChart from "./MonthlyTrendChart"
-
+import StatisticsCard from "../Pages/Dashboard/ReportItems"
 function Analytics() {
   const [analyticsData, setAnalyticsData] = useState({
     monthly_expended: [],
@@ -44,28 +42,6 @@ function Analytics() {
     getAnalyticsData()
   }, [])
 
-  const ReportsItem = ({ icon: Icon, title, totalNumber, percentage, duration }) => (
-    <div className="bg-white rounded-md border border-gray-200 flex-1 min-w-[200px]">
-      <div className="flex items-center gap-3 bg-gray-100 rounded-tl-md rounded-tr-md p-4 mb-5">
-        <Icon className="text-2xl text-primary" />
-        <h3 className="text-gray-600 text-14">{title}</h3>
-      </div>
-      <div className="flex items-center gap-4 ps-4">
-        <h1 className="text-2xl font-bold">{totalNumber}</h1>
-        <p
-          className={`text-13 font-bold rounded-md p-1 ${
-            percentage?.includes("+") || percentage?.includes("زيادة")
-              ? "text-[#34B41E] bg-[#E7F6E5]"
-              : "text-red-600 bg-red-50"
-          }`}
-        >
-          {percentage}
-        </p>
-      </div>
-      <p className="text-xs text-gray-400 mt-3 mb-3 ps-4">{duration}</p>
-    </div>
-  )
-
   const handleDeleteProduct = (productId) => {
     setProductData((prevProducts) => {
       const updatedProducts = prevProducts.filter((product) => product.id !== productId)
@@ -78,35 +54,34 @@ function Analytics() {
       <Helmet>
         <title>Reports | VERTEX</title>
       </Helmet>
-      <div className="bg-white mb-3 p-4 rounded-md">
+      <section className="bg-white mb-2 p-4 rounded-md">
         <p className="text-gray-400 text-13">Menu / Analytics & Reports</p>
         <h1 className="font-bold text-17 mt-3">Analytics & Reports</h1>
-      </div>
-      <div className="bg-white rounded-md p-8 mb-5">
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <ReportsItem
+      </section>
+      <div className="bg-white rounded-md p-5 mb-5">
+        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+          <StatisticsCard
             icon={FaMoneyBillWave}
             title="Total Expend "
             totalNumber={statistics?.overview?.total_expended?.amount || 0}
-            percentage={`${statistics?.overview?.total_expended?.change_rate || 0} % vs. previous month`}
+            percentage={`${statistics?.overview?.total_expended?.change_rate || 0}`}
             duration={`Last month: ${0}`}
           />
-          <ReportsItem
+          <StatisticsCard
             icon={FaMagnifyingGlassDollar}
             title="Total Income"
             totalNumber={statistics?.overview?.total_income?.amount || 0}
-            percentage={`${statistics?.overview?.total_income?.change_rate || 0} % vs. previous month`}
+            percentage={`${statistics?.overview?.total_income?.change_rate || 0}`}
             duration={`Last month: ${0}`}
           />
-          <ReportsItem
+          <StatisticsCard
             icon={FaSackDollar}
             title="Total Profit "
             totalNumber={statistics?.overview?.total_profit?.amount || 0}
-            percentage={`${statistics?.overview?.total_profit?.change_rate || 0} % vs. previous month`}
+            percentage={`${statistics?.overview?.total_profit?.change_rate || 0}`}
             duration={`Last month: ${0}`}
           />
         </section>
-
         {/* Analytics Chart Section with Recharts */}
         {!isLoading && !error && (
           <MonthlyTrendChart
@@ -115,7 +90,6 @@ function Analytics() {
             monthlyProfit={analyticsData.monthly_profit}
           />
         )}
-
         {/* Products Section */}
         <section>
           <h3 className="font-bold text-17 my-8">Top Selling Products</h3>
@@ -216,5 +190,4 @@ function Analytics() {
     </div>
   )
 }
-
-export default Analytics
+export default Analytics;

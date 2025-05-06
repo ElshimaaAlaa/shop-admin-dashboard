@@ -130,10 +130,10 @@ const NewPromotion = () => {
         <title>Add New Promotion | vertex</title>
       </Helmet>
 
-      <div className="rounded-md p-5 mx-5 bg-white mt-5">
+      <section className="rounded-md p-5 mx-3 bg-white mt-3">
         <p className="text-12 text-gray-400">Menu / Product / Add Promotion</p>
         <h1 className="mt-3 text-16 font-bold">Add New Promotions</h1>
-      </div>
+      </section>
 
       <Formik
         initialValues={initialValues}
@@ -142,7 +142,7 @@ const NewPromotion = () => {
       >
         {({ values, errors, touched, setFieldValue, submitForm, isValid, dirty }) => (
           <Form className="my-3">
-            <div className="flex gap-4 mx-5 pb-32">
+            <div className="flex gap-4 mx-3 pb-32">
               <PromotionBasicInfo 
                 products={products} 
                 categories={categories} 
@@ -172,7 +172,6 @@ const NewPromotion = () => {
           </Form>
         )}
       </Formik>
-
       <SuccessModal isOpen={showModal} onClose={() => setShowModal(false)}>
         <div className="flex flex-col items-center justify-center w-400">
           <img

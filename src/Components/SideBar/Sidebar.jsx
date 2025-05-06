@@ -51,7 +51,7 @@ const Sidebar = () => {
       id: "dashboard",
       label: "Dashboard",
       icon: <Home />,
-      onclick: () => navigate("Analytics"),
+      onclick: () => navigate("Home-dashboard"),
     },
     {
       id: "categories",

@@ -136,8 +136,8 @@ function RefundRequests() {
                         {order.order_number}
                       </p>
                     </td>
-                    <td className="px-6 py-3 border-t text-14 text-gray-600 flex items-center gap-2">
-                      <IoCalendarNumberOutline color="#69ABB5" />
+                    <td className="px-6 py-3 border-t text-13 text-gray-600 flex items-center gap-2">
+                      <IoCalendarNumberOutline color="#69ABB5" size={15} />
                       {order.request_refund_date}
                     </td>
                     <td className="px-6 py-3 border-t border-l text-gray-600 text-14">

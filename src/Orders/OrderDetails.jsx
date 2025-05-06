@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { FaCheckCircle } from "react-icons/fa";
 import CancelOrder from "./CancelOrder";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import axios from "axios";
 import PhoneNum from "../Svgs/PhoneNum";
 import EmailAddress from "../Svgs/EmailAddress";
@@ -11,11 +11,14 @@ import Acc from "../Svgs/Acc";
 function OrderDetails() {
   const [orderDetail, setOrderDetails] = useState([]);
   const { orderId } = useParams();
+  const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const API_BASE_URL = "https://";
   const live_shop_domain = localStorage.getItem("live_shop_domain");
   const role = localStorage.getItem("role");
+  const [orderStatus, setOrderStatus] = useState(location.state?.status || null);
+  const [orderStatusName, setOrderStatusName] = useState(location.state?.status_name || null);
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
@@ -31,12 +34,13 @@ function OrderDetails() {
         });
         if (response.status === 200) {
           setOrderDetails(response.data.data);
-          localStorage.setItem("OrderId", response.data.data.id);
-          localStorage.setItem("Order Status", response.data.data.status);
-          localStorage.setItem("Order Status", response.data.data.status_name);
-          console.log("OrderId", response.data.data.id);
-          console.log("Order Status", response.data.data.status);
-          console.log("Order Status", response.data.data.status_name);
+          if (!orderStatus) {
+            setOrderStatus(response.data.data.status);
+            setOrderStatusName(response.data.data.status_name);
+          }
+          // localStorage.setItem("OrderId", response.data.data.id);
+          // localStorage.setItem("Order Statusid", response.data.data.status);
+          // localStorage.setItem("Order Status", response.data.data.status_name);
           setIsLoading(false);
         }
       } catch (error) {
@@ -45,7 +49,7 @@ function OrderDetails() {
       }
     };
     fetchOrderDetails();
-  }, [live_shop_domain, orderId, role]);
+  }, [live_shop_domain, orderId, role, orderStatus]);
 
   const icons = [
     { icon: <PhoneNum /> },
@@ -53,12 +57,27 @@ function OrderDetails() {
     { icon: <Acc /> },
   ];
 
+  // Status display component
+  const StatusDisplay = () => (
+    <p
+      className={`px-2 py-2 rounded-md text-13 ${
+        orderStatus === 1 || orderStatus === 2
+          ? "bg-customOrange-mediumOrange text-primary"
+          : orderStatus === 8 || orderStatusName === "Refunded"
+          ? "bg-red-50 text-red-600"
+          : ""
+      }`}
+    >
+      {orderStatusName || orderDetail.status_name}
+    </p>
+  );
+
   return (
-    <div className="bg-gray-100 pb-10 mx-7 pt-5">
+    <div className="bg-gray-100 pb-10 mx-3 pt-3">
       <Helmet>
         <title>Orders Details | VERTEX</title>
       </Helmet>
-      <div className="bg-white mb-3 p-4 rounded-md flex justify-between items-center">
+      <section className="bg-white mb-3 p-5 rounded-md flex justify-between items-center">
         <div>
           <p className="text-gray-400 text-12">Menu / Orders / Received Orders / view order</p>
           <h1 className="font-bold text-17 mt-3">Order Details</h1>
@@ -67,27 +86,16 @@ function OrderDetails() {
           orderId={orderDetail.id}
           orderStatus={orderDetail.status}
         />
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        <div className="lg:col-span-2 space-y-5">
+      </section>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+        <div className="lg:col-span-2 space-y-2">
           <section className="border border-gray-200 rounded-md p-4 bg-white">
             <div className="flex justify-between">
               <h2 className="font-bold text-17">
                 Order ID:
                 <span className="text-14">{orderDetail.order_number}</span>
               </h2>
-              <p
-                className={`px-2 py-2 rounded-md text-13 ${
-                  orderDetail.status === 1
-                    ? "bg-customOrange-mediumOrange text-primary"
-                    : orderDetail.status_name === "Refunded"
-                    ? "bg-red-50 text-red-600"
-                    : ""
-                }`}
-              >
-                {orderDetail.status_name}
-              </p>
+              <StatusDisplay />
             </div>
             {orderDetail.history?.map((statusItem, index) => (
               <div
@@ -101,7 +109,7 @@ function OrderDetails() {
                   />
                   {statusItem.status_name}
                 </p>
-                <span className="text-gray-400 text-10">
+                <span className="text-gray-400 text-12">
                   {statusItem.date || "Not available"}
                 </span>
               </div>
@@ -185,8 +193,7 @@ function OrderDetails() {
                   $ {orderDetail.shipping || 0}
                 </p>
               </div>
-              {/* <hr/> */}
-              <div className="flex items-center justify-between border-t-3">
+              <div className="flex items-center justify-between border-t-2">
                 <p className="text-15 mt-5">Total</p>
                 <p className="text-gray-400 text-15">
                   $ {orderDetail.total || 0}
@@ -217,7 +224,7 @@ function OrderDetails() {
           </section>
         </div>
         <div className="space-y-5">
-          <div className="grid grid-cols-1 gap-5">
+          <div className="grid grid-cols-1 gap-2">
             <section className="border border-gray-200 rounded-md p-4 bg-white">
               <h2 className="font-bold text-15">Shipping Address</h2>
               <p className="text-12 mt-2">
@@ -243,23 +250,23 @@ function OrderDetails() {
             </section>
             <section className="border border-gray-200 rounded-md p-4 bg-white">
               <h2 className="font-bold text-15 mb-3">Balance</h2>
-              <div className="bg-gray-50 border border-gray-200 rounded-md p-2">
+              <div className="bg-gray-50 border border-gray-200 rounded-md p-3">
                 <div className="flex justify-between items-center">
-                  <p className="text-15">Order Total</p>
-                  <p className="text-gray-400 text-15">0</p>
+                  <p className="text-14">Order Total</p>
+                  <p className="text-gray-400 text-14">0</p>
                 </div>
                 <div className="flex justify-between items-center mt-5">
-                  <p className="text-15">Return Total</p>
-                  <p className="text-gray-400 text-15">0</p>
+                  <p className="text-14">Return Total</p>
+                  <p className="text-gray-400 text-14">0</p>
                 </div>
                 <hr className="border-gray-300 my-2" />
                 <div className="flex justify-between items-center mt-5">
-                  <p className="text-15">Paid by customer</p>
-                  <p className="text-gray-400 text-15">0</p>
+                  <p className="text-14">Paid by customer</p>
+                  <p className="text-gray-400 text-14">0</p>
                 </div>
                 <div className="flex items-center justify-between">
-                  <p className="text-15 mt-5">Refunded</p>
-                  <p className="text-gray-400 text-15">0</p>
+                  <p className="text-14 mt-5">Refunded</p>
+                  <p className="text-gray-400 text-14">0</p>
                 </div>
                 <hr className="border-gray-300 my-2" />
                 <div className="mt-5 flex justify-between">

@@ -5,9 +5,10 @@ import { useParams } from "react-router-dom";
 import { HiCurrencyDollar } from "react-icons/hi2";
 import { FaShippingFast } from "react-icons/fa";
 import { FaSackDollar } from "react-icons/fa6";
-import { LiaFileInvoiceSolid } from "react-icons/lia";
 import { ClipLoader } from "react-spinners";
 import { IoCalendarNumberOutline } from "react-icons/io5";
+import { TbInvoice } from "react-icons/tb";
+import { IoCopyOutline } from "react-icons/io5";
 
 function CustomerDetail() {
   const [customerData, setCustomerData] = useState([]);
@@ -50,68 +51,93 @@ function CustomerDetail() {
 
   const Statistics = ({ icon: Icon, title, totalNumber }) => (
     <div className="bg-white rounded-md border border-gray-200 flex-1 min-w-[200px]">
-      <div className="flex items-center gap-3 bg-gray-100 rounded-tl-md rounded-tr-md p-4">
-        <Icon className="text-2xl text-primary" />
-        <h3 className="text-gray-500 text-15">{title}</h3>
+      <div className="flex items-center gap-2 bg-gray-100 rounded-tl-md rounded-tr-md p-3">
+        <Icon className="text-xl text-primary" />
+        <h3 className="text-gray-600 text-14">{title}</h3>
       </div>
-      <h1 className="text-2xl font-bold px-4 py-4">$ {totalNumber}</h1>
+      <h1 className="text-xl font-bold px-4 py-4">$ {totalNumber}</h1>
     </div>
   );
+  const copyPhoneNumber = () => {
+    if (customerData.personal_info?.phone) {
+      navigator.clipboard
+        .writeText(customerData.personal_info?.phone)
+        .then(() => {
+          alert("Phone number copied to clipboard!");
+        })
+        .catch((err) => {
+          console.error("Failed to copy phone number: ", err);
+          alert("Failed to copy phone number");
+        });
+    }
+  };
   return (
-    <div className="bg-gray-100  mx-7 py-5">
+    <div className="bg-gray-100 mx-5 py-5">
       <Helmet>
         <title>Customers Details | VERTEX</title>
       </Helmet>
-
-      <div className="bg-white mb-3 p-4 rounded-md  w-full">
-        <p className="text-gray-400 text-12">Menu / Customers / Customer Details </p>
+      <section className="bg-white mb-3 p-5 rounded-md w-full">
+        <p className="text-gray-400 text-12">
+          Menu / Customers / Customer Details
+        </p>
         <h1 className="font-bold text-17 mt-2">Customers Details</h1>
-      </div>
-      <div className="flex items-center justify-between rounded-lg border-primary bg-customOrange-mediumOrange p-4 ">
-        <h3 className="text-gray-600 text-15 flex items-center gap-2">
+      </section>
+      <section className="flex items-center justify-between rounded-md border-1 border-primary bg-customOrange-mediumOrange p-3 ">
+        <h3 className="text-gray-600 text-15 flex items-center gap-1">
           <HiCurrencyDollar color="#E0A75E" size={30} />
           Current Balance
         </h3>
         <p className="font-bold text-xl">
           $ {customerData.personal_info?.balance}
         </p>
-      </div>
+      </section>
       {/* end of balance */}
-      <div className="mt-5 flex  gap-4">
+      <div className="mt-3 flex gap-4">
         {/* personal info section */}
         <div>
-          <section className="rounded-md bg-white p-4 border-2 border-gray-100 ">
+          <section className="rounded-md bg-white p-3 border border-gray-200 ">
             <h3 className="font-bold text-17">Personal Info</h3>
             <img
               src={customerData.personal_info?.image}
               alt="customer pic"
-              className="rounded-md mt-4 w-72 h-52"
+              className="rounded-md mt-4 w-300 h-52"
             />
             <div className="mt-4">
-              <h4 className="text-gray-400">Name</h4>
+              <h4 className="text-gray-400 text-14">Name</h4>
               <p className="text-14">{customerData.personal_info?.name}</p>
             </div>
             <div className="mt-4">
-              <h4 className="text-gray-400">Email</h4>
+              <h4 className="text-gray-400 text-14">Email</h4>
               <p className="text-14">{customerData.personal_info?.email}</p>
             </div>
             <div className="mt-4">
-              <h4 className="text-gray-400">Phone</h4>
-              <p className="text-14">{customerData.personal_info?.phone}</p>
+              <h4 className="text-gray-400 text-14">Phone</h4>
+              <p className="text-14 flex items-center gap-2">
+                {customerData.personal_info?.phone}
+                {customerData.personal_info?.phone && (
+                  <button
+                    onClick={copyPhoneNumber}
+                    className="text-blue-500 hover:text-blue-700 text-sm flex items-center gap-1"
+                    title="Copy phone number"
+                  >
+                    <IoCopyOutline color="#E0A75E" size={15} />
+                  </button>
+                )}
+              </p>
             </div>
           </section>
-          <section className="rounded-md bg-white p-4 border-2 border-gray-100 mt-3">
-            <h3 className="font-bold text-17">Shipping Address</h3>
+          <section className="rounded-md bg-white p-4 border-1 border-gray-200 mt-3">
+            <h3 className="font-bold text-16">Shipping Address</h3>
             <p className="text-13 mt-3">
               {customerData.personal_info?.address || "No provided address"}
             </p>
           </section>
         </div>
         {/* end of personal info */}
-        <div>
-          <section className="bg-white rounded-md p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full ">
+        <div className="w-full">
+          <section className="bg-white rounded-md border border-gray-200 p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full ">
             <Statistics
-              icon={LiaFileInvoiceSolid}
+              icon={TbInvoice}
               title="Total Invoices"
               totalNumber={statistics?.orders_count}
             />
@@ -127,8 +153,8 @@ function CustomerDetail() {
             />
           </section>
           {/* Transaction History */}
-          <section className="bg-white rounded-md p-4 mt-4 w-full">
-            <h3 className="font-bold text-17">Transaction History</h3>
+          <section className="bg-white border-gray-200 border rounded-md p-4 mt-3 w-full">
+            <h3 className="font-bold text-16">Transaction History</h3>
             {error ? (
               <div className="text-red-500 text-center mt-10">
                 Failed to fetch data. Please try again.
@@ -138,13 +164,15 @@ function CustomerDetail() {
                 <ClipLoader color="#E0A75E" />
               </div>
             ) : orders.length === 0 ? (
-              <p className="text-center mt-10 text-gray-400">No Transaction data founded.</p>
+              <p className="text-center mt-10 text-gray-400">
+                No Transaction data founded.
+              </p>
             ) : (
               <div className="border border-gray-200 rounded-lg mt-4 overflow-hidden">
                 <table className="bg-white min-w-full table">
                   <thead>
                     <tr>
-                      <th className="px-3 py-3 border-t border-b text-left cursor-pointer">
+                      <th className="px-3 py-3 border-t border-b text-left">
                         Invoice ID
                       </th>
                       <th className="px-3 py-3 text-left border">Date</th>
@@ -155,12 +183,15 @@ function CustomerDetail() {
                   <tbody>
                     {orders.map((order, index) => (
                       <tr key={order.id} className="border-t hover:bg-gray-50">
-                        <td className=" px-3 py-3 border-t text-gray-600 text-14 border-r w-250 cursor-pointer">
+                        <td className=" px-3 py-3 border-t text-gray-600 text-14 border-r w-250">
                           {order.order_number}
                         </td>
-                        <td className="px-3 py-3 border-t text-gray-600 border-r text-14 w-250">
+                        <td className="px-3 py-3 border-t text-gray-500 border-r text-13 w-250">
                           <p className="flex items-center gap-2">
-                            <IoCalendarNumberOutline color="#69ABB5" />
+                            <IoCalendarNumberOutline
+                              color="#69ABB5"
+                              size={15}
+                            />
                             {order.date}
                           </p>
                         </td>

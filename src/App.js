@@ -49,12 +49,11 @@ import Info from "./Store/Information/Info";
 import Analytics from "./Analysis/Analytics";
 import AllInvoices from "./Invoices/AllInvoices";
 import InvoiceDetails from "./Invoices/InvoiceDetails";
+import Dashboard from "./Pages/Dashboard/Dashboard";
 
 function App() {
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
-    // Simulate loading delay (e.g. 2 seconds)
     const timer = setTimeout(() => setLoading(false), 2000);
     return () => clearTimeout(timer);
   }, []);
@@ -91,7 +90,6 @@ function App() {
           path="/AdminLogin/CreateNewPassword"
           element={<CreateNewPassword />}
         />
-
         {/* Register and set up store */}
         <Route path="/Register" element={<Register />} />
         <Route path="/Register/ThemeStore" element={<ThemeStore />} />
@@ -103,9 +101,9 @@ function App() {
           element={<ShippingProvider />}
         />
         <Route path="/Register/PaymentMethod" element={<PaymentMethod />} />
-
         {/* Dashboard */}
         <Route path="/Dashboard" element={<Home />}>
+        <Route path="Home-dashboard" element={<Dashboard/>}/>
           {/* Personal Information */}
           <Route path="MainInfo" element={<MainInfo />}>
             <Route index element={<PersonalInformation />} />

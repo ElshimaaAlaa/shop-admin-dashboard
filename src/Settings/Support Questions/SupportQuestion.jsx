@@ -59,7 +59,7 @@ function SupportQuestion() {
       <Helmet>
         <title>Support Questions | vertex</title>
       </Helmet>
-      <div className="rounded-md p-5 mx-7 bg-white mt-5 flex items-center justify-between">
+      <section className="rounded-md p-5 mx-5 bg-white mt-5 flex items-center justify-between">
         <div>
           <p className="text-gray-400 text-12">
             Menu / Customers / Support Questions
@@ -82,7 +82,7 @@ function SupportQuestion() {
             Requests
           </button>
         </div>
-      </div>
+      </section>
 
       <AddSupportQuestion
         isOpen={showAddQuestionModal}
@@ -90,7 +90,7 @@ function SupportQuestion() {
         onSuccess={handleAddSuccess}
       />
 
-      <section className="bg-white mx-7 p-5 mt-3 rounded-md">
+      <section className="bg-white mx-5 p-5 mt-3 rounded-md">
         <h3 className="text-16 font-bold">Questions</h3>
         {isLoading ? (
           <div className="flex justify-center mt-5">

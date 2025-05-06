@@ -14,7 +14,7 @@ function SearchBar({onclick , value ,onchange ,text , icon}) {
           placeholder="Search"
           value={value}
           onChange={onchange}
-          className="w-full pl-10 pr-4 py-4 bg-muted/50 rounded-md text-sm focus:outline-none border-2 border-gray-200 bg-lightgray placeholder:text-15 focus:border-primary"
+          className="w-full pl-10 pr-4 py-4 bg-muted/50 rounded-md text-sm focus:outline-none border-2 border-gray-200 bg-gray-50 placeholder:text-15 focus:border-primary"
         />
       </div>
       <div

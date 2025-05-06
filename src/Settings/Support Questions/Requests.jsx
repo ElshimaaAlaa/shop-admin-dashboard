@@ -52,7 +52,7 @@ function Requests() {
       <Helmet>
         <title>Requests | vertex</title>
       </Helmet>
-      <div className="rounded-md p-5 mx-7 bg-white mt-5 flex items-center justify-between">
+      <div className="rounded-md p-5 mx-5 bg-white mt-5 flex items-center justify-between">
         <div>
           <p className="text-gray-400 text-12">
             Menu / Customers / Support Questions/ Requests
@@ -68,7 +68,7 @@ function Requests() {
         questionId={selectedQuestionId}
       />
 
-      <div className="bg-white rounded-md p-4 mx-7 mt-3">
+      <div className="bg-white rounded-md p-4 mx-5 mt-3">
         {isLoading ? (
           <div className="flex justify-center">
             <ClipLoader color="#E0A75E" size={30} />

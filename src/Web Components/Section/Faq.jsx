@@ -5,9 +5,15 @@ import { getFaqs } from "../../ApiServices/AllFaqs";
 function Faq() {
   const [openIndex, setOpenIndex] = useState(null);
   const [faqData, setFaqData] = useState([]);
+  const [showAll, setShowAll] = useState(false);
   const toggleFaq = (index) => {
     setOpenIndex(openIndex === index ? null : index);
   };
+  const toggleShowAll = () => {
+    setShowAll(!showAll);
+    setOpenIndex(null);
+  };
+
   useEffect(() => {
     const fetchFaqs = async () => {
       try {
@@ -19,6 +25,9 @@ function Faq() {
     };
     fetchFaqs();
   }, []);
+
+  const faqsToShow = showAll ? faqData : faqData.slice(0, 4);
+
   return (
     <section className="ps-5 pe-5 lg:ps-20 lg:pe-20 pt-20 pb-10">
       <p className="bg-customOrange-mediumOrange text-primary w-20 text-center p-3 rounded-md">
@@ -31,7 +40,7 @@ function Faq() {
         </span>
       </h1>
       <div className="mt-5">
-        {faqData.slice(0,4).map((item, index) => (
+        {faqsToShow.map((item, index) => (
           <div
             key={index}
             className={`border-2 rounded-lg mt-6 p-5 transition-all duration-300 ${
@@ -58,6 +67,16 @@ function Faq() {
             )}
           </div>
         ))}
+        {faqData.length > 4 && (
+          <div className="mt-6 text-center">
+            <button
+              onClick={toggleShowAll}
+              className="bg-primary w-36 text-white px-6 py-2 rounded-md hover:bg-opacity-90 transition"
+            >
+              {showAll ? "Show Less" : "Show More"}
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );

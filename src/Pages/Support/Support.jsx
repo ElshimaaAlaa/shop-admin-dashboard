@@ -12,6 +12,7 @@ import MainBtn from "../../Components/Main Button/MainBtn";
 import EmailAddress from "../../Svgs/EmailAddress";
 import PhoneNum from "../../Svgs/PhoneNum";
 import { settings } from "../../ApiServices/Settings";
+import InputField from "../../Components/InputFields/InputField";
 
 function Support() {
   const [isLoading, setIsLoading] = useState(false);
@@ -151,9 +152,9 @@ function Support() {
           >
             {({ errors, touched }) => (
               <Form className="flex flex-col gap-3">
-                <AuthInputField name="name" placeholder="Name" />
+                <InputField name="name" placeholder="Name" />
                 <AuthInputField name="email" placeholder="Email" />
-                <AuthInputField name="phone" placeholder="Phone Number" />
+                <InputField name="phone" placeholder="Phone Number" />
                 <Field
                   as="textarea"
                   placeholder="Description"

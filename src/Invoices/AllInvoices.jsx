@@ -126,7 +126,7 @@ function AllInvoices() {
   };
 
   return (
-    <div className="bg-gray-100 pb-10 pt-5 flex flex-col min-h-[89vh] mx-7">
+    <div className="bg-gray-100 pb-10 pt-3 flex flex-col min-h-[89vh] mx-3">
       <Helmet>
         <title>Invoices | vertex</title>
       </Helmet>
@@ -143,7 +143,7 @@ function AllInvoices() {
             percentage={`${statistics.paid_orders.change_rate || 0}% ${
               statistics.paid_orders.increased ? "+" : ""
             } vs. previous month`}
-            duration={`last month: ${statistics.paid_orders.previous || 0}`}
+            duration={`Last month: ${statistics.paid_orders.previous || 0}`}
           />
           <Statistics
             icon={BsClockFill}
@@ -152,7 +152,7 @@ function AllInvoices() {
             percentage={`${statistics.pending_payment.change_rate || 0}% ${
               statistics.pending_payment.increased ? "+" : ""
             } vs. previous month`}
-            duration={`last month: ${statistics.pending_payment.previous || 0}`}
+            duration={`Last month: ${statistics.pending_payment.previous || 0}`}
           />
           <Statistics
             icon={TbCancel}
@@ -161,7 +161,7 @@ function AllInvoices() {
             percentage={`${statistics.cancelled_orders.change_rate || 0}% ${
               statistics.cancelled_orders.increased ? "+" : ""
             } vs. previous month`}
-            duration={`last month: ${
+            duration={`Last month: ${
               statistics.cancelled_orders.previous || 0
             }`}
           />
@@ -181,7 +181,7 @@ function AllInvoices() {
                 setSearchQuery(e.target.value);
                 setCurrentPage(0);
               }}
-              className="w-full pl-10 pr-4 py-4 bg-muted/50 rounded-md text-sm focus:outline-none border-2 border-gray-200 bg-lightgray placeholder:text-15 focus:border-primary"
+              className="w-full pl-10 pr-4 py-4 bg-muted/50 rounded-md text-sm focus:outline-none border-2 border-gray-200 bg-gray-50 placeholder:text-15 focus:border-primary"
             />
           </div>
           {error ? (
@@ -249,7 +249,7 @@ function AllInvoices() {
                         </td>
                         <td className="px-3 py-3 border-t text-gray-600 border-r text-13 w-250">
                           <p className="flex items-center gap-2">
-                            <IoCalendarNumberOutline color="#69ABB5" />
+                            <IoCalendarNumberOutline size={16} color="#69ABB5" />
                             {invoice.date || "N/A"}
                           </p>
                         </td>

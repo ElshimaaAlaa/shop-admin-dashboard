@@ -25,7 +25,7 @@ function MonthlyTrendChart({ monthlyExpended, monthlyIncome, monthlyProfit }) {
   const chartData = transformData()
 
   return (
-    <div className="mt-14 border-1 border-gray-200 rounded-lg p-6">
+    <div className="mt-5 border-1 border-gray-200 rounded-lg p-6">
       <h3 className="font-bold text-17 mb-4">Monthly Trend</h3>
       <div className="flex my-5 justify-end">
         <button

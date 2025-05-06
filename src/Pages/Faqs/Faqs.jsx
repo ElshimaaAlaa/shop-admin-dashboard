@@ -9,17 +9,19 @@ import * as Yup from "yup";
 import { addFaqs } from "../../ApiServices/AddFags";
 import InputField from "../../Components/InputFields/InputField";
 import MainBtn from "../../Components/Main Button/MainBtn";
+
 function Faqs() {
   const [isLoading, setIsLoading] = useState(false);
   const [openIndex, setOpenIndex] = useState(null);
   const [faqsData, setFaqsData] = useState([]);
-  const [displayCount, setDisplayCount] = useState(5);
-  
+  const [showAll, setShowAll] = useState(false);
+  const initialDisplayCount = 5;
+
   const initialValues = {
     question: "",
     answer: "",
   };
-  
+
   const validationSchema = Yup.object({
     question: Yup.string().required("Question is required"),
     answer: Yup.string().required("Answer is required"),
@@ -57,10 +59,6 @@ function Faqs() {
     setOpenIndex(openIndex === index ? null : index);
   };
 
-  const loadMore = () => {
-    setDisplayCount(prevCount => prevCount + 5);
-  };
-
   return (
     <div className="bg-white pb-5">
       <Helmet>
@@ -73,16 +71,15 @@ function Faqs() {
         We're here to help with any questions you have about plans, pricing,
         <br /> and supported features.
       </p>
+
       <div className="flex justify-center gap-5 mx-20">
         {/* FAQ Section */}
         <section className="mt-5 w-700">
-          {faqsData.slice(0, displayCount).map((item, index) => (
+          {(showAll ? faqsData : faqsData.slice(0, initialDisplayCount)).map((item, index) => (
             <div
               key={index}
               className={`mt-5 p-5 bg-gray-50 rounded-lg transition-all duration-300 ${
-                openIndex === index
-                  ? "border-2 border-primary"
-                  : "bg-gray-50"
+                openIndex === index ? "border-2 border-primary" : ""
               }`}
             >
               <div
@@ -105,19 +102,19 @@ function Faqs() {
               )}
             </div>
           ))}
-          {/* Load More Button */}
-          {displayCount < faqsData.length && (
+          {/* Show More / Show Less Button */}
+          {faqsData.length > initialDisplayCount && (
             <div className="flex justify-center mt-5">
               <p
-                onClick={loadMore}
+                onClick={() => setShowAll(!showAll)}
                 className="text-center text-15 font-bold bg-primary text-white cursor-pointer w-44 px-4 py-2 rounded-lg hover:bg-opacity-90 transition"
               >
-                {isLoading ? <ClipLoader size={22} color="#fff"/>:"Load More....."}
+                {showAll ? "Show Less" : "Show More"}
               </p>
             </div>
           )}
         </section>
-        
+
         {/* Add Question Section */}
         <section className="bg-customOrange-mediumOrange rounded-md p-5 w-500 h-full mt-10">
           <div className="flex justify-center">
@@ -167,4 +164,5 @@ function Faqs() {
     </div>
   );
 }
+
 export default Faqs;

@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
-import { MdOutlinePayment } from "react-icons/md";
 import { TbCancel } from "react-icons/tb";
-import { MdDone } from "react-icons/md";
 import { GoClockFill } from "react-icons/go";
-import { PiClockCountdownLight } from "react-icons/pi";
-import { TbReceiptRefund } from "react-icons/tb";
 import { Search } from "lucide-react";
 import { receivedOrders } from "../ApiServices/received-orders";
 import { ClipLoader } from "react-spinners";
@@ -13,10 +9,14 @@ import { IoCalendarNumberOutline } from "react-icons/io5";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import ReactPaginate from "react-paginate";
 import { useNavigate } from "react-router-dom";
+import { MdPayment } from "react-icons/md";
+import { RiRefund2Line } from "react-icons/ri";
+import { MdOutlineDone } from "react-icons/md";
+import { BsClockHistory } from "react-icons/bs";
 
 function ReceivedOrders() {
   const [orders, setOrders] = useState([]);
-  const [statistics, setStatistics] = useState([]);
+  const [statistics, setStatistics] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -47,32 +47,34 @@ function ReceivedOrders() {
     totalNumber,
     percentage,
     duration,
-  }) => (
-    <div className="bg-white rounded-md border border-gray-200 flex-1 min-w-[200px]">
-      <div className="flex items-center gap-3 bg-gray-100 rounded-tl-md rounded-tr-md p-4 mb-5">
-        <Icon className="text-2xl text-primary" />
-        <h3 className="text-gray-600 text-14">{title}</h3>
+  }) => {
+    // Determine if the change is positive
+    const isPositive = Math.sign(Number(totalNumber)) >= 0;
+    return (
+      <div className="bg-white rounded-md border border-gray-200 flex-1 min-w-[200px]">
+        <div className="flex items-center gap-2 bg-gray-100 rounded-tl-md rounded-tr-md p-3 mb-5">
+          <Icon className="text-2xl text-primary" />
+          <h3 className="text-gray-600 text-14">{title}</h3>
+        </div>
+        <div className="flex items-center gap-4 ps-4">
+          <h1 className="text-2xl font-bold">{totalNumber}</h1>
+          <p
+            className={`text-13 font-bold rounded-md p-1 ${
+              isPositive
+                ? "text-[#34B41E] bg-[#E7F6E5]"
+                : "text-red-600 bg-red-50"
+            }`}
+          >
+            {percentage}
+          </p>
+        </div>
+        <p className="text-xs text-gray-400 mt-3 mb-3 ps-4">{duration}</p>
       </div>
-      <div className="flex items-center gap-4 ps-4">
-        <h1 className="text-2xl font-bold">{totalNumber}</h1>
-        <p
-          className={`text-13 font-bold rounded-md p-1 ${
-            percentage?.includes("+")
-              ? "text-[#34B41E] bg-[#E7F6E5]"
-              : "text-red-600 bg-red-50"
-          }`}
-        >
-          {percentage}
-        </p>
-      </div>
-      <p className="text-xs text-gray-400 mt-3 mb-3 ps-4">{duration}</p>
-    </div>
-  );
-
+    );
+  };
   const filteredOrders = Array.isArray(orders)
     ? orders.filter((order) => {
         if (!debouncedSearchQuery) return true;
-
         const searchTerm = debouncedSearchQuery.toLowerCase();
         const fieldsToSearch = [
           order.order_number?.toString().toLowerCase() || "",
@@ -82,7 +84,6 @@ function ReceivedOrders() {
           order.date?.toString().toLowerCase() || "",
           order.items_count?.toString().toLowerCase() || "",
         ];
-
         return fieldsToSearch.some((field) => field.includes(searchTerm));
       })
     : [];
@@ -94,7 +95,7 @@ function ReceivedOrders() {
       try {
         const response = await receivedOrders(pagination.current_page);
         setOrders(response.orders || []);
-        setStatistics(response.statistics || []);
+        setStatistics(response.statistics || {});
         setPagination(
           response.pagination || {
             total: response.orders?.length || 0,
@@ -110,6 +111,7 @@ function ReceivedOrders() {
         console.error("API call failed: ", error);
         setError(true);
         setOrders([]);
+        setStatistics({});
       } finally {
         setIsLoading(false);
       }
@@ -125,60 +127,59 @@ function ReceivedOrders() {
   };
 
   return (
-    <div className="bg-gray-100 py-5 mx-7 ">
+    <div className="bg-gray-100 py-3 mx-3">
       <Helmet>
         <title>Orders | VERTEX</title>
       </Helmet>
-      <div className=" bg-white mb-3 px-8 py-4 rounded-md">
+      <section className=" bg-white mb-3 p-5 rounded-md">
         <p className="text-gray-400 text-12">Menu / Orders / Received Orders</p>
         <h1 className="text-17 mt-3 font-bold">Received Orders</h1>
-      </div>
-
-      <div className="bg-white rounded-md p-8 mb-5">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      </section>
+      <div className="bg-white rounded-md p-5 mb-5">
+        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           <OrderItem
-            icon={GoClockFill}
-            title="Pending Orders"
-            totalNumber={statistics.pending_payment?.change_rate}
-            percentage={`${statistics.pending_payment?.current} % vs. previous month`}
-            duration={`Last month: ${statistics.pending_payment?.previous}`}
+            icon={MdPayment}
+            title="Pending Payment"
+            totalNumber={statistics.pending_payment?.change_rate || 0}
+            percentage={`${statistics.pending_payment?.current || 0}% vs. previous month`}
+            duration={`Last month: ${statistics.pending_payment?.previous || 0}`}
           />
           <OrderItem
-            icon={PiClockCountdownLight}
-            title="Processing Orders"
-            totalNumber={statistics.ongoing_orders?.change_rate}
-            percentage={`${statistics.ongoing_orders?.current} % vs. previous month`}
-            duration={`Last month: ${statistics.ongoing_orders?.previous}`}
-          />
-          <OrderItem
-            icon={MdDone}
-            title="Completed Orders"
-            totalNumber={statistics.completed_orders?.change_rate}
-            percentage={`${statistics.completed_orders?.current} % vs. previous month`}
-            duration={`Last month: ${statistics.completed_orders?.previous}`}
+            icon={RiRefund2Line}
+            title="Refund Orders"
+            totalNumber={statistics.refund_orders?.change_rate || 0}
+            percentage={`${statistics.refund_orders?.current || 0}% vs. previous month`}
+            duration={`Last month: ${statistics.refund_orders?.previous || 0}`}
           />
           <OrderItem
             icon={TbCancel}
             title="Cancelled Orders"
-            totalNumber={statistics.cancelled_orders?.change_rate}
-            percentage={`${statistics.cancelled_orders?.current} % vs. previous month`}
-            duration={`Last month: ${statistics.cancelled_orders?.previous}`}
+            totalNumber={statistics.cancelled_orders?.change_rate || 0}
+            percentage={`${statistics.cancelled_orders?.current || 0}% vs. previous month`}
+            duration={`Last month: ${statistics.cancelled_orders?.previous || 0}`}
           />
           <OrderItem
-            icon={MdOutlinePayment}
-            title="Paid Orders"
-            totalNumber={statistics.payment_refund?.change_rate}
-            percentage={`${statistics.payment_refund?.current} % vs. previous month`}
-            duration={`Last month: ${statistics.payment_refund?.previous}`}
+            icon={BsClockHistory}
+            title="Ongoing Orders"
+            totalNumber={statistics.ongoing_orders?.change_rate || 0}
+            percentage={`${statistics.ongoing_orders?.current || 0}% vs. previous month`}
+            duration={`Last month: ${statistics.ongoing_orders?.previous || 0}`}
           />
           <OrderItem
-            icon={TbReceiptRefund}
-            title="Refunded Orders"
-            totalNumber={statistics.refund_orders?.change_rate}
-            percentage={`${statistics.refund_orders?.current} % vs. previous month`}
-            duration={`Last month: ${statistics.refund_orders?.previous}`}
+            icon={MdOutlineDone}
+            title="Completed Orders"
+            totalNumber={statistics.completed_orders?.change_rate || 0}
+            percentage={`${statistics.completed_orders?.current || 0}% vs. previous month`}
+            duration={`Last month: ${statistics.completed_orders?.previous || 0}`}
           />
-        </div>
+          <OrderItem
+            icon={GoClockFill}
+            title="Payment Refund"
+            totalNumber={statistics.payment_refund?.change_rate || 0}
+            percentage={`${statistics.payment_refund?.current || 0}% vs. previous month`}
+            duration={`Last month: ${statistics.payment_refund?.previous || 0}`}
+          />
+        </section>
         <h2 className="text-[18px] font-bold mt-5">Orders</h2>
         <div className="relative w-full mt-3">
           <Search
@@ -187,13 +188,13 @@ function ReceivedOrders() {
           />
           <input
             type="text"
-            placeholder="Search by order number, status, amount."
+            placeholder="Search"
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value);
               setIsSearching(true);
             }}
-            className="w-full pl-10 pr-10 py-4 bg-muted/50 rounded-md text-sm focus:outline-none border-2 border-gray-200 bg-lightgray placeholder:text-15 focus:border-primary"
+            className="w-full pl-10 pr-10 py-4 bg-muted/50 rounded-md text-sm focus:outline-none border-2 border-gray-200 bg-gray-50 placeholder:text-15 focus:border-primary"
           />
           {searchQuery && (
             <button
@@ -244,11 +245,11 @@ function ReceivedOrders() {
                         Order
                       </p>
                     </th>
-                    <th className="px-6 py-3 text-left border">Date</th>
-                    <th className="px-6 py-3 text-left border">Price</th>
-                    <th className="px-6 py-3 text-left border">Items</th>
-                    <th className="px-6 py-3 text-left border">Payment</th>
-                    <th className="px-6 py-3 text-left border">Status</th>
+                    <th className="px-3 py-3 text-left border">Date</th>
+                    <th className="px-3 py-3 text-left border">Price</th>
+                    <th className="px-3 py-3 text-left border">Items</th>
+                    <th className="px-3 py-3 text-left border">Payment</th>
+                    <th className="px-3 py-3 text-left border">Status</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -257,7 +258,12 @@ function ReceivedOrders() {
                       key={order.id}
                       className="hover:bg-gray-50 cursor-pointer"
                       onClick={() =>
-                        navigate(`/Dashboard/RecivedOrders/${order.id}`)
+                        navigate(`/Dashboard/RecivedOrders/${order.id}`, {
+                          state: {
+                            status: order.status,
+                            status_name: order.status_name
+                          }
+                        })
                       }
                     >
                       <td className="px-3  py-3 border-t border-r border-b text-gray-600 text-14">
@@ -270,14 +276,14 @@ function ReceivedOrders() {
                           {order.order_number}
                         </p>
                       </td>
-                      <td className="flex items-center gap-2 px-6 py-3 border-t border-r text-gray-600 text-14">
-                        <IoCalendarNumberOutline color="#69ABB5" />
+                      <td className="flex items-center gap-2 px-3 py-3 border-t border-r text-gray-600 text-13">
+                        <IoCalendarNumberOutline color="#69ABB5" size={15} />
                         {order.date}
                       </td>
-                      <td className="px-6 py-3 border-t border-r text-gray-600 text-14">
+                      <td className="px-3 py-3 border-t border-r text-gray-600 text-14">
                         {order.total} $
                       </td>
-                      <td className="px-6 py-3 border-t border-r text-gray-600 text-14">
+                      <td className="px-3 py-3 border-t border-r text-gray-600 text-14">
                         {order.items_count}
                       </td>
                       <td className="px-6 py-3 border-t border-r">

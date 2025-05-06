@@ -2,10 +2,10 @@ import axios from "axios";
 const API_BASE_URL = "https://";
 const live_shop_domain = localStorage.getItem("live_shop_domain");
 const role = localStorage.getItem("role");
-export const fetchInovices = async () => {
+export const getHome = async () => {
   try {
     const response = await axios({
-      url: `${API_BASE_URL}/${live_shop_domain}/api/${role}/invoices`,
+      url: `${API_BASE_URL}/${live_shop_domain}/api/${role}/dashboard`,
       method: "GET",
       headers: {
         "Accept-Language": "en",
@@ -16,7 +16,7 @@ export const fetchInovices = async () => {
       return response.data.data;
     }
   } catch (error) {
-    console.error("Failed to fetch invoices: ", error);
+    console.error("Failed to fetch homw data: ", error);
     throw error;
   }
 };

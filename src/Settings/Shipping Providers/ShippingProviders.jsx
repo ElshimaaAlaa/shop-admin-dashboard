@@ -72,18 +72,18 @@ function ShippingProviders() {
       <Helmet>
         <title>Shipping Providers | vertex</title>
       </Helmet>
-      <div className="rounded-md p-5 mx-7 bg-white mt-5">
+      <section className="rounded-md p-5 mx-5 bg-white mt-5">
         <p className="text-gray-400 text-12">Menu / Shipping Providers</p>
         <h1 className="text-17 font-bold mt-2">Shipping Providers</h1>
-      </div>
-      <div className="rounded-md bg-customOrange-mediumOrange border mt-3 border-primary p-4 mx-7 flex items-center justify-between">
+      </section>
+      <section className="rounded-md bg-customOrange-mediumOrange border mt-3 border-primary p-4 mx-5 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <FaShippingFast color="#E0A75E" size={22} />
           <p className="text-gray-500 text-15">Shipping Providers</p>
         </div>
         <p className="text-16 font-bold">{shippingData.length}</p>
-      </div>
-      <div className="bg-white rounded-md p-5 mx-7 my-3">
+      </section>
+      <section className="bg-white rounded-md p-5 mx-5 my-2">
         <SearchBar
           icon={
             <Plus
@@ -181,7 +181,7 @@ function ShippingProviders() {
             />
           </>
         )}
-      </div>
+      </section>
     </div>
   );
 }

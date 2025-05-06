@@ -66,17 +66,17 @@ function AllDiscounts() {
   };
 
   return (
-    <div className="bg-gray-100 flex flex-col h-[89vh] mx-5">
+    <div className="bg-gray-100 flex flex-col h-[89vh] mx-3">
       <Helmet>
         <title>Discounts and Promotion | vertex</title>
       </Helmet>
-      <div className=" rounded-md p-5 bg-white mt-4">
+      <section className=" rounded-md p-5 bg-white mt-3">
         <p className="text-gray-400 text-12">
           Menu / Promotions & Discounts / Promotions
         </p>
         <h1 className="mt-2 text-17 font-bold">Promotions</h1>
-      </div>
-      <div className="bg-white rounded-md p-5  my-3">
+      </section>
+      <div className="bg-white rounded-md p-5  my-2">
         <SearchBar
           icon={
             <Plus

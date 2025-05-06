@@ -29,7 +29,6 @@ function CancelOrder({ orderId, orderStatus }) {
           status: orderStatus,
         },
       });
-
       if (response.status === 200) {
         window.location.reload();
       }
@@ -47,15 +46,17 @@ function CancelOrder({ orderId, orderStatus }) {
   } else {
     document.body.classList.remove("no-scroll");
   }
-
   return (
     <div>
       <button
         className="flex items-center gap-2 rounded-md font-bold p-3 border-1 border-red-600 bg-red-50 text-red-600"
         onClick={() => setShowModal(true)}
+        disabled={orderStatus === 8 || orderStatus === "cancelled"}
       >
         <IoIosCloseCircle size={22} />
-        {orderStatus === "cancelled" ? "Cancelled" : "Cancel"}
+        {orderStatus === 8 || orderStatus === "cancelled"
+          ? "Cancelled"
+          : "Cancel"}
       </button>
 
       <FailedModal isOpen={showModal} onClose={() => setShowModal(false)}>
@@ -85,7 +86,9 @@ function CancelOrder({ orderId, orderStatus }) {
           <button
             className="bg-red-600 rounded-md text-white p-3 w-40 font-bold"
             onClick={handleCancelOrder}
-            disabled={isLoading}
+            disabled={
+              isLoading || orderStatus === 8 || orderStatus === "cancelled"
+            }
           >
             {isLoading ? <ClipLoader size={22} color="#fff" /> : "Yes, Cancel"}
           </button>

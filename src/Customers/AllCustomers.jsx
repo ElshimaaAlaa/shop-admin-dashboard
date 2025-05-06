@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { FaSackDollar } from "react-icons/fa6";
 import { BiSupport } from "react-icons/bi";
-import { BsPeopleFill } from "react-icons/bs";
 import { IoHelpCircleOutline } from "react-icons/io5";
 import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
@@ -11,34 +10,9 @@ import { ClipLoader } from "react-spinners";
 import DeleteCustomer from "./DeleteCustomer";
 import { IoCalendarNumberOutline } from "react-icons/io5";
 import ReactPaginate from "react-paginate";
-
-const CustomerItem = ({
-  icon: Icon,
-  title,
-  totalNumber,
-  percentage,
-  duration,
-}) => (
-  <div className="bg-white rounded-md border border-gray-200 flex-1 min-w-[200px]">
-    <div className="flex items-center gap-3 bg-gray-100 rounded-tl-md rounded-tr-md p-4 mb-5">
-      <Icon className="text-2xl text-primary" />
-      <h3 className="text-gray-600 text-15">{title}</h3>
-    </div>
-    <div className="flex items-center gap-4 ps-4">
-      <h1 className="text-2xl font-bold">{totalNumber}</h1>
-      <p
-        className={`text-13 font-bold rounded-md p-1 ${
-          percentage?.includes("+")
-            ? "text-[#34B41E] bg-[#E7F6E5]"
-            : "text-red-600 bg-red-50"
-        }`}
-      >
-        {percentage}
-      </p>
-    </div>
-    <p className="text-xs text-gray-400 mt-3 mb-3 ps-4">{duration}</p>
-  </div>
-);
+import { RiUser3Fill } from "react-icons/ri";
+import StatisticsCard from "../Pages/Dashboard/ReportItems";
+import { IoCopyOutline } from "react-icons/io5";
 
 function AllCustomers() {
   const navigate = useNavigate();
@@ -109,14 +83,25 @@ function AllCustomers() {
     }
     fetchCustomers();
   };
-
+  const copyPhoneNumber = () => {
+    if (customers.phone) {
+      navigator.clipboard
+        .writeText(customers.phone)
+        .then(() => {
+          alert("Phone number copied to clipboard!");
+        })
+        .catch((err) => {
+          console.error("Failed to copy phone number: ", err);
+          alert("Failed to copy phone number");
+        });
+    }
+  };
   return (
-    <div className="bg-gray-100 min-h-screen pb-10 mx-7 pt-5">
+    <div className="bg-gray-100 min-h-screen pb-10 mx-5 pt-5">
       <Helmet>
         <title>Customers | VERTEX</title>
       </Helmet>
-
-      <div className="bg-white mb-3 p-4 rounded-md flex justify-between items-center">
+      <section className="bg-white mb-3 p-4 rounded-md flex justify-between items-center">
         <div>
           <p className="text-gray-400 text-12">Menu / Customers </p>
           <h1 className="font-bold text-17 mt-2">Customers</h1>
@@ -128,45 +113,43 @@ function AllCustomers() {
           <IoHelpCircleOutline size={27} />
           Customers Support Questions
         </button>
-      </div>
-
-      <div className="bg-white rounded-md p-4 mb-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <CustomerItem
-          icon={BsPeopleFill}
+      </section>
+      <section className="bg-white rounded-md p-4 mb-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+        <StatisticsCard
+          icon={RiUser3Fill}
           title="All Customers"
           totalNumber={statistics.customers?.change_rate || 0}
           percentage={`${
             statistics.customers?.current_month_count || 0
           }% vs. previous month`}
-          duration={`last month: ${
+          duration={`Last month: ${
             statistics.customers?.previous_month_count || 0
           }`}
         />
-        <CustomerItem
+        <StatisticsCard
           icon={BiSupport}
           title="Support Requests"
           totalNumber={statistics.contacts?.change_rate || 0}
           percentage={`${
             statistics.contacts?.current_month_count || 0
           }% vs. previous month`}
-          duration={`last month: ${
+          duration={`Last month: ${
             statistics.contacts?.previous_month_count || 0
           }`}
         />
-        <CustomerItem
+        <StatisticsCard
           icon={FaSackDollar}
           title="Payments"
           totalNumber={statistics.payments?.change_rate || 0}
           percentage={`${
             statistics.payments?.current_month_count || 0
           }% vs. previous month`}
-          duration={`last month: ${
+          duration={`Last month: ${
             statistics.payments?.previous_month_count || 0
           }`}
         />
-      </div>
-
-      <div className="bg-white rounded-md p-4">
+      </section>
+      <section className="bg-white rounded-md p-4">
         <div className="relative w-full mt-3">
           <Search
             className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5"
@@ -178,9 +161,9 @@ function AllCustomers() {
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value);
-              setCurrentPage(0); // Reset to first page when searching
+              setCurrentPage(0);
             }}
-            className="w-full pl-10 pr-4 py-4 bg-muted/50 rounded-md text-sm focus:outline-none border-2 border-gray-200 bg-lightgray placeholder:text-15 focus:border-primary"
+            className="w-full pl-10 pr-4 py-4 bg-muted/50 rounded-md text-sm focus:outline-none border-2 border-gray-200 bg-gray-50 placeholder:text-15 focus:border-primary"
           />
         </div>
 
@@ -204,7 +187,7 @@ function AllCustomers() {
               <table className="bg-white min-w-full table">
                 <thead>
                   <tr>
-                    <th className="px-3 py-3 border-t border-b text-left cursor-pointer">
+                    <th className="px-3 py-3 text-15 border-t border-b text-left cursor-pointer">
                       <p className="flex items-center gap-3">
                         <input
                           type="checkbox"
@@ -214,10 +197,16 @@ function AllCustomers() {
                         Customer
                       </p>
                     </th>
-                    <th className="px-6 py-3 text-left border">Phone Number</th>
-                    <th className="px-6 py-3 text-left border">Joining Date</th>
-                    <th className="px-6 py-3 text-left border">Spent</th>
-                    <th className="px-6 py-3 border text-center w-20">
+                    <th className="px-3 py-3 text-15 text-left border ">
+                      Phone Number
+                    </th>
+                    <th className="px-3 py-3 text-15 text-left border">
+                      Joining Date
+                    </th>
+                    <th className="px-3 py-3 text-15 text-left border">
+                      Spent
+                    </th>
+                    <th className="px-3 py-3 text-15border text-center w-20">
                       Actions
                     </th>
                   </tr>
@@ -226,7 +215,7 @@ function AllCustomers() {
                   {currentItems.map((customer) => (
                     <tr key={customer.id} className="border-t hover:bg-gray-50">
                       <td
-                        className="px-3 py-3 border-t text-14 border-r w-250 cursor-pointer"
+                        className="px-3 py-3 border-t text-15 border-r w-250 cursor-pointer"
                         onClick={() =>
                           navigate(`/Dashboard/AllCustomers/${customer.id}`)
                         }
@@ -239,21 +228,32 @@ function AllCustomers() {
                           />
                           {customer.name}
                         </p>
-                        <p className="text-gray-600 ms-6 text-13">
+                        <p className="text-gray-600 ms-7 text-13">
                           {customer.email}
                         </p>
                       </td>
-                      <td className="px-3 py-3 border-t text-gray-600 border-r text-15 w-250">
-                        {customer.phone || "N/A"}
-                      </td>
                       <td className="px-3 py-3 border-t text-gray-600 border-r text-14 w-250">
                         <p className="flex items-center gap-2">
-                          <IoCalendarNumberOutline color="#69ABB5" />
+                          {customer.phone || "N/A"}
+                          {customer?.phone && (
+                            <button
+                              onClick={copyPhoneNumber}
+                              className="text-blue-500 hover:text-blue-700 text-sm flex items-center gap-1"
+                              title="Copy phone number"
+                            >
+                              <IoCopyOutline color="#E0A75E" size={15} />
+                            </button>
+                          )}
+                        </p>
+                      </td>
+                      <td className="px-3 py-3 border-t text-gray-500 border-r text-13 w-250">
+                        <p className="flex items-center gap-2">
+                          <IoCalendarNumberOutline color="#69ABB5" size={17} />
                           {customer.joining_date || "N/A"}
                         </p>
                       </td>
                       <td className="px-3 py-3 border-t text-gray-600 border-r text-15 w-250">
-                        ${customer.spent || 0}
+                        {customer.spent || 0} $
                       </td>
                       <td className="text-center px-3 py-3">
                         <DeleteCustomer
@@ -280,9 +280,8 @@ function AllCustomers() {
             />
           </>
         )}
-      </div>
+      </section>
     </div>
   );
 }
-
 export default AllCustomers;
