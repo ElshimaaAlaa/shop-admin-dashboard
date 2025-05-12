@@ -2,7 +2,6 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { useParams } from "react-router-dom";
-
 const FALLBACK_TEXT = "__";
 const InventoryItem = ({ label, value }) => (
   <div>
@@ -60,7 +59,7 @@ function ViewProduct() {
   const hasSizes = productData.sizes && productData.sizes.length > 0;
 
   return (
-    <div className="bg-gray-100 min-h-screen flex flex-col mx-7">
+    <div className="bg-gray-100 min-h-screen flex flex-col mx-5">
       <Helmet>
         <title>View Product - VERTEX</title>
         <meta name="description" content="View product details in VERTEX" />

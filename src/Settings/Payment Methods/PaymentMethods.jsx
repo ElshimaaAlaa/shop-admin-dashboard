@@ -189,5 +189,4 @@ function PaymentMethods() {
     </div>
   );
 }
-
 export default PaymentMethods;

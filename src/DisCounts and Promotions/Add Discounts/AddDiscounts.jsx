@@ -5,11 +5,13 @@ import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { formatDate } from "../../Components/DropDowns/dateFormatter";
-import { API_BASE_URL  ,API_URL} from "../../ApiServices/apiEndpoints";
+import { API_BASE_URL, API_URL } from "../../ApiServices/apiEndpoints";
 import PromotionBasicInfo from "../../Components/DropDowns/PromotionBasicInfo";
 import PromotionDetails from "../../Components/DropDowns/PromotionDetails";
 import Footer from "../../Components/Footer/Footer";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
+import { ClipLoader } from "react-spinners";
+
 const NewPromotion = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -18,6 +20,7 @@ const NewPromotion = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [datesSelected, setDatesSelected] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
   const live_shop_domain = localStorage.getItem("live_shop_domain");
@@ -26,6 +29,7 @@ const NewPromotion = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setIsLoading(true);
         const [productsResponse, categoriesResponse] = await Promise.all([
           axios.get(`${API_URL}${live_shop_domain}/api/${role}/products`, {
             headers: {
@@ -83,8 +87,13 @@ const NewPromotion = () => {
       .min(1, "At least one product is required"),
   });
 
-  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+  const handleSubmit = async (values, { resetForm }) => {
+    if (isSubmitting) return;
+    
+    setIsSubmitting(true);
     setIsLoading(true);
+    setError("");
+
     try {
       const formData = new FormData();
       formData.append("name[en]", values.name);
@@ -98,8 +107,7 @@ const NewPromotion = () => {
         formData.append(`items[${index}][product_id]`, item.product_id);
         formData.append(`items[${index}][quantity]`, item.quantity);
       });
-
-      const response = await axios.post(API_BASE_URL, formData, {
+      await axios.post(API_BASE_URL, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           live_shop_domain: live_shop_domain,
@@ -107,7 +115,6 @@ const NewPromotion = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-
       setSuccess("Promotion created successfully!");
       setShowModal(true);
       resetForm();
@@ -120,54 +127,56 @@ const NewPromotion = () => {
       setError(errorMessage);
     } finally {
       setIsLoading(false);
-      setSubmitting(false);
+      setIsSubmitting(false);
     }
   };
-
   return (
     <div className="bg-gray-100 flex flex-col min-h-screen relative">
       <Helmet>
         <title>Add New Promotion | vertex</title>
       </Helmet>
 
-      <section className="rounded-md p-5 mx-3 bg-white mt-3">
+      <section className="rounded-md p-5 mx-5 bg-white mt-5">
         <p className="text-12 text-gray-400">Menu / Product / Add Promotion</p>
         <h1 className="mt-3 text-16 font-bold">Add New Promotions</h1>
       </section>
-
+      {error && (
+        <div className="mx-5 mt-5 p-3 bg-red-100 text-red-700 rounded-md">
+          {error}
+        </div>
+      )}
       <Formik
         initialValues={initialValues}
         validationSchema={promotionSchema}
         onSubmit={handleSubmit}
       >
-        {({ values, errors, touched, setFieldValue, submitForm, isValid, dirty }) => (
+        {({ values, errors, touched, setFieldValue, isValid, dirty }) => (
           <Form className="my-3">
-            <div className="flex gap-4 mx-3 pb-32">
+            <div className="flex gap-3 mx-5 pb-32">
               <PromotionBasicInfo 
                 products={products} 
                 categories={categories} 
                 values={values}
                 setFieldValue={setFieldValue}
+                errors={errors}
+                touched={touched}
               />
-              
               <PromotionDetails
                 values={values}
                 errors={errors}
                 touched={touched}
                 setFieldValue={setFieldValue}
-                submitForm={submitForm}
-                isValid={isValid}
-                dirty={dirty}
                 datesSelected={datesSelected}
                 setDatesSelected={setDatesSelected}
               />
             </div>
-            
             <Footer
               saveBtnType="submit"
-              saveText="Save"
+              saveText={isLoading ? <ClipLoader color="#fff" size={22}/>: "Save"}
               cancelText="Cancel"
               cancelBtnType="button"
+              saveDisabled={isSubmitting || !isValid || !dirty}
+              onCancel={() => navigate("/Dashboard/AllDiscounts")}
             />
           </Form>
         )}

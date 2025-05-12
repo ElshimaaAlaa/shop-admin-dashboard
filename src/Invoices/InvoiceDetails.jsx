@@ -75,14 +75,12 @@ function InvoiceDetails() {
   };
 
   return (
-    <div className="bg-gray-100 pb-10 pt-3 flex flex-col min-h-[89vh] mx-3">
+    <div className="bg-gray-100 pb-10 pt-5 flex flex-col min-h-[89vh] mx-10">
       <Helmet>
         <title>Invoice Details | vertex</title>
       </Helmet>
-      <section className="rounded-md p-5 bg-white">
-        <p className="text-gray-400 text-12">Menu / Invoice Details</p>
-        <div className="flex justify-between items-center">
-          <h1 className="mt-2 text-17 font-bold">Invoice Details</h1>
+        <section className="flex justify-between items-center my-4">
+          <h1 className="mt-2 text-xl font-bold">Invoice Details</h1>
           <button
             onClick={downloadPdf}
             disabled={isGeneratingPdf || isLoading}
@@ -99,12 +97,10 @@ function InvoiceDetails() {
               </>
             )}
           </button>
-        </div>
-      </section>
-      
-      <section ref={invoiceRef} className="rounded-xl border-1 border-gray-200 py-6 px-5 bg-white mt-3">
+        </section>
+      <section ref={invoiceRef} className="rounded-2xl border-1 border-gray-200 py-6 px-8 bg-white mt-3">
         {/* Invoice Header */}
-        <div className="flex justify-between rounded-xl border-2 border-primary bg-customOrange-mediumOrange py-8 ps-3 pe-7">
+        <div className="flex justify-between rounded-2xl border-2 border-primary bg-customOrange-mediumOrange py-8 ps-3 pe-7">
           <div className="">
             <div>
               <img
@@ -113,20 +109,20 @@ function InvoiceDetails() {
                 className="h-12 w-56"
               />
             </div>
-            <div className="flex items-center justify-between mt-10 gap-14 ms-6">
+            <div className="flex items-center justify-between mt-8 gap-14 ms-6">
               <div>
                 <p className="text-gray-500 text-15">Issued on</p>
-                <p className="text-15 mt-2">{data.date}</p>
+                <p className="text-14 mt-1">{data.date}</p>
               </div>
               <div>
                 <p className="text-gray-500 text-15">Payment Due</p>
-                <p className="mt-2 text-15">{data.payment_date}</p>
+                <p className="mt-1 text-14">{data.payment_date}</p>
               </div>
             </div>
           </div>
           <div className="flex flex-col items-end gap-4">
             <p className="text-gray-500 text-15 text-right">Invoice No.</p>
-            <p className="font-bold text-2xl">{data.invoice_number}</p>
+            <p className="font-bold text-xl">{data.invoice_number}</p>
             <p
               className={`px-2 py-2 flex items-center justify-center gap-1  w-20 rounded-md text-14 ${
                 data.payment_status === "unpaid"
@@ -145,7 +141,7 @@ function InvoiceDetails() {
         {/* Issue From and For */}
         <div className="mt-8 flex items-center gap-32 mx-1">
           <div className="flex flex-col gap-5">
-            <h2 className="font-bold text-16 mb-4">Issue From :</h2>
+            <h2 className="font-bold text-17 mb-4">Issue From :</h2>
             <p className="flex items-center gap-8 text-15">
               Name
               <span className="text-gray-500">
@@ -166,7 +162,7 @@ function InvoiceDetails() {
             </p>
           </div>
           <div className="flex flex-col gap-4">
-            <h2 className="font-bold text-16 mb-4">Issue For :</h2>
+            <h2 className="font-bold text-17 mb-4">Issue For :</h2>
             <p className="flex items-center gap-8 text-15">
               Name
               <span className="text-gray-500">
@@ -190,7 +186,7 @@ function InvoiceDetails() {
 
         {/* Products Table */}
         <section>
-          <h2 className="font-bold text-17 mt-8 mb-4 mx-1">Products</h2>
+          <h2 className="font-bold text-17 mt-10 mb-4 mx-1">Products</h2>
           {error ? (
             <div className="text-red-500 text-center mt-10">
               Failed to fetch products. Please try again.
@@ -209,16 +205,16 @@ function InvoiceDetails() {
                 <table className="min-w-full">
                   <thead>
                     <tr className="bg-gray-50">
-                      <th className="text-left text-gray-600 font-light px-3 py-3">
+                      <th className="text-left text-gray-500 text-15 font-light px-3 py-3">
                         Items
                       </th>
-                      <th className="text-gray-600 font-light py-3 text-left">
+                      <th className="text-gray-500 text-15 font-light py-3 text-left">
                         Qty.
                       </th>
-                      <th className="text-gray-600 font-light py-3 text-left">
+                      <th className="text-gray-500 text-15 font-light py-3 text-left">
                         Price
                       </th>
-                      <th className="text-gray-600 font-light py-3 text-left">
+                      <th className="text-gray-500 text-15 font-light py-3 text-left">
                         Total
                       </th>
                     </tr>
@@ -240,7 +236,7 @@ function InvoiceDetails() {
                               {product.product_name}
                             </div>
 
-                            <div className="flex flex-col ms-12">
+                            <div className="flex flex-col ms-10">
                               <span className="text-gray-500 text-13">
                                 size : {product.size}
                               </span>

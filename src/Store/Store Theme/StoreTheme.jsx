@@ -23,7 +23,6 @@ function StoreTheme() {
       window.open(imageUrl, "_blank");
     }
   };
-
   const handleDownloadImage = () => {
     if (imageUrl) {
       const link = document.createElement("a");

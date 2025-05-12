@@ -49,7 +49,6 @@ function AllDiscounts() {
       setIsLoading(false);
     }
   };
-
   useEffect(() => {
     fetchData();
   }, [searchQuery, pagination.current_page]);
@@ -66,11 +65,11 @@ function AllDiscounts() {
   };
 
   return (
-    <div className="bg-gray-100 flex flex-col h-[89vh] mx-3">
+    <div className="bg-gray-100 flex flex-col h-[89vh] mx-5">
       <Helmet>
         <title>Discounts and Promotion | vertex</title>
       </Helmet>
-      <section className=" rounded-md p-5 bg-white mt-3">
+      <section className=" rounded-md p-5 bg-white mt-5">
         <p className="text-gray-400 text-12">
           Menu / Promotions & Discounts / Promotions
         </p>
@@ -152,9 +151,9 @@ function AllDiscounts() {
                           {discount.quantity}
                         </p>
                       </td>
-                      <td className="px-3 py-3 border-t text-gray-600 border-r text-12 w-250">
+                      <td className="px-3 py-3 border-t text-gray-600 border-r text-13 w-250">
                         <p className="flex items-center gap-2">
-                          <IoCalendarNumberOutline color="#69ABB5" size={14} />
+                          <IoCalendarNumberOutline color="#69ABB5" size={16} />
                           {discount.end_date || "N/A"}
                         </p>
                       </td>

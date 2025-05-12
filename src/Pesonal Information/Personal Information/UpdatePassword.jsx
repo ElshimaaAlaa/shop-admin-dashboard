@@ -57,11 +57,10 @@ function UpdatePassword() {
       setIsLoading(false);
     }
   };
-
   return (
     <div>
       <button
-        className="flex items-center gap-2 border-2 border-primary rounded-md p-3 text-primary mt-5"
+        className="flex items-center gap-2 border-1 border-primary rounded-md p-3 text-primary mt-5"
         onClick={() => setShowModal(true)}
         aria-label="Update password"
       >

@@ -1,8 +1,8 @@
 import * as React from "react";
 const Discount = (props) => (
   <svg
-    width={31}
-    height={31}
+    width={29}
+    height={29}
     viewBox="0 0 21 20"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"

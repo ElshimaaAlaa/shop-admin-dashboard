@@ -248,7 +248,7 @@ function AllCustomers() {
                       </td>
                       <td className="px-3 py-3 border-t text-gray-500 border-r text-13 w-250">
                         <p className="flex items-center gap-2">
-                          <IoCalendarNumberOutline color="#69ABB5" size={17} />
+                          <IoCalendarNumberOutline color="#69ABB5" size={16} />
                           {customer.joining_date || "N/A"}
                         </p>
                       </td>

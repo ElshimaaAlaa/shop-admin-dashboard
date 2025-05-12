@@ -71,9 +71,8 @@ function OrderDetails() {
       {orderStatusName || orderDetail.status_name}
     </p>
   );
-
   return (
-    <div className="bg-gray-100 pb-10 mx-3 pt-3">
+    <div className="bg-gray-100 pb-10 mx-5 pt-5">
       <Helmet>
         <title>Orders Details | VERTEX</title>
       </Helmet>

@@ -14,7 +14,7 @@ const PromotionDetails = ({
   datesSelected,
   setDatesSelected,
 }) => (
-  <div className="rounded-md p-5 bg-white w-full h-56">
+  <div className="rounded-md p-5 bg-white w-full h-52">
     <h3 className="font-bold text-16 mb-4">Promotion Details</h3>
     <InputField name="total_price" placeholder="Total price" />
     <div className="mt-4 relative">
@@ -39,7 +39,6 @@ const PromotionDetails = ({
     </div>
   </div>
 );
-
 PromotionDetails.propTypes = {
   values: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired,
@@ -51,5 +50,4 @@ PromotionDetails.propTypes = {
   datesSelected: PropTypes.bool.isRequired,
   setDatesSelected: PropTypes.func.isRequired,
 };
-
 export default PromotionDetails;

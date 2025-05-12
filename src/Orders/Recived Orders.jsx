@@ -13,7 +13,7 @@ import { MdPayment } from "react-icons/md";
 import { RiRefund2Line } from "react-icons/ri";
 import { MdOutlineDone } from "react-icons/md";
 import { BsClockHistory } from "react-icons/bs";
-
+import StatisticsCard from "../Pages/Dashboard/ReportItems";
 function ReceivedOrders() {
   const [orders, setOrders] = useState([]);
   const [statistics, setStatistics] = useState({});
@@ -40,38 +40,6 @@ function ReceivedOrders() {
 
     return () => clearTimeout(timer);
   }, [searchQuery]);
-
-  const OrderItem = ({
-    icon: Icon,
-    title,
-    totalNumber,
-    percentage,
-    duration,
-  }) => {
-    // Determine if the change is positive
-    const isPositive = Math.sign(Number(totalNumber)) >= 0;
-    return (
-      <div className="bg-white rounded-md border border-gray-200 flex-1 min-w-[200px]">
-        <div className="flex items-center gap-2 bg-gray-100 rounded-tl-md rounded-tr-md p-3 mb-5">
-          <Icon className="text-2xl text-primary" />
-          <h3 className="text-gray-600 text-14">{title}</h3>
-        </div>
-        <div className="flex items-center gap-4 ps-4">
-          <h1 className="text-2xl font-bold">{totalNumber}</h1>
-          <p
-            className={`text-13 font-bold rounded-md p-1 ${
-              isPositive
-                ? "text-[#34B41E] bg-[#E7F6E5]"
-                : "text-red-600 bg-red-50"
-            }`}
-          >
-            {percentage}
-          </p>
-        </div>
-        <p className="text-xs text-gray-400 mt-3 mb-3 ps-4">{duration}</p>
-      </div>
-    );
-  };
   const filteredOrders = Array.isArray(orders)
     ? orders.filter((order) => {
         if (!debouncedSearchQuery) return true;
@@ -127,7 +95,7 @@ function ReceivedOrders() {
   };
 
   return (
-    <div className="bg-gray-100 py-3 mx-3">
+    <div className="bg-gray-100 py-5 mx-5">
       <Helmet>
         <title>Orders | VERTEX</title>
       </Helmet>
@@ -137,46 +105,64 @@ function ReceivedOrders() {
       </section>
       <div className="bg-white rounded-md p-5 mb-5">
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-          <OrderItem
+          <StatisticsCard
             icon={MdPayment}
             title="Pending Payment"
             totalNumber={statistics.pending_payment?.change_rate || 0}
-            percentage={`${statistics.pending_payment?.current || 0}% vs. previous month`}
-            duration={`Last month: ${statistics.pending_payment?.previous || 0}`}
+            percentage={`${
+              statistics.pending_payment?.current || 0
+            }% vs. previous month`}
+            duration={`Last month: ${
+              statistics.pending_payment?.previous || 0
+            }`}
           />
-          <OrderItem
+          <StatisticsCard
             icon={RiRefund2Line}
             title="Refund Orders"
             totalNumber={statistics.refund_orders?.change_rate || 0}
-            percentage={`${statistics.refund_orders?.current || 0}% vs. previous month`}
+            percentage={`${
+              statistics.refund_orders?.current || 0
+            }% vs. previous month`}
             duration={`Last month: ${statistics.refund_orders?.previous || 0}`}
           />
-          <OrderItem
+          <StatisticsCard
             icon={TbCancel}
             title="Cancelled Orders"
             totalNumber={statistics.cancelled_orders?.change_rate || 0}
-            percentage={`${statistics.cancelled_orders?.current || 0}% vs. previous month`}
-            duration={`Last month: ${statistics.cancelled_orders?.previous || 0}`}
+            percentage={`${
+              statistics.cancelled_orders?.current || 0
+            }% vs. previous month`}
+            duration={`Last month: ${
+              statistics.cancelled_orders?.previous || 0
+            }`}
           />
-          <OrderItem
+          <StatisticsCard
             icon={BsClockHistory}
             title="Ongoing Orders"
             totalNumber={statistics.ongoing_orders?.change_rate || 0}
-            percentage={`${statistics.ongoing_orders?.current || 0}% vs. previous month`}
+            percentage={`${
+              statistics.ongoing_orders?.current || 0
+            }% vs. previous month`}
             duration={`Last month: ${statistics.ongoing_orders?.previous || 0}`}
           />
-          <OrderItem
+          <StatisticsCard
             icon={MdOutlineDone}
             title="Completed Orders"
             totalNumber={statistics.completed_orders?.change_rate || 0}
-            percentage={`${statistics.completed_orders?.current || 0}% vs. previous month`}
-            duration={`Last month: ${statistics.completed_orders?.previous || 0}`}
+            percentage={`${
+              statistics.completed_orders?.current || 0
+            }% vs. previous month`}
+            duration={`Last month: ${
+              statistics.completed_orders?.previous || 0
+            }`}
           />
-          <OrderItem
+          <StatisticsCard
             icon={GoClockFill}
             title="Payment Refund"
             totalNumber={statistics.payment_refund?.change_rate || 0}
-            percentage={`${statistics.payment_refund?.current || 0}% vs. previous month`}
+            percentage={`${
+              statistics.payment_refund?.current || 0
+            }% vs. previous month`}
             duration={`Last month: ${statistics.payment_refund?.previous || 0}`}
           />
         </section>
@@ -261,8 +247,8 @@ function ReceivedOrders() {
                         navigate(`/Dashboard/RecivedOrders/${order.id}`, {
                           state: {
                             status: order.status,
-                            status_name: order.status_name
-                          }
+                            status_name: order.status_name,
+                          },
                         })
                       }
                     >

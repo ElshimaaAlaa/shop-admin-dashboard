@@ -149,12 +149,12 @@ const DateRangePicker = ({
 
   return (
     <div className="date-range-picker" ref={calendarRef}>
-      <div className="flex gap-4">
+      <div className="flex gap-2">
         <div className="w-full">
           <div className="relative">
             <input
               type="text"
-              className={`w-full text-14 h-14 p-2 border-2 rounded-md outline-none ${
+              className={`w-full text-14 h-12 p-2 border-2 rounded-md outline-none ${
                 startError && startTouched
                   ? "border-red-500"
                   : "border-gray-200"
@@ -174,7 +174,7 @@ const DateRangePicker = ({
           <div className="relative">
             <input
               type="text"
-              className={`w-full text-14 h-14 p-2 border-2 rounded-md outline-none ${
+              className={`w-full text-14 h-12 p-2 border-2 rounded-md outline-none ${
                 endError && endTouched ? "border-red-500" : "border-gray-200"
               } focus:border-primary`}
               placeholder="End date"
@@ -254,7 +254,6 @@ const DateRangePicker = ({
     </div>
   );
 };
-
 DateRangePicker.propTypes = {
   startDate: PropTypes.instanceOf(Date),
   endDate: PropTypes.instanceOf(Date),
@@ -266,5 +265,4 @@ DateRangePicker.propTypes = {
   endTouched: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
 };
-
 export default DateRangePicker;

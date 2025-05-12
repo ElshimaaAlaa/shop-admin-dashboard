@@ -1,0 +1,43 @@
+import { IoCopyOutline } from "react-icons/io5";
+
+export const CustomerPersonalInfo = ({ customerData, copyPhoneNumber }) => (
+  <div>
+    <section className="rounded-md bg-white p-3 border border-gray-200">
+      <h3 className="font-bold text-17">Personal Info</h3>
+      <img
+        src={customerData.personal_info?.image}
+        alt="customer pic"
+        className="rounded-md mt-4 w-300 h-52"
+      />
+      <div className="mt-4">
+        <h4 className="text-gray-400 text-14">Name</h4>
+        <p className="text-14">{customerData.personal_info?.name}</p>
+      </div>
+      <div className="mt-4">
+        <h4 className="text-gray-400 text-14">Email</h4>
+        <p className="text-14">{customerData.personal_info?.email}</p>
+      </div>
+      <div className="mt-4">
+        <h4 className="text-gray-400 text-14">Phone</h4>
+        <p className="text-14 flex items-center gap-2">
+          {customerData.personal_info?.phone}
+          {customerData.personal_info?.phone && (
+            <button
+              onClick={copyPhoneNumber}
+              className="text-blue-500 hover:text-blue-700 text-sm flex items-center gap-1"
+              title="Copy phone number"
+            >
+              <IoCopyOutline color="#E0A75E" size={15} />
+            </button>
+          )}
+        </p>
+      </div>
+    </section>
+    <section className="rounded-md bg-white p-4 border-1 border-gray-200 mt-3">
+      <h3 className="font-bold text-16">Shipping Address</h3>
+      <p className="text-13 mt-3">
+        {customerData.personal_info?.address || "No provided address"}
+      </p>
+    </section>
+  </div>
+);

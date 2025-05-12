@@ -95,7 +95,7 @@ function PaymentInfo({
       });
 
       const response = await setUpStore(formDataToSend);
-      
+
       if (onSubmit) {
         onSubmit({
           ...formData,
@@ -103,7 +103,7 @@ function PaymentInfo({
           ...response.data,
         });
       }
-      
+
       localStorage.setItem(
         "paymentInfo",
         JSON.stringify({
@@ -117,7 +117,7 @@ function PaymentInfo({
           card_cvv: values.card_cvv,
         })
       );
-      
+
       navigate("/Register/ShippingProvider", {
         state: {
           ...formData,
@@ -163,28 +163,30 @@ function PaymentInfo({
         >
           {({ values, setFieldValue }) => (
             <Form className="ps-6 pe-6">
-              <h2 className="font-bold mb-3 mt-3">Contact Info</h2>
-              <div className="flex gap-3">
-                <InputField name="name" placeholder="Name" />
-                <InputField name="email" placeholder="Email" type="email" />
-              </div>
-              <div className="flex gap-3 mt-3 w-[274px]">
-                <InputField
-                  name="phone"
-                  placeholder="Phone Number"
-                  type="tel"
-                />
-              </div>
-              
+              <section>
+                <h2 className="font-bold mb-3 mt-3">Contact Info</h2>
+                <div className="flex gap-2">
+                  <InputField name="name" placeholder="Name" />
+                  <InputField name="email" placeholder="Email" type="email" />
+                </div>
+                <div className="flex gap-3 mt-3">
+                  <InputField
+                    name="phone"
+                    placeholder="Phone Number"
+                    type="tel"
+                  />
+                  <div className="w-full"></div>
+                </div>
+              </section>
               <h2 className="font-bold mt-4 mb-3">Payment Method</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
                 {paymentMethods.map((method) => (
                   <label
                     key={method.id}
-                    className={`rounded-lg p-2 flex items-center gap-2 font-bold text-14 cursor-pointer transition-colors ${
+                    className={`rounded-lg p-1 flex items-center gap-2 font-bold text-14 cursor-pointer transition-colors ${
                       values.payment_method === method.id
                         ? "bg-primary-light border border-primary bg-customOrange-mediumOrange"
-                        : "bg-gray-50 hover:bg-gray-200"
+                        : "bg-gray-50 hover:bg-gray-100"
                     }`}
                   >
                     <Field
@@ -192,7 +194,9 @@ function PaymentInfo({
                       name="payment_method"
                       value={method.id}
                       className="hidden"
-                      onChange={() => setFieldValue("payment_method", method.id)}
+                      onChange={() =>
+                        setFieldValue("payment_method", method.id)
+                      }
                     />
                     <span className="w-10 h-10 flex items-center justify-center">
                       {method.icon}
@@ -201,27 +205,28 @@ function PaymentInfo({
                   </label>
                 ))}
               </div>
-
               {values.payment_method && (
-                <div className="bg-gray-50 p-4 rounded-md">
+                <section className="bg-gray-50 py-2 px-4 rounded-md">
                   <h4 className="font-bold mt-4 mb-3">Payment Data</h4>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
                     <InputField name="card_cvv" placeholder="CVV" />
-                    <Field
-                      name="expiration_date"
-                      placeholder="MM/YY"
-                      type="date"
-                      className={`w-full h-14 p-3 border-2 rounded-md outline-none transition-all duration-200 placeholder:text-14 focus:border-primary`}
-                      onChange={(e) => {
-                        let value = e.target.value;
-                        if (value.length === 2 && !value.includes("/")) {
-                          value = value + "/";
-                        }
-                        setFieldValue("expiration_date", value);
-                      }}
-                    />
+                    <div className="w-full">
+                      <Field
+                        name="expiration_date"
+                        placeholder="MM/YY"
+                        type="date"
+                        className={`w-full h-12 p-3 border-2 rounded-md outline-none transition-all duration-200 placeholder:text-14 focus:border-primary`}
+                        onChange={(e) => {
+                          let value = e.target.value;
+                          if (value.length === 2 && !value.includes("/")) {
+                            value = value + "/";
+                          }
+                          setFieldValue("expiration_date", value);
+                        }}
+                      />
+                    </div>
                   </div>
-                  <div className="flex items-center gap-3 mt-3">
+                  <div className="flex items-center gap-2 mt-3">
                     <InputField
                       name="card_holder_name"
                       placeholder="Card Holder Name"
@@ -233,10 +238,9 @@ function PaymentInfo({
                       inputMode="numeric"
                     />
                   </div>
-                </div>
+                </section>
               )}
-
-              <div className="flex items-center gap-3 justify-end my-5">
+              <section className="flex items-center gap-3 justify-end my-5">
                 <button
                   type="button"
                   onClick={() => navigate("/Register/PricingPlan")}
@@ -257,7 +261,7 @@ function PaymentInfo({
                     </>
                   )}
                 </button>
-              </div>
+              </section>
             </Form>
           )}
         </Formik>
@@ -265,7 +269,6 @@ function PaymentInfo({
     </div>
   );
 }
-
 PaymentInfo.propTypes = {
   onSubmit: PropTypes.func,
   onBack: PropTypes.func,

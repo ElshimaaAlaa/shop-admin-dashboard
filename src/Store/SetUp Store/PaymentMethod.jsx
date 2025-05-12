@@ -97,7 +97,7 @@ function PaymentMethods() {
             <Form>
               {loading ? (
                 <div className="flex justify-center p-8">
-                  <ClipLoader size={30} color="#ff6b00" />
+                  <ClipLoader size={30} color="#E0A75E" />
                 </div>
               ) : error ? (
                 <div className="mx-6 p-4 bg-red-100 text-red-700 rounded-md">
@@ -150,7 +150,7 @@ function PaymentMethods() {
                                 )}
                                 onChange={() => {}}
                               />
-                              <span className="w-4 h-4 border-2 border-black rounded flex items-center justify-center transition-all duration-200 peer-checked:border-primary">
+                              <span className="w-4 h-4 border-1 border-black rounded flex items-center justify-center transition-all duration-200 peer-checked:border-primary">
                                 <svg
                                   className="w-3 h-3 text-primary opacity-0 transition-all duration-200 peer-checked:opacity-100"
                                   viewBox="0 0 20 20"

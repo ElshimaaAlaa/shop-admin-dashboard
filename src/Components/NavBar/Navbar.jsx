@@ -1,49 +1,29 @@
 import React from "react";
-import { Bell, Search } from "lucide-react";
 import ProfileMenu from "../../Profile/Profile";
-import LanguageSelector from "../../Profile/UpdateLanguage";
+import { BsFillPinAngleFill } from "react-icons/bs";
 
-function Navbar() {
+function Navbar({ onPinToggle, isPinned }) {
   return (
-    <div className="">
-      <nav className="flex items-center justify-between px-4 py-2 bg-white border-b-2 border-gray-200">
-        {/* Left section */}
+    <div className="bg-white shadow-sm">
+      <nav className="flex items-center justify-between px-4 py-2 border-b border-gray-200">
         <div className="flex items-center gap-4">
-          <button variant="ghost" className="p-2">
-            <img
-              src="/assets/images/arrow-multi-line-right_svgrepo.com.png"
-              alt="Logo"
-              className="w-9 h-9"
-            />
-          </button>
-          <div className="relative">
-            <Search
-              color="#E0A75E"
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5"
-            />
-            <input
-              type="text"
-              placeholder="Search Something Here"
-              className="w-[400px] pl-10 pr-4 py-3 bg-muted/50 rounded-md text-sm focus:outline-none border border-gray-200 bg-gray-50"
-            />
-          </div>
-        </div>
-        {/* Right section */}
-        <div className="flex items-center gap-5">
-          <LanguageSelector />
-          {/* Notifications */}
-          <button
-            variant="ghost"
-            size="icon"
-            className="relative bg-gray-100 rounded-md p-3"
+          {/* <button 
+            onClick={onPinToggle}
+            className="p-1 rounded-md hover:bg-gray-100 transition-colors"
+            aria-label={isPinned ? "Unpin sidebar" : "Pin sidebar"}
           >
-            <Bell className="w-5 h-5" />
-            <span className="absolute top-2 right-3 w-2 h-2 bg-red-600 text-white text-11 rounded-full flex items-center justify-center"></span>
-          </button>
+            <BsFillPinAngleFill 
+              size={20} 
+              className={isPinned ? "text-orange-500" : "text-gray-500"} 
+            />
+          </button> */}
+        </div>
+        <div className="flex items-center gap-5">
           <ProfileMenu />
         </div>
       </nav>
     </div>
   );
 }
+
 export default Navbar;

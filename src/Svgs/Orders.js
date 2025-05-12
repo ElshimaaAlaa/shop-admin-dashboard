@@ -1,8 +1,8 @@
 import * as React from "react";
 const Orders = (props) => (
   <svg
-    width={36}
-    height={36}
+    width={31}
+    height={31}
     viewBox="0 0 35 35"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"

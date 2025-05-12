@@ -1,8 +1,8 @@
 import * as React from "react";
 const Invoices = (props) => (
   <svg
-    width={30}
-    height={30}
+    width={27}
+    height={27}
     viewBox="0 0 18 21"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
