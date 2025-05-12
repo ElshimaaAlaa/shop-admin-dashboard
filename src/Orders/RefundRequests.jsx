@@ -117,10 +117,10 @@ function RefundRequests() {
                       Order
                     </p>
                   </th>
-                  <th className="px-6 py-3 text-left border">Date</th>
-                  <th className="px-6 py-3 text-left border">Price</th>
-                  <th className="px-6 py-3 text-left border">Reason</th>
-                  <th className="px-6 py-3 text-left border w-5">Actions</th>
+                  <th className="px-3 py-3 text-left border">Date</th>
+                  <th className="px-3 py-3 text-left border">Price</th>
+                  <th className="px-3 py-3 text-left border">Reason</th>
+                  <th className="px-3 py-3 text-left border w-5">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -136,11 +136,11 @@ function RefundRequests() {
                         {order.order_number}
                       </p>
                     </td>
-                    <td className="px-6 py-3 border-t text-13 text-gray-600 flex items-center gap-2">
+                    <td className="px-3 py-3 border-t text-13 text-gray-600 flex items-center gap-2">
                       <IoCalendarNumberOutline color="#69ABB5" size={15} />
                       {order.request_refund_date}
                     </td>
-                    <td className="px-6 py-3 border-t border-l text-gray-600 text-14">
+                    <td className="px-3 py-3 border-t border-l text-gray-600 text-14">
                       {order.total} $
                     </td>
                     <td className="px-2 py-3 border-t border-l text-gray-600">
