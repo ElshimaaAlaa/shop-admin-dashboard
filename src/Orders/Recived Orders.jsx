@@ -1,16 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { receivedOrders } from "../ApiServices/received-orders";
-import { useNavigate } from "react-router-dom";
-// import { OrdersStatistics } from "./components/OrdersStatistics";
 import { OrdersStatistics } from "./OrdersStatistics";
-// import { OrdersSearch } from "./components/OrdersSearch";
 import { OrdersSearch } from "./OrdersSearch";
 import { OrdersTable } from "./OrdersTable";
 import { OrdersPagination } from "./OrdersPagination";
-// import { OrdersTable } from "./components/OrdersTable";
-// import { OrdersPagination } from "./components/OrdersPagination";
-import { ClipLoader } from "react-spinners";
 
 function ReceivedOrders() {
   const [orders, setOrders] = useState([]);
@@ -20,7 +14,6 @@ function ReceivedOrders() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [error, setError] = useState(false);
-  const navigate = useNavigate();
   const [pagination, setPagination] = useState({
     total: 0,
     count: 0,

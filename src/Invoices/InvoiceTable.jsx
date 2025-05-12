@@ -1,5 +1,4 @@
 import { IoCalendarNumberOutline } from "react-icons/io5";
-import { useNavigate } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 
 export const InvoiceTable = ({

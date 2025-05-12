@@ -6,7 +6,7 @@ export const OrdersSearch = ({
   setSearchQuery, 
   isSearching, 
   debouncedSearchQuery,
-  setIsSearching // Add this prop
+  setIsSearching 
 }) => (
   <div className="relative w-full mt-3">
     <Search

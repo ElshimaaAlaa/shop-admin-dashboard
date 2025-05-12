@@ -354,5 +354,4 @@ function EditCategory() {
     </div>
   );
 }
-
 export default EditCategory;

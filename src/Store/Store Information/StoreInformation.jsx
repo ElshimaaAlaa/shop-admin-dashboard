@@ -30,7 +30,7 @@ function StoreInformation() {
         <div className="flex flex-col md:flex-row items-center justify-between mb-4">
           <h1 className="font-bold text-[18px]">Store Information</h1>
           <button
-            onClick={handleEditClick}
+            // onClick={handleEditClick}
             className="text-white font-semibold flex items-center justify-center gap-2 bg-primary p-2 w-24 rounded-md"
             aria-label="Edit personal information"
           >
