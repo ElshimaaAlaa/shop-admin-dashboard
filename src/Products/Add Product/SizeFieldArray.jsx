@@ -7,13 +7,13 @@ import ColorFieldArray from "./ColorFieldArray";
 
 const SizeFieldArray = ({ values, setFieldValue, hasNestedColors }) => {
   return (
-    <div className="bg-white p-5 rounded-md mt-3 mx-7 w-[915px]">
+    <div className="bg-white p-4 rounded-md mt-3 mx-5 w-[915px]">
       <h2 className="font-bold mb-3">Inventory</h2>
       <FieldArray name="sizes">
         {({ push, remove }) => (
           <>
             {values.sizes.map((size, index) => (
-              <div key={index} className="flex flex-col gap-4 mb-4 bg-gray-50 p-5 rounded-md">
+              <div key={index} className="flex flex-col gap-4 mb-4 bg-gray-50 p-4 rounded-md">
                 <div className="flex gap-2">
                   <InputField
                     name={`sizes[${index}].name`}
@@ -32,7 +32,7 @@ const SizeFieldArray = ({ values, setFieldValue, hasNestedColors }) => {
                   />
                   <button
                     type="button"
-                    className="text-2xl font-light text-red-500 ms-3"
+                    className="text-2xl font-light text-red-500"
                     onClick={() => remove(index)}
                   >
                     <AiOutlineClose />
@@ -66,7 +66,7 @@ const SizeFieldArray = ({ values, setFieldValue, hasNestedColors }) => {
                   <div className="font-bold text-15">Schedule a discount</div>
                 </div>
                 {size.schedule_discount && (
-                  <div className="flex gap-4">
+                  <div className="flex gap-2">
                     <InputField
                       name={`sizes[${index}].discount_percentage`}
                       placeholder="Discount"
@@ -80,7 +80,6 @@ const SizeFieldArray = ({ values, setFieldValue, hasNestedColors }) => {
                     />
                   </div>
                 )}
-                
                 {/* Nested Colors Section */}
                 {hasNestedColors && (
                   <ColorFieldArray
@@ -121,5 +120,4 @@ const SizeFieldArray = ({ values, setFieldValue, hasNestedColors }) => {
     </div>
   );
 };
-
 export default SizeFieldArray;

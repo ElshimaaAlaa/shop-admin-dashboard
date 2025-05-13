@@ -41,7 +41,7 @@ const CustomDropdown = ({
   return (
     <div className="relative w-full" ref={dropdownRef}>
       <div
-        className={`w-full bg-transparent outline-none border-2 rounded-md h-[54px] p-2 flex items-center justify-between cursor-pointer ${
+        className={`w-full bg-transparent outline-none border-2 rounded-md h-12 p-2 flex items-center justify-between cursor-pointer ${
           error && touched ? "border-red-500" : "border-gray-200"
         } focus:border-2 focus:border-primary`}
         onClick={() => setIsOpen(!isOpen)}
@@ -54,7 +54,7 @@ const CustomDropdown = ({
             isOpen ? "transform rotate-180" : ""
           }`}
           fill="none"
-          stroke="currentColor"
+          stroke="#71717A"
           viewBox="0 0 24 24"
           xmlns="http://www.w3.org/2000/svg"
         >
@@ -206,10 +206,10 @@ function AddCategory() {
               <p className="text-gray-400 text-12">Menu / Categories / Add Category</p>
               <h3 className="text-17 font-bold mt-2">Add Category</h3>
             </h1>
-            <div className="flex gap-5 mx-4">
-              <div className="bg-white p-5 rounded-md w-full">
-                <h2 className="font-bold mb-5">Basic Information</h2>
-                <div className="flex items-center gap-4">
+            <div className="flex gap-3 mx-4">
+              <section className="bg-white p-4 rounded-md w-full">
+                <h2 className="font-bold mb-5 text-16">Basic Information</h2>
+                <div className="flex items-center gap-2">
                   <InputField placeholder="Category Name" name="name" />
                   <Field name="type" component={TypeField} />
                 </div>
@@ -223,9 +223,9 @@ function AddCategory() {
                 {errors.description && touched.description && (
                   <div className="text-red-500 text-xs mt-1">{errors.description}</div>
                 )}
-              </div>
-              <div className="bg-white p-4 rounded-md w-2/4 h-72">
-                <h2 className="font-bold mb-3">Category Icon / Image</h2>
+              </section>
+              <section className="bg-white p-4 rounded-md w-2/4 h-72">
+                <h2 className="font-bold mb-3 text-16">Category Icon / Image</h2>
                 <ImageUpload
                   name={"image"}
                   previewImage={previewImage}
@@ -240,7 +240,7 @@ function AddCategory() {
                 {errors.image && touched.image && (
                   <div className="text-red-500 text-xs mt-1">{errors.image}</div>
                 )}
-              </div>
+              </section>
             </div>
             <Footer
               saveText={"Save"}

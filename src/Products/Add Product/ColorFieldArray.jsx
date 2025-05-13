@@ -11,15 +11,15 @@ const ColorFieldArray = ({ values, setFieldValue, sizeIndex, nested, makeImageOp
   const defaultProductImage = values.images?.[0]?.previewImage || values.images?.[0]?.image;
 
   return (
-    <div className={`${nested ? 'ml-8 pl-4 border-l-2 border-gray-200' : 'bg-white p-5 rounded-md mt-5 mx-7 w-[915px]'}`}>
-      {!nested && <h2 className="font-bold mb-5">Inventory</h2>}
+    <div className={`${nested ? 'ml-8 pl-4 border-l-2 border-gray-200' : 'bg-white p-4 rounded-md mt-5 mx-5 w-[920px]'}`}>
+      {!nested && <h2 className="font-bold mb-5 text-16">Inventory</h2>}
       <FieldArray name={colorsPath}>
         {({ push, remove }) => (
           <>
             {colors?.map((color, index) => (
               <div
                 key={index}
-                className="flex flex-col gap-4 mb-4 bg-gray-50 p-5 rounded-md"
+                className="flex flex-col gap-4 mb-4 bg-gray-50 p-4 rounded-md"
               >
                 <div className="flex gap-1">
                   <UploadImageForColor
@@ -33,7 +33,7 @@ const ColorFieldArray = ({ values, setFieldValue, sizeIndex, nested, makeImageOp
                   />
                   <InputField 
                     name={`${colorsPath}[${index}].name.ar`} 
-                    placeholder="Color Name (Ar)"
+                    placeholder="Color Name (ar)"
                     value={color.name?.ar || ""}
                     onChange={(e) => {
                       setFieldValue(`${colorsPath}[${index}].name.ar`, e.target.value);
@@ -41,7 +41,7 @@ const ColorFieldArray = ({ values, setFieldValue, sizeIndex, nested, makeImageOp
                   />
                   <InputField 
                     name={`${colorsPath}[${index}].name.en`} 
-                    placeholder="Color Name (En)"
+                    placeholder="Color Name (en)"
                     value={color.name?.en || ""}
                     onChange={(e) => {
                       setFieldValue(`${colorsPath}[${index}].name.en`, e.target.value);
@@ -64,7 +64,7 @@ const ColorFieldArray = ({ values, setFieldValue, sizeIndex, nested, makeImageOp
                   />
                   <button
                     type="button"
-                    className="text-3xl font-light text-red-500 mb-5"
+                    className="text-2xl font-light text-red-500 mb-5"
                     onClick={() => remove(index)}
                   >
                     <AiOutlineClose />
@@ -98,7 +98,7 @@ const ColorFieldArray = ({ values, setFieldValue, sizeIndex, nested, makeImageOp
                   <div className="font-bold text-15">Schedule a discount</div>
                 </div>
                 {color.schedule_discount && (
-                  <div className="flex gap-4">
+                  <div className="flex gap-2">
                     <InputField
                       name={`${colorsPath}[${index}].discount_percentage`}
                       placeholder="Discount"

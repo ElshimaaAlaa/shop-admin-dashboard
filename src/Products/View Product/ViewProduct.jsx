@@ -64,14 +64,14 @@ function ViewProduct() {
         <title>View Product - VERTEX</title>
         <meta name="description" content="View product details in VERTEX" />
       </Helmet>
-      <div className="bg-white p-4 rounded-md mt-5 mb-3">
+      <section className="bg-white p-4 rounded-md mt-5 mb-3">
         <p className="text-gray-400 text-12">Menu / Products / View Product</p>
         <h1 className="text-17 mt-3 font-bold">View Product</h1>
-      </div>
+      </section>
       <div className="flex flex-col">
         <div className="flex gap-5">
           {/* Product Basic Information */}
-          <div className="bg-white p-5 rounded-md w-full">
+          <section className="bg-white p-4 rounded-md w-full">
             <h2 className="font-bold mb-3 text-16">Basic Information</h2>
             <div className="w-full bg-transparent border border-gray-200 rounded-md ps-2 pt-4 pb-2 block">
               <div className="flex items-center px-3 w-560px justify-between">
@@ -121,9 +121,9 @@ function ViewProduct() {
                 />
               </div>
             </div>
-          </div>
+          </section>
           {/* Product Image & Thumbnails */}
-          <div className="bg-white rounded-md w-2/4 p-5 h-72">
+          <section className="bg-white rounded-md w-2/4 p-4 h-72">
             <p className="font-bold text-16">Product Icons / Images</p>
             <div className="image-section">
               {mainImage ? (
@@ -157,11 +157,11 @@ function ViewProduct() {
                 </div>
               )}
             </div>
-          </div>
+          </section>
         </div>
         {/* Stock & Pricing Information */}
-        <div className="flex gap-5 my-3">
-          <div className="w-full bg-white p-5 rounded-md">
+        <section className="flex gap-5 my-3">
+          <div className="w-full bg-white p-4 rounded-md">
             <h2 className="font-bold mb-3 text-16">Pricing</h2>
             <div className="bg-transparent border border-gray-200 rounded-md ps-2 pt-2 pb-2  block">
               <div className="flex items-center p-3 w-500px justify-between">
@@ -190,9 +190,9 @@ function ViewProduct() {
             </div>
           </div>
           <div className="w-2/4 h-72"></div>
-        </div>
+        </section>
         {(hasColors || hasSizes) && (
-          <div className="w-[920px] p-5 mb-7 bg-white rounded-md">
+          <section className="w-[920px] p-4 mb-7 bg-white rounded-md">
             <h2 className="font-bold mb-5 text-16">Inventory</h2>
             {hasColors && (
               <div>
@@ -205,7 +205,7 @@ function ViewProduct() {
                             color.image || productData.images?.[0]?.src || ""
                           }
                           alt={`Color: ${color.name}`}
-                          className="h-20 w-24 object-cover rounded-xl"
+                          className="h-16 w-24 object-cover rounded-xl"
                         />
                       </div>
                       <div className="flex w-full items-center justify-between mb-3 border-2 border-gray-200 rounded-lg p-2">
@@ -227,7 +227,7 @@ function ViewProduct() {
               </div>
             )}
             {hasSizes && (
-              <div>
+              <section>
                 {productData.sizes.map((size, index) => (
                   <div
                     key={size.id || index}
@@ -251,9 +251,9 @@ function ViewProduct() {
                     />
                   </div>
                 ))}
-              </div>
+              </section>
             )}
-          </div>
+          </section>
         )}
       </div>
     </div>

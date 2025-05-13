@@ -6,10 +6,10 @@ const PricingSection = ({ isDiscountScheduled, setIsDiscountScheduled }) => {
   const { setFieldValue } = useFormikContext();
 
   return (
-    <div className="flex gap-6 mx-7">
-      <div className="bg-white p-5 rounded-md mt-3 w-full">
+    <div className="flex gap-6 mx-5">
+      <div className="bg-white p-4 rounded-md mt-3 w-full">
         <h2 className="font-bold text-16 mb-3">Pricing</h2>
-        <div className="flex gap-4">
+        <div className="flex gap-2">
           <InputField name="price" placeholder="Price (For Piece)" />
           <InputField name="cost" placeholder="Cost" />
           <InputField name="revenue" placeholder="Revenue"/>
@@ -41,7 +41,7 @@ const PricingSection = ({ isDiscountScheduled, setIsDiscountScheduled }) => {
           <div className="font-bold text-15">Schedule a discount</div>
         </div>
         {isDiscountScheduled && (
-          <div className="flex gap-4">
+          <div className="flex gap-2">
             <InputField name="discount_percentage" placeholder="Discount" />
             <InputField
               name="discount_expire_at"

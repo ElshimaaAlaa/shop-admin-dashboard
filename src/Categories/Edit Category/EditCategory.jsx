@@ -39,7 +39,7 @@ const CustomDropdown = ({
   return (
     <div className="relative w-full" ref={dropdownRef}>
       <div
-        className={`w-full bg-transparent outline-none border-2 rounded-md h-[54px] p-2 flex items-center justify-between cursor-pointer ${
+        className={`w-full bg-transparent outline-none border-2 rounded-md h-12 p-2 flex items-center justify-between cursor-pointer ${
           error && touched ? "border-red-500" : "border-gray-200"
         } focus:border-2 focus:border-primary`}
         onClick={() => setIsOpen(!isOpen)}
@@ -52,7 +52,7 @@ const CustomDropdown = ({
             isOpen ? "transform rotate-180" : ""
           }`}
           fill="none"
-          stroke="currentColor"
+          stroke="#71717A"
           viewBox="0 0 24 24"
           xmlns="http://www.w3.org/2000/svg"
         >
@@ -204,12 +204,12 @@ function EditCategory() {
         <title>Edit Category - VERTEX</title>
         <meta name="description" content="Edit category details in VERTEX" />
       </Helmet>
-      <div className="rounded-md p-5 mx-4 md:mx-10 bg-white mt-5 mb-3">
+      <section className="rounded-md p-5 mx-5 bg-white mt-5 mb-3">
         <p className="text-gray-400 text-12">
           Menu / Categories / Edit Category
         </p>
         <h1 className="font-bold text-17 mt-2">Edit Category</h1>
-      </div>
+      </section>
       <Formik
         initialValues={initialValues}
         enableReinitialize={true}
@@ -217,10 +217,10 @@ function EditCategory() {
       >
         {({ setFieldValue, values }) => (
           <Form className="flex flex-col">
-            <div className="flex flex-col md:flex-row gap-5 mx-4 md:mx-10">
-              <div className="bg-white p-5 rounded-md w-full">
-                <h2 className="font-bold mb-5">Basic Information</h2>
-                <div className="flex flex-col md:flex-row items-center gap-4 mb-3">
+            <div className="flex flex-col md:flex-row gap-4 mx-5">
+              <div className="bg-white p-4 rounded-md w-full">
+                <h2 className="font-bold mb-5 text-16">Basic Information</h2>
+                <div className="flex flex-col md:flex-row items-center gap-2 mb-3">
                   <InputField
                     name="name"
                     placeholder="Category Name"
@@ -304,8 +304,8 @@ function EditCategory() {
                   aria-label="Category description"
                 />
               </div>
-              <div className="bg-white p-5 rounded-md w-full md:w-1/2 h-80">
-                <h2 className="font-bold mb-5">Category Icon / Image</h2>
+              <div className="bg-white p-4 rounded-md w-full md:w-1/2 h-80">
+                <h2 className="font-bold mb-5 text-16">Category Icon / Image</h2>
                 <ImageUpload
                   previewImage={previewImage}
                   onImageChange={(event) => {

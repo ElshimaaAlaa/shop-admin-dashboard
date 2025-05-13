@@ -26,5 +26,4 @@ const StatisticsCard = ({
     <p className="text-xs text-gray-400 mt-3 mb-3 ps-4">{duration}</p>
   </div>
 );
-
 export default StatisticsCard;

@@ -267,10 +267,10 @@ const AddProduct = () => {
       >
         {({ setFieldValue, isSubmitting, errors, values }) => (
           <Form className="flex flex-col ">
-            <div className="rounded-md p-4 bg-white mb-3 mt-5 mx-7">
+            <sectio className="rounded-md p-4 bg-white mb-3 mt-5 mx-5">
               <p className="text-gray-400 text-12">Menu / Product  / Add Product</p>
               <h1 className="text-17 mt-3 font-bold">Add Product</h1>
-            </div>
+            </sectio>
             <div className="flex">
               <BasicInformationSection
                 categories={categories}
@@ -280,7 +280,7 @@ const AddProduct = () => {
                 handleCategoryChange={handleCategoryChange}
                 handleTagChange={handleTagChange}
               />
-              <div className="bg-white p-5 me-5 rounded-md w-2/4 h-80">
+              <div className="bg-white p-4 me-5 rounded-md w-2/4 h-80">
                 <UploadProductImage
                   previewImages={previewImages}
                   onImageChange={(event) =>

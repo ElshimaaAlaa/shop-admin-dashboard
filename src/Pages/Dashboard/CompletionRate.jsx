@@ -1,22 +1,30 @@
-"use client"
-
-import { useState } from "react"
+import { useState } from "react";
 
 export default function CompletionRate({ products, title, subtitle }) {
-  const [sortBy, setSortBy] = useState("quantity")
+  const [sortBy, setSortBy] = useState("quantity");
 
+  if (!products || products.length === 0) {
+    return (
+      <section className="bg-white p-4 border-1 border-gray-200 rounded-md mb-5">
+        <h3 className="font-bold text-16">{title}</h3>
+        <div className="text-12">{subtitle}</div>
+        <div className="h-[200px] flex items-center text-14 justify-center text-gray-400 mt-4">
+          No product data available
+        </div>
+      </section>
+    );
+  }
   const sortedProducts = [...products].sort((a, b) => {
     if (sortBy === "quantity") {
-      return parseInt(b.quantity) - parseInt(a.quantity)
+      return parseInt(b.quantity) - parseInt(a.quantity);
     }
-    return a.name.localeCompare(b.name)
-  })
+    return a.name.localeCompare(b.name);
+  });
 
-  // Calculate max quantity for percentage calculation
-  const maxQuantity = Math.max(...sortedProducts.map(p => parseInt(p.quantity)), 1)
+  const maxQuantity = Math.max(...sortedProducts.map(p => parseInt(p.quantity)), 1);
 
   return (
-    <section className="bg-white p-5 rounded-md mb-5">
+    <section className="bg-white p-5 rounded-md mb-5 h-[500px]">
       <div className="flex justify-between items-center mb-4">
         <div>
           <h3 className="font-bold text-lg">{title}</h3>
@@ -50,9 +58,9 @@ export default function CompletionRate({ products, title, subtitle }) {
                 ></div>
               </div>
             </div>
-          )
+          );
         })}
       </div>
     </section>
-  )
+  );
 }

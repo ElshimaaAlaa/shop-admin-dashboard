@@ -1,5 +1,3 @@
-"use client";
-
 import {
   AreaChart,
   Area,
@@ -9,7 +7,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { ChevronRight } from "lucide-react";
+import { IoArrowForwardSharp } from "react-icons/io5";
 
 export default function SalesChangeChart({ rate }) {
   // Generate sample data based on the rate
@@ -23,9 +21,9 @@ export default function SalesChangeChart({ rate }) {
   const data = generateData();
 
   return (
-    <div className="bg-white p-5 rounded-md">
-      <h3 className="font-bold text-lg">Sales Change Rate</h3>
-      <div className="text-xs text-gray-500">Jan 01 - Dec 31</div>
+    <div className="bg-white border-1 border-gray-200 p-4 rounded-md">
+      <h3 className="font-bold text-17 text-center">Sales Change Rate</h3>
+      <div className="text-12 text-gray-400 text-center">Jan 01 - Dec 31</div>
       <div className="h-[200px] mt-2">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
@@ -56,21 +54,23 @@ export default function SalesChangeChart({ rate }) {
           </AreaChart>
         </ResponsiveContainer>
       </div>
-      <div className="flex flex-col mt-4">
+      <div className="flex justify-center items-center mt-4 gap-2">
         <div
-          className={`text-3xl font-bold ${
-            rate >= 0 ? "text-green-500" : "text-red-500"
+          className={`text-xl font-bold ${
+            rate >= 0 ? "text-green-500" : "text-black"
           }`}
         >
           {rate >= 0 ? "+" : ""}
           {rate}%
         </div>
-        <div className="text-sm text-gray-600">
-          Your sales performance is {Math.abs(rate)}%{" "}
+        <div className="text-sm text-black font-extralight text-center leading-normal">
+          Your sales performance is {Math.abs(rate) || "0"}% <br />
           {rate >= 0 ? "better" : "worse"} compared to last month.
         </div>
-        <button className="text-orange-400 flex items-center text-sm mt-2">
-          View Details <ChevronRight className="h-4 w-4" />
+      </div>
+      <div className="flex justify-center mt-5">
+        <button className="text-primary font-bold flex justify-center items-center gap-2 text-15">
+          View Details <IoArrowForwardSharp size={19} />
         </button>
       </div>
     </div>

@@ -1,8 +1,6 @@
-"use client";
-
 import {
-  BarChart,
-  Bar,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -10,37 +8,59 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
+function getMonthName(monthNumber) {
+  const date = new Date();
+  date.setMonth(monthNumber - 1);
+  return date.toLocaleString("default", { month: "short" });
+}
+
 export default function RevenueChart({ data }) {
-  const chartData = data?.map((item) => ({
-    name: `Month ${item.month}`,
-    value: parseFloat(item.revenue) || 0,
+  const chartData = data?.map(item => ({
+    name: getMonthName(item.month),
+    revenue: parseFloat(item.revenue) || 0
   }));
 
+  if (!chartData || chartData.length === 0) {
+    return (
+      <div className="bg-white p-4 border-1 border-gray-200 rounded-md">
+        <h3 className="font-bold text-16 mb-4">Monthly Revenue</h3>
+        <div className="h-[300px] text-14 flex items-center justify-center text-gray-400">
+          No revenue data available
+        </div> 
+      </div>
+    );
+  }
+
   return (
-    <div className="bg-white p-5 rounded-md">
-      <h3 className="font-bold text-lg">The Revenue Generated</h3>
-      <div className="text-2xl font-bold">
-        ${chartData?.reduce((sum, item) => sum + item.value, 0).toFixed(2) || 0}
-      </div>
-      <div className="h-[200px] mt-4">
+    <div className="bg-white p-4 border-1 border-gray-200 rounded-md">
+      <h3 className="font-bold text-16 mb-4">Monthly Revenue</h3>
+      <div className="h-[300px]">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart
+          <AreaChart
             data={chartData}
-            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+            margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
           >
-            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+            <defs>
+              <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8}/>
+                <stop offset="95%" stopColor="#8884d8" stopOpacity={0}/>
+              </linearGradient>
+            </defs>
             <XAxis dataKey="name" />
-            <YAxis hide />
-            <Tooltip formatter={(value) => [`$${value}`, "Revenue"]} />
-            <Bar dataKey="value" fill="#F7D59C" radius={[4, 4, 0, 0]} />
-          </BarChart>
+            <YAxis />
+            <CartesianGrid strokeDasharray="3 3" />
+            <Tooltip 
+              formatter={(value) => [`$${value.toLocaleString()}`, "Revenue"]}
+            />
+            <Area
+              type="monotone"
+              dataKey="revenue"
+              stroke="#8884d8"
+              fillOpacity={1}
+              fill="url(#colorRevenue)"
+            />
+          </AreaChart>
         </ResponsiveContainer>
-      </div>
-      <div className="flex items-center justify-center gap-4 mt-2">
-        <div className="flex items-center gap-1">
-          <div className="w-2 h-2 rounded-full bg-gray-400"></div>
-          <span className="text-xs">Current Revenue</span>
-        </div>
       </div>
     </div>
   );
