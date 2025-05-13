@@ -52,7 +52,7 @@ function AdminLogin() {
         localStorage.removeItem("password");
       }
       setTimeout(() => {
-        navigate("/Dashboard");
+        navigate("/Dashboard/home-dashboard");
       }, 1500);
     } catch (error) {
       console.error(error);
