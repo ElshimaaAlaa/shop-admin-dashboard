@@ -1,6 +1,4 @@
-import React from "react";
 import PropTypes from "prop-types";
-
 const StepIndicator = ({ currentStep, steps }) => {
   return (
     <div className="flex justify-between border-t border-b items-center mt-2 rounded-md mb-6">
@@ -9,7 +7,7 @@ const StepIndicator = ({ currentStep, steps }) => {
           key={step.number}
           className={`flex gap-3 w-[230px] justify-center  items-center p-3 relative ${
             step.number === currentStep
-              ? "bg-orange-50 border-b border-primary font-bold"
+              ? "bg-customOrange-lightOrange border-b border-primary font-bold"
               : step.number < currentStep
               ? "text-gray-600"
               : "text-gray-400"
@@ -54,7 +52,6 @@ const StepIndicator = ({ currentStep, steps }) => {
     </div>
   );
 };
-
 StepIndicator.propTypes = {
   currentStep: PropTypes.number.isRequired,
   steps: PropTypes.arrayOf(

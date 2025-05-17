@@ -114,7 +114,7 @@ function ShippingProvider() {
                             key={provider.id}
                             className={`border rounded-md p-2 cursor-pointer transition-all bg-gray-50  ${
                               values.shipping_provider.includes(provider.name)
-                                ? "bg-orange-50 border-orange-300"
+                                ? "bg-customOrange-lightOrange border-primary"
                                 : "border-gray-200 hover:border-gray-300"
                             }`}
                             onClick={() => {

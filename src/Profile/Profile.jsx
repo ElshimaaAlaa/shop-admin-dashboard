@@ -134,7 +134,7 @@ export default function ProfileMenu() {
           </div>
           <button className="w-full flex items-center gap-3 p-2 hover:bg-gray-50">
             <Plus className="w-5 h-5" />
-            <span className="flex-grow text-left text-gray-500 text-15">
+            <span className="flex-grow text-left text-gray-500 text-15" onClick={()=>navigate('/Register')}>
               Add Account
             </span>
             <ChevronRight className="w-5 h-5 text-black" />

@@ -1,14 +1,14 @@
-import React, { useState } from "react";
+// import React, { useState } from "react";
 import { Helmet } from "react-helmet";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { FaRegEye } from "react-icons/fa";
 import { IoDownloadOutline } from "react-icons/io5";
 function StoreInformation() {
-  const [storeInfo, setStoreInfo] = useState([]);
-  const navigate = useNavigate();
-  const handleEditClick = () => {
-    navigate("/Home/MainInfo/EditStoreInformation", { state: storeInfo });
-  };
+  // const [storeInfo, setStoreInfo] = useState([]);
+  // const navigate = useNavigate();
+  // const handleEditClick = () => {
+  //   navigate("/Home/MainInfo/EditStoreInformation", { state: storeInfo });
+  // };
   const storeInformation = JSON.parse(
     localStorage.getItem("storeProfileData") || "{}"
   );
@@ -51,7 +51,7 @@ function StoreInformation() {
           </div>
           <h2 className="text-15 mt-5 text-gray-400">Bio</h2>
           <p className="mt-2 text-15">{storeInformation.bio}</p>
-          <div className="flex flex-col lg:flex-row md:flex-row items-end gap-x-80">
+          {/* <div className="flex flex-col lg:flex-row md:flex-row items-end gap-x-80">
             <div>
               <p className="text-1xl font-bold mb-3 mt-7">Banners</p>
               <div className="flex flex-wrap gap-4">
@@ -80,7 +80,7 @@ function StoreInformation() {
                 <p className="text-15">Download</p>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </section>
     </div>

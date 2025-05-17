@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
-import { FaRegEye } from "react-icons/fa";
-import { IoDownloadOutline } from "react-icons/io5";
+// import { FaRegEye } from "react-icons/fa";
+// import { IoDownloadOutline } from "react-icons/io5";
 
 function StoreTheme() {
   const navigate = useNavigate();
-  const [storeData, setStoreData] = useState([]);
+  // const [storeData, setStoreData] = useState([]);
   const [error, setError] = useState(null);
 
   const handleEditClick = () => {
@@ -83,8 +83,7 @@ function StoreTheme() {
               ></div>
             </div>
           </div>
-
-          <div className="flex flex-col lg:flex-row md:flex-row items-end gap-x-[335px]">
+          {/* <div className="flex flex-col lg:flex-row md:flex-row items-end gap-x-[335px]">
             <div>
               <p className="text-17 font-bold mb-3 mt-7">Logo</p>
               {imageUrl ? (
@@ -110,7 +109,7 @@ function StoreTheme() {
                 <p className="text-15">Download</p>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </section>
     </div>

@@ -2,24 +2,26 @@ import React, { useEffect, useState } from "react";
 import FailedModal from "../../Components/Modal/Failed Modal/FailedModal";
 import { ClipLoader } from "react-spinners";
 import axios from "axios";
-import './UpdatePassword.scss'
+import "./UpdatePassword.scss";
 import { AiOutlineDelete } from "react-icons/ai";
 
 function DeleteAccount() {
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  useEffect(()=>{
+  const API_BASE_URL = "https://";
+  const live_shop_domain = localStorage.getItem("live_shop_domain");
+  const role = localStorage.getItem("role");
+  useEffect(() => {
     document.body.classList.add("no-scroll");
-  })
+  });
   const handelDeleteAccount = async () => {
     setIsLoading(true);
     try {
       const response = await axios({
-        url: "https://demo.vrtex.duckdns.org/api/shop/delete-account",
+        url: `${API_BASE_URL}${live_shop_domain}/api/${role}/delete-account`,
         method: "GET",
         headers: {
-          Authorization:
-            `Bearer ${localStorage.getItem("token")} `,
+          Authorization: `Bearer ${localStorage.getItem("token")} `,
           "Content-Type": "application/json",
           Accept: "application/json",
           "Accept-Language": "ar",
@@ -46,7 +48,7 @@ function DeleteAccount() {
         className="flex items-center gap-3 cursor-pointer"
         onClick={() => setShowModal(true)}
       >
-        <AiOutlineDelete color="#DC2626" size={24} className="me-2"/>
+        <AiOutlineDelete color="#DC2626" size={24} className="me-2" />
         <p className="font-semibold text-15 mt-1 text-red-600">
           Delete Account
         </p>

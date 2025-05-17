@@ -116,7 +116,7 @@ function PaymentMethods() {
                             key={item.id}
                             className={`border rounded-lg p-2 bg-gray-50 cursor-pointer transition-all ${
                               values.payment_method.includes(item.name)
-                                ? "bg-orange-50 border-orange-300"
+                                ? "bg-customOrange-lightOrange border-primary"
                                 : "border-gray-200 hover:border-gray-300"
                             }`}
                             onClick={() => {
