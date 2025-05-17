@@ -67,9 +67,7 @@ function CustomerDetail() {
         </p>
         <h1 className="font-bold text-17 mt-2">Customers Details</h1>
       </section>
-
       <CustomerBalance balance={customerData.personal_info?.balance} />
-
       <div className="mt-3 flex gap-3">
         <CustomerPersonalInfo
           customerData={customerData}

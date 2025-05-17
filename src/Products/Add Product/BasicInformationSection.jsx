@@ -220,34 +220,54 @@ const BasicInformationSection = ({
             errors.tags_ids && touched.tags_ids
               ? "border-red-500"
               : "border-gray-200"
-          } cursor-pointer flex items-center justify-between`}
+          } cursor-pointer`}
           onClick={() => setIsTagsDropdownOpen(!isTagsDropdownOpen)}
         >
-          <div>
+          <div className="flex flex-wrap items-center gap-2">
             {tagsIds.length === 0 ? (
               <p className="text-14 text-gray-400">Select Tags</p>
             ) : (
-              <p className="text-14 text-black">
-                {tagsIds.length} tag(s) selected
-              </p>
+              selectedCategoryTags
+                .filter((_, index) => tagsIds.includes(index))
+                .map((tag, index) => (
+                  <span 
+                    key={index}
+                    className="bg-customOrange-lightOrange text-primary p-2 text-15  rounded-md  flex items-center"
+                  >
+                    {tag}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleTagChange(index, setFieldValue, {
+                          ...values,
+                          tags_ids: tagsIds,
+                        });
+                      }}
+                      className="ml-2 text-17 text-red-600"
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))
             )}
+            <svg
+              className={`w-5 h-5 transition-transform duration-200 ml-auto ${
+                isTagsDropdownOpen ? "transform rotate-180" : ""
+              }`}
+              fill="none"
+              stroke="#71717A"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
           </div>
-          <svg
-            className={`w-5 h-5 transition-transform duration-200 ${
-              isTagsDropdownOpen ? "transform rotate-180" : ""
-            }`}
-            fill="none"
-            stroke="#71717A"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
         </div>
         
         {isTagsDropdownOpen && (

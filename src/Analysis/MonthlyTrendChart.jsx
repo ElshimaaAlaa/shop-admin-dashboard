@@ -57,16 +57,16 @@ function MonthlyTrendChart({ monthlyExpended, monthlyIncome, monthlyProfit }) {
         <ResponsiveContainer width="100%" height="100%">
           <BarChart 
             data={chartData}
-            margin={{ right: 20 }} // Adjust right margin to prevent cutoff
-            barCategoryGap={10} // Reduced gap between categories (months)
+            margin={{ right: 20 }} // Adjust right margin 
+            barCategoryGap={10} // Reduced gap between categories 
           >
             <CartesianGrid vertical={false} strokeDasharray="1 1" />
             <XAxis 
-              className="text-14 pt-5" 
+              className="text-12 pt-5" 
               dataKey="name" 
               axisLine={false} 
               tickLine={false}
-              interval={0} // Ensure all months are shown
+              interval={0} // Ensure 
             />
             <YAxis
               className="text-14 pe-5"

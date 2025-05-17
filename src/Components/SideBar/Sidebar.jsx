@@ -12,7 +12,7 @@ import Support from "../../Svgs/Support";
 import Help from "../../Svgs/Help";
 import Logo from "../../Svgs/logo";
 import Text from "../../Svgs/text";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Pin, PinOff } from "lucide-react";
 import Discount from "../../Svgs/Discount";
 import Invoices from "../../Svgs/Invoives";
 
@@ -20,10 +20,20 @@ const Sidebar = () => {
   const [expanded, setExpanded] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [openSubmenu, setOpenSubmenu] = useState(null);
+  const [isPinned, setIsPinned] = useState(false);
   const navigate = useNavigate();
 
   const toggleSidebar = () => {
-    setExpanded(!expanded);
+    if (!isPinned) {
+      setExpanded(!expanded);
+    }
+  };
+
+  const togglePin = () => {
+    setIsPinned(!isPinned);
+    if (!isPinned) {
+      setExpanded(true);
+    }
   };
 
   const handleItemClick = (item) => {
@@ -134,6 +144,7 @@ const Sidebar = () => {
       ],
     },
   ];
+
   const bottomMenuItems = [
     {
       id: "support",
@@ -154,11 +165,25 @@ const Sidebar = () => {
     <div
       className={`sidebar bg-black min-h-screen w-20 flex flex-col items-center justify-between ${
         expanded ? "expanded" : ""
-      }`}
+      } ${isPinned ? "pinned" : ""}`}
       onMouseEnter={toggleSidebar}
       onMouseLeave={toggleSidebar}
     >
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 w-full">
+        <div className="flex justify-end pr-2 pt-2">
+          <button
+            onClick={togglePin}
+            className="pin-button"
+            title={isPinned ? "Unpin sidebar" : "Pin sidebar"}
+          >
+            {isPinned ? (
+              <PinOff size={18} className="text-white" />
+            ) : (
+              <Pin size={18} className="text-white" />
+            )}
+          </button>
+        </div>
+
         <div>
           <div className="logo mt-5 mb-5">
             <Logo />
@@ -277,7 +302,6 @@ const Sidebar = () => {
         ))}
       </div>
 
-      {/* Bottom section for Help and Support */}
       <div className="flex flex-col gap-4 pb-4">
         {bottomMenuItems.map((item) => (
           <div

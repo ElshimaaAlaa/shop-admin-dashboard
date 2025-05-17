@@ -25,7 +25,7 @@ export const UploadProductImage = ({ previewImages, onImageChange }) => {
                 className="w-full h-full object-cover rounded-md"
               />
               {/* Thumbnails */}
-              <div className="flex gap-2 mt-3">
+              <div className="flex gap-1 -ml-1 mt-3">
                 {previewImages.map((image, index) => (
                   <div
                     key={index}

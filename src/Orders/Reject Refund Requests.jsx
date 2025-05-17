@@ -1,21 +1,23 @@
 import axios from "axios";
-import React, { useState } from "react";
+import { useState } from "react";
 import { IoIosCloseCircle } from "react-icons/io";
 import FailedModal from "../Components/Modal/Failed Modal/FailedModal";
 import { ClipLoader } from "react-spinners";
 import "./OrderStyle.scss";
 
-function RejectRefundRequests({ orderId, orderStatus }) {
+function RejectRefundRequests({ order_id, status }) {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const API_BASE_URL = "https://demo.vrtex.duckdns.org/";
+  const API_BASE_URL = "https://";
+  const live_shop_domain = localStorage.getItem("live_shop_domain");
+  const role = localStorage.getItem("role");
   const handleCancelOrder = async () => {
     setIsLoading(true);
     setErrorMessage("");
     try {
       const response = await axios({
-        url: `${API_BASE_URL}api/shop/orders/respond-cancel-request`,
+        url: `${API_BASE_URL}${live_shop_domain}/api/${role}/orders/respond-cancel-request`,
         method: "POST",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -23,8 +25,8 @@ function RejectRefundRequests({ orderId, orderStatus }) {
           "Accept-Language": "en",
         },
         data: {
-          order_id: orderId,
-          status: orderStatus,
+          order_id: order_id,
+          status: status,
         },
       });
 

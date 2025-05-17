@@ -75,12 +75,12 @@ function InvoiceDetails() {
   };
 
   return (
-    <div className="bg-gray-100 pb-10 pt-5 flex flex-col min-h-[89vh] mx-10">
+    <div className="bg-gray-100 py-5 flex flex-col min-h-[89vh] mx-10">
       <Helmet>
         <title>Invoice Details | vertex</title>
       </Helmet>
-        <section className="flex justify-between items-center my-4">
-          <h1 className="mt-2 text-xl font-bold">Invoice Details</h1>
+        <section className="flex justify-between items-center">
+          <h1 className="text-xl font-bold">Invoice Details</h1>
           <button
             onClick={downloadPdf}
             disabled={isGeneratingPdf || isLoading}

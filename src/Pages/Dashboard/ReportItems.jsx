@@ -12,7 +12,7 @@ const StatisticsCard = ({
       <h3 className="text-gray-600 text-14">{title}</h3>
     </div>
     <div className="flex items-center gap-3 ps-4">
-      <h1 className="text-2xl font-bold">{totalNumber}</h1>
+      <h1 className="text-xl font-bold">{totalNumber}</h1>
       <p
         className={`text-12 font-bold rounded-md py-1 px-4 ${
           percentage?.includes("-") || percentage?.includes("نقص")

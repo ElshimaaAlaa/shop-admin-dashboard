@@ -1,11 +1,11 @@
 import axios from "axios";
-import React, { useState } from "react";
+import { useState } from "react";
 import { IoIosCloseCircle } from "react-icons/io";
 import FailedModal from "../Components/Modal/Failed Modal/FailedModal";
 import { ClipLoader } from "react-spinners";
 import "./OrderStyle.scss";
 
-function CancelOrder({ orderId, orderStatus }) {
+function CancelOrder({ order_id, status }) {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -25,8 +25,8 @@ function CancelOrder({ orderId, orderStatus }) {
           "Accept-Language": "en",
         },
         data: {
-          order_id: orderId,
-          status: orderStatus,
+          order_id: order_id,
+          status: status,
         },
       });
       if (response.status === 200) {
@@ -51,10 +51,10 @@ function CancelOrder({ orderId, orderStatus }) {
       <button
         className="flex items-center gap-2 rounded-md font-bold p-3 border-1 border-red-600 bg-red-50 text-red-600"
         onClick={() => setShowModal(true)}
-        disabled={orderStatus === 8 || orderStatus === "cancelled"}
+        disabled={status === 8 || status === "cancelled"}
       >
         <IoIosCloseCircle size={22} />
-        {orderStatus === 8 || orderStatus === "cancelled"
+        {status === 8 || status === "cancelled"
           ? "Cancelled"
           : "Cancel"}
       </button>
@@ -87,7 +87,7 @@ function CancelOrder({ orderId, orderStatus }) {
             className="bg-red-600 rounded-md text-white p-3 w-40 font-bold"
             onClick={handleCancelOrder}
             disabled={
-              isLoading || orderStatus === 8 || orderStatus === "cancelled"
+              isLoading || status === 8 || status === "cancelled"
             }
           >
             {isLoading ? <ClipLoader size={22} color="#fff" /> : "Yes, Cancel"}

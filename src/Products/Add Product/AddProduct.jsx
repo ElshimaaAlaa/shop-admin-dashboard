@@ -83,10 +83,8 @@ const AddProduct = () => {
           formData.append(key, value);
         }
       });
-
       // Handle different category types
       if (categoryType === "Color") {
-        // Handle colors array (standalone)
         if (values.colors.length > 0) {
           values.colors.forEach((color, index) => {
             formData.append(`colors[${index}][name][ar]`, color.name.ar || "");
@@ -95,7 +93,6 @@ const AddProduct = () => {
             Object.entries(color).forEach(([field, fieldValue]) => {
               if (field !== "name" && field !== "previewImage") {
                 if (field === "image") {
-                  // Use the first product image as default if no color image is provided
                   if (!fieldValue && values.images.length > 0) {
                     formData.append(`colors[${index}][image]`, values.images[0]);
                   } else if (fieldValue instanceof File) {
@@ -112,7 +109,6 @@ const AddProduct = () => {
           });
         }
       } else if (categoryType === "Size") {
-        // Handle sizes array (standalone)
         if (values.sizes.length > 0) {
           values.sizes.forEach((size, index) => {
             Object.entries(size).forEach(([field, fieldValue]) => {
@@ -121,10 +117,8 @@ const AddProduct = () => {
           });
         }
       } else if (categoryType === "Both") {
-        // Handle sizes with nested colors
         if (values.sizes.length > 0) {
           values.sizes.forEach((size, sizeIndex) => {
-            // Append size fields
             Object.entries(size).forEach(([field, fieldValue]) => {
               if (field !== "colors") {
                 formData.append(
@@ -133,8 +127,6 @@ const AddProduct = () => {
                 );
               }
             });
-
-            // Append nested colors for this size
             if (size.colors && size.colors.length > 0) {
               size.colors.forEach((color, colorIndex) => {
                 formData.append(
@@ -149,7 +141,6 @@ const AddProduct = () => {
                 Object.entries(color).forEach(([field, fieldValue]) => {
                   if (field !== "name" && field !== "previewImage") {
                     if (field === "image") {
-                      // Use the first product image as default if no color image is provided
                       if (!fieldValue && values.images.length > 0) {
                         formData.append(
                           `sizes[${sizeIndex}][colors][${colorIndex}][image]`,
@@ -174,19 +165,16 @@ const AddProduct = () => {
           });
         }
       }
-
       // Handle images
       if (values.images.length > 0) {
         values.images.forEach((image, index) => {
           formData.append(`images[${index}]`, image);
         });
       }
-
       // Handle tags
       values.tags_ids.forEach((tagId, index) => {
         formData.append(`tags_ids[${index}]`, tagId);
       });
-
       await addProduct(formData);
       setShowModal(true);
     } catch (error) {
@@ -223,8 +211,6 @@ const AddProduct = () => {
       setSelectedCategoryTags(combinedTags);
       setFieldValue("category_id", categoryId);
       setCategoryType(selectedCategory.type_name);
-
-      // Reset sizes and colors when category changes
       setFieldValue("sizes", []);
       setFieldValue("colors", []);
     } else {
@@ -349,5 +335,4 @@ const AddProduct = () => {
     </div>
   );
 };
-
 export default AddProduct;

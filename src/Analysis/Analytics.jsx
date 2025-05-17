@@ -100,7 +100,7 @@ function Analytics() {
               <ClipLoader color="#E0A75E" size={40} />
             </div>
           ) : productData.length === 0 ? (
-            <div className="text-gray-400 text-center mt-10">No products available</div>
+            <div className="text-gray-400 text-center mt-5 text-14">No products available</div>
           ) : (
             <>
               <div className="border border-gray-200 rounded-lg overflow-hidden mt-5">

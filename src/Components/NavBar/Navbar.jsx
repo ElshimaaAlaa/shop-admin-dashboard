@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ProfileMenu from "../../Profile/Profile";
 import { CiSearch } from "react-icons/ci";
+import { IoArrowBackCircle } from "react-icons/io5";
 
-function Navbar({ onPinToggle, isPinned, onSearch }) {
+function Navbar({ onSearch }) {
   const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
@@ -20,10 +23,23 @@ function Navbar({ onPinToggle, isPinned, onSearch }) {
     }
   };
 
+  const goBack = () => {
+    navigate(-1);
+  };
+
   return (
     <div className="bg-white shadow-sm">
       <nav className="flex items-center justify-between px-5 py-2 border-b border-gray-200">
         <div className="flex items-center gap-4">
+          {/* Back button */}
+          <button
+            onClick={goBack}
+            aria-label="Go back"
+            className=""
+          >
+            <IoArrowBackCircle size={35} color="#E0A75E" />
+          </button>
+
           {/* Search Input */}
           <div className="relative w-400">
             <input
@@ -34,7 +50,7 @@ function Navbar({ onPinToggle, isPinned, onSearch }) {
               onChange={handleSearchChange}
             />
             <div className="absolute left-3 top-2.5 text-gray-400">
-              <CiSearch size={22} color='#E0A75E'/>
+              <CiSearch size={22} color="#E0A75E" />
             </div>
             {searchQuery && (
               <button
@@ -66,4 +82,5 @@ function Navbar({ onPinToggle, isPinned, onSearch }) {
     </div>
   );
 }
+
 export default Navbar;

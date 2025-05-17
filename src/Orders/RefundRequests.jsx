@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { Search } from "lucide-react";
 import AcceptRefundRequests from "./Accept Refund Requests";
@@ -30,13 +30,6 @@ function RefundRequests() {
       try {
         const response = await refundrequests();
         setRefundOrders(response.data || []);
-        if (response.data && response.data.length > 0) {
-          localStorage.setItem("refundId", response.data[0].id);
-          localStorage.setItem("refundStatus", response.data[0].status);
-          localStorage.setItem("refundAmount", response.data[0].amount);
-          console.log("refundId", response.data[0].id);
-          console.log("refund status", response.data[0].status);
-        }
         if (response.pagination) {
           setPagination(response.pagination);
         }
@@ -56,19 +49,21 @@ function RefundRequests() {
       order.order_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
       order.refund_reason.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
   const handlePageClick = ({ selected }) => {
     setPagination((prev) => ({
       ...prev,
       current_page: selected + 1,
     }));
   };
+
   return (
-    <div className="bg-gray-100 h-[89vh] mx-5 pt-5">
+    <div className="bg-gray-100 min-h-[89vh] mx-5 pt-5">
       <Helmet>
         <title>Refund Requests | VERTEX</title>
       </Helmet>
 
-      <div className=" bg-white mb-3 p-4 rounded-md">
+      <div className="bg-white mb-3 p-4 rounded-md">
         <p className="text-12 text-gray-400">Menu / Orders / Refund Requests</p>
         <h1 className="font-bold text-17 mt-3">Refund Requests</h1>
       </div>
@@ -81,7 +76,7 @@ function RefundRequests() {
           />
           <input
             type="text"
-            placeholder="Search"
+            placeholder="Search by order number or reason"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-4 bg-muted/50 rounded-md text-sm focus:outline-none border-2 border-gray-200 bg-lightgray placeholder:text-15 focus:border-primary"
@@ -103,11 +98,11 @@ function RefundRequests() {
             No refund requests found.
           </div>
         ) : (
-          <div className="border border-gray-200 rounded-lg mt-4 overflow-hidden">
+          <div className="border border-gray-200 rounded-lg mt-4 overflow-x-auto">
             <table className="bg-white min-w-full table">
               <thead>
                 <tr>
-                  <th className="px-3 py-3 border-t border-b text-left cursor-pointer">
+                  <th className="px-3 py-3 border-b text-left cursor-pointer">
                     <p className="flex items-center gap-3">
                       <input
                         type="checkbox"
@@ -117,16 +112,16 @@ function RefundRequests() {
                       Order
                     </p>
                   </th>
-                  <th className="px-3 py-3 text-left border">Date</th>
-                  <th className="px-3 py-3 text-left border">Price</th>
-                  <th className="px-3 py-3 text-left border">Reason</th>
-                  <th className="px-3 py-3 text-left border w-5">Actions</th>
+                  <th className="px-3 py-3 text-left border-b border-l border-r">Date</th>
+                  <th className="px-3 py-3 text-left border-b border-r">Price</th>
+                  <th className="px-3 py-3 text-left border-b border-r">Reason</th>
+                  <th className="px-3 py-3 text-left border-b">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredOrders.map((order) => (
-                  <tr key={order.id}>
-                    <td className="px-3 py-3 border">
+                  <tr key={order.id} className="hover:bg-gray-50">
+                    <td className="px-3 py-3 border-r">
                       <p className="flex items-center gap-3 text-14 text-gray-600">
                         <input
                           type="checkbox"
@@ -136,7 +131,7 @@ function RefundRequests() {
                         {order.order_number}
                       </p>
                     </td>
-                    <td className="px-3 py-3 border-t text-13 text-gray-600 flex items-center gap-2">
+                    <td className="px-3 py-3 text-13 text-gray-600 flex items-center gap-2">
                       <IoCalendarNumberOutline color="#69ABB5" size={15} />
                       {order.request_refund_date}
                     </td>
@@ -151,13 +146,13 @@ function RefundRequests() {
                     <td className="px-6 py-3 w-10 border-t border-l">
                       <div className="flex items-center gap-3">
                         <AcceptRefundRequests
-                          orderId={order.id}
-                          currentStatus={order.status}
-                          amount={order.amount}
+                          order_id={order.id}
+                          status={order.status}
+                          amount={order.items_count}
                         />
                         <RejectRefundRequests
                           orderId={order.id}
-                          orderStatus={order.status}
+                          status={order.status}
                         />
                       </div>
                     </td>
@@ -167,29 +162,30 @@ function RefundRequests() {
             </table>
           </div>
         )}
-        <ReactPaginate
-          pageCount={pagination.total_pages}
-          onPageChange={handlePageClick}
-          forcePage={pagination.current_page - 1}
-          containerClassName="flex items-center justify-end mt-5 space-x-1"
-          pageClassName="px-3 py-1 rounded hover:bg-gray-200"
-          activeClassName="bg-customOrange-lightOrange text-primary"
-          previousLabel={<ChevronLeft className="w-4 h-4" />}
-          nextLabel={<ChevronRight className="w-4 h-4" />}
-          previousClassName={`px-3 py-1 rounded ${
-            !pagination.prev_page_url
-              ? "opacity-50 cursor-not-allowed"
-              : "hover:bg-gray-200"
-          }`}
-          nextClassName={`px-3 py-1 rounded ${
-            !pagination.next_page_url
-              ? "opacity-50 cursor-not-allowed"
-              : "hover:bg-gray-200"
-          }`}
-          disabledClassName="opacity-50 cursor-not-allowed"
-        />
+          <ReactPaginate
+            pageCount={pagination.total_pages}
+            onPageChange={handlePageClick}
+            forcePage={pagination.current_page - 1}
+            containerClassName="flex items-center justify-end mt-5 space-x-1"
+            pageClassName="px-3 py-1 rounded hover:bg-gray-200"
+            activeClassName="bg-customOrange-lightOrange text-primary"
+            previousLabel={<ChevronLeft className="w-4 h-4" />}
+            nextLabel={<ChevronRight className="w-4 h-4" />}
+            previousClassName={`px-3 py-1 rounded ${
+              !pagination.prev_page_url
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:bg-gray-200"
+            }`}
+            nextClassName={`px-3 py-1 rounded ${
+              !pagination.next_page_url
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:bg-gray-200"
+            }`}
+            disabledClassName="opacity-50 cursor-not-allowed"
+          />
       </div>
     </div>
   );
 }
+
 export default RefundRequests;
