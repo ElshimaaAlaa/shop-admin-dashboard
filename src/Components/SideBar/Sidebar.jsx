@@ -29,7 +29,8 @@ const Sidebar = () => {
     }
   };
 
-  const togglePin = () => {
+  const togglePin = (e) => {
+    e.stopPropagation();
     setIsPinned(!isPinned);
     if (!isPinned) {
       setExpanded(true);
@@ -163,39 +164,47 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`sidebar bg-black min-h-screen w-20 flex flex-col items-center justify-between ${
-        expanded ? "expanded" : ""
+      className={`sidebar px-6 bg-black min-h-screen flex flex-col items-center justify-between ${
+        expanded ? "expanded w-[250px] px-3" : "w-20"
       } ${isPinned ? "pinned" : ""}`}
       onMouseEnter={toggleSidebar}
       onMouseLeave={toggleSidebar}
     >
       <div className="flex flex-col gap-4 w-full">
-        <div className="flex justify-between items-center">
-          <div className="logo mt-5 mb-5">
-            <Logo />
-          </div>
-          <div className="text flex ">
-            <Text />
-              <button
-                onClick={togglePin}
-                className="pin-button"
-                title={isPinned ? "Unpin sidebar" : "Pin sidebar"}
-              >
-                {isPinned ? (
-                  <PinOff size={18} className="text-white" />
-                ) : (
-                  <Pin size={18} className="text-white" />
-                )}
-              </button>
-          </div>
+        <div className="flex justify-center items-center relative h-16">
+          {!expanded && (
+            <div className="logo absolute">
+              <Logo />
+            </div>
+          )}
+          {expanded && (
+            <div className="flex justify-between gap-12 items-center text">
+              <div>
+                <Text />
+              </div>
+              <div>
+                <button
+                  onClick={togglePin}
+                  className="pin-button mt-4"
+                  title={isPinned ? "Unpin sidebar" : "Pin sidebar"}
+                >
+                  {isPinned ? (
+                    <PinOff size={18} className="text-white" />
+                  ) : (
+                    <Pin size={18} className="text-white" />
+                  )}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
-
+        {/* Menu Items */}
         {menuItems.map((item) => (
           <div key={item.id}>
             <div
-              className={`flex items-center gap-2 cursor-pointer rounded-md hover:bg-primatyOpacity hover:p-2 hover:w-[190px] ${
-                openSubmenu === item.id ? "active-menu-item" : ""
-              }`}
+              className={`flex items-center gap-2 cursor-pointer rounded-md hover:bg-primatyOpacity hover:p-2 ${
+                expanded ? "hover:w-[215px]" : "hover:w-20"
+              } ${openSubmenu === item.id ? "active-menu-item" : ""}`}
               onClick={() => handleItemClick(item)}
             >
               <span className="icon">
@@ -226,30 +235,34 @@ const Sidebar = () => {
                   })
                 )}
               </span>
-              <span
-                className={`text-white text-14 dashbordItem ${
-                  selectedItem === item.id ? "selected" : ""
-                }`}
-              >
-                {item.label}
-              </span>
-              {item.subItems && expanded && (
-                <span className="ml-auto dashbordItem">
-                  {openSubmenu === item.id ? (
-                    <ChevronUp size={16} className="text-white" />
-                  ) : (
-                    <ChevronDown size={16} className="text-white" />
+              {expanded && (
+                <>
+                  <span
+                    className={`text-white text-14 dashbordItem ${
+                      selectedItem === item.id ? "selected" : ""
+                    }`}
+                  >
+                    {item.label}
+                  </span>
+                  {item.subItems && (
+                    <span className="ml-auto dashbordItem">
+                      {openSubmenu === item.id ? (
+                        <ChevronUp size={16} className="text-white" />
+                      ) : (
+                        <ChevronDown size={16} className="text-white" />
+                      )}
+                    </span>
                   )}
-                </span>
+                </>
               )}
             </div>
 
             {item.subItems && openSubmenu === item.id && expanded && (
-              <div className="submenu pl-8 mt-1 flex flex-col gap-2">
+              <div className="submenu pl-8 mt-1 flex flex-col ">
                 {item.subItems.map((subItem) => (
                   <div
                     key={subItem.id}
-                    className={`flex items-center gap-2 cursor-pointer rounded-md ${
+                    className={`flex gap-2 cursor-pointer rounded-md ${
                       selectedItem === subItem.id ? "selected-submenu-item" : ""
                     }`}
                     onClick={() => handleSubItemClick(item, subItem)}
@@ -299,13 +312,13 @@ const Sidebar = () => {
         ))}
       </div>
 
-      <div className="flex flex-col gap-4 pb-4">
+      <div className="flex flex-col gap-4 pb-4 w-full">
         {bottomMenuItems.map((item) => (
           <div
             key={item.id}
-            className={`flex items-center gap-2 cursor-pointer rounded-md hover:bg-primatyOpacity hover:p-2 hover:w-180 ${
-              selectedItem === item.id ? "active-menu-item" : ""
-            }`}
+            className={`flex items-center  gap-2 cursor-pointer rounded-md hover:bg-primatyOpacity hover:p-2 ${
+              expanded ? "hover:w-[215px]" : "hover:w-20"
+            } ${selectedItem === item.id ? "active-menu-item" : ""}`}
             onClick={() => handleItemClick(item)}
           >
             <span className="icon">
@@ -322,13 +335,15 @@ const Sidebar = () => {
                 })
               )}
             </span>
-            <span
-              className={`text-white text-14 dashbordItem ${
-                selectedItem === item.id ? "selected" : ""
-              }`}
-            >
-              {item.label}
-            </span>
+            {expanded && (
+              <span
+                className={`text-white text-14 dashbordItem ${
+                  selectedItem === item.id ? "selected" : ""
+                }`}
+              >
+                {item.label}
+              </span>
+            )}
           </div>
         ))}
       </div>

@@ -1,83 +1,87 @@
 .sidebar {
-  transition: width 0.3s;
+  transition: width 0.3s ease;
   position: relative;
-  width: 80px;
+  background-color: #000;
   
   &.expanded {
-    width: 200px;
-    align-items: start;
-    
-    .dashbordItem {
+    .logo {
+      display: none;
+    }
+    .text-section {
+      display: flex;
+    }
+  }
+  &:not(.expanded) {
+    .logo {
       display: block;
     }
-    
-    .text {
-      display: inline;
-    }
-    
-    .logo {
+    .text-section {
       display: none;
     }
   }
   
-  &.pinned {
-    width: 200px !important;
+  .pin-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    margin-left: auto;
     
-    .dashbordItem {
-      display: block !important;
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
     }
-    
-    .text {
-      display: inline !important;
-    }
-    
-    .logo {
-      display: none !important;
-    }
+  }
+
+  .logo , .text{
+    margin-top:120px;
+    margin-bottom: 100px;
   }
   
   .dashbordItem {
-    display: none;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    white-space: nowrap;
+    &.selected {
+      color: #fff; 
+    }
   }
-  
-  .text {
-    display: none;
-    margin-right: 10px;
-  }
-  
   .selected {
     color: #e0a75e;
-    
     .icon img {
       filter: brightness(0) saturate(100%) invert(76%) sepia(30%) saturate(800%)
         hue-rotate(340deg) brightness(90%) contrast(90%);
     }
   }
-  
   .selectedImg {
-    background-color: #e0a75e;
+    background-color: #E0A75E;
     border-radius: 50%;
   }
-  
+  // .selectedDiv:hover {
+  //   background-color: #E0A75E;
+  //   padding: 5px;
+  //   width: 250px;
+  // }
+  .submenu {
+    border-left: 1px solid #E0A75E;
+    margin-left: 24px;
+  }
   .active-menu-item {
     border-radius: 10px;
     padding: 8px;
   }
   
   .submenu {
-    border-left: 1px solid #e0a75e;
-    margin-left: 24px;
+    padding-left: 2rem;
+    margin-top: 0.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
   }
   
-  .pin-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 5px;
-    border-radius: 4px;
-    
-    &:hover {
-      background-color: rgba(255, 255, 255, 0.1);
-    }
+  .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }

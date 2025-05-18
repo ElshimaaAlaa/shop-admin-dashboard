@@ -1,7 +1,7 @@
 import * as React from "react";
 const Text = (props) => (
   <svg
-    width={180}
+    width={170}
     height={75}
     viewBox="0 0 258 108"
     fill="none"

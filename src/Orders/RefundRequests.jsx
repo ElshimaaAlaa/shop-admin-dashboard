@@ -64,8 +64,8 @@ function RefundRequests() {
       </Helmet>
 
       <div className="bg-white mb-3 p-4 rounded-md">
-        <p className="text-12 text-gray-400">Menu / Orders / Refund Requests</p>
-        <h1 className="font-bold text-17 mt-3">Refund Requests</h1>
+        <p className="text-13 text-gray-400">Menu / Orders / Refund Requests</p>
+        <h1 className="font-bold text-17 mt-2">Refund Requests</h1>
       </div>
 
       <div className="bg-white p-4 rounded-md">
