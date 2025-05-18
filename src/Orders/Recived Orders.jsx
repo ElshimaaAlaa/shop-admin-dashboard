@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { receivedOrders } from "../ApiServices/received-orders";
 import { OrdersStatistics } from "./OrdersStatistics";
@@ -92,8 +92,8 @@ function ReceivedOrders() {
         <title>Orders | VERTEX</title>
       </Helmet>
       <section className="bg-white mb-3 p-5 rounded-md">
-        <p className="text-gray-400 text-12">Menu / Orders / Received Orders</p>
-        <h1 className="text-17 mt-3 font-bold">Received Orders</h1>
+        <p className="text-gray-400 text-13">Menu / Orders / Received Orders</p>
+        <h1 className="text-17 mt-2 font-bold">Received Orders</h1>
       </section>
       <div className="bg-white rounded-md p-5 mb-5">
         <OrdersStatistics statistics={statistics} />

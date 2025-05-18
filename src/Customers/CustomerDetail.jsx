@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { useParams } from "react-router-dom";
 import { CustomerBalance } from "./CustomerBalance";
@@ -62,7 +62,7 @@ function CustomerDetail() {
         <title>Customers Details | VERTEX</title>
       </Helmet>
       <section className="bg-white mb-3 p-5 rounded-md w-full">
-        <p className="text-gray-400 text-12">
+        <p className="text-gray-400 text-13">
           Menu / Customers / Customer Details
         </p>
         <h1 className="font-bold text-17 mt-2">Customers Details</h1>

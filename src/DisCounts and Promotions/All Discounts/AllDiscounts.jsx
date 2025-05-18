@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
@@ -70,7 +70,7 @@ function AllDiscounts() {
         <title>Discounts and Promotion | vertex</title>
       </Helmet>
       <section className=" rounded-md p-5 bg-white mt-5">
-        <p className="text-gray-400 text-12">
+        <p className="text-gray-400 text-13">
           Menu / Promotions & Discounts / Promotions
         </p>
         <h1 className="mt-2 text-17 font-bold">Promotions</h1>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { FaCheckCircle } from "react-icons/fa";
 import CancelOrder from "./CancelOrder";
@@ -38,9 +38,6 @@ function OrderDetails() {
             setOrderStatus(response.data.data.status);
             setOrderStatusName(response.data.data.status_name);
           }
-          // localStorage.setItem("OrderId", response.data.data.id);
-          // localStorage.setItem("Order Statusid", response.data.data.status);
-          // localStorage.setItem("Order Status", response.data.data.status_name);
           setIsLoading(false);
         }
       } catch (error) {
@@ -57,7 +54,6 @@ function OrderDetails() {
     { icon: <Acc /> },
   ];
 
-  // Status display component
   const StatusDisplay = () => (
     <p
       className={`px-2 py-2 rounded-md text-13 ${
@@ -78,8 +74,8 @@ function OrderDetails() {
       </Helmet>
       <section className="bg-white mb-3 p-5 rounded-md flex justify-between items-center">
         <div>
-          <p className="text-gray-400 text-12">Menu / Orders / Received Orders / view order</p>
-          <h1 className="font-bold text-17 mt-3">Order Details</h1>
+          <p className="text-gray-400 text-13">Menu / Orders / Received Orders / view order</p>
+          <h1 className="font-bold text-17 mt-2">Order Details</h1>
         </div>
         <CancelOrder
           orderId={orderDetail.id}

@@ -1,6 +1,4 @@
-import React from "react";
 import { IoMdClose } from "react-icons/io";
-
 const UploadUpdatedProductImages = ({
   previewImages,
   onImageChange,
@@ -36,7 +34,7 @@ const UploadUpdatedProductImages = ({
                 className="w-full h-44 rounded-md mt-1"
               />
               {/* Thumbnails */}
-              <div className="flex gap-2 mt-2 relative">
+              <div className="flex gap-1 -ms-1 mt-2 relative">
                 {previewImages.map((image, index) => (
                   <div
                     key={index}
@@ -47,7 +45,7 @@ const UploadUpdatedProductImages = ({
                     <img
                       src={image}
                       alt={`thumbnail-${index}`}
-                      className="h-14 w-14 p-1 object-cover rounded-md cursor-pointer relative"
+                      className="h-14 w-14  object-cover rounded-md cursor-pointer relative"
                     />
                     <button
                       type="button"
@@ -55,7 +53,7 @@ const UploadUpdatedProductImages = ({
                         e.stopPropagation();
                         onRemoveImage(index);
                       }}
-                      className="text-red-500 text-xs absolute top-0 left-10"
+                      className="text-white text-15 absolute top-0 left-10"
                     >
                       <IoMdClose size={20}/>
                     </button>
@@ -81,5 +79,4 @@ const UploadUpdatedProductImages = ({
     </div>
   );
 };
-
 export default UploadUpdatedProductImages;

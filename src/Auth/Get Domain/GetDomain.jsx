@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./getDomainStyle.scss";
 import { Helmet } from "react-helmet";
 import AuthInputField from "../../Components/AuthInput Field/AuthInputField";
@@ -41,7 +41,7 @@ function GetDomain() {
         <img
           src="/assets/svgs/vertex.svg"
           alt="logo"
-          className="w-48 h-11 mb-5"
+          className="w-48 h-10 mb-3"
         />
         <Formik
           initialValues={intialValues}
@@ -49,7 +49,7 @@ function GetDomain() {
           onSubmit={handleSubmit}
         >
           <Form>
-            <h1 className="font-bold text-[21px] mt-3">Get Your Domain</h1>
+            <h1 className="font-bold text-[20px] mt-3">Get Your Domain</h1>
             <p className="text-secondary mt-3 text-15 mb-3">
               Enter your email to get your domain and start your business
             </p>

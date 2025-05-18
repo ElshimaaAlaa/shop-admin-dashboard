@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./Register.scss";
 import OAuth from "../OAuth/OAuth";
 import { Formik, Form, Field } from "formik";
@@ -70,14 +70,12 @@ function Register() {
         <title>Register</title>
       </Helmet>
       <div className="registerContainer lg:w-450 md:w-450 sm:w-450 xs:w-450 s:w-450 bg-gray-50">
-        {/* <div> */}
           <img
             src="/assets/svgs/vertex.svg"
             alt="logo"
-            className="w-48 h-11 mb-5"
+            className="w-48 h-10 mb-3 mt-3"
           />
-        {/* </div> */}
-        <h1 className="font-bold text-[21px] mt-3">Create New Account</h1>
+        <h1 className="font-bold text-[20px]">Create New Account</h1>
         <Formik
           initialValues={initialValues}
           onSubmit={handleSubmit}
@@ -85,7 +83,7 @@ function Register() {
         >
           {({ values }) => (
             <Form className="flex flex-col">
-              <div className="relative mt-4">
+              <div className="relative mt-2">
                 <AuthInputField placeholder="Name" name="name" />
               </div>
               <div className="relative mt-3">

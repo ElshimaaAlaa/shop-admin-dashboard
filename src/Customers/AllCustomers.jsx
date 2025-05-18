@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { FaSackDollar } from "react-icons/fa6";
 import { BiSupport } from "react-icons/bi";
 import { IoHelpCircleOutline } from "react-icons/io5";
@@ -103,7 +103,7 @@ function AllCustomers() {
       </Helmet>
       <section className="bg-white mb-3 p-4 rounded-md flex justify-between items-center">
         <div>
-          <p className="text-gray-400 text-12">Menu / Customers </p>
+          <p className="text-gray-400 text-13">Menu / Customers </p>
           <h1 className="font-bold text-17 mt-2">Customers</h1>
         </div>
         <button

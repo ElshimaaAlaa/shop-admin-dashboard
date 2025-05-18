@@ -17,7 +17,7 @@ import { ClipLoader } from "react-spinners";
 const CustomDropdown = ({
   options = [],
   value,
-  onFieldChange, // Renamed from onChange to be more explicit
+  onFieldChange,
   placeholder = "Select an option",
   name,
   error,
@@ -467,11 +467,13 @@ function EditProduct() {
                   />
                 </div>
                 <div className="flex gap-2 mt-3 mb-3">
-                  <Field
-                    name="return_percentage"
-                    placeholder="percentage (upon return)"
-                    className={`w-full h-12 p-3 border-2 rounded-md outline-none transition-all duration-200 placeholder:text-14 focus:border-primary placeholder:text-gray-400`}
-                  />
+                  <div className="w-full">
+                    <Field
+                      name="return_percentage"
+                      placeholder="percentage (upon return)"
+                      className={`w-full h-12 p-3 border-2 rounded-md outline-none transition-all duration-200 placeholder:text-14 focus:border-primary placeholder:text-gray-400`}
+                    />
+                  </div>
                   <div className="w-full">
                     <InputField name="stock" placeholder="Stock" />
                   </div>

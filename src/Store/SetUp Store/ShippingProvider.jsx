@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { fetchShippingProviders } from "../../ApiServices/ShippingProviders";
 import { ClipLoader } from "react-spinners";

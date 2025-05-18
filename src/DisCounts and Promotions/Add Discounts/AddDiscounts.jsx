@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { Helmet } from "react-helmet";
 import { Formik, Form } from "formik";
@@ -137,8 +137,8 @@ const NewPromotion = () => {
       </Helmet>
 
       <section className="rounded-md p-5 mx-5 bg-white mt-5">
-        <p className="text-12 text-gray-400">Menu / Product / Add Promotion</p>
-        <h1 className="mt-3 text-16 font-bold">Add New Promotions</h1>
+        <p className="text-13 text-gray-400">Menu / Product / Add Promotion</p>
+        <h1 className="mt-2 text-16 font-bold">Add New Promotions</h1>
       </section>
       {error && (
         <div className="mx-5 mt-5 p-3 bg-red-100 text-red-700 rounded-md">

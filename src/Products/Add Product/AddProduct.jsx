@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Formik, Form } from "formik";
 import { Helmet } from "react-helmet";
 import { fetchCategories } from "../../ApiServices/AllCategoriesApi";
@@ -254,8 +254,8 @@ const AddProduct = () => {
         {({ setFieldValue, isSubmitting, errors, values }) => (
           <Form className="flex flex-col ">
             <sectio className="rounded-md p-4 bg-white mb-3 mt-5 mx-5">
-              <p className="text-gray-400 text-12">Menu / Product  / Add Product</p>
-              <h1 className="text-17 mt-3 font-bold">Add Product</h1>
+              <p className="text-gray-400 text-13">Menu / Product  / Add Product</p>
+              <h1 className="text-17 mt-2 font-bold">Add Product</h1>
             </sectio>
             <div className="flex">
               <BasicInformationSection

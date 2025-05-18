@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { GoMail } from "react-icons/go";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
@@ -61,7 +61,7 @@ function SupportQuestion() {
       </Helmet>
       <section className="rounded-md p-5 mx-5 bg-white mt-5 flex items-center justify-between">
         <div>
-          <p className="text-gray-400 text-12">
+          <p className="text-gray-400 text-13">
             Menu / Customers / Support Questions
           </p>
           <h1 className="text-17 font-bold mt-2">Support Questions</h1>

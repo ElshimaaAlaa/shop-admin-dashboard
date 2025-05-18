@@ -1,5 +1,5 @@
 import { Form, Formik, Field } from "formik";
-import React, { useState } from "react";
+import { useState } from "react";
 import * as Yup from "yup";
 import InputField from "../../Components/InputFields/InputField";
 import { FaArrowRightLong } from "react-icons/fa6";
@@ -281,5 +281,4 @@ PaymentInfo.defaultProps = {
   onSubmit: () => {},
   onBack: () => {},
 };
-
 export default PaymentInfo;

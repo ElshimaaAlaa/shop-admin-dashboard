@@ -1,23 +1,20 @@
-"use client"
-
-import { useState } from "react"
-import Navbar from "../../Components/NavBar/Navbar"
-import Sidebar from "../../Components/SideBar/Sidebar"
-import { Outlet } from "react-router-dom"
-import { Helmet } from "react-helmet"
+import { useState } from "react";
+import Navbar from "../../Components/NavBar/Navbar";
+import Sidebar from "../../Components/SideBar/Sidebar";
+import { Outlet } from "react-router-dom";
+import { Helmet } from "react-helmet";
 
 function Home() {
-  const [isPinned, setIsPinned] = useState(false)
-  const [searchQuery, setSearchQuery] = useState("")
+  const [isPinned, setIsPinned] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handlePinToggle = () => {
-    setIsPinned(!isPinned)
-  }
+    setIsPinned(!isPinned);
+  };
 
   const handleSearch = (query) => {
-    setSearchQuery(query)
-    // You can implement search functionality here
-  }
+    setSearchQuery(query);
+  };
 
   return (
     <>
@@ -34,6 +31,6 @@ function Home() {
         </div>
       </div>
     </>
-  )
+  );
 }
-export default Home
+export default Home;

@@ -170,26 +170,23 @@ const Sidebar = () => {
       onMouseLeave={toggleSidebar}
     >
       <div className="flex flex-col gap-4 w-full">
-        <div className="flex justify-end pr-2 pt-2">
-          <button
-            onClick={togglePin}
-            className="pin-button"
-            title={isPinned ? "Unpin sidebar" : "Pin sidebar"}
-          >
-            {isPinned ? (
-              <PinOff size={18} className="text-white" />
-            ) : (
-              <Pin size={18} className="text-white" />
-            )}
-          </button>
-        </div>
-
-        <div>
+        <div className="flex justify-between items-center">
           <div className="logo mt-5 mb-5">
             <Logo />
           </div>
-          <div className="text">
+          <div className="text flex ">
             <Text />
+              <button
+                onClick={togglePin}
+                className="pin-button"
+                title={isPinned ? "Unpin sidebar" : "Pin sidebar"}
+              >
+                {isPinned ? (
+                  <PinOff size={18} className="text-white" />
+                ) : (
+                  <Pin size={18} className="text-white" />
+                )}
+              </button>
           </div>
         </div>
 

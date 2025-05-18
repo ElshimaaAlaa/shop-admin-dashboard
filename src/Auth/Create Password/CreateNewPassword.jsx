@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
@@ -60,9 +60,9 @@ function CreateNewPassword() {
         <img
           src="/assets/svgs/vertex.svg"
           alt="logo"
-          className="w-48 h-11 mb-5"
+          className="w-48 h-10 mb-3"
         />
-        <h1 className="font-bold mt-3 text-[21px]">Create New Password</h1>
+        <h1 className="font-bold mt-3 text-[20px]">Create New Password</h1>
         <Formik
           initialValues={initialValues}
           onSubmit={handleSubmit}

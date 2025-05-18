@@ -8,7 +8,7 @@ const StatisticsCard = ({
 }) => (
   <div className="bg-white rounded-md border border-gray-200 flex-1 min-w-[200px]">
     <div className="flex items-center gap-3 bg-gray-100 rounded-tl-md rounded-tr-md p-3 mb-5">
-      <Icon className="text-2xl text-primary" />
+      <Icon className="text-xl text-primary" />
       <h3 className="text-gray-600 text-14">{title}</h3>
     </div>
     <div className="flex items-center gap-3 ps-4">

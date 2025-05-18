@@ -96,7 +96,6 @@ function EditCategory() {
   const [error, setError] = useState(null);
   const category = state || {};
 
-  // Debug the incoming category data
   useEffect(() => {
     console.log("Category data received:", category);
     console.log("Current type value:", category?.type);
@@ -108,7 +107,7 @@ function EditCategory() {
   const initialValues = {
     name: category?.name || "",
     description: category?.description || "",
-    type: category?.type?.toString() || "", // Ensure type is string
+    type: category?.type?.toString() || "", 
     image: null,
     tagsEn: initialTagsEn,
     tagsAr: initialTagsAr,
@@ -174,13 +173,12 @@ function EditCategory() {
       { value: "4", label: "Color & Size" },
     ];
 
-    // Debug the current field value
     console.log("TypeField current value:", field.value);
 
     return (
       <CustomDropdown
         options={options}
-        value={field.value?.toString()} // Ensure value is string
+        value={field.value?.toString()} 
         onChange={(name, value) => {
           form.setFieldValue(name, value);
         }}
@@ -205,7 +203,7 @@ function EditCategory() {
         <meta name="description" content="Edit category details in VERTEX" />
       </Helmet>
       <section className="rounded-md p-5 mx-5 bg-white mt-5 mb-3">
-        <p className="text-gray-400 text-12">
+        <p className="text-gray-400 text-13">
           Menu / Categories / Edit Category
         </p>
         <h1 className="font-bold text-17 mt-2">Edit Category</h1>

@@ -30,26 +30,25 @@ function Navbar({ onSearch }) {
   return (
     <div className="bg-white shadow-sm">
       <nav className="flex items-center justify-between px-5 py-2 border-b border-gray-200">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
           {/* Back button */}
           <button
             onClick={goBack}
             aria-label="Go back"
             className=""
           >
-            <IoArrowBackCircle size={35} color="#E0A75E" />
+            <IoArrowBackCircle size={44} color="#E0A75E"/>
           </button>
-
           {/* Search Input */}
           <div className="relative w-400">
             <input
               type="text"
               placeholder="Search"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent pl-10 pr-8"
+              className="w-full p-2.5 border-1 border-gray-200 rounded-lg focus:outline-none  focus:border-primary  pl-10 pr-8 placeholder:text-14"
               value={searchQuery}
               onChange={handleSearchChange}
             />
-            <div className="absolute left-3 top-2.5 text-gray-400">
+            <div className="absolute left-3 top-3 text-gray-400">
               <CiSearch size={22} color="#E0A75E" />
             </div>
             {searchQuery && (
@@ -82,5 +81,4 @@ function Navbar({ onSearch }) {
     </div>
   );
 }
-
 export default Navbar;

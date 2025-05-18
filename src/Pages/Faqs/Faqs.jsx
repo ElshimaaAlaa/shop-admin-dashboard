@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Helmet } from "react-helmet";
 import { ClipLoader } from "react-spinners";
 import { Formik, Form, Field } from "formik";
@@ -49,12 +49,11 @@ function Faqs() {
         We're here to help with any questions you have about plans, pricing,
         <br /> and supported features.
       </p>
-
       <div className="flex justify-center gap-5 mx-20">
         {/* FAQ Section */}
         <AllFaqs/>
         {/* Add Question Section */}
-        <section className="bg-customOrange-mediumOrange rounded-md p-5 w-500 h-full mt-10">
+        <section className="bg-customOrange-mediumOrange rounded-md p-5 w-450 h-full mt-10">
           <div className="flex justify-center">
             <img
               src="/assets/svgs/chat-round-dots_svgrepo.com.svg"

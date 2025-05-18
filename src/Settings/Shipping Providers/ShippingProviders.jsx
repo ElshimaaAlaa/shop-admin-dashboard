@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Helmet } from "react-helmet";
 import SearchBar from "../../Components/Search Bar/SearchBar";
 import { Plus } from "lucide-react";
@@ -73,7 +73,7 @@ function ShippingProviders() {
         <title>Shipping Providers | vertex</title>
       </Helmet>
       <section className="rounded-md p-5 mx-5 bg-white mt-5">
-        <p className="text-gray-400 text-12">Menu / Shipping Providers</p>
+        <p className="text-gray-400 text-13">Menu / Shipping Providers</p>
         <h1 className="text-17 font-bold mt-2">Shipping Providers</h1>
       </section>
       <section className="rounded-md bg-customOrange-mediumOrange border mt-3 border-primary p-4 mx-5 flex items-center justify-between">

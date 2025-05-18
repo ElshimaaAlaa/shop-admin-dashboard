@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import ReactPaginate from "react-paginate";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -37,9 +37,8 @@ function AllCategory() {
   const handleDeleteCategory = (categoryId) => {
     setCategories((prevCategories) => {
       const updatedCategories = prevCategories.filter((category) => category.id !== categoryId);
-      // Check if the current page is empty after deletion
       if (updatedCategories.length <= (currentPage - 1) * itemsPerPage && currentPage > 1) {
-        setCurrentPage(currentPage - 1); // Move to the previous page
+        setCurrentPage(currentPage - 1); 
       }
       return updatedCategories;
     });
@@ -85,12 +84,12 @@ function AllCategory() {
   };
 
   return (
-    <div className="bg-gray-100 p-4 h-[89vh] pt-3">
+    <div className="bg-gray-100 p-4 h-[89vh] pt-5">
       <Helmet>
         <title>All Categories - VERTEX</title>
       </Helmet>
       <section className="bg-white p-5 rounded-md mb-3">
-        <p className="text-gray-400 text-12">Menu / Categories</p>
+        <p className="text-gray-400 text-13">Menu / Categories</p>
         <h1 className="font-bold text-17 mt-2">Categories</h1>
       </section>
       <section className="bg-white p-5 rounded-md">

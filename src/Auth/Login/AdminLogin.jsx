@@ -76,10 +76,10 @@ function AdminLogin() {
         <img
           src="/assets/svgs/vertex.svg"
           alt="logo"
-          className="w-48 h-11 mb-5"
+          className="w-48 h-10 mb-4"
         />
         <div className="flex items-center gap-3 mt-3">
-          <h1 className="font-bold text-[21px]">Welcome Back</h1>
+          <h1 className="font-bold text-[20px]">Welcome Back</h1>
           <img
             src="/assets/images/waving-hand_svgrepo.com.png"
             alt="welcome-back"
@@ -92,7 +92,7 @@ function AdminLogin() {
           validationSchema={validationSchema}
         >
           {({ errors, touched }) => (
-            <Form className="loginForm mt-4">
+            <Form className="loginForm mt-3">
               <AuthInputField
                 name={"email"}
                 placeholder={"Email"}

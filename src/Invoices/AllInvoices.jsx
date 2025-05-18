@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Helmet } from "react-helmet";
 import { fetchInovices } from "../ApiServices/AllInovices";
 import { useNavigate } from "react-router-dom";
@@ -77,7 +77,7 @@ function AllInvoices() {
         <title>Invoices | vertex</title>
       </Helmet>
       <div className="rounded-md p-5 bg-white">
-        <p className="text-gray-400 text-12">Menu / Invoices</p>
+        <p className="text-gray-400 text-13">Menu / Invoices</p>
         <h1 className="mt-2 text-17 font-bold">Invoices</h1>
       </div>
       <div className="bg-white rounded-md p-4 mt-3">

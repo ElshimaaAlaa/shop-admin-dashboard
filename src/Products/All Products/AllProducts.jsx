@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import ReactPaginate from "react-paginate";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -83,7 +83,7 @@ function AllProducts() {
 
       <div className="bg-white mb-3 p-4 rounded-md">
         <p className="text-gray-400 text-13">Menu / Products</p>
-        <h1 className="font-bold text-17 mt-3">Products</h1>
+        <h1 className="font-bold text-17 mt-2">Products</h1>
       </div>
 
       <div className="bg-white p-5 rounded-md">

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import { getRequests } from "../../ApiServices/Requests";
@@ -54,7 +54,7 @@ function Requests() {
       </Helmet>
       <div className="rounded-md p-5 mx-5 bg-white mt-5 flex items-center justify-between">
         <div>
-          <p className="text-gray-400 text-12">
+          <p className="text-gray-400 text-13">
             Menu / Customers / Support Questions/ Requests
           </p>
           <h1 className="text-17 font-bold mt-2">Requests</h1>

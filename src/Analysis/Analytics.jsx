@@ -56,7 +56,7 @@ function Analytics() {
       </Helmet>
       <section className="bg-white mb-2 p-4 rounded-md">
         <p className="text-gray-400 text-13">Menu / Analytics & Reports</p>
-        <h1 className="font-bold text-17 mt-3">Analytics & Reports</h1>
+        <h1 className="font-bold text-17 mt-2">Analytics & Reports</h1>
       </section>
       <div className="bg-white rounded-md p-5 mb-5">
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">

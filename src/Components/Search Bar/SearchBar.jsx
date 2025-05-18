@@ -1,6 +1,4 @@
-import React from "react";
 import { Search} from "lucide-react";
-
 function SearchBar({onclick , value ,onchange ,text , icon}) {
   return (
     <div className="flex justify-between items-center gap-3 bg-white mb-5 rounded-md">

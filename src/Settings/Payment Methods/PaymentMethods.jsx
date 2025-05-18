@@ -77,8 +77,8 @@ function PaymentMethods() {
         <title>Payment Methods | vertex</title>
       </Helmet>
       <div className="rounded-md p-5 mx-5 bg-white mt-5">
-        <p className="text-12 text-gray-400">Menu / Payment Methods</p>
-        <h1 className="mt-3 text-17 font-bold">Payment Methods</h1>
+        <p className="text-13 text-gray-400">Menu / Payment Methods</p>
+        <h1 className="mt-2 text-17 font-bold">Payment Methods</h1>
       </div>
       <div className="rounded-md bg-customOrange-mediumOrange border mt-3 border-primary p-4 mx-5 flex items-center justify-between">
         <div className="flex items-center gap-2">
