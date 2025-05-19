@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
@@ -11,7 +11,7 @@ import { loginService } from "../../ApiServices/LoginService";
 import AuthInputField from "../../Components/AuthInput Field/AuthInputField";
 import PasswordInput from "../../Components/Password Input/PasswordInput";
 
-function AdminLogin() {
+function Login() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
@@ -137,7 +137,7 @@ function AdminLogin() {
                   role="button"
                   tabIndex={0}
                   className="font-bold text-11 lg:text-13 cursor-pointer"
-                  onClick={() => navigate("/AdminLogin/ForgotPassword")}
+                  onClick={() => navigate("/Login/ForgotPassword")}
                 >
                   Forget your password?
                 </div>
@@ -173,4 +173,4 @@ function AdminLogin() {
     </div>
   );
 }
-export default AdminLogin;
+export default Login;

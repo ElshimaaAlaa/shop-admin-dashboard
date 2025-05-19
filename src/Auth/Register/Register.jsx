@@ -150,7 +150,7 @@ function Register() {
               <p className="text-center text-gray-400 mt-3 text-15">
                 Have An Account ?
                 <span
-                  onClick={() => navigate("/AdminLogin")}
+                  onClick={() => navigate("/Login")}
                   className="ms-2 text-primary font-bold text-15 cursor-pointer"
                 >
                   Login

@@ -43,7 +43,7 @@ function CreateNewPassword() {
       );
       setShowSuccessModal(true);
       localStorage.removeItem("Email");
-      setTimeout(() => navigate("/AdminLogin"), 2500);
+      setTimeout(() => navigate("/Login"), 2500);
     } catch (error) {
       setError(error);
     } finally {

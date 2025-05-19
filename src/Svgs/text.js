@@ -1,4 +1,3 @@
-import * as React from "react";
 const Text = (props) => (
   <svg
     width={170}

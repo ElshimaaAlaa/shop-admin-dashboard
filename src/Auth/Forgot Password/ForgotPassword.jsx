@@ -1,5 +1,5 @@
 import { Formik, Form } from "formik";
-import React, { useState } from "react";
+import { useState } from "react";
 import MainBtn from "../../Components/Main Button/MainBtn";
 import Email from "../../Svgs/Email";
 import "./forgotpassword.scss";
@@ -26,7 +26,7 @@ function ForgotPassword() {
     try {
       await ForgotPasswordService(values.email);
       console.log("OTP sent successfully!");
-      navigate("/AdminLogin/VerifayPassword");
+      navigate("/Login/VerifayPassword");
     } catch (error) {
       console.error(error.message);
       setErrors({ email: "Failed to send OTP. Please try again." });

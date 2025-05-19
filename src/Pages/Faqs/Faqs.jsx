@@ -11,12 +11,13 @@ import AllFaqs from "./AllFaqs";
 
 function Faqs() {
   const [isLoading, setIsLoading] = useState(false);
-  const [faqsData, setFaqsData] = useState([]);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const initialValues = {
     question: "",
     answer: "",
   };
+
   const validationSchema = Yup.object({
     question: Yup.string().required("Question is required"),
     answer: Yup.string().required("Answer is required"),
@@ -25,11 +26,10 @@ function Faqs() {
   const handleSubmit = async (values, { resetForm }) => {
     setIsLoading(true);
     try {
-      const questionData = await addFaqs(values.question, values.answer);
-      if (questionData && questionData.data) {
-        setFaqsData((prevFaqs) => [questionData.data, ...prevFaqs]);
-        resetForm();
-      }
+      await addFaqs(values.question, values.answer);
+      resetForm();
+      // Trigger refresh in AllFaqs component
+      setRefreshTrigger(prev => prev + 1);
     } catch (error) {
       console.error("Failed to add FAQ:", error);
     } finally {
@@ -50,9 +50,10 @@ function Faqs() {
         <br /> and supported features.
       </p>
       <div className="flex justify-center gap-5 mx-20">
-        {/* FAQ Section */}
-        <AllFaqs/>
-        {/* Add Question Section */}
+        {/* FAQ List Section - Pass refreshTrigger */}
+        <AllFaqs refreshTrigger={refreshTrigger} />
+        
+        {/* Add Question Form Section */}
         <section className="bg-customOrange-mediumOrange rounded-md p-5 w-450 h-full mt-10">
           <div className="flex justify-center">
             <img
@@ -72,7 +73,7 @@ function Faqs() {
             onSubmit={handleSubmit}
             validationSchema={validationSchema}
           >
-            {({ isSubmitting }) => (
+            {() => (
               <Form>
                 <InputField name="question" placeholder="Question" />
                 <Field
@@ -101,4 +102,5 @@ function Faqs() {
     </div>
   );
 }
+
 export default Faqs;

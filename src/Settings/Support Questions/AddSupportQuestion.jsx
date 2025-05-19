@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./Style.scss";
 import { ClipLoader } from "react-spinners";
 import * as Yup from "yup";

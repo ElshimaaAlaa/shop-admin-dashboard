@@ -163,7 +163,7 @@ function AllCustomers() {
               setSearchQuery(e.target.value);
               setCurrentPage(0);
             }}
-            className="w-full pl-10 pr-4 py-4 bg-muted/50 rounded-md text-sm focus:outline-none border-2 border-gray-200 bg-gray-50 placeholder:text-15 focus:border-primary"
+            className="w-full h-12 pl-10 pr-4 py-4 bg-muted/50 rounded-md text-sm focus:outline-none border-2 border-gray-200 bg-gray-50 placeholder:text-15 focus:border-primary"
           />
         </div>
 
@@ -270,7 +270,7 @@ function AllCustomers() {
               pageCount={pageCount}
               onPageChange={handlePageClick}
               forcePage={currentPage}
-              containerClassName="flex items-center justify-end mt-5 text-gray-500"
+              containerClassName="flex items-center justify-end mt-5 text-gray-400 text-13"
               pageClassName="mx-1 px-3 py-1 rounded"
               activeClassName="bg-customOrange-lightOrange text-primary"
               previousLabel={<ChevronLeft className="w-4 h-4 text-center" />}

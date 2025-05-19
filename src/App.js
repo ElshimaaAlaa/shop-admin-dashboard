@@ -9,7 +9,7 @@ import AllProducts from "./Products/All Products/AllProducts";
 import AddProduct from "./Products/Add Product/AddProduct";
 import EditProduct from "./Products/Edit Product/EditProduct";
 import ViewProduct from "./Products/View Product/ViewProduct";
-import AdminLogin from "./Auth/Login/AdminLogin";
+import Login from "./Auth/Login/Login";
 import ForgotPassword from "./Auth/Forgot Password/ForgotPassword";
 import VerifayPassword from "./Auth/Verivation Code/VerifayPassword";
 import CreateNewPassword from "./Auth/Create Password/CreateNewPassword";
@@ -80,14 +80,14 @@ function App() {
         <Route path="/GetDomain" element={<GetDomain />} />
 
         {/* Auth */}
-        <Route path="/AdminLogin" element={<AdminLogin />} />
-        <Route path="/AdminLogin/ForgotPassword" element={<ForgotPassword />} />
+        <Route path="/Login" element={<Login />} />
+        <Route path="/Login/ForgotPassword" element={<ForgotPassword />} />
         <Route
-          path="/AdminLogin/VerifayPassword"
+          path="/Login/VerifayPassword"
           element={<VerifayPassword />}
         />
         <Route
-          path="/AdminLogin/CreateNewPassword"
+          path="/Login/CreateNewPassword"
           element={<CreateNewPassword />}
         />
         {/* Register and set up store */}

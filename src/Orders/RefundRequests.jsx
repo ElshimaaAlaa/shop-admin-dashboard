@@ -79,7 +79,7 @@ function RefundRequests() {
             placeholder="Search by order number or reason"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-4 bg-muted/50 rounded-md text-sm focus:outline-none border-2 border-gray-200 bg-lightgray placeholder:text-15 focus:border-primary"
+            className="w-full h-12 pl-10 pr-4 py-4 bg-muted/50 rounded-md text-sm focus:outline-none border-2 border-gray-200 bg-gray-50 placeholder:text-15 focus:border-primary"
           />
         </div>
 
@@ -166,7 +166,7 @@ function RefundRequests() {
             pageCount={pagination.total_pages}
             onPageChange={handlePageClick}
             forcePage={pagination.current_page - 1}
-            containerClassName="flex items-center justify-end mt-5 space-x-1"
+            containerClassName="flex items-center justify-end mt-5 space-x-1 text-gray-400 text-13"
             pageClassName="px-3 py-1 rounded hover:bg-gray-200"
             activeClassName="bg-customOrange-lightOrange text-primary"
             previousLabel={<ChevronLeft className="w-4 h-4" />}
@@ -187,5 +187,4 @@ function RefundRequests() {
     </div>
   );
 }
-
 export default RefundRequests;

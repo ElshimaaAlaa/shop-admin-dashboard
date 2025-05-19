@@ -164,7 +164,7 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`sidebar px-6 bg-black min-h-screen flex flex-col items-center justify-between ${
+      className={`sidebar px-3 bg-black min-h-screen flex flex-col items-center justify-between ${
         expanded ? "expanded w-[250px] px-3" : "w-20"
       } ${isPinned ? "pinned" : ""}`}
       onMouseEnter={toggleSidebar}

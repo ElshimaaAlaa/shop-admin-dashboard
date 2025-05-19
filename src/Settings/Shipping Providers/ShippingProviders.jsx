@@ -171,7 +171,7 @@ function ShippingProviders() {
               pageCount={pageCount}
               onPageChange={handlePageClick}
               forcePage={currentPage}
-              containerClassName="flex items-center justify-end mt-5 text-gray-500"
+              containerClassName="flex items-center justify-end mt-5 text-gray-400 text-13"
               pageClassName="mx-1 px-3 py-1 rounded"
               activeClassName="bg-customOrange-lightOrange text-primary"
               previousLabel={<ChevronLeft className="w-4 h-4 text-center" />}

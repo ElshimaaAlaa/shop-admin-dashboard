@@ -1,5 +1,5 @@
-import { Form, Formik } from "formik";
-import React, { useState, useEffect } from "react";
+import { Form, Formik, Field } from "formik";
+import { useState, useEffect } from "react";
 import * as Yup from "yup";
 import "./SectionsStyle.scss";
 import { ClipLoader } from "react-spinners";
@@ -11,11 +11,13 @@ import Location from "../../Svgs/Location";
 import { sendSupport } from "../../ApiServices/Support";
 import { settings } from "../../ApiServices/Settings";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
+
 function ContactUsSection() {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setdata] = useState([]);
   const [error, setError] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  
   const initialValues = {
     name: "",
     email: "",
@@ -65,9 +67,9 @@ function ContactUsSection() {
       console.error(error);
     } finally {
       setIsLoading(false);
-      setError(error);
     }
   };
+
   //fetch general settings
   useEffect(() => {
     const fetchSettings = async () => {
@@ -80,6 +82,7 @@ function ContactUsSection() {
     };
     fetchSettings();
   }, []);
+
   return (
     <section className="ps-3 pe-3 mt-40 flex flex-col lg:gap-20 lg:px-20 lg:flex-row  md:flex-row md:items-center lg:mt-0 md:mt-0 pb-20 pt-20 bg-customOrange-mediumOrange relative ">
       {/* contact info */}
@@ -121,32 +124,65 @@ function ContactUsSection() {
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          <Form className="flex flex-col items-start justify-center lg:items-start md:items-start md:mt-10">
-            <div className="relative mt-5 md:mt-0 lg:mt-0">
-              <InputField placeholder="Name" name="name" />
-            </div>
-            <div className="relative mt-3">
-              <InputField placeholder="Email" name="email" />
-            </div>
-            <div className="relative mt-3">
-              <InputField placeholder="Phone Number" name="phone" />
-            </div>
-            <div className="relative mt-3">
-              <InputField placeholder="Your Message" name="message" />
-            </div>
-            <div className="flex mt-5">
-              <button className="text-16 bg-primary flex justify-center items-center text-center h-14 w-52 lg:w-52 md:w-52 gap-2 text-white rounded-md">
-                {isLoading ? (
-                  <ClipLoader color="#fff" size={22} />
-                ) : (
-                  <>
-                    <LuSend />
-                    Send Message
-                  </>
+          {({ errors, touched }) => (
+            <Form className="flex flex-col items-start justify-center lg:items-start md:items-start md:mt-10">
+              <div className="relative mt-5 md:mt-0 lg:mt-0">
+                <InputField placeholder="Name" name="name" />
+                {errors.name && touched.name && (
+                  <div className="text-red-500 text-sm">{errors.name}</div>
                 )}
-              </button>
-            </div>
-          </Form>
+              </div>
+              <div className="relative mt-2">
+                <InputField placeholder="Email" name="email" />
+                {errors.email && touched.email && (
+                  <div className="text-red-500 text-sm">{errors.email}</div>
+                )}
+              </div>
+              <div className="relative mt-2">
+                <InputField placeholder="Phone Number" name="phone" />
+                {errors.phone && touched.phone && (
+                  <div className="text-red-500 text-sm">{errors.phone}</div>
+                )}
+              </div>
+              <div className="relative mt-2">
+                <Field
+                  as="textarea"
+                  placeholder="Your Message"
+                  name="message"
+                  className={`w-80 h-24 lg:w-400 md:w-400 sm:w-390 s:w-390 p-3 border-2 rounded-md outline-none transition-all duration-200 placeholder:text-14
+                    ${
+                      errors.message && touched.message
+                        ? "border-red-500"
+                        : touched.message && !errors.message
+                        ? "border-[#28A513]"
+                        : "border-gray-200"
+                    }
+                    ${
+                      touched.message ? "focus:border-2" : "focus:border-primary"
+                    }
+                  `}
+                />
+                {errors.message && touched.message && (
+                  <div className="text-red-500 text-sm">{errors.message}</div>
+                )}
+              </div>
+              <div className="flex mt-2">
+                <button
+                  type="submit"
+                  className="text-16 bg-primary flex justify-center items-center text-center h-14 w-52 lg:w-52 md:w-52 gap-2 text-white rounded-md"
+                >
+                  {isLoading ? (
+                    <ClipLoader color="#fff" size={22} />
+                  ) : (
+                    <>
+                      <LuSend />
+                      Send Message
+                    </>
+                  )}
+                </button>
+              </div>
+            </Form>
+          )}
         </Formik>
       </div>
       {/* Success Modal */}
@@ -170,4 +206,5 @@ function ContactUsSection() {
     </section>
   );
 }
+
 export default ContactUsSection;
