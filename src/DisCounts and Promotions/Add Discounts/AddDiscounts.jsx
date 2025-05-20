@@ -62,9 +62,8 @@ const NewPromotion = () => {
     total_price: "",
     start_date: null,
     end_date: null,
-    items: [{ product_id: "", quantity: "" }],
-    category_id: "",
-    quantity: "",
+    items: [{ product_id: "", quantity: "", category_id: "" }],
+    quantity:""
   };
 
   const promotionSchema = Yup.object().shape({
@@ -82,9 +81,11 @@ const NewPromotion = () => {
         Yup.object().shape({
           product_id: Yup.string().required("Product is required"),
           quantity: Yup.string(),
+          category_id: Yup.string().required("Category is required"),
         })
       )
       .min(1, "At least one product is required"),
+      quantity:Yup.string().required('quantity is required')
   });
 
   const handleSubmit = async (values, { resetForm }) => {
@@ -101,12 +102,14 @@ const NewPromotion = () => {
       formData.append("total_price", values.total_price);
       formData.append("start_date", formatDate(values.start_date));
       formData.append("end_date", formatDate(values.end_date));
-      formData.append("category_id", values.category_id);
-      formData.append("quantity", values.quantity);
+      formData.append("quantity",values.quantity)
+      
       values.items.forEach((item, index) => {
         formData.append(`items[${index}][product_id]`, item.product_id);
         formData.append(`items[${index}][quantity]`, item.quantity);
+        formData.append(`items[${index}][category_id]`, item.category_id);
       });
+
       await axios.post(API_BASE_URL, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -130,6 +133,7 @@ const NewPromotion = () => {
       setIsSubmitting(false);
     }
   };
+
   return (
     <div className="bg-gray-100 flex flex-col min-h-screen relative">
       <Helmet>
@@ -172,7 +176,7 @@ const NewPromotion = () => {
             </div>
             <Footer
               saveBtnType="submit"
-              saveText={isLoading ? <ClipLoader color="#fff" size={22}/>: "Save"}
+              saveText={"Save"}
               cancelText="Cancel"
               cancelBtnType="button"
               saveDisabled={isSubmitting || !isValid || !dirty}
@@ -200,4 +204,5 @@ const NewPromotion = () => {
     </div>
   );
 };
+
 export default NewPromotion;

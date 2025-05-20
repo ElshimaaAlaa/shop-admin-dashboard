@@ -1,21 +1,23 @@
-import React from "react";
 import PropTypes from "prop-types";
 import { Field, FieldArray } from "formik";
 import { RiDeleteBinLine } from "react-icons/ri";
 import InputField from "../InputFields/InputField";
 import CategoryDropdownField from "./CategoryDropdownField";
 import ProductDropdownField from "./ProductDropdownField";
+
 const PromotionBasicInfo = ({
   products,
   categories,
   values,
   setFieldValue,
+  errors,
+  touched,
 }) => (
   <div className="bg-white rounded-md p-5 w-full">
     <h2 className="text-16 font-bold mb-4">Basic Information</h2>
     <div className="flex flex-col gap-2">
       <InputField name="name" placeholder="Promotion Name" />
-      <InputField name="quantity" placeholder="Enter quantity" />
+      <InputField name="quantity" placeholder="Quantity" />
 
       <div className="">
         <input
@@ -29,7 +31,7 @@ const PromotionBasicInfo = ({
             const newItems = [...values.items];
 
             while (newItems.length < newLength) {
-              newItems.push({ product_id: "", quantity: "" });
+              newItems.push({ product_id: "", quantity: "", category_id: "" });
             }
             while (newItems.length > newLength) {
               newItems.pop();
@@ -72,7 +74,7 @@ const PromotionBasicInfo = ({
                       </div>
                       <div className="w-full">
                         <Field
-                          name="category_id"
+                          name={`items[${index}].category_id`}
                           component={CategoryDropdownField}
                           categories={categories}
                         />
@@ -94,10 +96,14 @@ const PromotionBasicInfo = ({
     </div>
   </div>
 );
+
 PromotionBasicInfo.propTypes = {
   products: PropTypes.array.isRequired,
   categories: PropTypes.array.isRequired,
   values: PropTypes.object.isRequired,
   setFieldValue: PropTypes.func.isRequired,
+  errors: PropTypes.object.isRequired,
+  touched: PropTypes.object.isRequired,
 };
+
 export default PromotionBasicInfo;

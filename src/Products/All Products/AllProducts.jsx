@@ -175,7 +175,7 @@ function AllProducts() {
                         </div>
                       </td>
                       <td className="px-3 py-3 text-gray-600 text-15 border-t border-l w-200">
-                        ${product.price?.toFixed(2) || "0.00"}
+                        {product.price?.toFixed(2) || "0.00"} $
                       </td>
                       <td className="px-3 text-gray-600 text-15 py-3 border-t border-l w-200">
                       {product.stock}
@@ -233,17 +233,17 @@ function AllProducts() {
                   pageCount={Math.ceil(filteredProducts.length / itemsPerPage)}
                   onPageChange={({ selected }) => setCurrentPage(selected + 1)}
                   forcePage={currentPage - 1}
-                  containerClassName="flex items-center justify-end mt-5 text-gray-400 text-13"
+                  containerClassName="flex items-center justify-end mt-5 text-gray-400 text-14"
                   pageClassName="mx-1 px-3 py-1 rounded"
                   pageLinkClassName="page-link"
                   activeClassName="bg-customOrange-lightOrange text-primary"
                   activeLinkClassName="active-link"
-                  previousClassName="mx-1 px-3 py-1 font-bold text-primary text-18 "
-                  nextClassName="mx-1 px-3 py-1 font-bold text-primary text-18"
-                  previousLabel={<ChevronLeft className="h-4 w-4 text-center" />}
-                  nextLabel={<ChevronRight className="h-4 w-4" />}
+                  previousClassName=" px-1 py-1 font-bold text-primary text-[20px] "
+                  nextClassName="py-1 px-1 font-bold text-primary text-[20px]"
+                  previousLabel={<ChevronLeft className="h-4 w-5 text-center" />}
+                  nextLabel={<ChevronRight className="h-4 w-5" />}
                   breakLabel="..."
-                  breakClassName="px-3 py-1 text-gray-700"
+                  breakClassName=" py-1 text-gray-700"
                   marginPagesDisplayed={1}
                   pageRangeDisplayed={3}
                 />

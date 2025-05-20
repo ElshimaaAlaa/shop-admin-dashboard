@@ -1,13 +1,14 @@
 import axios from "axios";
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Helmet } from "react-helmet";
 import { useParams } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import "./invoiceStyle.scss"
+import "./invoiceStyle.scss";
+import { FaTimesCircle } from "react-icons/fa";
 import { FaCircleCheck } from "react-icons/fa6";
-
+import { FaUndo } from "react-icons/fa";
 function InvoiceDetails() {
   const API_BASE_URL = "https://";
   const live_shop_domain = localStorage.getItem("live_shop_domain");
@@ -50,28 +51,30 @@ function InvoiceDetails() {
     setIsGeneratingPdf(true);
     const input = invoiceRef.current;
     input.classList.add("printing-pdf");
-    
+
     html2canvas(input, {
       scale: 2,
       logging: false,
       useCORS: true,
       scrollY: -window.scrollY,
-    }).then((canvas) => {
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const imgProps = pdf.getImageProperties(imgData);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-      
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`invoice_${data.invoice_number || id}.pdf`);
-      input.classList.remove("printing-pdf");
-      setIsGeneratingPdf(false);
-    }).catch((error) => {
-      console.error("Error generating PDF:", error);
-      setIsGeneratingPdf(false);
-      input.classList.remove("printing-pdf");
-    });
+    })
+      .then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new jsPDF("p", "mm", "a4");
+        const imgProps = pdf.getImageProperties(imgData);
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+        pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+        pdf.save(`invoice_${data.invoice_number || id}.pdf`);
+        input.classList.remove("printing-pdf");
+        setIsGeneratingPdf(false);
+      })
+      .catch((error) => {
+        console.error("Error generating PDF:", error);
+        setIsGeneratingPdf(false);
+        input.classList.remove("printing-pdf");
+      });
   };
 
   return (
@@ -79,26 +82,38 @@ function InvoiceDetails() {
       <Helmet>
         <title>Invoice Details | vertex</title>
       </Helmet>
-        <section className="flex justify-between items-center">
-          <h1 className="text-xl font-bold">Invoice Details</h1>
-          <button
-            onClick={downloadPdf}
-            disabled={isGeneratingPdf || isLoading}
-            className="bg-primary text-white p-3 w-52  rounded-md flex items-center justify-center gap-2 hover:bg-primary-dark transition-colors disabled:opacity-50"
-          >
-            {isGeneratingPdf ? (
-              <ClipLoader color="#ffffff"  size={22} />
-            ) : (
-              <>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
-                </svg>
-                Download Invoice
-              </>
-            )}
-          </button>
-        </section>
-      <section ref={invoiceRef} className="rounded-2xl border-1 border-gray-200 py-6 px-8 bg-white mt-3">
+      <section className="flex justify-between items-center">
+        <h1 className="text-xl font-bold">Invoice Details</h1>
+        <button
+          onClick={downloadPdf}
+          disabled={isGeneratingPdf || isLoading}
+          className="bg-primary text-white p-3 w-52  rounded-md flex items-center justify-center gap-2 hover:bg-primary-dark transition-colors disabled:opacity-50"
+        >
+          {isGeneratingPdf ? (
+            <ClipLoader color="#ffffff" size={22} />
+          ) : (
+            <>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              Download Invoice
+            </>
+          )}
+        </button>
+      </section>
+      <section
+        ref={invoiceRef}
+        className="rounded-2xl border-1 border-gray-200 py-6 px-8 bg-white mt-3"
+      >
         {/* Invoice Header */}
         <div className="flex justify-between rounded-2xl border-2 border-primary bg-customOrange-mediumOrange py-8 ps-3 pe-7">
           <div className="">
@@ -124,9 +139,9 @@ function InvoiceDetails() {
             <p className="text-gray-500 text-15 text-right">Invoice No.</p>
             <p className="font-bold text-xl">{data.invoice_number}</p>
             <p
-              className={`px-2 py-2 flex items-center justify-center gap-1  w-20 rounded-md text-14 ${
+              className={`px-2 py-2 flex items-center justify-center gap-2 w-20 rounded-md text-[14px] ${
                 data.payment_status === "unpaid"
-                  ? "bg-gray-500 text-white"
+                  ? "bg-gray-400 text-white"
                   : data.payment_status === "paid"
                   ? "text-white bg-[#28A513]"
                   : data.payment_status === "refund"
@@ -134,7 +149,10 @@ function InvoiceDetails() {
                   : ""
               }`}
             >
-              <FaCircleCheck size={16}/>{data.payment_status}
+              {data.payment_status === "paid" && <FaCircleCheck size={16} />}
+              {data.payment_status === "unpaid" && <FaTimesCircle size={16} />}
+              {data.payment_status === "refund" && <FaUndo size={16} />}
+              {data.payment_status}
             </p>
           </div>
         </div>
@@ -266,7 +284,9 @@ function InvoiceDetails() {
                           {product.price?.toFixed(2) || "0.00"} $
                         </td>
                         <td className="px-3 text-15 py-3">
-                          {(product.price * product.quantity)?.toFixed(2) || "0.00"} $
+                          {(product.price * product.quantity)?.toFixed(2) ||
+                            "0.00"}{" "}
+                          $
                         </td>
                       </tr>
                     ))}
@@ -281,15 +301,22 @@ function InvoiceDetails() {
           <div className="flex flex-col gap-5 mt-7 w-400 justify-end bg-gray-50 rounded-xl p-5">
             <p className="text-15 flex items-center justify-between">
               Subtotal
-              <span className="text-gray-500">{data.sub_total?.toFixed(2) || "0.00"} $</span>
+              <span className="text-gray-500">
+                {data.sub_total?.toFixed(2) || "0.00"} $
+              </span>
             </p>
             <p className="text-15 flex items-center justify-between">
               Shipping
-              <span className="text-gray-500">{data.shipping_price?.toFixed(2) || "0.00"} $</span>
+              <span className="text-gray-500">
+                {data.shipping_price?.toFixed(2) || "0.00"} $
+              </span>
             </p>
             <hr />
             <p className="text-15 flex items-center justify-between">
-              Total<span className="text-gray-500">{data.total?.toFixed(2) || "0.00"} $</span>
+              Total
+              <span className="text-gray-500">
+                {data.total?.toFixed(2) || "0.00"} $
+              </span>
             </p>
           </div>
         </section>

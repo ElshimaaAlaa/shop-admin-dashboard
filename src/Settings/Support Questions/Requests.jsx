@@ -94,7 +94,7 @@ function Requests() {
             </div>
           ))
         ) : (
-          <p className="text-gray-400 text-center">No requests found</p>
+          <p className="text-gray-400 text-center text-14">No requests found</p>
         )}
       </div>
     </div>

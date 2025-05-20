@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import FailedModal from "../../Components/Modal/Failed Modal/FailedModal";
 import { ClipLoader } from "react-spinners";
 import axios from "axios";
@@ -83,5 +83,4 @@ function DeleteDiscount({ onDelete, id }) {
     </div>
   );
 }
-
 export default DeleteDiscount;

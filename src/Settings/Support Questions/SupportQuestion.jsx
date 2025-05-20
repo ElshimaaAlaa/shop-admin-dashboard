@@ -99,7 +99,7 @@ function SupportQuestion() {
         ) : error ? (
           <div className="mt-5 text-red-500">{error}</div>
         ) : faqsData.length === 0 ? (
-          <p className="mt-5 text-gray-400">No questions found</p>
+          <p className="mt-5 text-gray-400 text-14">No questions found</p>
         ) : (
           faqsData.slice(0, 4).map((item, index) => (
             <div

@@ -174,11 +174,11 @@ function AllDiscounts() {
               pageCount={pagination.total_pages}
               onPageChange={handlePageClick}
               forcePage={pagination.current_page - 1}
-              containerClassName="flex items-center justify-end mt-5 space-x-1 text-gray-400 text-13"
-              pageClassName="px-3 py-1 rounded hover:bg-gray-200"
+              containerClassName="flex items-center justify-end mt-5  text-gray-400 text-14"
+              pageClassName="px-3 py-1 rounded "
               activeClassName="bg-customOrange-lightOrange text-primary"
-              previousLabel={<ChevronLeft className="w-4 h-4" />}
-              nextLabel={<ChevronRight className="w-4 h-4" />}
+              previousLabel={<ChevronLeft className="w-5 h-5 text-primary" />}
+              nextLabel={<ChevronRight className="w-5 h-5 text-primary" />}
               previousClassName={`px-3 py-1 rounded ${
                 pagination.current_page === 1
                   ? "opacity-50 cursor-not-allowed"
@@ -187,7 +187,7 @@ function AllDiscounts() {
               nextClassName={`px-3 py-1 rounded ${
                 pagination.current_page === pagination.total_pages
                   ? "opacity-50 cursor-not-allowed"
-                  : "hover:bg-gray-200"
+                  : ""
               }`}
               disabledClassName="opacity-50 cursor-not-allowed"
             />

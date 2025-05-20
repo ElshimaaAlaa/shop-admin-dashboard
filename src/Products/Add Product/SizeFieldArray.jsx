@@ -1,4 +1,3 @@
-import React from "react";
 import { FieldArray, Field } from "formik";
 import { AiOutlineClose } from "react-icons/ai";
 import { Plus } from "lucide-react";
@@ -7,7 +6,7 @@ import ColorFieldArray from "./ColorFieldArray";
 
 const SizeFieldArray = ({ values, setFieldValue, hasNestedColors }) => {
   return (
-    <div className="bg-white p-4 rounded-md mt-3 mx-5 w-[915px]">
+    <div className="bg-white p-4 rounded-md mt-3 mx-5 w-[920px]">
       <h2 className="font-bold mb-3">Inventory</h2>
       <FieldArray name="sizes">
         {({ push, remove }) => (
@@ -38,7 +37,7 @@ const SizeFieldArray = ({ values, setFieldValue, hasNestedColors }) => {
                     <AiOutlineClose />
                   </button>
                 </div>
-                <div className="flex items-center gap-2 mt-3 mb-3">
+                <div className="flex items-center gap-2">
                   <label className="inline-flex items-center cursor-pointer">
                     <Field
                       as="input"
@@ -53,7 +52,7 @@ const SizeFieldArray = ({ values, setFieldValue, hasNestedColors }) => {
                         );
                       }}
                     />
-                    <span className="w-4 h-4 border-2 border-gray-300 rounded flex items-center justify-center transition-all duration-200 peer-checked:border-orange-500">
+                    <span className="w-4 h-4 border-2 border-gray-300 rounded flex items-center justify-center transition-all duration-200 peer-checked:border-primary">
                       <svg
                         className="w-3 h-3 text-primary opacity-0 transition-all duration-200 peer-checked:opacity-100"
                         viewBox="0 0 20 20"

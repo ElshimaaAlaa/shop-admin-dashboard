@@ -110,8 +110,8 @@ function AllCustomers() {
           className="flex items-center gap-1 font-bold text-white bg-primary rounded-md p-4"
           onClick={() => navigate("/Dashboard/SupportQuestion")}
         >
-          <IoHelpCircleOutline size={27} />
           Customers Support Questions
+          <IoHelpCircleOutline size={27} />
         </button>
       </section>
       <section className="bg-white rounded-md p-4 mb-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
@@ -270,11 +270,11 @@ function AllCustomers() {
               pageCount={pageCount}
               onPageChange={handlePageClick}
               forcePage={currentPage}
-              containerClassName="flex items-center justify-end mt-5 text-gray-400 text-13"
+              containerClassName="flex items-center justify-end mt-5 text-gray-400 text-14"
               pageClassName="mx-1 px-3 py-1 rounded"
               activeClassName="bg-customOrange-lightOrange text-primary"
-              previousLabel={<ChevronLeft className="w-4 h-4 text-center" />}
-              nextLabel={<ChevronRight className="w-4 h-4" />}
+              previousLabel={<ChevronLeft className="w-5 h-5 text-center" />}
+              nextLabel={<ChevronRight className="w-5 h-5" />}
               previousClassName="mx-1 px-3 py-1 font-bold text-primary text-18"
               nextClassName="mx-1 px-3 py-1 font-bold text-primary text-18"
             />

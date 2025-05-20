@@ -1,4 +1,3 @@
-import React from "react";
 import PropTypes from "prop-types";
 import InputField from "../InputFields/InputField";
 import DateRangePicker from "./DateRangePicker";
@@ -8,9 +7,6 @@ const PromotionDetails = ({
   errors,
   touched,
   setFieldValue,
-  submitForm,
-  isValid,
-  dirty,
   datesSelected,
   setDatesSelected,
 }) => (
@@ -30,24 +26,20 @@ const PromotionDetails = ({
         onChange={(start, end) => {
           if (start && end && !datesSelected) {
             setDatesSelected(true);
-            if (isValid && dirty) {
-              submitForm();
-            }
           }
         }}
       />
     </div>
   </div>
 );
+
 PromotionDetails.propTypes = {
   values: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired,
   touched: PropTypes.object.isRequired,
   setFieldValue: PropTypes.func.isRequired,
-  submitForm: PropTypes.func.isRequired,
-  isValid: PropTypes.bool.isRequired,
-  dirty: PropTypes.bool.isRequired,
   datesSelected: PropTypes.bool.isRequired,
   setDatesSelected: PropTypes.func.isRequired,
 };
+
 export default PromotionDetails;

@@ -1,4 +1,3 @@
-import React from "react";
 import { FieldArray, Field } from "formik";
 import { AiOutlineClose } from "react-icons/ai";
 import { Plus } from "lucide-react";
@@ -70,7 +69,7 @@ const ColorFieldArray = ({ values, setFieldValue, sizeIndex, nested, makeImageOp
                     <AiOutlineClose />
                   </button>
                 </div>
-                <div className="flex items-center gap-2 mt-3 mb-3">
+                <div className="flex items-center gap-2">
                   <label className="inline-flex items-center cursor-pointer">
                     <Field
                       as="input"
@@ -143,5 +142,4 @@ const ColorFieldArray = ({ values, setFieldValue, sizeIndex, nested, makeImageOp
     </div>
   );
 };
-
 export default ColorFieldArray;

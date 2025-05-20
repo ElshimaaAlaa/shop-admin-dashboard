@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Formik, Form, Field } from "formik";
 import { Helmet } from "react-helmet";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -47,7 +47,7 @@ const CustomDropdown = ({
   return (
     <div className={`relative w-full ${className}`} ref={dropdownRef}>
       <div
-        className={`w-full bg-white outline-none border-2 rounded-md h-12 px-3 flex items-center justify-between cursor-pointer transition-all duration-200 ${
+        className={`w-full bg-white outline-none border-2 rounded-md h-12 px-3 flex items-center justify-between cursor-pointer transition-all duration-200 placeholder:text-14 ${
           error && touched
             ? "border-red-500"
             : "border-gray-200 hover:border-primary"
@@ -87,11 +87,11 @@ const CustomDropdown = ({
             options.map((option) => (
               <div
                 key={option.value}
-                className={`px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors duration-150 ${
+                className={`px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors duration-150 placeholder:text-14 ${
                   value === option.value ? "bg-primary-50 text-primary-600" : ""
                 }`}
                 onClick={() => {
-                  onFieldChange(name, option.value); // Changed to use onFieldChange
+                  onFieldChange(name, option.value);
                   setIsOpen(false);
                 }}
               >
@@ -101,7 +101,6 @@ const CustomDropdown = ({
           )}
         </div>
       )}
-
       {error && touched && (
         <div className="text-red-500 text-xs mt-1">{error}</div>
       )}
@@ -148,7 +147,7 @@ function EditProduct() {
 
   const [previewImages, setPreviewImages] = useState(
     product?.images?.map(
-      (img) => img.src || "/assets/images/default-product.png"
+      (img) => img.src || "/assets/images/product.png"
     ) || []
   );
   const [categoryType, setCategoryType] = useState(null);
@@ -171,8 +170,16 @@ function EditProduct() {
           ? { ar: color.name, en: color.name }
           : color.name || { ar: "", en: "" },
       existingImage: color.image || null,
-      previewImage: color.image || null,
+      previewImage: color.image ? 
+        (color.image instanceof File ? URL.createObjectURL(color.image) : color.image)
+        : null,
       image: null,
+      code: color.code || "",
+      stock: color.stock || 0,
+      price: color.price || 0,
+      schedule_discount: color.schedule_discount || false,
+      discount_percentage: color.discount_percentage || 0,
+      discount_expire_at: color.discount_expire_at || "",
     }));
   };
 
@@ -265,13 +272,11 @@ function EditProduct() {
         formData.append(`colors[${index}][code]`, color.code || "");
         formData.append(`colors[${index}][stock]`, color.stock || 0);
         formData.append(`colors[${index}][price]`, color.price || 0);
+        
         if (color.image instanceof File) {
           formData.append(`colors[${index}][image]`, color.image);
-        } else if (color.existingImage) {
-          formData.append(
-            `colors[${index}][existing_image]`,
-            color.existingImage
-          );
+        } else if (color.existingImage && !color.image) {
+          formData.append(`colors[${index}][existing_image]`, color.existingImage);
         }
 
         formData.append(
@@ -292,6 +297,7 @@ function EditProduct() {
         }
       });
     }
+
     // Handle sizes
     if (values.sizes && values.sizes.length > 0) {
       values.sizes.forEach((size, index) => {
@@ -300,6 +306,7 @@ function EditProduct() {
         });
       });
     }
+
     try {
       await updateProduct(product.id, formData);
       setShowModal(true);
@@ -309,6 +316,7 @@ function EditProduct() {
       setIsLoading(false);
     }
   };
+
   const handleRemoveTag = (tagToRemove, setFieldValue, values) => {
     const newTags = values.tags_id.filter(
       (tag) => tag.name !== tagToRemove.name
@@ -321,6 +329,7 @@ function EditProduct() {
       setTagsToAdd((prev) => prev.filter((name) => name !== tagToRemove.name));
     }
   };
+
   const handleAddTag = (newTagName, setFieldValue, values) => {
     if (!newTagName.trim()) return;
 
@@ -342,30 +351,27 @@ function EditProduct() {
       }
     }
   };
-
   useEffect(() => {
-    const getCategories = async () => {
+    const getCategoriesAndTags = async () => {
       try {
         const data = await fetchCategories();
         setCategories(data);
+        
+        // Extract tags from all categories
+        const allTags = data.flatMap(category => 
+          category.tags?.map(tag => ({
+            id: tag.id,
+            name: tag.name
+          })) || []
+        );
+        setAvailableTags(allTags);
       } catch (error) {
-        console.error("Failed to fetch categories", error);
-      }
-    };
-    getCategories();
-
-    const fetchTags = async () => {
-      try {
-        const response = await fetch("/api/tags");
-        const data = await response.json();
-        setAvailableTags(data);
-      } catch (error) {
-        console.error("Failed to fetch tags", error);
+        console.error("Failed to fetch categories and tags", error);
       } finally {
         setIsInitializing(false);
       }
     };
-    fetchTags();
+    getCategoriesAndTags();
   }, []);
 
   useEffect(() => {
@@ -448,7 +454,7 @@ function EditProduct() {
                       label: cat.name,
                     }))}
                     value={values.category_id}
-                    onFieldChange={setFieldValue} // Changed to onFieldChange
+                    onFieldChange={setFieldValue}
                     placeholder="Select Category"
                     error={errors.category_id}
                     touched={touched.category_id}
@@ -460,7 +466,7 @@ function EditProduct() {
                     name="gender"
                     options={genderOptions}
                     value={values.gender}
-                    onFieldChange={setFieldValue} // Changed to onFieldChange
+                    onFieldChange={setFieldValue}
                     placeholder="Select Gender"
                     error={errors.gender}
                     touched={touched.gender}
@@ -572,6 +578,18 @@ function EditProduct() {
                     values={values}
                     setFieldValue={setFieldValue}
                     makeImageOptional={true}
+                    onColorImageChange={(index, file) => {
+                      const newColors = [...values.colors];
+                      newColors[index].previewImage = URL.createObjectURL(file);
+                      newColors[index].image = file;
+                      setFieldValue("colors", newColors);
+                    }}
+                    onRemoveColorImage={(index) => {
+                      const newColors = [...values.colors];
+                      newColors[index].previewImage = null;
+                      newColors[index].image = null;
+                      setFieldValue("colors", newColors);
+                    }}
                   />
                 )}
                 {hasSizes && (
