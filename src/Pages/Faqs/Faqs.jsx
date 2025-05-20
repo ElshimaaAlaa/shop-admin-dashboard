@@ -28,7 +28,6 @@ function Faqs() {
     try {
       await addFaqs(values.question, values.answer);
       resetForm();
-      // Trigger refresh in AllFaqs component
       setRefreshTrigger(prev => prev + 1);
     } catch (error) {
       console.error("Failed to add FAQ:", error);
@@ -50,10 +49,8 @@ function Faqs() {
         <br /> and supported features.
       </p>
       <div className="flex justify-center gap-5 mx-20">
-        {/* FAQ List Section - Pass refreshTrigger */}
         <AllFaqs refreshTrigger={refreshTrigger} />
         
-        {/* Add Question Form Section */}
         <section className="bg-customOrange-mediumOrange rounded-md p-5 w-450 h-full mt-10">
           <div className="flex justify-center">
             <img
@@ -102,5 +99,4 @@ function Faqs() {
     </div>
   );
 }
-
 export default Faqs;

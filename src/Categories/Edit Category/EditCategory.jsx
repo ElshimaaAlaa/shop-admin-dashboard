@@ -217,7 +217,7 @@ function EditCategory() {
           <Form className="flex flex-col">
             <div className="flex flex-col md:flex-row gap-4 mx-5">
               <div className="bg-white p-4 rounded-md w-full">
-                <h2 className="font-bold mb-5 text-16">Basic Information</h2>
+                <h2 className="font-bold mb-3 text-16">Basic Information</h2>
                 <div className="flex flex-col md:flex-row items-center gap-2 mb-3">
                   <InputField
                     name="name"
@@ -303,7 +303,7 @@ function EditCategory() {
                 />
               </div>
               <div className="bg-white p-4 rounded-md w-full md:w-1/2 h-80">
-                <h2 className="font-bold mb-5 text-16">Category Icon / Image</h2>
+                <h2 className="font-bold mb-3 text-16">Category Icon / Image</h2>
                 <ImageUpload
                   previewImage={previewImage}
                   onImageChange={(event) => {

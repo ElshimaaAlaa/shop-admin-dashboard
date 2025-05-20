@@ -24,7 +24,14 @@ const StoreSetupWizard = () => {
     bio: "",
     banners: [],
     plan_id: null,
-    payment_info: null,
+    name: "",
+    email: "",
+    phone: "",
+    payment_method: "",
+    card_holder_name: "",
+    card_number: "",
+    expiration_date: "",
+    card_cvv: "",
   };
 
   const validationSchema = Yup.object().shape({
@@ -36,16 +43,10 @@ const StoreSetupWizard = () => {
       .matches(/^#[0-9A-F]{6}$/i, "Invalid hex color format"),
     image: Yup.mixed()
       .required("Theme image is required")
-      .test(
-        "fileSize",
-        "File too large (max 5MB)",
-        (value) => value && value.size <= 5 * 1024 * 1024
-      )
-      .test(
-        "fileType",
-        "Unsupported format (JPEG/PNG only)",
-        (value) => value && ["image/jpeg", "image/png"].includes(value.type)
-      ),
+      .test("fileSize", "File too large (max 5MB)", 
+        (value) => value && value.size <= 5 * 1024 * 1024)
+      .test("fileType", "Unsupported format (JPEG/PNG only)", 
+        (value) => value && ["image/jpeg", "image/png"].includes(value.type)),
     store_name: Yup.string()
       .required("Store name is required")
       .min(3, "Store name must be at least 3 characters"),
@@ -55,18 +56,10 @@ const StoreSetupWizard = () => {
     bio: Yup.string().max(500, "Bio cannot exceed 500 characters"),
     banners: Yup.array()
       .min(1, "At least one banner is required")
-      .test(
-        "fileSize",
-        "One or more files are too large (max 5MB each)",
-        (files) => files && files.every((file) => file.size <= 5 * 1024 * 1024)
-      )
-      .test(
-        "fileType",
-        "Unsupported format (JPEG/PNG only)",
-        (files) =>
-          files &&
-          files.every((file) => ["image/jpeg", "image/png"].includes(file.type))
-      ),
+      .test("fileSize", "One or more files are too large (max 5MB each)", 
+        (files) => files && files.every((file) => file.size <= 5 * 1024 * 1024))
+      .test("fileType", "Unsupported format (JPEG/PNG only)", 
+        (files) => files && files.every((file) => ["image/jpeg", "image/png"].includes(file.type)))
   });
 
   useEffect(() => {
@@ -81,69 +74,63 @@ const StoreSetupWizard = () => {
   };
 
   const handleSubmit = async (values, { resetForm }) => {
-    if (step === 1) {
-      updateFormData("theme", {
-        theme_primary_color: values.theme_primary_color,
-        theme_secondary_color: values.theme_secondary_color,
-        image: values.image,
-      });
-      setStep(2);
+    if (step < 4) {
+      // Handle steps 1-3
+      if (step === 1) {
+        updateFormData("theme", {
+          theme_primary_color: values.theme_primary_color,
+          theme_secondary_color: values.theme_secondary_color,
+          image: values.image,
+        });
+      } else if (step === 2) {
+        updateFormData("profile", {
+          store_name: values.store_name,
+          address: values.address,
+          bio: values.bio,
+          banners: values.banners,
+        });
+      } else if (step === 3) {
+        updateFormData("pricing", {
+          plan_id: values.plan_id,
+          plan_name: values.plan_name,
+          plan_price: values.plan_price,
+          plan_period: values.plan_period,
+          plan_description: values.plan_description,
+        });
+      }
+      setStep(step + 1);
       return;
     }
 
-    if (step === 2) {
-      updateFormData("profile", {
-        store_name: values.store_name,
-        address: values.address,
-        bio: values.bio,
-        banners: values.banners,
-      });
-      setStep(3);
-      return;
-    }
-
-    if (step === 3) {
-      updateFormData("pricing", {
-        plan_id: values.plan_id,
-        plan_name: values.plan_name,
-        plan_price: values.plan_price,
-        plan_period: values.plan_period,
-        plan_description: values.plan_description,
-      });
-      setStep(4);
-      return;
-    }
-
+    // Final submission (step 4 handled by PaymentInfo)
     setIsLoading(true);
     setSubmitError(null);
     setSubmitSuccess(false);
 
     try {
-      const completeFormData = {
-        ...formData.theme,
-        ...formData.profile,
-        ...formData.pricing,
-        ...formData.payment_info,
-      };
-
       const formDataToSend = new FormData();
 
-      Object.entries(completeFormData).forEach(([key, value]) => {
-        if (Array.isArray(value)) {
-          value.forEach((item) => formDataToSend.append(`${key}[]`, item));
-        } else if (value instanceof File) {
-          formDataToSend.append(key, value);
-        } else if (typeof value === "object" && value !== null) {
-          Object.entries(value).forEach(([subKey, subValue]) => {
-            formDataToSend.append(`${key}[${subKey}]`, subValue);
+      // Append all sections
+      ['theme', 'profile', 'pricing', 'payment_info'].forEach(section => {
+        if (formData[section]) {
+          Object.entries(formData[section]).forEach(([key, value]) => {
+            if (Array.isArray(value)) {
+              value.forEach((item, index) => {
+                formDataToSend.append(`${section}[${key}][${index}]`, item);
+              });
+            } else if (value instanceof File) {
+              formDataToSend.append(`${section}_${key}`, value);
+            } else {
+              formDataToSend.append(`${section}[${key}]`, value);
+            }
           });
-        } else {
-          formDataToSend.append(key, value);
         }
       });
 
-      const data = await setUpStore(formDataToSend);
-      console.log("API Response:", data);
+      console.log("Final submission data:", Object.fromEntries(formDataToSend.entries()));
+
+      const response = await setUpStore(formDataToSend);
+      console.log("API response:", response);
 
       setSubmitSuccess(true);
       resetForm();
@@ -151,11 +138,11 @@ const StoreSetupWizard = () => {
       setBannerPreviews([]);
       setFormData({});
     } catch (error) {
-      console.error("Submission failed:", error);
+      console.error("Submission error:", error);
       setSubmitError(
         error.response?.data?.message ||
-          error.message ||
-          "Failed to complete store setup"
+        error.message ||
+        "Failed to complete store setup"
       );
     } finally {
       setIsLoading(false);
@@ -165,12 +152,12 @@ const StoreSetupWizard = () => {
   return (
     <div className="store-setup-container">
       <h2>Store Setup Wizard</h2>
-
       <div className="step-indicator">
-        <div className={`step ${step === 1 ? "active" : ""}`}>1. Theme</div>
-        <div className={`step ${step === 2 ? "active" : ""}`}>2. Profile</div>
-        <div className={`step ${step === 3 ? "active" : ""}`}>3. Pricing</div>
-        <div className={`step ${step === 4 ? "active" : ""}`}>4. Payment</div>
+        {[1, 2, 3, 4].map((stepNum) => (
+          <div key={stepNum} className={`step ${step === stepNum ? "active" : ""}`}>
+            {stepNum}. {['Theme', 'Profile', 'Pricing', 'Payment'][stepNum - 1]}
+          </div>
+        ))}
       </div>
 
       {submitSuccess && (
@@ -186,35 +173,35 @@ const StoreSetupWizard = () => {
         validationSchema={step <= 2 ? validationSchema : Yup.object()}
         onSubmit={handleSubmit}
       >
-        {({ setFieldValue, values, errors, touched, isValid, dirty }) => (
+        {({ values, setFieldValue }) => (
           <Form className="setup-form">
-            {step === 1 ? (
-              <div className="form-step"></div>
-            ) : step === 2 ? (
-              <div className="form-step"></div>
-            ) : step === 3 ? (
+            {step === 1 && (
+              <div className="form-step">
+                {/* Theme step form fields */}
+              </div>
+            )}
+            
+            {step === 2 && (
+              <div className="form-step">
+                {/* Profile step form fields */}
+              </div>
+            )}
+            
+            {step === 3 && (
               <PricingPlan
-                updateFormData={updateFormData}
                 formData={formData}
-                onNext={() => {
-                  updateFormData("pricing", {
-                    plan_id: values.plan_id,
-                    plan_name: values.plan_name,
-                    plan_price: values.plan_price,
-                    plan_period: values.plan_period,
-                    plan_description: values.plan_description,
-                  });
-                  setStep(4);
-                }}
+                updateFormData={updateFormData}
+                onNext={() => setStep(4)}
                 onBack={() => setStep(2)}
               />
-            ) : (
+            )}
+            
+            {step === 4 && (
               <PaymentInfo
                 formData={formData}
                 updateFormData={updateFormData}
                 onSubmit={() => handleSubmit(values, {})}
                 onBack={() => setStep(3)}
-              
               />
             )}
           </Form>
@@ -223,4 +210,5 @@ const StoreSetupWizard = () => {
     </div>
   );
 };
+
 export default StoreSetupWizard;

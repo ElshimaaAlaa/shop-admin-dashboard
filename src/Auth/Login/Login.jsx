@@ -154,16 +154,16 @@ function Login() {
             </Form>
           )}
         </Formik>
-        <div className="flex items-center justify-center mt-4">
+        <div className="flex items-center justify-center mt-3">
           <div className="border-t border-gray-300 flex-grow"></div>
           <span className="mx-4 text-gray-400 text-13 font-bold">OR</span>
           <div className="border-t border-gray-300 flex-grow"></div>
         </div>
         <OAuth />
-        <p className="text-center text-gray-400 text-14 mt-5">
+        <p className="text-center text-gray-400 text-15 mt-5">
           Don’t Have An Account ?
           <span
-            className="ms-1 text-primary font-bold text-15 cursor-pointer"
+            className="ms-1 text-primary font-bold text-16 cursor-pointer"
             onClick={() => navigate("/Register")}
           >
             Register

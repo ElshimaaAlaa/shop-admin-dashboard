@@ -33,7 +33,7 @@ export const ImageUpload = ({ previewImage, onImageChange }) => {
                 <img
                   src="/assets/svgs/upload-file.svg"
                   alt="Upload another-image"
-                  className="h-5"
+                  className="h-4 text-12"
                 />
                 Upload Another Image
               </button>
@@ -44,7 +44,7 @@ export const ImageUpload = ({ previewImage, onImageChange }) => {
             <img
               src="/assets/images/upload-file_svgrepo.com.png"
               alt="Upload category-image"
-              className="mb-2"
+              className="mb-2 "
             />
             <p>Upload Your Category Image</p>
           </>

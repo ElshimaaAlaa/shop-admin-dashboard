@@ -203,13 +203,13 @@ function AllCategory() {
             <ReactPaginate
               pageCount={Math.ceil(filteredCategories.length / itemsPerPage)}
               onPageChange={({ selected }) => paginate(selected + 1)}
-              containerClassName="flex items-center justify-end mt-5 text-gray-400 text-13"
+              containerClassName="flex items-center justify-end mt-5 text-gray-400 text-14"
               pageClassName="mx-1 px-3 py-1 rounded"
               activeClassName="bg-customOrange-lightOrange text-primary"
               previousLabel={<ChevronLeft className="w-4 h-4 text-center" />}
               nextLabel={<ChevronRight className="w-4 h-4" />}
-              previousClassName="mx-1 px-3 py-1 font-bold text-primary text-18 "
-              nextClassName="mx-1 px-3 py-1 font-bold text-primary text-18"
+              previousClassName="mx-1 px-1 py-1 font-bold text-primary text-18 "
+              nextClassName="mx-1 px-1 py-1 font-bold text-primary text-18"
             />
           </>
         )}

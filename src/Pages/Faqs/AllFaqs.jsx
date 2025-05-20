@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { getFaqs } from "../../ApiServices/AllFaqs";
 import { ClipLoader } from "react-spinners";
@@ -8,6 +8,7 @@ function AllFaqs({ refreshTrigger }) {
   const [displayCount, setDisplayCount] = useState(5);
   const [faqsData, setFaqsData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     const fetchFaqs = async () => {
@@ -26,17 +27,27 @@ function AllFaqs({ refreshTrigger }) {
     fetchFaqs();
   }, [refreshTrigger]);
 
+  useEffect(() => {
+    // Scroll to bottom when new FAQs are loaded
+    if (containerRef.current && displayCount > 5) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }
+  }, [displayCount]);
+
   const toggleFaq = (index) => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
   const showMoreFaqs = () => {
-    setDisplayCount(prev => prev + 5);
+    setDisplayCount(prev => Math.min(prev + 5, faqsData.length));
   };
 
   const showLessFaqs = () => {
     setDisplayCount(5);
-    setOpenIndex(null); // Close all expanded FAQs when showing less
+    setOpenIndex(null);
+    if (containerRef.current) {
+      containerRef.current.scrollTop = 0;
+    }
   };
 
   if (isLoading) {
@@ -46,45 +57,45 @@ function AllFaqs({ refreshTrigger }) {
       </section>
     );
   }
-
   return (
     <section className="mt-5 w-[600px]">
-      {faqsData.slice(0, displayCount).map((item, index) => (
-        <div
-          key={index}
-          className={`mt-5 p-5 bg-gray-50 rounded-lg transition-all duration-300 ${
-            openIndex === index ? "border-2 border-primary" : ""
-          }`}
-        >
+      <div 
+        ref={containerRef}
+        className="overflow-y-auto max-h-[600px] pr-2 custom-scrollbar"
+      >
+        {faqsData.slice(0, displayCount).map((item, index) => (
           <div
-            onClick={() => toggleFaq(index)}
-            className="flex justify-between items-center cursor-pointer"
+            key={index}
+            className={`mt-5 p-5 bg-gray-50 rounded-lg transition-all duration-300 ${
+              openIndex === index ? "border-2 border-primary" : ""
+            }`}
           >
-            <h1 className="font-bold text-17">{item.question}</h1>
-            <span>
-              {openIndex === index ? (
-                <IoIosArrowUp color="#E0A75E" />
-              ) : (
-                <IoIosArrowDown color="#E0A75E" />
-              )}
-            </span>
+            <div
+              onClick={() => toggleFaq(index)}
+              className="flex justify-between items-center cursor-pointer"
+            >
+              <h1 className="font-bold text-17">{item.question}</h1>
+              <span>
+                {openIndex === index ? (
+                  <IoIosArrowUp color="#E0A75E" />
+                ) : (
+                  <IoIosArrowDown color="#E0A75E" />
+                )}
+              </span>
+            </div>
+            {openIndex === index && (
+              <p className="mt-5 text-secondary text-14 font-light">
+                {item.answer}
+              </p>
+            )}
           </div>
-          {openIndex === index && (
-            <p className="mt-5 text-secondary text-14 font-light">
-              {item.answer}
-            </p>
-          )}
-        </div>
-      ))}
-
-      {/* Empty State */}
-      {faqsData.length === 0 && !isLoading && (
-        <div className="mt-5 p-5 bg-gray-50 rounded-lg text-center">
-          <p className="text-gray-500">No FAQs found</p>
-        </div>
-      )}
-
-      {/* Show More/Less Buttons */}
+        ))}
+        {faqsData.length === 0 && !isLoading && (
+          <div className="mt-5 p-5 bg-gray-50 rounded-lg text-center">
+            <p className="text-gray-500">No FAQs found</p>
+          </div>
+        )}
+      </div>
       <div className="flex justify-center mt-5 gap-3">
         {displayCount < faqsData.length && (
           <button
@@ -97,7 +108,7 @@ function AllFaqs({ refreshTrigger }) {
         {displayCount > 5 && (
           <button
             onClick={showLessFaqs}
-            className="text-center text-15 font-bold bg-gray-300 text-gray-700 cursor-pointer w-44 px-4 py-2 rounded-lg hover:bg-opacity-90 transition"
+            className="text-center text-15 font-bold bg-gray-50 text-gray-500 cursor-pointer w-44 px-4 py-2 rounded-lg hover:bg-opacity-90 transition"
           >
             Show Less
           </button>
@@ -106,5 +117,4 @@ function AllFaqs({ refreshTrigger }) {
     </section>
   );
 }
-
 export default AllFaqs;
