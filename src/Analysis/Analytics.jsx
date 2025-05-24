@@ -1,52 +1,105 @@
-import { useEffect, useState } from "react"
-import { Helmet } from "react-helmet"
-import { FaSackDollar } from "react-icons/fa6"
-import { FaMagnifyingGlassDollar } from "react-icons/fa6"
-import { FaMoneyBillWave } from "react-icons/fa"
-import { fetchAnalyticsData } from "../ApiServices/Analytics"
-import { ClipLoader } from "react-spinners"
-import Delete from "./DeleteProduct"
-import { useNavigate } from "react-router-dom"
-import MonthlyTrendChart from "./MonthlyTrendChart"
-import StatisticsCard from "../Pages/Dashboard/ReportItems"
+import { useEffect, useState } from "react";
+import { Helmet } from "react-helmet";
+import {
+  FaSackDollar,
+  FaMagnifyingGlassDollar,
+  FaMoneyBillWave,
+} from "react-icons/fa6";
+import { ClipLoader } from "react-spinners";
+import { useNavigate } from "react-router-dom";
+import MonthlyTrendChart from "./MonthlyTrendChart";
+import StatisticsCard from "../Pages/Dashboard/ReportItems";
+import Delete from "./DeleteProduct";
+import { fetchAnalyticsData } from "../ApiServices/Analytics";
+
 function Analytics() {
   const [analyticsData, setAnalyticsData] = useState({
     monthly_expended: [],
     monthly_income: [],
     monthly_profit: [],
-    overview: {},
+    overview: {
+      total_expended: { amount: 0, change_rate: "0%", increased: false },
+      total_income: { amount: 0, change_rate: "0%", increased: false },
+      total_profit: { amount: 0, change_rate: "0%", increased: false },
+    },
     popular_products: [],
-  })
-  const [statistics, setStatistics] = useState({})
-  const [productData, setProductData] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState(false)
-  const navigate = useNavigate()
+  });
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getAnalyticsData = async () => {
-      setIsLoading(true)
       try {
-        const response = await fetchAnalyticsData()
-        console.log(response)
-        setAnalyticsData(response)
-        setStatistics(response)
-        setProductData(response.popular_products || [])
-        setIsLoading(false)
+        const response = await fetchAnalyticsData();
+
+        if (response && Array.isArray(response.monthly_expended)) {
+          setAnalyticsData(response);
+        } else if (response?.data) {
+          setAnalyticsData(response.data);
+        } else {
+          throw new Error("Invalid data format received");
+        }
       } catch (error) {
-        setError(error)
-        setIsLoading(false)
-        console.error(error)
+        setError(error.message);
+        console.error("Analytics data fetch error:", error);
+      } finally {
+        setIsLoading(false);
       }
-    }
-    getAnalyticsData()
-  }, [])
+    };
+    getAnalyticsData();
+  }, []);
 
   const handleDeleteProduct = (productId) => {
-    setProductData((prevProducts) => {
-      const updatedProducts = prevProducts.filter((product) => product.id !== productId)
-      return updatedProducts
-    })
+    setAnalyticsData((prev) => ({
+      ...prev,
+      popular_products: prev.popular_products.filter(
+        (product) => product.id !== productId
+      ),
+    }));
+  };
+
+  const formatCurrency = (value) => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(value);
+  };
+
+  const hasFinancialData =
+    analyticsData.monthly_expended.some(
+      (item) => parseFloat(item.expended) > 0
+    ) ||
+    analyticsData.monthly_income.some((item) => parseFloat(item.income) > 0) ||
+    analyticsData.monthly_profit.some((item) => parseFloat(item.profit) > 0);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-[89vh]">
+        <ClipLoader color="#E0A75E" size={50} />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-gray-100 min-h-[89vh] mx-5 pt-5 pb-10">
+        <div className="bg-white rounded-md p-5 mb-5 text-center py-10">
+          <h2 className="text-red-500 text-lg font-bold mb-2">
+            Error Loading Data
+          </h2>
+          <p className="text-gray-600">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-4 px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -54,140 +107,149 @@ function Analytics() {
       <Helmet>
         <title>Reports | VERTEX</title>
       </Helmet>
+
       <section className="bg-white mb-2 p-4 rounded-md">
         <p className="text-gray-400 text-13">Menu / Analytics & Reports</p>
         <h1 className="font-bold text-17 mt-2">Analytics & Reports</h1>
       </section>
+
       <div className="bg-white rounded-md p-5 mb-5">
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 mb-8">
           <StatisticsCard
             icon={FaMoneyBillWave}
-            title="Total Expend "
-            totalNumber={statistics?.overview?.total_expended?.amount || 0}
-            percentage={`${statistics?.overview?.total_expended?.change_rate || 0}`}
-            duration={`Last month: ${0}`}
+            title="Total Expend"
+            totalNumber={analyticsData.overview.total_expended.amount}
+            percentage={analyticsData.overview.total_expended.change_rate}
+            duration="Last month: 0.00"
+            increased={analyticsData.overview.total_expended.increased}
           />
           <StatisticsCard
             icon={FaMagnifyingGlassDollar}
             title="Total Income"
-            totalNumber={statistics?.overview?.total_income?.amount || 0}
-            percentage={`${statistics?.overview?.total_income?.change_rate || 0}`}
-            duration={`Last month: ${0}`}
+            totalNumber={analyticsData.overview.total_income.amount}
+            percentage={analyticsData.overview.total_income.change_rate}
+            duration="Last month: 0"
+            increased={analyticsData.overview.total_income.increased}
           />
           <StatisticsCard
             icon={FaSackDollar}
-            title="Total Profit "
-            totalNumber={statistics?.overview?.total_profit?.amount || 0}
-            percentage={`${statistics?.overview?.total_profit?.change_rate || 0}`}
-            duration={`Last month: ${0}`}
+            title="Total Profit"
+            totalNumber={analyticsData.overview.total_profit.amount}
+            percentage={analyticsData.overview.total_profit.change_rate}
+            duration="Last month: 0"
+            increased={analyticsData.overview.total_profit.increased}
           />
         </section>
-        {/* Analytics Chart Section with Recharts */}
-        {!isLoading && !error && (
-          <MonthlyTrendChart
-            monthlyExpended={analyticsData.monthly_expended}
-            monthlyIncome={analyticsData.monthly_income}
-            monthlyProfit={analyticsData.monthly_profit}
-          />
-        )}
-        {/* Products Section */}
-        <section>
-          <h3 className="font-bold text-17 my-8">Top Selling Products</h3>
-          {error ? (
-            <div className="text-red-500 text-center mt-10">Failed to fetch products. Please try again.</div>
-          ) : isLoading ? (
-            <div className="flex justify-center mt-10">
-              <ClipLoader color="#E0A75E" size={40} />
+
+        <MonthlyTrendChart
+          monthlyExpended={analyticsData.monthly_expended}
+          monthlyIncome={analyticsData.monthly_income}
+          monthlyProfit={analyticsData.monthly_profit}
+          hasData={hasFinancialData}
+        />
+        <section className="mt-10">
+          <h3 className="font-bold text-17 mb-4">Top Selling Products</h3>
+          {analyticsData.popular_products.length === 0 ? (
+            <div className="text-center py-3 border-1 border-gray-200 bg-gray-50 rounded-lg">
+              <p className="text-gray-400 mb-2 text-15">
+                No popular products data available
+              </p>
             </div>
-          ) : productData.length === 0 ? (
-            <div className="text-gray-400 text-center mt-5 text-14">No products available</div>
           ) : (
-            <>
-              <div className="border border-gray-200 rounded-lg overflow-hidden mt-5">
-                <table className="min-w-full">
-                  <thead>
-                    <tr>
-                      <th className="px-3 py-3 border-b border-r ">
-                        <p className="flex items-center gap-3">
-                          <input
-                            type="checkbox"
-                            className="form-checkbox h-4 w-4 rounded-md text-primary focus:ring-primary border-gray-300"
-                          />
-                          Product
-                        </p>
-                      </th>
-                      <th className="px-3 py-3 border-r border-b text-left">Price</th>
-                      <th className="px-3 py-3 border-r border-b text-left">Stock</th>
-                      <th className="px-3 py-3 border-r text-left border-b ">Colors</th>
-                      <th className="px-3 py-3 border-b">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {productData.map((product) => (
-                      <tr key={product.id} className="hover:bg-gray-50">
-                        <td className="px-3 py-3 border-t border-r text-gray-600 text-15 ">
-                          <div className="flex items-center gap-3">
-                            <input
-                              type="checkbox"
-                              className="form-checkbox h-4 w-4 rounded-md text-primary focus:ring-primary border-gray-300"
-                            />
+            <div className="border border-gray-200 rounded-lg overflow-hidden">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Product
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Price
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Stock
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Colors
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {analyticsData.popular_products.map((product) => (
+                    <tr key={product.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div className="flex-shrink-0 h-10 w-10">
                             <img
-                              className="h-7 w-7 rounded-full object-cover"
+                              className="h-10 w-10 rounded-full object-cover"
                               src={
-                                product.images?.[0]?.src || "/assets/images/default-product.png" || "/placeholder.svg"
+                                product.images?.[0]?.src ||
+                                "/assets/images/default-product.png"
                               }
                               alt={product.name}
                             />
-                            {product.name}
                           </div>
-                        </td>
-                        <td className="px-3 py-3 text-gray-600 text-15 border-t border-l">
-                          ${product.price?.toFixed(2) || "0.00"}
-                        </td>
-                        <td className="px-3 text-gray-600 text-15 py-3 border-t border-l">{product.stock}</td>
-                        <td className="px-6 py-3 border-t border-l">
-                          <div className="flex">
-                            {product.colors?.slice(0, 4).map((color, idx) => (
-                              <div
-                                key={idx}
-                                className="w-8 h-8 -ms-3 rounded-full border-2 border-white"
-                                style={{ backgroundColor: color.code }}
-                                title={color.name}
-                              />
-                            ))}
-                            {product.colors?.length > 4 && (
-                              <div className="w-8 h-8 -ms-3 rounded-full bg-gray-200 border-2 border-white flex items-center justify-center text-xs font-bold">
-                                +{product.colors.length - 4}
-                              </div>
-                            )}
+                          <div className="ml-4">
+                            <div className="text-sm font-medium text-gray-900">
+                              {product.name}
+                            </div>
                           </div>
-                        </td>
-                        <td className="py-3 border-t border-l w-20">
-                          <div className="flex justify-center items-center gap-2">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                navigate(`/Dashboard/EditProduct/${product.id}`, {
-                                  state: { product },
-                                })
-                              }}
-                              className="text-primary hover:text-primary-dark"
-                            >
-                              <img src="/assets/svgs/editIcon.svg" alt="Edit" className="w-6 h-6" />
-                            </button>
-                            <Delete id={product.id} onDelete={handleDeleteProduct} />
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {formatCurrency(product.price || 0)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {product.stock || 0}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex -space-x-2">
+                          {product.colors?.slice(0, 4).map((color, idx) => (
+                            <div
+                              key={idx}
+                              className="w-6 h-6 rounded-full border-2 border-white"
+                              style={{ backgroundColor: color.code }}
+                              title={color.name}
+                            />
+                          ))}
+                          {product.colors?.length > 4 && (
+                            <div className="w-6 h-6 rounded-full bg-gray-200 border-2 border-white flex items-center justify-center text-xs font-bold">
+                              +{product.colors.length - 4}
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() =>
+                              navigate(`/Dashboard/EditProduct/${product.id}`, {
+                                state: { product },
+                              })
+                            }
+                            className="text-indigo-600 hover:text-indigo-900"
+                          >
+                            Edit
+                          </button>
+                          <Delete
+                            id={product.id}
+                            onDelete={handleDeleteProduct}
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </section>
       </div>
     </div>
-  )
+  );
 }
+
 export default Analytics;

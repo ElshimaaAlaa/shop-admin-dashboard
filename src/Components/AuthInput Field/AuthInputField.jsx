@@ -1,4 +1,3 @@
-import React from "react";
 import { Field, ErrorMessage } from "formik";
 import { FaCircleCheck } from "react-icons/fa6";
 
@@ -31,7 +30,7 @@ function AuthInputField({ placeholder, name, type = "text", readOnly = false }) 
           </div>
         )}
       </Field>
-      <ErrorMessage name={name} component="p" className="text-red-500 text-sm mt-1" />
+      <ErrorMessage name={name} component="div" className="text-red-500 text-sm mt-1" />
     </div>
   );
 }

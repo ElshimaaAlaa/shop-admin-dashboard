@@ -1,5 +1,3 @@
-import React from "react";
-
 function DesktopButtons({ onLoginClick, onRegisterClick }) {
   return (
     <div className="hidden lg:flex gap-4">

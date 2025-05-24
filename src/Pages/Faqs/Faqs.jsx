@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
-import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { ClipLoader } from "react-spinners";
 import { Formik, Form, Field } from "formik";
 import { getFaqs } from "../../ApiServices/AllFaqs";
@@ -9,11 +8,10 @@ import * as Yup from "yup";
 import { addFaqs } from "../../ApiServices/AddFags";
 import InputField from "../../Components/InputFields/InputField";
 import MainBtn from "../../Components/Main Button/MainBtn";
+import AllFaqs from "./AllFaqs";
 function Faqs() {
   const [isLoading, setIsLoading] = useState(false);
-  const [openIndex, setOpenIndex] = useState(null);
   const [faqsData, setFaqsData] = useState([]);
-  const [displayCount, setDisplayCount] = useState(5);
 
   const initialValues = {
     question: "",
@@ -52,14 +50,6 @@ function Faqs() {
     fetchFaqs();
   }, []);
 
-  const toggleFaq = (index) => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
-
-  const loadMore = () => {
-    setDisplayCount((prevCount) => prevCount + 5);
-  };
-
   return (
     <div className="bg-white pb-5">
       <Helmet>
@@ -74,52 +64,9 @@ function Faqs() {
       </p>
       <div className="flex justify-center gap-5 mx-20">
         {/* FAQ Section */}
-        <section className="mt-5 w-700">
-          {faqsData.slice(0, displayCount).map((item, index) => (
-            <div
-              key={index}
-              className={`mt-5 p-5 bg-gray-50 rounded-lg transition-all duration-300 ${
-                openIndex === index ? "border-2 border-primary" : "bg-gray-50"
-              }`}
-            >
-              <div
-                onClick={() => toggleFaq(index)}
-                className="flex justify-between items-center cursor-pointer"
-              >
-                <h1 className="font-bold text-17">{item.question}</h1>
-                <span>
-                  {openIndex === index ? (
-                    <IoIosArrowUp color="#E0A75E" />
-                  ) : (
-                    <IoIosArrowDown color="#E0A75E" />
-                  )}
-                </span>
-              </div>
-              {openIndex === index && (
-                <p className="mt-5 text-secondary text-14 font-light">
-                  {item.answer}
-                </p>
-              )}
-            </div>
-          ))}
-          {/* Load More Button */}
-          {displayCount < faqsData.length && (
-            <div className="flex justify-center mt-5">
-              <p
-                onClick={loadMore}
-                className="text-center text-15 font-bold bg-primary text-white cursor-pointer w-44 px-4 py-2 rounded-lg hover:bg-opacity-90 transition"
-              >
-                {isLoading ? (
-                  <ClipLoader size={22} color="#fff" />
-                ) : (
-                  "Load More....."
-                )}
-              </p>
-            </div>
-          )}
-        </section>
+        <AllFaqs />
         {/* Add Question Section */}
-        <section className="bg-customOrange-mediumOrange rounded-md p-5 w-full h-full mt-10">
+        <section className="bg-customOrange-mediumOrange rounded-md p-5 w-700 h-full mt-10">
           <div className="flex justify-center">
             <img
               src="/assets/svgs/chat-round-dots_svgrepo.com.svg"
@@ -145,7 +92,7 @@ function Faqs() {
                   as="textarea"
                   name="answer"
                   placeholder="Your Answer"
-                  className="w-full mt-2 mb-1 outline-none border-2 border-gray-200 rounded-md p-2 h-24 placeholder:text-14 focus:border-primary"
+                  className="w-full mt-2 mb-1 outline-none border-2 border-gray-200 rounded-lg p-2 h-24 placeholder:text-14 focus:border-primary"
                 />
                 <MainBtn
                   btnType={"submit"}

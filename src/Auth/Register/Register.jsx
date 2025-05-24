@@ -83,13 +83,13 @@ function Register() {
         >
           {({ values }) => (
             <Form className="flex flex-col">
-              <div className="relative mt-2">
+              <div className="relative mt-1">
                 <AuthInputField placeholder="Name" name="name" />
               </div>
-              <div className="relative mt-3">
+              <div className="relative mt-2">
                 <AuthInputField placeholder="Domain" name="domain" />
               </div>
-              <div className="relative mt-3">
+              <div className="relative mt-2">
                 <AuthInputField placeholder="Email" name="email" />
               </div>
               <PasswordInput
@@ -117,7 +117,7 @@ function Register() {
                   />
                   <span className="w-4 h-4 border-2 border-gray-300 rounded flex items-center justify-center transition-all duration-200 ">
                     <svg
-                      className="w-3 h-3 text-primary opacity-0 transition-all duration-200 peer-checked:opacity-100"
+                      className="w-full h-full bg-primary text-white opacity-0 transition-all duration-200 peer-checked:opacity-100"
                       viewBox="0 0 20 20"
                       fill="currentColor"
                     >
@@ -129,7 +129,7 @@ function Register() {
                   </span>
                 </label>
               </div>
-              <div className="mt-5 mb-3">
+              <div className="my-3">
                 <MainBtn
                   text={
                     loading ? <ClipLoader color="#fff" size={22} /> : "Sign Up"
@@ -139,7 +139,7 @@ function Register() {
                 />
               </div>
               {error && (
-                <p className="text-red-500 text-sm mb-3 text-center">{error}</p>
+                <p className="text-red-500 text-sm mb-1 text-center">{error}</p>
               )}
               <div className="flex items-center justify-center w-full">
                 <div className="border-t border-gray-300 flex-grow"></div>

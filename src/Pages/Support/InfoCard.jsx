@@ -1,4 +1,4 @@
-import React, { useEffect ,useState} from "react";
+import { useEffect ,useState} from "react";
 import EmailAddress from "../../Svgs/EmailAddress";
 import PhoneNum from "../../Svgs/PhoneNum";
 import { settings } from "../../ApiServices/Settings";
@@ -33,7 +33,7 @@ function InfoCard() {
   }, []);
 
   return (
-    <section className="bg-white rounded-md drop-shadow-lg p-5 w-500px h-72 mt-10">
+    <section className="bg-white rounded-md drop-shadow-lg p-5 w-450 h-72 mt-10">
       <h2 className="font-bold text-17 mb-3 mt-2 relative pb-1 gradient-border-bottom">
         Contact information
       </h2>

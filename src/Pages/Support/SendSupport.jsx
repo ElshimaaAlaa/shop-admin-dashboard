@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import * as Yup from "yup";
 import { LuSend } from "react-icons/lu";
 import MainBtn from "../../Components/Main Button/MainBtn";
@@ -37,7 +37,7 @@ function SendSupport({ onSuccess }) {
       .required("Message is required"),
   });
 
-  const handleSubmit = async (values) => {
+  const handleSubmit = async (values ,{resetForm}) => {
     setIsLoading(true);
     setError(null);
     try {
@@ -48,6 +48,7 @@ function SendSupport({ onSuccess }) {
         values.message
       );
       onSuccess(); 
+      resetForm()
     } catch (error) {
       setError("Failed to send the message. Please try again.");
     } finally {
@@ -63,7 +64,7 @@ function SendSupport({ onSuccess }) {
         validationSchema={validationSchema}
       >
         {({ errors, touched }) => (
-          <Form className="flex flex-col gap-3">
+          <Form className="flex flex-col gap-2">
             <InputField name="name" placeholder="Name" />
             <AuthInputField name="email" placeholder="Email" />
             <InputField name="phone" placeholder="Phone Number" />
@@ -71,7 +72,7 @@ function SendSupport({ onSuccess }) {
               as="textarea"
               placeholder="Description"
               name="message"
-              className={`w-full bg-white outline-none border-2 rounded-md p-2 h-24 block placeholder:text-14 
+              className={`w-full bg-white outline-none border-2 rounded-lg p-2 h-24 block placeholder:text-14 
                       ${
                         errors.message && touched.message
                           ? "border-red-500 focus:border-red-500"
@@ -100,5 +101,4 @@ function SendSupport({ onSuccess }) {
     </div>
   );
 }
-
 export default SendSupport;

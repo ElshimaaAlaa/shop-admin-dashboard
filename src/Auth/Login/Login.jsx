@@ -121,7 +121,7 @@ function Login() {
                     />
                     <span className="w-4 h-4 border-2 border-gray-300 rounded flex items-center justify-center transition-all duration-200 ">
                       <svg
-                        className="w-3 h-3 text-primary opacity-0 transition-all duration-200 peer-checked:opacity-100"
+                        className="w-full h-full bg-primary text-white opacity-0 transition-all duration-200 peer-checked:opacity-100"
                         viewBox="0 0 20 20"
                         fill="currentColor"
                       >

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Helmet } from "react-helmet";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 import "./support.scss";
@@ -53,7 +53,7 @@ function Support() {
           />
           <p className="font-bold mt-5">Message sent successfully!</p>
           <button
-            className="bg-primary text-white p-2 w-40 mt-4 rounded-md"
+            className="bg-primary font-bold text-white p-2 w-40 mt-4 rounded-md"
             type="button"
             onClick={() => setShowModal(false)}
           >
