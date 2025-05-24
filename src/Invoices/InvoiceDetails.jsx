@@ -87,7 +87,7 @@ function InvoiceDetails() {
         <button
           onClick={downloadPdf}
           disabled={isGeneratingPdf || isLoading}
-          className="bg-primary text-white p-3 w-52  rounded-md flex items-center justify-center gap-2 hover:bg-primary-dark transition-colors disabled:opacity-50"
+          className="bg-primary text-white p-3 w-52 rounded-md flex items-center justify-center gap-2 hover:bg-primary-dark transition-colors disabled:opacity-50"
         >
           {isGeneratingPdf ? (
             <ClipLoader color="#ffffff" size={22} />
@@ -139,7 +139,7 @@ function InvoiceDetails() {
             <p className="text-gray-500 text-15 text-right">Invoice No.</p>
             <p className="font-bold text-xl">{data.invoice_number}</p>
             <p
-              className={`px-2 py-2 flex items-center justify-center gap-2 w-20 rounded-md text-[14px] ${
+              className={`px-2 py-2 flex items-center justify-center gap-1 w-20 rounded-md text-[14px] ${
                 data.payment_status === "unpaid"
                   ? "bg-gray-400 text-white"
                   : data.payment_status === "paid"
@@ -150,8 +150,8 @@ function InvoiceDetails() {
               }`}
             >
               {data.payment_status === "paid" && <FaCircleCheck size={16} />}
-              {data.payment_status === "unpaid" && <FaTimesCircle size={16} />}
-              {data.payment_status === "refund" && <FaUndo size={16} />}
+              {data.payment_status === "unpaid" && <FaTimesCircle size={20} />}
+              {data.payment_status === "refund" && <FaUndo size={20} />}
               {data.payment_status}
             </p>
           </div>

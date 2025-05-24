@@ -13,7 +13,7 @@ export const CustomerTransactions = ({ isLoading, error, orders }) => (
         <ClipLoader color="#E0A75E" />
       </div>
     ) : orders.length === 0 ? (
-      <p className="text-center mt-10 text-gray-400">
+      <p className="text-center mt-10 text-14 text-gray-400">
         No Transaction data founded.
       </p>
     ) : (

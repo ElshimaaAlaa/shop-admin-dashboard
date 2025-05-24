@@ -27,6 +27,7 @@ function AllCustomers() {
   const [error, setError] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage] = useState(5);
+  const [copiedId, setCopiedId] = useState(null);
 
   const fetchCustomers = async () => {
     setIsLoading(true);
@@ -83,19 +84,21 @@ function AllCustomers() {
     }
     fetchCustomers();
   };
-  const copyPhoneNumber = () => {
-    if (customers.phone) {
+
+  const copyPhoneNumber = (phoneNumber, customerId) => {
+    if (phoneNumber) {
       navigator.clipboard
-        .writeText(customers.phone)
+        .writeText(phoneNumber)
         .then(() => {
-          alert("Phone number copied to clipboard!");
+          setCopiedId(customerId);
+          setTimeout(() => setCopiedId(null), 2000);
         })
         .catch((err) => {
           console.error("Failed to copy phone number: ", err);
-          alert("Failed to copy phone number");
         });
     }
   };
+
   return (
     <div className="bg-gray-100 min-h-screen pb-10 mx-5 pt-5">
       <Helmet>
@@ -176,7 +179,7 @@ function AllCustomers() {
             <ClipLoader color="#E0A75E" />
           </div>
         ) : filteredCustomers.length === 0 ? (
-          <div className="text-gray-400 text-center mt-10">
+          <div className="text-gray-400 text-center text-14 mt-10">
             {searchQuery
               ? "No customers match your search."
               : "No customers found."}
@@ -187,7 +190,7 @@ function AllCustomers() {
               <table className="bg-white min-w-full table">
                 <thead>
                   <tr>
-                    <th className="px-3 py-3 text-15 border-t border-b text-left cursor-pointer">
+                    <th className="px-3 py-3 border-t border-b text-left cursor-pointer">
                       <p className="flex items-center gap-3">
                         <input
                           type="checkbox"
@@ -197,16 +200,16 @@ function AllCustomers() {
                         Customer
                       </p>
                     </th>
-                    <th className="px-3 py-3 text-15 text-left border ">
+                    <th className="px-3 py-3 text-left border ">
                       Phone Number
                     </th>
-                    <th className="px-3 py-3 text-15 text-left border">
+                    <th className="px-3 py-3 text-left border">
                       Joining Date
                     </th>
-                    <th className="px-3 py-3 text-15 text-left border">
+                    <th className="px-3 py-3 text-left border">
                       Spent
                     </th>
-                    <th className="px-3 py-3 text-15border text-center w-20">
+                    <th className="px-3 py-3 border text-center w-20">
                       Actions
                     </th>
                   </tr>
@@ -233,22 +236,32 @@ function AllCustomers() {
                         </p>
                       </td>
                       <td className="px-3 py-3 border-t text-gray-600 border-r text-14 w-250">
-                        <p className="flex items-center gap-2">
+                        <div className="flex items-center gap-2">
                           {customer.phone || "N/A"}
-                          {customer?.phone && (
-                            <button
-                              onClick={copyPhoneNumber}
-                              className="text-blue-500 hover:text-blue-700 text-sm flex items-center gap-1"
-                              title="Copy phone number"
-                            >
-                              <IoCopyOutline color="#E0A75E" size={15} />
-                            </button>
+                          {customer.phone && (
+                            <div className="relative">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  copyPhoneNumber(customer.phone, customer.id);
+                                }}
+                                className="text-blue-500 hover:text-blue-700 text-sm flex items-center gap-1"
+                                title="Copy phone number"
+                              >
+                                <IoCopyOutline color="#E0A75E" size={15} />
+                              </button>
+                              {copiedId === customer.id && (
+                                <span className="absolute -top-7 left-0 bg-gray-800 text-white text-xs px-2 py-1 rounded">
+                                  Copied!
+                                </span>
+                              )}
+                            </div>
                           )}
-                        </p>
+                        </div>
                       </td>
                       <td className="px-3 py-3 border-t text-gray-500 border-r text-13 w-250">
                         <p className="flex items-center gap-2">
-                          <IoCalendarNumberOutline color="#69ABB5" size={16} />
+                          <IoCalendarNumberOutline color="#69ABB5" size={17} />
                           {customer.joining_date || "N/A"}
                         </p>
                       </td>
@@ -284,4 +297,5 @@ function AllCustomers() {
     </div>
   );
 }
+
 export default AllCustomers;

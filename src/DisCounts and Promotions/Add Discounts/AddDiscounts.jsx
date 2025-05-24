@@ -10,7 +10,7 @@ import PromotionBasicInfo from "../../Components/DropDowns/PromotionBasicInfo";
 import PromotionDetails from "../../Components/DropDowns/PromotionDetails";
 import Footer from "../../Components/Footer/Footer";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
-import { ClipLoader } from "react-spinners";
+// import { ClipLoader } from "rea  ct-spinners";
 
 const NewPromotion = () => {
   const [error, setError] = useState("");

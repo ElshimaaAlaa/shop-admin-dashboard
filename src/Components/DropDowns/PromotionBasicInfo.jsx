@@ -50,7 +50,7 @@ const PromotionBasicInfo = ({
               {values.items.map((item, index) => (
                 <div key={index}>
                   <div className="flex justify-between items-center">
-                    <h4 className="font-bold mb-3 text-primary">
+                    <h4 className="font-bold text-15 mb-3 text-primary">
                       Product {index + 1}
                     </h4>
                     {index > 0 && (
@@ -59,7 +59,7 @@ const PromotionBasicInfo = ({
                         onClick={() => remove(index)}
                         className="font-bold text-red-600 text-sm"
                       >
-                        <RiDeleteBinLine size={20} height={25} />
+                        <RiDeleteBinLine size={19} height={40} />
                       </button>
                     )}
                   </div>
