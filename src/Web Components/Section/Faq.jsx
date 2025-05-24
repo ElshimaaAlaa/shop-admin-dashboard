@@ -25,9 +25,7 @@ function Faq() {
     };
     fetchFaqs();
   }, []);
-
-  const faqsToShow = showAll ? faqData : faqData.slice(0, 4);
-
+  const faqsToShow = showAll ? faqData : faqData.slice(0, 5);
   return (
     <section className="ps-5 pe-5 lg:ps-20 lg:pe-20 pt-20 pb-10">
       <p className="bg-customOrange-mediumOrange text-primary w-20 text-center p-3 rounded-md">
@@ -43,10 +41,10 @@ function Faq() {
         {faqsToShow.map((item, index) => (
           <div
             key={index}
-            className={`border-2 rounded-lg mt-6 p-5 transition-all duration-300 ${
+            className={`border-1 rounded-lg mt-3 p-5 transition-all duration-300 ${
               openIndex === index
                 ? "border-primary"
-                : "border-gray-200 bg-customGray-grayLine"
+                : "border-gray-200 bg-gray-50"
             }`}
           >
             <div
@@ -63,7 +61,7 @@ function Faq() {
               </span>
             </div>
             {openIndex === index && (
-              <p className="mt-5 text-darkGray">{item.answer}</p>
+              <p className="mt-5 text-gray-500">{item.answer}</p>
             )}
           </div>
         ))}
@@ -71,7 +69,7 @@ function Faq() {
           <div className="mt-6 text-center">
             <button
               onClick={toggleShowAll}
-              className="bg-primary w-36 text-white px-6 py-2 rounded-md hover:bg-opacity-90 transition"
+              className="bg-primary w-36 font-bold text-white px-6 py-2 rounded-md hover:bg-opacity-90 transition"
             >
               {showAll ? "Show Less" : "Show More"}
             </button>

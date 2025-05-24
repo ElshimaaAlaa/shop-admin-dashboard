@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function CompletionRate({ products, title, subtitle }) {
+export default function CompletionRate({ products = [], title, subtitle }) {
   const [sortBy, setSortBy] = useState("quantity");
 
   if (!products || products.length === 0) {
@@ -14,6 +14,7 @@ export default function CompletionRate({ products, title, subtitle }) {
       </section>
     );
   }
+
   const sortedProducts = [...products].sort((a, b) => {
     if (sortBy === "quantity") {
       return parseInt(b.quantity) - parseInt(a.quantity);

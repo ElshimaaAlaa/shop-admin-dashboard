@@ -11,6 +11,7 @@ import { LiaShippingFastSolid } from "react-icons/lia";
 import { HiShoppingBag } from "react-icons/hi2";
 import { IoArrowForwardSharp } from "react-icons/io5";
 import StatisticsCard from "./StatisticsCard";
+import { SiGoogleanalytics } from "react-icons/si";
 
 export default function Dashboard() {
   const [dashboardData, setDashboardData] = useState(null);
@@ -36,10 +37,10 @@ export default function Dashboard() {
     <div className="min-h-screen pt-5 mx-5 pb-5">
       {/* Statistics Section */}
       <section className="bg-white p-5 rounded-md mb-3">
-        <h3 className="font-bold text-16 mb-3">Statistics</h3>
+        <h3 className="font-bold text-17 mb-3">Statistics</h3>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
           <StatisticsCard
-            icon={SiSimpleanalytics}
+            icon={SiGoogleanalytics}
             title="Total Sales"
             totalNumber={dashboardData?.overview?.total_sales?.amount || 0}
             percentage={dashboardData?.overview?.total_sales?.change_rate || "0%"}
@@ -86,7 +87,7 @@ export default function Dashboard() {
       {/* Low Stock Products Section */}
       <section className="mt-5">
         <div className="flex items-center justify-between">
-          <h3 className="font-bold text-lg">
+          <h3 className="font-bold text-17">
             Products Are About To Be Out Of Stock
           </h3>
           <button className="text-white bg-primary p-3 rounded-md font-bold flex justify-center items-center gap-2 text-15">

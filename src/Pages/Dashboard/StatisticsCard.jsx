@@ -1,6 +1,4 @@
-import React from "react";
 import PropTypes from "prop-types";
-
 const StatisticsCard = ({
   icon: Icon,
   title,
@@ -9,12 +7,10 @@ const StatisticsCard = ({
   increased,
   duration,
 }) => {
-  // Format number with commas
   const formattedNumber = typeof totalNumber === 'number' 
     ? totalNumber.toLocaleString()
     : totalNumber;
 
-  // Determine if the change is positive
   const isPositive = increased !== undefined 
     ? increased 
     : !percentage.includes("-") && !percentage.includes("من الشهر الماضي");
@@ -25,7 +21,6 @@ const StatisticsCard = ({
         <Icon className="text-2xl text-primary" />
         <h3 className="text-gray-600 text-14">{title}</h3>
       </div>
-      
       <div className="p-4">
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-bold">{formattedNumber}</h1>
@@ -47,7 +42,6 @@ const StatisticsCard = ({
     </div>
   );
 };
-
 StatisticsCard.propTypes = {
   icon: PropTypes.elementType.isRequired,
   title: PropTypes.string.isRequired,
@@ -56,5 +50,4 @@ StatisticsCard.propTypes = {
   increased: PropTypes.bool,
   duration: PropTypes.string,
 };
-
 export default StatisticsCard;

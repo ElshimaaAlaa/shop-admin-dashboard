@@ -28,7 +28,6 @@ function AllFaqs({ refreshTrigger }) {
   }, [refreshTrigger]);
 
   useEffect(() => {
-    // Scroll to bottom when new FAQs are loaded
     if (containerRef.current && displayCount > 5) {
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }

@@ -1,17 +1,19 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
+import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { ClipLoader } from "react-spinners";
 import { Formik, Form, Field } from "formik";
+import { getFaqs } from "../../ApiServices/AllFaqs";
 import { LuSend } from "react-icons/lu";
 import * as Yup from "yup";
 import { addFaqs } from "../../ApiServices/AddFags";
 import InputField from "../../Components/InputFields/InputField";
 import MainBtn from "../../Components/Main Button/MainBtn";
-import AllFaqs from "./AllFaqs";
-
 function Faqs() {
   const [isLoading, setIsLoading] = useState(false);
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [openIndex, setOpenIndex] = useState(null);
+  const [faqsData, setFaqsData] = useState([]);
+  const [displayCount, setDisplayCount] = useState(5);
 
   const initialValues = {
     question: "",
@@ -26,14 +28,36 @@ function Faqs() {
   const handleSubmit = async (values, { resetForm }) => {
     setIsLoading(true);
     try {
-      await addFaqs(values.question, values.answer);
-      resetForm();
-      setRefreshTrigger(prev => prev + 1);
+      const questionData = await addFaqs(values.question, values.answer);
+      if (questionData && questionData.data) {
+        setFaqsData((prevFaqs) => [questionData.data, ...prevFaqs]);
+        resetForm();
+      }
     } catch (error) {
       console.error("Failed to add FAQ:", error);
     } finally {
       setIsLoading(false);
     }
+  };
+  useEffect(() => {
+    const fetchFaqs = async () => {
+      try {
+        const data = await getFaqs();
+        setFaqsData(data);
+      } catch (error) {
+        console.error("Failed to fetch FAQs:", error);
+        setFaqsData([]);
+      }
+    };
+    fetchFaqs();
+  }, []);
+
+  const toggleFaq = (index) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
+
+  const loadMore = () => {
+    setDisplayCount((prevCount) => prevCount + 5);
   };
 
   return (
@@ -49,9 +73,53 @@ function Faqs() {
         <br /> and supported features.
       </p>
       <div className="flex justify-center gap-5 mx-20">
-        <AllFaqs refreshTrigger={refreshTrigger} />
-        
-        <section className="bg-customOrange-mediumOrange rounded-md p-5 w-450 h-full mt-10">
+        {/* FAQ Section */}
+        <section className="mt-5 w-700">
+          {faqsData.slice(0, displayCount).map((item, index) => (
+            <div
+              key={index}
+              className={`mt-5 p-5 bg-gray-50 rounded-lg transition-all duration-300 ${
+                openIndex === index ? "border-2 border-primary" : "bg-gray-50"
+              }`}
+            >
+              <div
+                onClick={() => toggleFaq(index)}
+                className="flex justify-between items-center cursor-pointer"
+              >
+                <h1 className="font-bold text-17">{item.question}</h1>
+                <span>
+                  {openIndex === index ? (
+                    <IoIosArrowUp color="#E0A75E" />
+                  ) : (
+                    <IoIosArrowDown color="#E0A75E" />
+                  )}
+                </span>
+              </div>
+              {openIndex === index && (
+                <p className="mt-5 text-secondary text-14 font-light">
+                  {item.answer}
+                </p>
+              )}
+            </div>
+          ))}
+          {/* Load More Button */}
+          {displayCount < faqsData.length && (
+            <div className="flex justify-center mt-5">
+              <p
+                onClick={loadMore}
+                className="text-center text-15 font-bold bg-primary text-white cursor-pointer w-44 px-4 py-2 rounded-lg hover:bg-opacity-90 transition"
+              >
+                {isLoading ? (
+                  <ClipLoader size={22} color="#fff" />
+                ) : (
+                  "Load More....."
+                )}
+              </p>
+            </div>
+          )}
+        </section>
+        {/* Add Question Section */}
+        <section className="bg-customOrange-mediumOrange rounded-md p-5 w-full h-full mt-10">
           <div className="flex justify-center">
             <img
               src="/assets/svgs/chat-round-dots_svgrepo.com.svg"
@@ -70,7 +138,7 @@ function Faqs() {
             onSubmit={handleSubmit}
             validationSchema={validationSchema}
           >
-            {() => (
+            {({ isSubmitting }) => (
               <Form>
                 <InputField name="question" placeholder="Question" />
                 <Field

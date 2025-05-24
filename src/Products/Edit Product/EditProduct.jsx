@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Formik, Form, Field } from "formik";
 import { Helmet } from "react-helmet";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -47,7 +47,7 @@ const CustomDropdown = ({
   return (
     <div className={`relative w-full ${className}`} ref={dropdownRef}>
       <div
-        className={`w-full bg-white outline-none border-2 rounded-md h-12 px-3 flex items-center justify-between cursor-pointer transition-all duration-200 placeholder:text-14 ${
+        className={`w-full bg-white outline-none border-2 rounded-md h-12 px-3 flex items-center justify-between cursor-pointer transition-all duration-200 ${
           error && touched
             ? "border-red-500"
             : "border-gray-200 hover:border-primary"
@@ -87,7 +87,7 @@ const CustomDropdown = ({
             options.map((option) => (
               <div
                 key={option.value}
-                className={`px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors duration-150 placeholder:text-14 ${
+                className={`px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors duration-150 ${
                   value === option.value ? "bg-primary-50 text-primary-600" : ""
                 }`}
                 onClick={() => {
@@ -101,6 +101,7 @@ const CustomDropdown = ({
           )}
         </div>
       )}
+
       {error && touched && (
         <div className="text-red-500 text-xs mt-1">{error}</div>
       )}
@@ -131,6 +132,7 @@ const TagPill = ({ tag, onRemove, isExisting }) => {
   );
 };
 
+
 function EditProduct() {
   const [categories, setCategories] = useState([]);
   const [availableTags, setAvailableTags] = useState([]);
@@ -147,7 +149,7 @@ function EditProduct() {
 
   const [previewImages, setPreviewImages] = useState(
     product?.images?.map(
-      (img) => img.src || "/assets/images/product.png"
+      (img) => img.src || "/assets/images/default-product.png"
     ) || []
   );
   const [categoryType, setCategoryType] = useState(null);
@@ -170,10 +172,8 @@ function EditProduct() {
           ? { ar: color.name, en: color.name }
           : color.name || { ar: "", en: "" },
       existingImage: color.image || null,
-      previewImage: color.image ? 
-        (color.image instanceof File ? URL.createObjectURL(color.image) : color.image)
-        : null,
-      image: null,
+      newImage: null,
+      previewImage: color.image || null,
       code: color.code || "",
       stock: color.stock || 0,
       price: color.price || 0,
@@ -273,11 +273,15 @@ function EditProduct() {
         formData.append(`colors[${index}][stock]`, color.stock || 0);
         formData.append(`colors[${index}][price]`, color.price || 0);
         
-        if (color.image instanceof File) {
-          formData.append(`colors[${index}][image]`, color.image);
-        } else if (color.existingImage && !color.image) {
+        // Handle image uploads
+        if (color.newImage instanceof File) {
+          // New image uploaded
+          formData.append(`colors[${index}][image]`, color.newImage);
+        } else if (color.existingImage && !color.newImage) {
+          // Keep existing image
           formData.append(`colors[${index}][existing_image]`, color.existingImage);
         }
+        // If both are null, it means remove the image
 
         formData.append(
           `colors[${index}][schedule_discount]`,
@@ -351,6 +355,7 @@ function EditProduct() {
       }
     }
   };
+
   useEffect(() => {
     const getCategoriesAndTags = async () => {
       try {
@@ -580,14 +585,14 @@ function EditProduct() {
                     makeImageOptional={true}
                     onColorImageChange={(index, file) => {
                       const newColors = [...values.colors];
+                      newColors[index].newImage = file;
                       newColors[index].previewImage = URL.createObjectURL(file);
-                      newColors[index].image = file;
                       setFieldValue("colors", newColors);
                     }}
                     onRemoveColorImage={(index) => {
                       const newColors = [...values.colors];
-                      newColors[index].previewImage = null;
-                      newColors[index].image = null;
+                      newColors[index].newImage = null;
+                      newColors[index].previewImage = newColors[index].existingImage || null;
                       setFieldValue("colors", newColors);
                     }}
                   />
@@ -639,5 +644,4 @@ function EditProduct() {
     </div>
   );
 }
-
 export default EditProduct;

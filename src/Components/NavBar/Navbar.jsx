@@ -1,26 +1,21 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ProfileMenu from "../../Profile/Profile";
 import { CiSearch } from "react-icons/ci";
 import { IoArrowBackCircle } from "react-icons/io5";
+import { useSearch } from "../Search Context/SearchContext";
 
-function Navbar({ onSearch }) {
-  const [searchQuery, setSearchQuery] = useState("");
+function Navbar() {
+  // Correct usage with object destructuring
+  const { searchQuery, setSearchQuery } = useSearch();
   const navigate = useNavigate();
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
-    setSearchQuery(value);
-    if (onSearch) {
-      onSearch(value.toLowerCase());
-    }
+    setSearchQuery(value.toLowerCase());
   };
 
   const clearSearch = () => {
     setSearchQuery("");
-    if (onSearch) {
-      onSearch("");
-    }
   };
 
   const goBack = () => {
@@ -44,8 +39,8 @@ function Navbar({ onSearch }) {
             <input
               type="text"
               placeholder="Search"
-              className="w-full p-2.5 border-1 border-gray-200 rounded-lg focus:outline-none  focus:border-primary  pl-10 pr-8 placeholder:text-14"
-              value={searchQuery}
+              className="w-full p-2.5 border-1 border-gray-200 rounded-lg focus:outline-none focus:border-primary pl-10 pr-8 placeholder:text-14"
+              value={searchQuery || ""}
               onChange={handleSearchChange}
             />
             <div className="absolute left-3 top-3 text-gray-400">
@@ -81,4 +76,5 @@ function Navbar({ onSearch }) {
     </div>
   );
 }
+
 export default Navbar;

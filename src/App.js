@@ -50,6 +50,7 @@ import Analytics from "./Analysis/Analytics";
 import AllInvoices from "./Invoices/AllInvoices";
 import InvoiceDetails from "./Invoices/InvoiceDetails";
 import Dashboard from "./Pages/Dashboard/Dashboard";
+import { SearchProvider } from "./Components/Search Context/SearchContext";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -73,96 +74,98 @@ function App() {
     );
   }
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Auth Routes */}
-        <Route path="/" element={<Main />} />
-        <Route path="/GetDomain" element={<GetDomain />} />
+    <SearchProvider>
+      <BrowserRouter>
+        <Routes>
+          {/* Auth Routes */}
+          <Route path="/" element={<Main />} />
+          <Route path="/GetDomain" element={<GetDomain />} />
 
-        {/* Auth */}
-        <Route path="/Login" element={<Login />} />
-        <Route path="/Login/ForgotPassword" element={<ForgotPassword />} />
-        <Route
-          path="/Login/VerifayPassword"
-          element={<VerifayPassword />}
-        />
-        <Route
-          path="/Login/CreateNewPassword"
-          element={<CreateNewPassword />}
-        />
-        {/* Register and set up store */}
-        <Route path="/Register" element={<Register />} />
-        <Route path="/Register/ThemeStore" element={<ThemeStore />} />
-        <Route path="/Register/StoreProfile" element={<StoreProfile />} />
-        <Route path="/Register/PricingPlan" element={<PricingPlan />} />
-        <Route path="/Register/PaymentInfo" element={<PaymentInfo />} />
-        <Route
-          path="/Register/ShippingProvider"
-          element={<ShippingProvider />}
-        />
-        <Route path="/Register/PaymentMethod" element={<PaymentMethod />} />
-        {/* Dashboard */}
-        <Route path="/Dashboard" element={<Home />}>
-        <Route path="Home-dashboard" element={<Dashboard/>}/>
-          {/* Personal Information */}
-          <Route path="MainInfo" element={<MainInfo />}>
-            <Route index element={<PersonalInformation />} />
-            <Route path="EditInfo" element={<EditInfo />} />
-            <Route path="StoreTheme" element={<StoreTheme />} />
-            <Route path="EditStoreTheme" element={<EditStoreTheme />} />
-            <Route path="StoreInformation" element={<StoreInformation />} />
-            <Route path="Pricing" element={<Pricing />} />
-            <Route path="Info" element={<Info />} />
+          {/* Auth */}
+          <Route path="/Login" element={<Login />} />
+          <Route path="/Login/ForgotPassword" element={<ForgotPassword />} />
+          <Route path="/Login/VerifayPassword" element={<VerifayPassword />} />
+          <Route
+            path="/Login/CreateNewPassword"
+            element={<CreateNewPassword />}
+          />
+          {/* Register and set up store */}
+          <Route path="/Register" element={<Register />} />
+          <Route path="/Register/ThemeStore" element={<ThemeStore />} />
+          <Route path="/Register/StoreProfile" element={<StoreProfile />} />
+          <Route path="/Register/PricingPlan" element={<PricingPlan />} />
+          <Route path="/Register/PaymentInfo" element={<PaymentInfo />} />
+          <Route
+            path="/Register/ShippingProvider"
+            element={<ShippingProvider />}
+          />
+          <Route path="/Register/PaymentMethod" element={<PaymentMethod />} />
+          {/* Dashboard */}
+          <Route path="/Dashboard" element={<Home />}>
+            <Route path="Home-dashboard" element={<Dashboard />} />
+            {/* Personal Information */}
+            <Route path="MainInfo" element={<MainInfo />}>
+              <Route index element={<PersonalInformation />} />
+              <Route path="EditInfo" element={<EditInfo />} />
+              <Route path="StoreTheme" element={<StoreTheme />} />
+              <Route path="EditStoreTheme" element={<EditStoreTheme />} />
+              <Route path="StoreInformation" element={<StoreInformation />} />
+              <Route path="Pricing" element={<Pricing />} />
+              <Route path="Info" element={<Info />} />
+              <Route
+                path="EditStoreInformation"
+                element={<EditStoreInformation />}
+              />
+              <Route path="PricingPlans" element={<PricingPlan />} />
+              <Route path="PaymentInformation" element={<PaymentInfo />} />
+            </Route>
+
+            {/* Categories */}
+            <Route path="categories" element={<AllCategory />} />
+            <Route path="addCategory" element={<AddCategory />} />
+            <Route path="editCategory/:id" element={<EditCategory />} />
+
+            {/* Products */}
+            <Route path="products" element={<AllProducts />} />
+            <Route path="addProduct" element={<AddProduct />} />
+            <Route path="EditProduct/:productId" element={<EditProduct />} />
+            <Route path="products/:productId" element={<ViewProduct />} />
+
+            {/* Orders */}
+            <Route path="RecivedOrders" element={<RecivedOrders />} />
+            <Route path="RecivedOrders/:orderId" element={<OrderDetails />} />
+            <Route path="CancelOrder" element={<CancelOrder />} />
+            <Route path="RefundRequests" element={<RefundRequests />} />
+            {/* Customers */}
+            <Route path="AllCustomers" element={<AllCustomers />} />
             <Route
-              path="EditStoreInformation"
-              element={<EditStoreInformation />}
+              path="AllCustomers/:customerId"
+              element={<CustomerDetail />}
             />
-            <Route path="PricingPlans" element={<PricingPlan />} />
-            <Route path="PaymentInformation" element={<PaymentInfo />} />
+            {/* Profile */}
+            <Route path="Profile" element={<Profile />} />
+
+            {/* Promotions and discount */}
+            <Route path="AllDiscounts" element={<AllDiscounts />} />
+            <Route path="AddDiscounts" element={<AddDiscounts />} />
+
+            {/* Support */}
+            <Route path="support" element={<Support />} />
+            <Route path="Faqs" element={<Faqs />} />
+            {/* settings */}
+            <Route path="ShippingProviders" element={<ShippingProviders />} />
+            <Route path="PaymentMethods" element={<PaymentMethods />} />
+            <Route path="SupportQuestion" element={<SupportQuestion />} />
+            <Route path="Requests" element={<Requests />} />
+            {/* Analysis */}
+            <Route path="Analytics" element={<Analytics />} />
+            {/* invoices */}
+            <Route path="AllInvoices" element={<AllInvoices />} />
+            <Route path="AllInvoices/:id" element={<InvoiceDetails />} />
           </Route>
-
-          {/* Categories */}
-          <Route path="categories" element={<AllCategory />} />
-          <Route path="addCategory" element={<AddCategory />} />
-          <Route path="editCategory/:id" element={<EditCategory />} />
-
-          {/* Products */}
-          <Route path="products" element={<AllProducts />} />
-          <Route path="addProduct" element={<AddProduct />} />
-          <Route path="EditProduct/:productId" element={<EditProduct />} />
-          <Route path="products/:productId" element={<ViewProduct />} />
-
-          {/* Orders */}
-          <Route path="RecivedOrders" element={<RecivedOrders />} />
-          <Route path="RecivedOrders/:orderId" element={<OrderDetails />} />
-          <Route path="CancelOrder" element={<CancelOrder />} />
-          <Route path="RefundRequests" element={<RefundRequests />} />
-          {/* Customers */}
-          <Route path="AllCustomers" element={<AllCustomers />} />
-          <Route path="AllCustomers/:customerId" element={<CustomerDetail />} />
-          {/* Profile */}
-          <Route path="Profile" element={<Profile />} />
-
-          {/* Promotions and discount */}
-          <Route path="AllDiscounts" element={<AllDiscounts />} />
-          <Route path="AddDiscounts" element={<AddDiscounts />} />
-
-          {/* Support */}
-          <Route path="support" element={<Support />} />
-          <Route path="Faqs" element={<Faqs />} />
-          {/* settings */}
-          <Route path="ShippingProviders" element={<ShippingProviders />} />
-          <Route path="PaymentMethods" element={<PaymentMethods />} />
-          <Route path="SupportQuestion" element={<SupportQuestion />} />
-          <Route path="Requests" element={<Requests />} />
-          {/* Analysis */}
-          <Route path="Analytics" element={<Analytics />} />
-          {/* invoices */}
-          <Route path="AllInvoices" element={<AllInvoices />} />
-          <Route path="AllInvoices/:id" element={<InvoiceDetails />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+        </Routes>
+      </BrowserRouter>
+    </SearchProvider>
   );
 }
 export default App;

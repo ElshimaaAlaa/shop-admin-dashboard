@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Facebook from "../../Svgs/facebook";
 import Instegram from "../../Svgs/instegram";
 import WhatsApp from "../../Svgs/WhatsApp";
@@ -61,7 +61,7 @@ function Footer() {
           <p className="text-13">© 2024 Cadet UI. All Rights Reserved.</p>
         </div>
         {/* social media */}
-        <div className="flex gap-3 mt-5 lg:mt-0 md:mt-0">
+        <div className="flex gap-2 mt-5 lg:mt-0 md:mt-0">
           <a href="/" target="_blank" className="mt-1.5">
             <FaXTwitter size={23} />
           </a>

@@ -1,4 +1,3 @@
-import React from "react";
 import { Field } from "formik";
 function InputField({ placeholder, name, type = "text", readOnly = false }) {
   return (
@@ -10,7 +9,7 @@ function InputField({ placeholder, name, type = "text", readOnly = false }) {
               {...field}
               type={type}
               placeholder={placeholder}
-              className={`w-full h-12 p-3 border-2 rounded-md outline-none transition-all duration-200 placeholder:text-14 focus:border-primary placeholder:text-gray-400`}
+              className={`w-full h-12 p-2 border-2 border-gray-100 rounded-md outline-none transition-all duration-200 placeholder:text-14 focus:border-primary placeholder:text-gray-400`}
               readOnly={readOnly}
             />
           </div>

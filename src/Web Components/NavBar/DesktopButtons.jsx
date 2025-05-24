@@ -11,7 +11,7 @@ function DesktopButtons({ onLoginClick, onRegisterClick }) {
         Login
       </button>
       <button
-        className="text-primary w-24 py-3 rounded-md font-bold hover:bg-primary hover:text-white focus:bg-primary focus:text-white border-2 border-primary"
+        className="text-primary w-28 py-3 rounded-md font-bold hover:bg-primary hover:text-white focus:bg-primary focus:text-white border-2 border-primary"
         onClick={onRegisterClick}
         aria-label="Open Register Modal"
       >

@@ -17,7 +17,7 @@ function ContactUsSection() {
   const [data, setdata] = useState([]);
   const [error, setError] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  
+
   const initialValues = {
     name: "",
     email: "",
@@ -51,9 +51,10 @@ function ContactUsSection() {
       .required("Message is required"),
   });
 
-  const handleSubmit = async (values) => {
+  const handleSubmit = async (values, { resetForm }) => {
     setIsLoading(true);
     setError(null);
+
     try {
       await sendSupport(
         values.name,
@@ -61,6 +62,7 @@ function ContactUsSection() {
         values.phone,
         values.message
       );
+      resetForm();
       setShowModal(true);
     } catch (error) {
       setError("Failed to send the message. Please try again.");
@@ -84,7 +86,7 @@ function ContactUsSection() {
   }, []);
 
   return (
-    <section className="ps-3 pe-3 mt-40 flex flex-col lg:gap-20 lg:px-20 lg:flex-row  md:flex-row md:items-center lg:mt-0 md:mt-0 pb-20 pt-20 bg-customOrange-mediumOrange relative ">
+    <section className="ps-3 pe-3 mt-40 flex flex-col lg:gap-20 lg:px-20 lg:flex-row  md:flex-row lg:items-center md:items-center lg:mt-0 md:mt-0 pb-20 pt-20 bg-customOrange-mediumOrange relative ">
       {/* contact info */}
       <div className=" absolute -top-28 ">
         <img
@@ -93,7 +95,7 @@ function ContactUsSection() {
           className="w-52"
         />
       </div>
-      <div>
+      <div className="w-full">
         <p className="text-primary text-16">Contact us</p>
         <h1 className="font-bold text-xl mt-5">Get In Touch With Us </h1>
         <p className="text-gray-600 text-14 mt-3 mb-5 lg:w-450 w-full md:w-390">
@@ -125,7 +127,7 @@ function ContactUsSection() {
           onSubmit={handleSubmit}
         >
           {({ errors, touched }) => (
-            <Form className="flex flex-col items-start justify-center lg:items-start md:items-start md:mt-10">
+            <Form className="flex flex-col items-start justify-center lg:items-start md:items-start md:mt-10 w-600px">
               <div className="relative mt-5 md:mt-0 lg:mt-0">
                 <InputField placeholder="Name" name="name" />
                 {errors.name && touched.name && (
@@ -158,7 +160,9 @@ function ContactUsSection() {
                         : "border-gray-200"
                     }
                     ${
-                      touched.message ? "focus:border-2" : "focus:border-primary"
+                      touched.message
+                        ? "focus:border-2"
+                        : "focus:border-primary"
                     }
                   `}
                 />
@@ -166,10 +170,10 @@ function ContactUsSection() {
                   <div className="text-red-500 text-sm">{errors.message}</div>
                 )}
               </div>
-              <div className="flex mt-2">
+              <div className="flex justify-end mt-2 w-400">
                 <button
                   type="submit"
-                  className="text-16 bg-primary flex justify-center items-center text-center h-14 w-52 lg:w-52 md:w-52 gap-2 text-white rounded-md"
+                  className="text-16 bg-primary font-bold flex justify-center items-center text-center h-12 w-52 gap-2 text-white rounded-md"
                 >
                   {isLoading ? (
                     <ClipLoader color="#fff" size={22} />
@@ -206,5 +210,4 @@ function ContactUsSection() {
     </section>
   );
 }
-
 export default ContactUsSection;
