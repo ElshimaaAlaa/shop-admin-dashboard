@@ -53,7 +53,7 @@ function AcceptRefundRequests({ order_id, status, amount, items_count }) {
   return (
     <div>
       <FaCheckCircle
-        size={26}
+        size={25}
         className="cursor-pointer hover:opacity-80 transition-opacity"
         color="#34B41E"
         onClick={() => setShowModal(true)}
