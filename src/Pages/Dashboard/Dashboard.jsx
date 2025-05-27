@@ -5,7 +5,6 @@ import InventoryStatus from "./InventoryStatus";
 import RevenueChart from "./RevenueChart";
 import SalesChangeChart from "./SalesChangeChart";
 import CompletionRate from "./CompletionRate";
-// import { SiSimpleanalytics } from "react-icons/si";
 import { HiCurrencyDollar } from "react-icons/hi2";
 import { LiaShippingFastSolid } from "react-icons/lia";
 import { HiShoppingBag } from "react-icons/hi2";
@@ -15,19 +14,19 @@ import { SiGoogleanalytics } from "react-icons/si";
 
 export default function Dashboard() {
   const [dashboardData, setDashboardData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchHomeData = async () => {
       try {
         const response = await getHome();
-        setDashboardData(response.data);
+        setDashboardData(response);
       } catch (err) {
         setError(err.message);
         console.error("Failed to fetch dashboard data:", err);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
     fetchHomeData();
@@ -87,7 +86,7 @@ export default function Dashboard() {
       {/* Low Stock Products Section */}
       <section className="mt-5">
         <div className="flex items-center justify-between">
-          <h3 className="font-bold text-17">
+          <h3 className="font-bold text-16">
             Products Are About To Be Out Of Stock
           </h3>
           <button className="text-white bg-primary p-3 rounded-md font-bold flex justify-center items-center gap-2 text-15">

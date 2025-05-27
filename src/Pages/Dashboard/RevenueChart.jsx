@@ -1,10 +1,11 @@
 import {
-  AreaChart,
-  Area,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
+  Legend,
   ResponsiveContainer,
 } from "recharts";
 
@@ -23,43 +24,68 @@ export default function RevenueChart({ data }) {
   if (!chartData || chartData.length === 0) {
     return (
       <div className="bg-white p-4 border-1 border-gray-200 rounded-md">
-        <h3 className="font-bold text-16 mb-4">Monthly Revenue</h3>
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="font-bold text-16">Monthly Revenue</h3>
+        </div>
         <div className="h-[300px] text-14 flex items-center justify-center text-gray-400">
           No revenue data available
-        </div> 
+        </div>
       </div>
     );
   }
 
+  const maxValue = Math.max(...chartData.map(item => item.revenue));
+
   return (
-    <div className="bg-white p-4 border-1 border-gray-200 rounded-md">
-      <h3 className="font-bold text-16 mb-4">Monthly Revenue</h3>
+    <div className="bg-white p-4 border-1 border-gray-200 rounded-md h-[400px]">
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="font-bold text-16">Monthly Revenue</h3>
+      </div>
       <div className="h-[300px]">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart
+          <BarChart
             data={chartData}
-            margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+            barCategoryGap={20} 
+            barGap={0} 
           >
-            <defs>
-              <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8}/>
-                <stop offset="95%" stopColor="#8884d8" stopOpacity={0}/>
-              </linearGradient>
-            </defs>
-            <XAxis dataKey="name" />
-            <YAxis />
-            <CartesianGrid strokeDasharray="3 3" />
-            <Tooltip 
-              formatter={(value) => [`$${value.toLocaleString()}`, "Revenue"]}
+            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+            <XAxis 
+              dataKey="name"
+              tick={{ fontSize: 12 }}
+              axisLine={{ stroke: '#e0e0e0' }}
+              tickLine={{ stroke: '#e0e0e0' }}
             />
-            <Area
-              type="monotone"
+            <YAxis
+              tick={{ fontSize: 12 }}
+              tickFormatter={(value) => `$${value.toLocaleString()}`}
+              domain={[0, maxValue * 1.1]}
+              axisLine={{ stroke: '#e0e0e0' }}
+              tickLine={{ stroke: '#e0e0e0' }}
+            />
+            <Tooltip
+              formatter={(value) => [`$${value.toLocaleString()}`]}
+              labelFormatter={(label) => `Month: ${label}`}
+              contentStyle={{
+                fontSize: 12,
+                borderRadius: '4px',
+                border: '1px solid #e0e0e0',
+              }}
+            />
+            <Legend 
+              wrapperStyle={{
+                fontSize: 12, 
+                paddingTop: '20px'
+              }}
+            />
+            <Bar
               dataKey="revenue"
-              stroke="#8884d8"
-              fillOpacity={1}
-              fill="url(#colorRevenue)"
+              fill="#E0A75E"
+              name="Revenue"
+              radius={[4, 4, 0, 0]}
+              barSize={15}  
             />
-          </AreaChart>
+          </BarChart>
         </ResponsiveContainer>
       </div>
     </div>

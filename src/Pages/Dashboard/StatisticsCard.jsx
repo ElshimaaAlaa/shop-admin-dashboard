@@ -25,7 +25,7 @@ const StatisticsCard = ({
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-bold">{formattedNumber}</h1>
           <span
-            className={`text-12 font-bold rounded-md py-1 px-2 ${
+            className={`text-12 font-bold rounded-md py-1 px-4 ${
               isPositive
                 ? "text-[#34B41E] bg-[#E7F6E5]"
                 : "text-red-600 bg-red-50"

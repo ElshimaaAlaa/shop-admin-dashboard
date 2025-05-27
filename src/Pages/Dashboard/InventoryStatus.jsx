@@ -1,13 +1,13 @@
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
-import { useState } from "react";
+// import { useState } from "react";
 
 export default function InventoryStatus({ data }) {
-  const [category, setCategory] = useState("all");
+  // const [category, setCategory] = useState("all");
 
   const inventoryData = [
     { name: "In Stock", value: parseInt(data?.in_stock) || 0, color: "#5EAAA8" },
-    { name: "Low Stock", value: parseInt(data?.low_stock) || 0, color: "#F7D59C" },
-    { name: "Out Of Stock", value: parseInt(data?.out_of_stock) || 0, color: "#EB8A90" },
+    { name: "Low Stock", value: parseInt(data?.low_stock) || 0, color: "#E0A75E" },
+    { name: "Out Of Stock", value: parseInt(data?.out_of_stock) || 0, color: "#D22B2B	" },
   ];
 
   const totalStock = inventoryData.reduce((sum, item) => sum + item.value, 0);
@@ -17,13 +17,13 @@ export default function InventoryStatus({ data }) {
       <div className="bg-white p-4 border-1 border-gray-200 rounded-md">
         <div className="flex justify-between items-center mb-4">
           <h3 className="font-bold text-16">Inventory Status</h3>
-          <select
+          {/* <select
             className="font-bold px-2 py-1 text-sm outline-none"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
           >
             <option value="all">All Categories</option>
-          </select>
+          </select> */}
         </div>
         <div className="h-[220px] text-14 flex items-center justify-center text-gray-400">
           No inventory data available
@@ -33,9 +33,9 @@ export default function InventoryStatus({ data }) {
   }
   return (
     <div className="bg-white p-4 border-1 border-gray-200 rounded-md">
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-3">
         <h3 className="font-bold text-16">Inventory Status</h3>
-        <select
+        {/* <select
           className="font-bold px-2 py-1 text-sm outline-none"
           value={category}
           onChange={(e) => setCategory(e.target.value)}
@@ -44,10 +44,10 @@ export default function InventoryStatus({ data }) {
           <option value="electronics">Electronics</option>
           <option value="clothing">Clothing</option>
           <option value="furniture">Furniture</option>
-        </select>
+        </select> */}
       </div>
       <div className="flex flex-col">
-        <div className="text-xl font-bold text-primary">
+        <div className="text-lg font-bold text-primary">
           {totalStock.toLocaleString()}
         </div>
         <div className="text-sm">Stock</div>
@@ -63,6 +63,7 @@ export default function InventoryStatus({ data }) {
                 outerRadius={80}
                 paddingAngle={2}
                 dataKey="value"
+                className="text-14 font-bold"
                 label={({ name, percent }) =>
                   `${name}: ${(percent * 100).toFixed(0)}%`
                 }
