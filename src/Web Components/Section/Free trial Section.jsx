@@ -1,5 +1,5 @@
 import { Formik, Form } from "formik";
-import React, { useState } from "react";
+import { useState } from "react";
 import * as Yup from "yup";
 import "./SectionsStyle.scss";
 import { ClipLoader } from "react-spinners";
@@ -43,7 +43,7 @@ function FreetrialSection() {
           <button
             type="submit"
             disabled={loading}
-            className="bg-primary text-white rounded-md p-3 text-center mt-5 w-full lg:mt-0 lg:w-2/5 md:w-2/5 md:mt-0"
+            className="bg-primary text-white rounded-md p-3 text-center h-14 mt-5 w-full lg:mt-0 lg:w-2/5 md:w-2/5 md:mt-0"
           >
             {loading ? <ClipLoader color="#fff" size={22}/> : `Start Free Trial`}
           </button>

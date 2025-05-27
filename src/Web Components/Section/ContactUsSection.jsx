@@ -151,7 +151,7 @@ function ContactUsSection() {
                   as="textarea"
                   placeholder="Your Message"
                   name="message"
-                  className={`w-80 h-24 lg:w-400 md:w-400 sm:w-390 s:w-390 p-3 border-2 rounded-md outline-none transition-all duration-200 placeholder:text-14
+                  className={`w-80 h-28 lg:w-400 md:w-400 sm:w-390 s:w-390 p-3 border-2 rounded-md outline-none transition-all duration-200 placeholder:text-14
                     ${
                       errors.message && touched.message
                         ? "border-red-500"
@@ -173,7 +173,7 @@ function ContactUsSection() {
               <div className="flex justify-end mt-2 w-400">
                 <button
                   type="submit"
-                  className="text-16 bg-primary font-bold flex justify-center items-center text-center h-12 w-52 gap-2 text-white rounded-md"
+                  className="text-16 bg-primary font-bold flex justify-center items-center text-center h-14 w-52 gap-2 text-white rounded-md"
                 >
                   {isLoading ? (
                     <ClipLoader color="#fff" size={22} />
