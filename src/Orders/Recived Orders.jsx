@@ -94,5 +94,4 @@ function ReceivedOrders() {
     </div>
   );
 }
-
 export default ReceivedOrders;

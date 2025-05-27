@@ -255,16 +255,16 @@ function InvoiceDetails() {
                             </div>
 
                             <div className="flex flex-col ms-10">
-                              <span className="text-gray-500 text-13">
+                              <span className="text-gray-500 text-15">
                                 size : {product.size}
                               </span>
-                              <span className="text-gray-500 text-13">
+                              <span className="text-gray-500 text-15 mt-1">
                                 color :
                                 <span
                                   style={{
                                     display: "inline-block",
-                                    width: "15px",
-                                    height: "15px",
+                                    width: "25px",
+                                    height: "25px",
                                     backgroundColor: product.color,
                                     borderRadius: "50%",
                                     marginLeft: "5px",
@@ -302,20 +302,20 @@ function InvoiceDetails() {
             <p className="text-15 flex items-center justify-between">
               Subtotal
               <span className="text-gray-500">
-                {data.sub_total?.toFixed(2) || "0.00"} $
+                {data.sub_total?.toFixed(2) || "0"} $
               </span>
             </p>
             <p className="text-15 flex items-center justify-between">
               Shipping
               <span className="text-gray-500">
-                {data.shipping_price?.toFixed(2) || "0.00"} $
+                {data.shipping_price?.toFixed(2) || "0"} $
               </span>
             </p>
             <hr />
             <p className="text-15 flex items-center justify-between">
               Total
               <span className="text-gray-500">
-                {data.total?.toFixed(2) || "0.00"} $
+                {data.total?.toFixed(2) || "0"} $
               </span>
             </p>
           </div>

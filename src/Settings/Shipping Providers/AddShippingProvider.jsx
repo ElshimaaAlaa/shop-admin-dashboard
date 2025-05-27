@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./style.scss";
 import { Formik, Form } from "formik";
 import { ClipLoader } from "react-spinners";
@@ -88,7 +88,7 @@ function AddShippingProvider({ isOpen, onClose }) {
                       className={`flex items-center cursor-pointer w-full p-3 rounded-lg transition-all duration-200 ${
                         isSelected
                           ? "bg-customOrange-mediumOrange border-2 border-primary"
-                          : "bg-gray-100 hover:bg-gray-50 border border-transparent"
+                          : "bg-gray-50  border border-transparent"
                       }`}
                     >
                       <input
@@ -98,7 +98,7 @@ function AddShippingProvider({ isOpen, onClose }) {
                         onChange={() => handleProviderToggle(provider)}
                       />
                       <span
-                        className={`w-4 h-4 border-2 rounded flex items-center justify-center transition-all duration-200 ${
+                        className={`w-5 h-5 border-2 border-gray-200 rounded flex items-center justify-center transition-all duration-200 ${
                           isSelected
                             ? "border-primary bg-primary"
                             : "border-black"
@@ -114,7 +114,7 @@ function AddShippingProvider({ isOpen, onClose }) {
                           <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
                         </svg>
                       </span>
-                      <span className="text-sm lg:text-base text-black ms-3">
+                      <span className="text-16 text-black ms-3">
                         {provider.name_en} ({provider.name_ar})
                       </span>
                     </label>
@@ -125,13 +125,13 @@ function AddShippingProvider({ isOpen, onClose }) {
                 <button
                   type="button"
                   onClick={onClose}
-                  className="bg-gray-100 text-gray-400 font-bold p-3 w-28 rounded-md"
+                  className="bg-gray-100 text-gray-500 font-bold p-3 w-32 rounded-md"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="bg-primary font-bold text-white p-3 w-28 rounded-md"
+                  className="bg-primary font-bold text-white p-3 w-32 rounded-md"
                   disabled={isLoading || selectedProviders.length === 0}
                 >
                   {isLoading ? <ClipLoader size={22} color="#fff" /> : "Save"}

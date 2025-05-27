@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
-import { FaCheckCircle } from "react-icons/fa";
+// import { FaCheckCircle } from "react-icons/fa";
 import CancelOrder from "./CancelOrder";
 import { useParams, useLocation } from "react-router-dom";
 import axios from "axios";
@@ -74,7 +74,6 @@ function OrderDetails() {
     { icon: <Acc />, label: "Account" },
   ];
 
-  // Calculate progress based on order status
   const getOrderProgress = () => {
     const statusWeights = {
       1: 0,  // Pending
@@ -86,7 +85,6 @@ function OrderDetails() {
     return statusWeights[orderStatus] || 0;
   };
 
-  // Safe number formatting
   const formatCurrency = (value) => {
     const num = typeof value === 'number' ? value : parseFloat(value) || 0;
     return num.toLocaleString('en-US', {
@@ -96,32 +94,6 @@ function OrderDetails() {
       maximumFractionDigits: 2
     });
   };
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="text-center">
-          <p className="text-primary">Loading order details...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="text-center">
-          <p className="text-red-500">Failed to load order details. Please try again.</p>
-          <button 
-            onClick={() => window.location.reload()}
-            className="mt-4 px-4 py-2 bg-primary text-white rounded"
-          >
-            Retry
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="bg-gray-100 pb-10 mx-5 pt-5">
@@ -138,7 +110,7 @@ function OrderDetails() {
       </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-        <div className="lg:col-span-2 space-y-2">
+        <div className="lg:col-span-2 space-y-5">
           <section className="border border-gray-200 rounded-md p-4 bg-white">
             <div className="flex justify-between items-center mb-4">
               <h2 className="font-bold text-17">
@@ -146,33 +118,21 @@ function OrderDetails() {
               </h2>
               <StatusDisplay status={orderStatus} statusName={orderStatusName || orderDetail.status_name} />
             </div>
-            
             {/* Order Progress Bar */}
             <div className="mb-6">
-              <div className="flex justify-between mb-1 text-xs text-gray-500">
+              <div className="flex justify-between text-12 text-gray-500 mt-5 mb-3">
                 <span>Order Status</span>
                 <span>{getOrderProgress()}% Complete</span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2.5">
+              <div className="w-full bg-gray-100 rounded-full h-2.5">
                 <div 
                   className="bg-primary h-2.5 rounded-full" 
                   style={{ width: `${getOrderProgress()}%` }}
                 ></div>
               </div>
-              <div className="flex justify-between mt-2 text-xs text-gray-500">
-                {orderDetail.history?.map((statusItem, index) => (
-                  <div 
-                    key={index}
-                    className={`text-center ${statusItem.active ? 'text-primary font-bold' : ''}`}
-                  >
-                    {statusItem.status_name}
-                  </div>
-                ))}
-              </div>
             </div>
-            
             {/* Status Timeline */}
-            <div className="space-y-4">
+            {/* <div className="space-y-4">
               {orderDetail.history?.map((statusItem, index) => (
                 <div key={index} className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -187,7 +147,7 @@ function OrderDetails() {
                   </span>
                 </div>
               ))}
-            </div>
+            </div> */}
           </section>
 
           <section className="border border-gray-200 rounded-md p-4 bg-white">
@@ -195,10 +155,10 @@ function OrderDetails() {
             <div className="flex flex-wrap gap-8 md:gap-36 mt-4">
               <div>
                 <h4 className="text-gray-400 text-14">Item No</h4>
-                <p className="text-14">{orderDetail.items_count || 0}</p>
+                <p className="text-14 mt-3">{orderDetail.items_count || 0}</p>
               </div>
               <div>
-                <h4 className="text-gray-400 text-14">Payment</h4>
+                <h4 className="text-gray-400 text-14 mb-3">Payment</h4>
                 <StatusDisplay 
                   statusName={orderDetail.payment_status} 
                   status={orderDetail.payment_status === "paid" ? 2 : 1}
@@ -227,17 +187,17 @@ function OrderDetails() {
                         </span>
                       </div>
                     </td>
-                    <td className="px-3 py-3 w-[214px] border-t border-r text-13">
-                      {formatCurrency(item.product?.price)}
+                    <td className="px-3 py-3 w-[214px] border-t border-r text-14 text-gray-500">
+                      {item.product?.price} $
                     </td>
-                    <td className="px-3 py-3 w-[214px] border-t border-r text-13">
+                    <td className="px-3 py-3 w-[214px] border-t border-r text-14 text-gray-500">
                       {item.quantity || 0}
                     </td>
-                    <td className="px-5 py-3 w-[214px] border-t border-r text-13">
+                    <td className="px-5 py-3 w-[214px] border-t border-r text-14 text-gray-500">
                       {item.product?.colors?.map((color) => (
                         <div
                           key={color.id}
-                          className="w-8 h-8 rounded-full -ms-3 inline-block border border-gray-200"
+                          className="w-8 h-8 rounded-full -ms-3 inline-block border"
                           style={{ backgroundColor: color.code }}
                           title={color.name}
                         />
@@ -249,20 +209,20 @@ function OrderDetails() {
             </table>
             <section className="bg-gray-50 rounded-lg px-3 py-5 mt-4 flex flex-col gap-7">
               <div className="flex items-center justify-between">
-                <p className="text-15">Subtotal</p>
+                <p className="text-15 font-bold">Subtotal</p>
                 <p className="text-gray-400 text-15">
                   {formatCurrency(orderDetail.sub_total)}
                 </p>
               </div>
               <div className="flex items-center justify-between">
-                <p className="text-15">Shipping</p>
+                <p className="text-15 font-bold">Shipping</p>
                 <p className="text-gray-400 text-15">
                   {formatCurrency(orderDetail.shipping)}
                 </p>
               </div>
               <div className="flex items-center justify-between border-t-2 pt-3">
                 <p className="text-15 font-bold">Total</p>
-                <p className="text-gray-400 text-15 font-bold">
+                <p className="text-gray-400 text-15">
                   {formatCurrency(orderDetail.total)}
                 </p>
               </div>
@@ -285,7 +245,7 @@ function OrderDetails() {
                   return (
                     <div key={`transaction-${index}`}>
                       <div className="flex justify-between border-b-2 pb-4 border-gray-200">
-                        <span className="text-gray-400 text-13 mt-1">
+                        <span className="text-14 text-gray-500 mt-1">
                           {method.payment_method || "N/A"}
                         </span>
                         <span className="text-gray-600">
@@ -308,7 +268,6 @@ function OrderDetails() {
             </div>
           </section>
         </div>
-
         <div className="space-y-5">
           <section className="border border-gray-200 rounded-md p-4 bg-white">
             <h2 className="font-bold text-16">Shipping Address</h2>
@@ -382,5 +341,4 @@ function OrderDetails() {
     </div>
   );
 }
-
 export default OrderDetails;

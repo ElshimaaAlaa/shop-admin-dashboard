@@ -33,17 +33,17 @@ export const OrdersTable = ({
       <table className="bg-white min-w-full table">
         <thead>
           <tr>
-            <th className="px-3 py-3 border-t border-b text-left cursor-pointer">
+            <th className="px-3 py-3  border-b text-left cursor-pointer">
               <p className="flex items-center gap-3">
                 <input type="checkbox" className="form-checkbox h-4 w-4" />
                 Order
               </p>
             </th>
-            <th className="px-3 py-3 text-left border">Date</th>
-            <th className="px-3 py-3 text-left border">Price</th>
-            <th className="px-3 py-3 text-left border">Items</th>
-            <th className="px-3 py-3 text-left border">Payment</th>
-            <th className="px-3 py-3 text-left border">Status</th>
+            <th className="px-3 py-3 text-left border-l">Date</th>
+            <th className="px-3 py-3 text-left border-l">Price</th>
+            <th className="px-3 py-3 text-left border-l">Items</th>
+            <th className="px-3 py-3 text-left border-l">Payment</th>
+            <th className="px-3 py-3 text-left border-l">Status</th>
           </tr>
         </thead>
         <tbody>
@@ -55,7 +55,7 @@ export const OrdersTable = ({
                 state: { status: order.status, status_name: order.status_name }
               })}
             >
-              <td className="px-3 py-3 border-t border-r border-b text-gray-600 text-14">
+              <td className="px-3 py-3 border-t border-r  text-gray-600 text-14">
                 {order.order_number}
               </td>
               <td className="flex items-center gap-2 px-3 py-3 border-t border-r text-gray-600 text-13">
@@ -68,13 +68,13 @@ export const OrdersTable = ({
               <td className="px-3 py-3 border-t border-r text-gray-600 text-14">
                 {order.items_count}
               </td>
-              <td className="px-6 py-3 border-t border-r">
+              <td className="px-3 py-3 border-t border-r w-36">
                 <StatusDisplay 
                   statusName={order.payment_status} 
                   status={order.payment_status === "paid" ? 2 : 1}
                 />
               </td>
-              <td className="px-6 py-3 border-t">
+              <td className="px-3 py-3 border-t w-36">
                 <StatusDisplay status={order.status} statusName={order.status_name} />
               </td>
             </tr>

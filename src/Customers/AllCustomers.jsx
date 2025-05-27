@@ -235,7 +235,7 @@ function AllCustomers() {
                           {customer.email}
                         </p>
                       </td>
-                      <td className="px-3 py-3 border-t text-gray-600 border-r text-14 w-250">
+                      <td className="px-3 py-3 border-t text-gray-600 border-r text-14 w-180">
                         <div className="flex items-center gap-2">
                           {customer.phone || "N/A"}
                           {customer.phone && (
@@ -259,13 +259,13 @@ function AllCustomers() {
                           )}
                         </div>
                       </td>
-                      <td className="px-3 py-3 border-t text-gray-500 border-r text-13 w-250">
+                      <td className="px-3 py-3 border-t text-gray-500 border-r text-13 w-36">
                         <p className="flex items-center gap-2">
                           <IoCalendarNumberOutline color="#69ABB5" size={17} />
                           {customer.joining_date || "N/A"}
                         </p>
                       </td>
-                      <td className="px-3 py-3 border-t text-gray-600 border-r text-15 w-250">
+                      <td className="px-3 py-3 border-t text-gray-600 border-r text-15 w-36">
                         {customer.spent || 0} $
                       </td>
                       <td className="text-center px-3 py-3">
@@ -297,5 +297,4 @@ function AllCustomers() {
     </div>
   );
 }
-
 export default AllCustomers;
