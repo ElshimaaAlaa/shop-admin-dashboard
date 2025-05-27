@@ -90,6 +90,42 @@
           }
         }
       }
+      .menu-item[data-id="orders"] {
+        .menu-icon {
+          width: 30px;
+          height: 30px;
+          margin-left: -5px;
+
+          svg {
+            width: 30px;
+            height: 30px;
+          }
+        }
+      }
+      .menu-item[data-id="reports"] {
+        .menu-icon {
+          width: 25px;
+          height: 25px;
+          margin-left: -5px;
+
+          svg {
+            width: 30px;
+            height: 30px;
+          }
+        }
+      }
+      .menu-item[data-id="settings"] {
+        .menu-icon {
+          width: 25px;
+          height: 25px;
+          margin-left: -5px;
+
+          svg {
+            width: 30px;
+            height: 30px;
+          }
+        }
+      }
 
       .menu-icon {
         width: 18px;
@@ -147,7 +183,7 @@
 
         .menu-icon {
           svg {
-            fill: #fff;
+            // fill: #fff;
           }
         }
       }

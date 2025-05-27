@@ -5,7 +5,7 @@ import InventoryStatus from "./InventoryStatus";
 import RevenueChart from "./RevenueChart";
 import SalesChangeChart from "./SalesChangeChart";
 import CompletionRate from "./CompletionRate";
-import { SiSimpleanalytics } from "react-icons/si";
+// import { SiSimpleanalytics } from "react-icons/si";
 import { HiCurrencyDollar } from "react-icons/hi2";
 import { LiaShippingFastSolid } from "react-icons/lia";
 import { HiShoppingBag } from "react-icons/hi2";

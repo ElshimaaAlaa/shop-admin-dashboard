@@ -8,7 +8,6 @@ import Logo from "../../Svgs/logo";
 import Text from "../../Svgs/text";
 import Invoices from "../../Svgs/Invoives";
 import "./sidebar.scss";
-import "./sidebar.scss";
 import Cat from "../../Svgs/Cat";
 import Products from "../../Svgs/product";
 import Orders from "../../Svgs/Orders";
@@ -20,7 +19,7 @@ import Discount from "../../Svgs/Discount";
 const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [selectedItem, setSelectedItem] = useState("");
+  const [selectedItem, setSelectedItem] = useState("dashboard");
   const [openSubmenu, setOpenSubmenu] = useState(null);
   const [isPinned, setIsPinned] = useState(
     localStorage.getItem("sidebarPinned") === "true"
@@ -31,16 +30,49 @@ const Sidebar = () => {
 
   useEffect(() => {
     const path = location.pathname;
-    if (path.includes("/Dashboard/Home")) setSelectedItem("dashboard");
-    else if (path.includes("/Dashboard/Shops")) setSelectedItem("Shops");
-    else if (path.includes("/Dashboard/Users")) setSelectedItem("Users");
-    else if (path.includes("/Dashboard/Plans")) {
-      setSelectedItem("Plans");
-      setOpenSubmenu("Subscriptions");
-    } else if (path.includes("/Dashboard/AllPermissions"))
-      setSelectedItem("Permisions");
-    else if (path.includes("/Dashboard/Support")) setSelectedItem("support");
+    if (
+      path === "/Login" ||
+      path === "/Dashboard" ||
+      path === "/Dashboard/" ||
+      path.includes("/Dashboard/Home-dashboard")
+    ) {
+      setSelectedItem("dashboard");
+      return;
+    }
+
+    if (path.includes("/Dashboard/Home-dashboard"))
+      setSelectedItem("dashboard");
+    else if (path.includes("/Dashboard/categories"))
+      setSelectedItem("categories");
+    else if (path.includes("/Dashboard/products")) setSelectedItem("products");
+    else if (path.includes("/Dashboard/orders")) setSelectedItem("orders");
+    else if (path.includes("/Dashboard/RecivedOrders")) {
+      setSelectedItem("orders-pending");
+      setOpenSubmenu("orders");
+    } else if (path.includes("/Dashboard/RefundRequests")) {
+      setSelectedItem("orders-processing");
+      setOpenSubmenu("orders");
+    } else if (path.includes("/Dashboard/AllInvoices"))
+      setSelectedItem("invoices");
+    else if (path.includes("/Dashboard/AllCustomers"))
+      setSelectedItem("clients");
+    else if (path.includes("/Dashboard/AllDiscounts"))
+      setSelectedItem("promotions");
+    else if (path.includes("/Dashboard/Analytics")) setSelectedItem("reports");
+    else if (path.includes("/Dashboard/ShippingProviders")) {
+      setSelectedItem("shipping-providers");
+      setOpenSubmenu("settings");
+    } else if (path.includes("/Dashboard/PaymentMethods")) {
+      setSelectedItem("payment-methods");
+      setOpenSubmenu("settings");
+    } else if (path.includes("/Dashboard/SupportQuestion")) {
+      setSelectedItem("support-questions");
+      setOpenSubmenu("settings");
+    } else if (path.includes("/Dashboard/support")) setSelectedItem("support");
     else if (path.includes("/Dashboard/Faqs")) setSelectedItem("help");
+    else if (path === "/Dashboard" || path === "/Dashboard/") {
+      setSelectedItem("dashboard");
+    }
   }, [location]);
 
   const togglePin = (e) => {
@@ -78,7 +110,6 @@ const Sidebar = () => {
       id: "categories",
       label: "Categories",
       icon: <Cat />,
-      padding: "3px",
       onclick: () => navigate("categories"),
       path: "categories",
     },
@@ -86,7 +117,6 @@ const Sidebar = () => {
       id: "products",
       label: "Products",
       icon: <Products />,
-      padding: "3px",
       onclick: () => navigate("products"),
       path: "products",
     },
@@ -114,7 +144,6 @@ const Sidebar = () => {
       id: "invoices",
       label: "Invoices",
       icon: <Invoices />,
-      padding: "4px",
       onclick: () => navigate("AllInvoices"),
       path: "AllInvoices",
     },
@@ -122,7 +151,6 @@ const Sidebar = () => {
       id: "clients",
       label: "Customers",
       icon: <Clients />,
-      padding: "3px",
       onclick: () => navigate("AllCustomers"),
       path: "AllCustomers",
     },
@@ -130,7 +158,6 @@ const Sidebar = () => {
       id: "promotions",
       label: "Disc and Promotion",
       icon: <Discount />,
-      padding: "5px",
       onclick: () => navigate("AllDiscounts"),
       path: "AllDiscounts",
     },
@@ -181,7 +208,7 @@ const Sidebar = () => {
       id: "help",
       label: "Help",
       icon: <Help />,
-      padding: "5px",
+      // padding: "5px",
       onclick: () => navigate("Faqs"),
       path: "Faqs",
     },

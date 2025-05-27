@@ -1,11 +1,10 @@
 import { useNavigate } from "react-router-dom";
+import { CiSearch, CiCircleRemove } from "react-icons/ci";
+import { FaRegArrowAltCircleLeft } from "react-icons/fa";
+import { useSearch } from "../../Context/SearchContext";
 import ProfileMenu from "../../Profile/Profile";
-import { CiSearch } from "react-icons/ci";
-import { IoArrowBackCircle } from "react-icons/io5";
-import { useSearch } from "../Search Context/SearchContext";
 
 function Navbar() {
-  // Correct usage with object destructuring
   const { searchQuery, setSearchQuery } = useSearch();
   const navigate = useNavigate();
 
@@ -18,6 +17,11 @@ function Navbar() {
     setSearchQuery("");
   };
 
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    console.log("Search submitted:", searchQuery);
+  };
+
   const goBack = () => {
     navigate(-1);
   };
@@ -25,22 +29,23 @@ function Navbar() {
   return (
     <div className="bg-white shadow-sm">
       <nav className="flex items-center justify-between px-5 py-2 border-b border-gray-200">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-4">
           {/* Back button */}
           <button
             onClick={goBack}
             aria-label="Go back"
-            className=""
+            className="hover:opacity-80 transition-opacity"
           >
-            <IoArrowBackCircle size={44} color="#E0A75E"/>
+            <FaRegArrowAltCircleLeft size={30} color="#E0A75E" />
           </button>
+          
           {/* Search Input */}
-          <div className="relative w-400">
+          <form onSubmit={handleSearchSubmit} className="relative w-[400px]">
             <input
               type="text"
-              placeholder="Search"
-              className="w-full p-2.5 border-1 border-gray-200 rounded-lg focus:outline-none focus:border-primary pl-10 pr-8 placeholder:text-14"
-              value={searchQuery || ""}
+              placeholder="Search something here..."
+              className="w-full p-2.5 border border-gray-200 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary pl-10 pr-8 placeholder:text-sm"
+              value={searchQuery}
               onChange={handleSearchChange}
             />
             <div className="absolute left-3 top-3 text-gray-400">
@@ -48,27 +53,17 @@ function Navbar() {
             </div>
             {searchQuery && (
               <button
+                type="button"
                 onClick={clearSearch}
-                className="absolute right-3 top-2.5 text-gray-400 hover:text-primary"
+                className="absolute right-3 top-3 text-gray-400 hover:text-primary transition-colors"
+                aria-label="Clear search"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                <CiCircleRemove size={22} />
               </button>
             )}
-          </div>
+          </form>
         </div>
+        
         <div className="flex items-center gap-5">
           <ProfileMenu />
         </div>

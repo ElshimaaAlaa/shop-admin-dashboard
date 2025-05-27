@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { PulseLoader } from "react-spinners";
 import AllCategory from "./Categories/All Categories/AllCategory";
@@ -50,7 +50,7 @@ import Analytics from "./Analysis/Analytics";
 import AllInvoices from "./Invoices/AllInvoices";
 import InvoiceDetails from "./Invoices/InvoiceDetails";
 import Dashboard from "./Pages/Dashboard/Dashboard";
-import { SearchProvider } from "./Components/Search Context/SearchContext";
+import { SearchProvider } from "./Context/SearchContext";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -80,7 +80,10 @@ function App() {
           {/* Auth Routes */}
           <Route path="/" element={<Main />} />
           <Route path="/GetDomain" element={<GetDomain />} />
-
+          <Route
+            path="/Dashboard"
+            element={<Navigate to="/Dashboard/Home-dashboard" replace />}
+          />
           {/* Auth */}
           <Route path="/Login" element={<Login />} />
           <Route path="/Login/ForgotPassword" element={<ForgotPassword />} />
