@@ -7,9 +7,22 @@ import axios from "axios";
 import PhoneNum from "../Svgs/PhoneNum";
 import EmailAddress from "../Svgs/EmailAddress";
 import Acc from "../Svgs/Acc";
+import { StatusDisplay } from "./StatusDisplay";
 
 function OrderDetails() {
-  const [orderDetail, setOrderDetails] = useState([]);
+  const [orderDetail, setOrderDetails] = useState({
+    products: [],
+    transactions: [],
+    history: [],
+    user: {},
+    sub_total: 0,
+    shipping: 0,
+    total: 0,
+    balance: 0,
+    refund_price: 0,
+    return_price: 0,
+    paid_amount: 0
+  });
   const { orderId } = useParams();
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
@@ -33,117 +46,176 @@ function OrderDetails() {
           },
         });
         if (response.status === 200) {
-          setOrderDetails(response.data.data);
+          setOrderDetails(prev => ({
+            ...prev,
+            ...response.data.data,
+            transactions: response.data.data.transactions || [],
+            products: response.data.data.products || [],
+            history: response.data.data.history || []
+          }));
           if (!orderStatus) {
             setOrderStatus(response.data.data.status);
             setOrderStatusName(response.data.data.status_name);
           }
-          setIsLoading(false);
         }
       } catch (error) {
         setError(true);
         console.error("API call failed: ", error.message);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchOrderDetails();
   }, [live_shop_domain, orderId, role, orderStatus]);
 
   const icons = [
-    { icon: <PhoneNum /> },
-    { icon: <EmailAddress /> },
-    { icon: <Acc /> },
+    { icon: <PhoneNum />, label: "Phone" },
+    { icon: <EmailAddress />, label: "Email" },
+    { icon: <Acc />, label: "Account" },
   ];
 
-  const StatusDisplay = () => (
-    <p
-      className={`px-2 py-2 rounded-md text-13 ${
-        orderStatus === 1 || orderStatus === 2
-          ? "bg-customOrange-mediumOrange text-primary"
-          : orderStatus === 8 || orderStatusName === "Refunded"
-          ? "bg-red-50 text-red-600"
-          : ""
-      }`}
-    >
-      {orderStatusName || orderDetail.status_name}
-    </p>
-  );
+  // Calculate progress based on order status
+  const getOrderProgress = () => {
+    const statusWeights = {
+      1: 0,  // Pending
+      2: 25, // Processing
+      3: 50, // Shipped
+      4: 75, // In Transit
+      5: 100 // Delivered
+    };
+    return statusWeights[orderStatus] || 0;
+  };
+
+  // Safe number formatting
+  const formatCurrency = (value) => {
+    const num = typeof value === 'number' ? value : parseFloat(value) || 0;
+    return num.toLocaleString('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-center">
+          <p className="text-primary">Loading order details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-center">
+          <p className="text-red-500">Failed to load order details. Please try again.</p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="mt-4 px-4 py-2 bg-primary text-white rounded"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-gray-100 pb-10 mx-5 pt-5">
       <Helmet>
         <title>Orders Details | VERTEX</title>
       </Helmet>
+      
       <section className="bg-white mb-3 p-5 rounded-md flex justify-between items-center">
         <div>
           <p className="text-gray-400 text-13">Menu / Orders / Received Orders / view order</p>
           <h1 className="font-bold text-17 mt-2">Order Details</h1>
         </div>
-        <CancelOrder
-          orderId={orderDetail.id}
-          orderStatus={orderDetail.status}
-        />
+        <CancelOrder orderId={orderDetail.id} orderStatus={orderDetail.status} />
       </section>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
         <div className="lg:col-span-2 space-y-2">
           <section className="border border-gray-200 rounded-md p-4 bg-white">
-            <div className="flex justify-between">
+            <div className="flex justify-between items-center mb-4">
               <h2 className="font-bold text-17">
-                Order ID:
-                <span className="text-14">{orderDetail.order_number}</span>
+                Order ID: <span className="text-14 ms-2">{orderDetail.order_number}</span>
               </h2>
-              <StatusDisplay />
+              <StatusDisplay status={orderStatus} statusName={orderStatusName || orderDetail.status_name} />
             </div>
-            {orderDetail.history?.map((statusItem, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-between mt-5 first:mt-5"
-              >
-                <p className="text-14 flex gap-2 items-center">
-                  <FaCheckCircle
-                    size={20}
-                    color={statusItem.active ? "#E0A75E" : "#D1D5DB"}
-                  />
-                  {statusItem.status_name}
-                </p>
-                <span className="text-gray-400 text-12">
-                  {statusItem.date || "Not available"}
-                </span>
+            
+            {/* Order Progress Bar */}
+            <div className="mb-6">
+              <div className="flex justify-between mb-1 text-xs text-gray-500">
+                <span>Order Status</span>
+                <span>{getOrderProgress()}% Complete</span>
               </div>
-            ))}
-          </section>
-          <section className="border border-gray-200 rounded-md p-4 bg-white">
-            <h2 className="font-bold text-15">Order Details</h2>
-            <div className="flex gap-36 mt-4">
-              <div>
-                <h4 className="text-gray-400 text-15">Item No</h4>
-                <p className="text-14">{orderDetail.items_count}</p>
+              <div className="w-full bg-gray-200 rounded-full h-2.5">
+                <div 
+                  className="bg-primary h-2.5 rounded-full" 
+                  style={{ width: `${getOrderProgress()}%` }}
+                ></div>
               </div>
-              <div>
-                <h4 className="text-gray-400 text-15">Payment</h4>
-                <p
-                  className={`px-2 py-2 rounded-md text-13 mt-1 ${
-                    orderDetail.payment_status === "unpaid"
-                      ? "bg-gray-100 text-gray-400"
-                      : orderDetail.payment_status === "paid"
-                      ? "text-[#28A513] bg-[#E7F6E5]"
-                      : orderDetail.payment_status === "refund"
-                      ? "text-red-600 bg-red-50"
-                      : ""
-                  }`}
-                >
-                  {orderDetail.payment_status}
-                </p>
+              <div className="flex justify-between mt-2 text-xs text-gray-500">
+                {orderDetail.history?.map((statusItem, index) => (
+                  <div 
+                    key={index}
+                    className={`text-center ${statusItem.active ? 'text-primary font-bold' : ''}`}
+                  >
+                    {statusItem.status_name}
+                  </div>
+                ))}
               </div>
             </div>
+            
+            {/* Status Timeline */}
+            <div className="space-y-4">
+              {orderDetail.history?.map((statusItem, index) => (
+                <div key={index} className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <FaCheckCircle 
+                      size={20} 
+                      color={statusItem.active ? "#E0A75E" : "#D1D5DB"} 
+                    />
+                    <p className="text-14">{statusItem.status_name}</p>
+                  </div>
+                  <span className="text-gray-400 text-12">
+                    {statusItem.date || "Pending"}
+                  </span>
+                </div>
+              ))}
+            </div>
           </section>
+
           <section className="border border-gray-200 rounded-md p-4 bg-white">
-            <h2 className="font-bold text-15">List Items</h2>
-            <table className="table mt-4 w-full">
+            <h2 className="font-bold text-16">Order Details</h2>
+            <div className="flex flex-wrap gap-8 md:gap-36 mt-4">
+              <div>
+                <h4 className="text-gray-400 text-14">Item No</h4>
+                <p className="text-14">{orderDetail.items_count || 0}</p>
+              </div>
+              <div>
+                <h4 className="text-gray-400 text-14">Payment</h4>
+                <StatusDisplay 
+                  statusName={orderDetail.payment_status} 
+                  status={orderDetail.payment_status === "paid" ? 2 : 1}
+                />
+              </div>
+            </div>
+          </section>
+
+          <section className="border border-gray-200 rounded-md p-4 bg-white">
+            <h2 className="font-bold text-16">List Items</h2>
+            <table className="table mt-3 w-full">
               <tbody>
                 {orderDetail.products?.map((item) => (
                   <tr key={item.id} className="border-b border-gray-200">
                     <td className="px-3 py-3 w-180 border-t border-l border-r">
                       <div className="flex items-center gap-3">
-                        {item.product.images?.[0]?.src && (
+                        {item.product?.images?.[0]?.src && (
                           <img
                             src={item.product.images[0].src}
                             alt={item.product.name}
@@ -151,21 +223,21 @@ function OrderDetails() {
                           />
                         )}
                         <span className="text-13">
-                          {item.product.name || item.product.name_ar}
+                          {item.product?.name || item.product?.name_ar || "N/A"}
                         </span>
                       </div>
                     </td>
                     <td className="px-3 py-3 w-[214px] border-t border-r text-13">
-                      ${item.product.price?.toFixed(2)}
+                      {formatCurrency(item.product?.price)}
                     </td>
                     <td className="px-3 py-3 w-[214px] border-t border-r text-13">
-                      {item.quantity}
+                      {item.quantity || 0}
                     </td>
                     <td className="px-5 py-3 w-[214px] border-t border-r text-13">
-                      {item.product.colors?.map((color) => (
+                      {item.product?.colors?.map((color) => (
                         <div
                           key={color.id}
-                          className="w-8 h-8 rounded-full -ms-3 inline-block"
+                          className="w-8 h-8 rounded-full -ms-3 inline-block border border-gray-200"
                           style={{ backgroundColor: color.code }}
                           title={color.name}
                         />
@@ -179,106 +251,136 @@ function OrderDetails() {
               <div className="flex items-center justify-between">
                 <p className="text-15">Subtotal</p>
                 <p className="text-gray-400 text-15">
-                  $ {orderDetail.sub_total || 0}
+                  {formatCurrency(orderDetail.sub_total)}
                 </p>
               </div>
               <div className="flex items-center justify-between">
                 <p className="text-15">Shipping</p>
                 <p className="text-gray-400 text-15">
-                  $ {orderDetail.shipping || 0}
+                  {formatCurrency(orderDetail.shipping)}
                 </p>
               </div>
-              <div className="flex items-center justify-between border-t-2">
-                <p className="text-15 mt-5">Total</p>
-                <p className="text-gray-400 text-15">
-                  $ {orderDetail.total || 0}
+              <div className="flex items-center justify-between border-t-2 pt-3">
+                <p className="text-15 font-bold">Total</p>
+                <p className="text-gray-400 text-15 font-bold">
+                  {formatCurrency(orderDetail.total)}
                 </p>
               </div>
             </section>
           </section>
+
           <section className="border border-gray-200 rounded-md p-4 bg-white">
-            <h2 className="font-bold text-15">Transactions</h2>
-            <div className="mt-2">
+            <h2 className="font-bold text-16">Transactions</h2>
+            <div>
               <p className="text-16 mt-6">Payment</p>
               <div className="space-y-2">
-                {orderDetail.transactions?.map((method, index) => (
-                  <div
-                    key={`transaction-${index}`}
-                    className="flex justify-between"
-                  >
-                    <span className="text-gray-400 text-15">
-                      {method.payment_method || "N/A"}
-                    </span>
-                    <span className="text-gray-600">
-                      $ {method.amount || 0}
-                    </span>
-                  </div>
-                ))}
+                {orderDetail.transactions?.map((method, index) => {
+                  const amount = typeof method.amount === 'number' 
+                    ? method.amount 
+                    : parseFloat(method.amount) || 0;
+                  const refundAmount = typeof method.refund_amount === 'number'
+                    ? method.refund_amount
+                    : parseFloat(method.refund_amount) || 0;
+
+                  return (
+                    <div key={`transaction-${index}`}>
+                      <div className="flex justify-between border-b-2 pb-4 border-gray-200">
+                        <span className="text-gray-400 text-13 mt-1">
+                          {method.payment_method || "N/A"}
+                        </span>
+                        <span className="text-gray-600">
+                          {formatCurrency(amount)}
+                        </span>
+                      </div>
+                      {refundAmount > 0 && (
+                        <div>
+                          <div className="flex justify-between items-center mt-4">
+                            <p className="text-16">Refund</p>
+                            <p className="text-red-600">-{formatCurrency(refundAmount)}</p>
+                          </div>
+                          <p className="text-13 text-gray-400 mt-1">To account balance</p>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </section>
         </div>
+
         <div className="space-y-5">
-          <div className="grid grid-cols-1 gap-2">
-            <section className="border border-gray-200 rounded-md p-4 bg-white">
-              <h2 className="font-bold text-15">Shipping Address</h2>
-              <p className="text-12 mt-2">
-                {orderDetail.shipping_address || "Not Available"}
-              </p>
-            </section>
-            <section className="border border-gray-200 rounded-md p-4 bg-white">
-              <h2 className="font-bold text-15 mb-4">Customer Details</h2>
-              <div className="flex flex-col gap-3">
-                <div className="flex items-center gap-2 text-14 font-bold underline">
-                  <span className="text-gray-500">{icons[2]?.icon}</span>
-                  <span>{orderDetail.user?.name || "No name provided"}</span>
-                </div>
-                <div className="flex items-center gap-2 text-14 font-bold underline">
-                  <span className="text-gray-500">{icons[1]?.icon}</span>
-                  <span>{orderDetail.user?.email || "No email provided"}</span>
-                </div>
-                <div className="flex items-center gap-2 text-14 font-bold underline">
-                  <span className="text-gray-500">{icons[0]?.icon}</span>
-                  <span>{orderDetail.user?.phone || "No phone provided"}</span>
-                </div>
+          <section className="border border-gray-200 rounded-md p-4 bg-white">
+            <h2 className="font-bold text-16">Shipping Address</h2>
+            <p className="text-12 mt-2">
+              {orderDetail.shipping_address || "Not Available"}
+            </p>
+          </section>
+
+          <section className="border border-gray-200 rounded-md p-4 bg-white">
+            <h2 className="font-bold text-16 mb-4">Customer Details</h2>
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-2 text-14">
+                <span className="text-gray-500">{icons[2].icon}</span>
+                <span>{orderDetail.user?.name || "No name provided"}</span>
               </div>
-            </section>
-            <section className="border border-gray-200 rounded-md p-4 bg-white">
-              <h2 className="font-bold text-15 mb-3">Balance</h2>
-              <div className="bg-gray-50 border border-gray-200 rounded-md p-3">
-                <div className="flex justify-between items-center">
-                  <p className="text-14">Order Total</p>
-                  <p className="text-gray-400 text-14">0</p>
-                </div>
-                <div className="flex justify-between items-center mt-5">
-                  <p className="text-14">Return Total</p>
-                  <p className="text-gray-400 text-14">0</p>
-                </div>
-                <hr className="border-gray-300 my-2" />
-                <div className="flex justify-between items-center mt-5">
-                  <p className="text-14">Paid by customer</p>
-                  <p className="text-gray-400 text-14">0</p>
-                </div>
-                <div className="flex items-center justify-between">
-                  <p className="text-14 mt-5">Refunded</p>
-                  <p className="text-gray-400 text-14">0</p>
-                </div>
-                <hr className="border-gray-300 my-2" />
-                <div className="mt-5 flex justify-between">
-                  <div>
-                    <p>Balance</p>
-                    <span className="text-gray-500 text-13">
-                      (customer owes you)
-                    </span>
-                  </div>
-                  <p className="text-gray-400 text-15">0</p>
-                </div>
+              <div className="flex items-center gap-2 text-14">
+                <span className="text-gray-500">{icons[1].icon}</span>
+                <span>{orderDetail.user?.email || "No email provided"}</span>
               </div>
-            </section>
-          </div>
+              <div className="flex items-center gap-2 text-14">
+                <span className="text-gray-500">{icons[0].icon}</span>
+                <span>{orderDetail.user?.phone || "No phone provided"}</span>
+              </div>
+            </div>
+          </section>
+
+          <section className="border border-gray-200 rounded-md p-4 bg-white">
+            <h2 className="font-bold text-16 mb-3">Balance</h2>
+            <div className="bg-gray-50 border border-gray-200 rounded-md p-3">
+              <div className="flex justify-between items-center">
+                <p className="text-14">Order Total</p>
+                <p className="text-gray-400 text-14">
+                  {formatCurrency(orderDetail.total)}
+                </p>
+              </div>
+              <div className="flex justify-between items-center mt-3">
+                <p className="text-14">Return Total</p>
+                <p className="text-gray-400 text-14">
+                  {formatCurrency(orderDetail.return_price)}
+                </p>
+              </div>
+              <hr className="border-gray-300 my-2" />
+              <div className="flex justify-between items-center mt-3">
+                <p className="text-14">Paid by customer</p>
+                <p className="text-gray-400 text-14">
+                  {formatCurrency(orderDetail.paid_amount)}
+                </p>
+              </div>
+              <div className="flex items-center justify-between mt-3">
+                <p className="text-14">Refunded</p>
+                <p className="text-gray-400 text-14">
+                  {formatCurrency(orderDetail.refund_price)}
+                </p>
+              </div>
+              <hr className="border-gray-300 my-2" />
+              <div className="mt-3 flex justify-between">
+                <div>
+                  <p className="text-14">Balance</p>
+                  <span className="text-gray-500 text-13">
+                    (customer owes you)
+                  </span>
+                </div>
+                <p className="text-gray-400 text-15">
+                  {formatCurrency(orderDetail.balance)}
+                </p>
+              </div>
+            </div>
+          </section>
         </div>
       </div>
     </div>
   );
 }
+
 export default OrderDetails;

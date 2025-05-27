@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
@@ -7,7 +7,8 @@ import { ClipLoader } from "react-spinners";
 import { handleUpdatePassword } from "../../ApiServices/UpdatePassword";
 import { useNavigate } from "react-router-dom";
 import PasswordInput from "../../Components/Password Input/PasswordInput";
-import { FaCircleCheck } from "react-icons/fa6";
+import MainBtn from "../../Components/Main Button/MainBtn";
+import { IoMdClose } from "react-icons/io";
 
 function UpdatePassword() {
   const [showModal, setShowModal] = useState(false);
@@ -72,8 +73,14 @@ function UpdatePassword() {
         Update Password
       </button>
       <SuccessModal isOpen={showModal} onClose={() => setShowModal(false)}>
-        <div className="w-350">
-          <h1 className="text-primary text-[17px] font-bold ps-3 pt-5">
+        <button
+          className="text-white bg-red-600 p-2  absolute top-2 right-2 rounded-md"
+          onClick={()=>setShowModal(false)}
+        >
+          <IoMdClose size={20} />
+        </button>
+        <div className="w-300 ">
+          <h1 className="text-primary text-17 font-bold ps-3 pt-4 pb-2">
             Update Password
           </h1>
           <Formik
@@ -101,27 +108,8 @@ function UpdatePassword() {
               {error && (
                 <div className="text-red-600 text-sm mt-3">{error}</div>
               )}
-              <div className="mt-5 flex gap-3">
-                <button
-                  type="button"
-                  className="bg-gray-100 text-gray-400 p-3 rounded-md font-bold w-full"
-                  onClick={() => setShowModal(false)}
-                >
-                  Cancel
-                </button>
-                <button
-                  className="flex items-center justify-center gap-2 w-full bg-primary text-white rounded-md font-bold"
-                  type="submit"
-                >
-                  {isLoading ? (
-                    <ClipLoader color="#fff" size={22} />
-                  ) : (
-                    <>
-                      <FaCircleCheck />
-                      Save
-                    </>
-                  )}
-                </button>
+              <div className="mt-3">
+                <MainBtn text={isLoading ? <ClipLoader /> : "Save"} />
               </div>
             </Form>
           </Formik>

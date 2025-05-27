@@ -1,5 +1,5 @@
 import { Form, Formik } from "formik";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Helmet } from "react-helmet";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
@@ -128,12 +128,13 @@ function EditInfo() {
                 )}
               </div>
               <div className="border p-3 rounded-md bg-gray-50 w-full">
-                <div className="flex flex-col md:flex-row gap-4">
+                <div className="flex flex-col md:flex-row gap-2">
                   <InputField placeholder="Name" name="name" />
                   <InputField placeholder="Email" name="email" />
                 </div>
-                <div className="mt-4">
+                <div className="mt-3 flex flex-col md:flex-row gap-2">
                   <InputField placeholder="Phone" name="phone" />
+                  <div className="w-full"></div>
                 </div>
               </div>
               <div className="mt-5 flex items-center justify-end gap-3">

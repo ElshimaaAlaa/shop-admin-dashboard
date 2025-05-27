@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import DeleteAccount from "../Personal Information/DeleteAccount";
 import { useNavigate, useLocation } from "react-router-dom";
 import StoreTheme from "../../Svgs/StoreTheme";

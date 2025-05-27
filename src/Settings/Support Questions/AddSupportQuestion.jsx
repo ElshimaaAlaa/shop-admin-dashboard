@@ -6,6 +6,7 @@ import { Form, Formik, Field } from "formik";
 import InputField from "../../Components/InputFields/InputField";
 import { FaCircleCheck } from "react-icons/fa6";
 import { AddNewSupportQuestion } from "../../ApiServices/AddSupportQuestion";
+import { IoMdClose } from "react-icons/io";
 
 function AddSupportQuestion({ isOpen, onClose, onSuccess }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -24,7 +25,10 @@ function AddSupportQuestion({ isOpen, onClose, onSuccess }) {
     setIsLoading(true);
     setError(null);
     try {
-      const newQuestion = await AddNewSupportQuestion(values.question, values.answer);
+      const newQuestion = await AddNewSupportQuestion(
+        values.question,
+        values.answer
+      );
       if (onSuccess) onSuccess(newQuestion);
       onClose();
     } catch (error) {
@@ -38,7 +42,10 @@ function AddSupportQuestion({ isOpen, onClose, onSuccess }) {
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay rounded">
+    <div className="modal-overlay rounded relative">
+      <button className="text-white bg-red-600 p-2  absolute top-2 right-2 rounded-md" onClick={onClose}>
+        <IoMdClose size={20} />
+      </button>
       <div className="modalContent modal-width rounded" id="modal-width">
         <div className="modal-content flex flex-col justify-center items-center">
           <img

@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import { Form, Formik, Field } from "formik";
 import { AddNewRequest } from "../../ApiServices/AddRequest";
 import { IoMdAddCircleOutline } from "react-icons/io";
+import { IoMdClose } from "react-icons/io";
 
 function AddRequest({ isOpen, onClose, onSuccess, questionId }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -36,6 +37,12 @@ function AddRequest({ isOpen, onClose, onSuccess, questionId }) {
 
   return (
     <div className="modal-overlay rounded">
+      <button
+        className="text-white bg-red-600 p-2  absolute top-2 right-2 rounded-md"
+        onClick={onClose}
+      >
+        <IoMdClose size={20} />
+      </button>
       <div className="modalContent modal-width rounded" id="modal-width">
         <div className="modal-content flex flex-col justify-center items-center">
           <img
