@@ -16,14 +16,21 @@ const StoreSetupWizard = () => {
   const [formData, setFormData] = useState({});
 
   const initialValues = {
+    // Step 1: Theme
     theme_primary_color: "",
     theme_secondary_color: "",
     image: null,
+    
+    // Step 2: Profile
     store_name: "",
     address: "",
     bio: "",
     banners: [],
+    
+    // Step 3: Pricing
     plan_id: null,
+    
+    // Step 4: Payment
     name: "",
     email: "",
     phone: "",
@@ -35,6 +42,7 @@ const StoreSetupWizard = () => {
   };
 
   const validationSchema = Yup.object().shape({
+    // Step 1 validation
     theme_primary_color: Yup.string()
       .required("Primary color is required")
       .matches(/^#[0-9A-F]{6}$/i, "Invalid hex color format"),
@@ -47,6 +55,8 @@ const StoreSetupWizard = () => {
         (value) => value && value.size <= 5 * 1024 * 1024)
       .test("fileType", "Unsupported format (JPEG/PNG only)", 
         (value) => value && ["image/jpeg", "image/png"].includes(value.type)),
+    
+    // Step 2 validation
     store_name: Yup.string()
       .required("Store name is required")
       .min(3, "Store name must be at least 3 characters"),
@@ -92,17 +102,13 @@ const StoreSetupWizard = () => {
       } else if (step === 3) {
         updateFormData("pricing", {
           plan_id: values.plan_id,
-          plan_name: values.plan_name,
-          plan_price: values.plan_price,
-          plan_period: values.plan_period,
-          plan_description: values.plan_description,
         });
       }
       setStep(step + 1);
       return;
     }
 
-    // Final submission (step 4 handled by PaymentInfo)
+    // Final submission (step 4)
     setIsLoading(true);
     setSubmitError(null);
     setSubmitSuccess(false);
@@ -110,13 +116,32 @@ const StoreSetupWizard = () => {
     try {
       const formDataToSend = new FormData();
 
-      // Append all sections
-      ['theme', 'profile', 'pricing', 'payment_info'].forEach(section => {
-        if (formData[section]) {
-          Object.entries(formData[section]).forEach(([key, value]) => {
+      // Prepare complete data including payment info
+      const completeData = {
+        ...formData,
+        payment_info: {
+          name: values.name,
+          email: values.email,
+          phone: values.phone,
+          payment_method: values.payment_method,
+          card_holder_name: values.card_holder_name,
+          card_number: values.card_number,
+          expiration_date: values.expiration_date,
+          card_cvv: values.card_cvv,
+        }
+      };
+
+      // Convert to FormData properly
+      Object.entries(completeData).forEach(([section, data]) => {
+        if (data && typeof data === 'object') {
+          Object.entries(data).forEach(([key, value]) => {
             if (Array.isArray(value)) {
               value.forEach((item, index) => {
-                formDataToSend.append(`${section}[${key}][${index}]`, item);
+                if (item instanceof File) {
+                  formDataToSend.append(`${section}[${key}][${index}]`, item);
+                } else {
+                  formDataToSend.append(`${section}[${key}][${index}]`, item);
+                }
               });
             } else if (value instanceof File) {
               formDataToSend.append(`${section}_${key}`, value);
@@ -126,8 +151,6 @@ const StoreSetupWizard = () => {
           });
         }
       });
-
-      console.log("Final submission data:", Object.fromEntries(formDataToSend.entries()));
 
       const response = await setUpStore(formDataToSend);
       console.log("API response:", response);
@@ -200,7 +223,7 @@ const StoreSetupWizard = () => {
               <PaymentInfo
                 formData={formData}
                 updateFormData={updateFormData}
-                onSubmit={() => handleSubmit(values, {})}
+                onSubmit={(values) => handleSubmit(values, {})}
                 onBack={() => setStep(3)}
               />
             )}

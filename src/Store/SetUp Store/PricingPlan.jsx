@@ -215,7 +215,7 @@ const PricingPlan = ({
           </button>
           <button
             onClick={handleNext}
-            className="flex items-center justify-center gap-3 w-32 bg-primary text-white px-6 py-2 rounded-md hover:bg-primary-dark transition-colors"
+            className="flex items-center justify-center gap-3 w-32 bg-primary text-white px-6 py-3 rounded-md hover:bg-primary-dark transition-colors"
             disabled={isLoading}
           >
             {isLoading ? (

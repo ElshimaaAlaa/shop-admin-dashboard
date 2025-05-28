@@ -169,7 +169,7 @@ function ThemeStore() {
               <h3 className="text-16 font-semibold mb-3 px-6">
                 Enter Your Store Theme Colors
               </h3>
-              <div className="flex gap-3 mb-6 px-6">
+              <div className="flex gap-2 mb-6 px-6">
                 <Field
                   name="theme_primary_color"
                   placeholder="Primary Color"

@@ -112,7 +112,7 @@ const StoreProfile = () => {
               <h3 className="text-16 font-semibold mb-3">
                 Fill The Store Profile
               </h3>
-              <div className="flex items-center gap-3 mb-3">
+              <div className="flex items-center gap-2 mb-3">
                 <InputField name="store_name" placeholder="Store Name" />
                 <InputField name="address" placeholder="Location" />
               </div>
@@ -120,7 +120,7 @@ const StoreProfile = () => {
                 as="textarea"
                 name="bio"
                 placeholder="Bio"
-                className={`w-full p-3 border-2 rounded-md outline-none transition-all duration-200 placeholder:text-14 placeholder:text-gray-400 focus:border-primary`}
+                className={`w-full p-3 h-28 border-2 rounded-md outline-none transition-all duration-200 placeholder:text-14 placeholder:text-gray-400 focus:border-primary`}
               />
               <div className="flex justify-between mt-5">
                 <button

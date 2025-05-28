@@ -169,7 +169,7 @@ function PaymentInfo({
                   <InputField name="name" placeholder="Name" />
                   <InputField name="email" placeholder="Email" type="email" />
                 </div>
-                <div className="flex gap-3 mt-3">
+                <div className="flex gap-2 mt-3">
                   <InputField
                     name="phone"
                     placeholder="Phone Number"
