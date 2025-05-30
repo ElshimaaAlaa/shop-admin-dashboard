@@ -9,8 +9,8 @@ import PhoneNum from "../../Svgs/PhoneNum";
 import EmailAddress from "../../Svgs/EmailAddress";
 import Location from "../../Svgs/Location";
 import { sendSupport } from "../../ApiServices/Support";
-import { settings } from "../../ApiServices/Settings";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
+import { getGeneralSettings } from "../../ApiServices/GeneralSettings";
 
 function ContactUsSection() {
   const [isLoading, setIsLoading] = useState(false);
@@ -76,7 +76,7 @@ function ContactUsSection() {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const settingsData = await settings();
+        const settingsData = await getGeneralSettings();
         setdata(settingsData);
       } catch (error) {
         console.error(error);

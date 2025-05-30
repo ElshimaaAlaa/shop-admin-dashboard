@@ -3,21 +3,49 @@ import Facebook from "../../Svgs/facebook";
 import Instegram from "../../Svgs/instegram";
 import WhatsApp from "../../Svgs/WhatsApp";
 import { FaXTwitter } from "react-icons/fa6";
-import { settings } from "../../ApiServices/Settings";
+import { getGeneralSettings } from "../../ApiServices/GeneralSettings";
 
 function Footer() {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState({
+    email: "",
+    phone: "",
+    logo: null,
+    social_links: {
+      facebook: "",
+      twitter: "",
+      instagram: "",
+      linkedin: "",
+    },
+  });
+
   useEffect(() => {
     const fetchSettingData = async () => {
       try {
-        const settingsData = await settings();
-        setData(settingsData);
+        const settingsData = await getGeneralSettings();
+        if (settingsData) {
+          setData(
+            settingsData || {
+              email: "",
+              phone: "",
+              logo: null,
+              social_links: {
+                facebook: "",
+                twitter: "",
+                instagram: "",
+                linkedin: "",
+              },
+            }
+          );
+        }
       } catch (error) {
         console.error(error);
       }
     };
     fetchSettingData();
   }, []);
+
+  const { email, phone, logo, social_links } = data;
+
   return (
     <footer className="bg-black text-white ps-5 pe-5 lg:ps-20 lg:pe-20 pt-10 pb-10 ">
       {/* footer top items */}
@@ -25,7 +53,7 @@ function Footer() {
         {/* Logo Section */}
         <div className="mb-2 lg:mb-0">
           <img
-            src="/assets/svgs/Footer logo.svg"
+            src={logo || "/assets/svgs/Footer logo.svg"}
             alt="footer logo"
             className="h-10"
           />
@@ -34,7 +62,7 @@ function Footer() {
         <div className="flex flex-col items-center gap-4 md:flex-row lg:flex-row lg:-10">
           {/* Phone Section */}
           <div className="flex items-center gap-2">
-            <p className="text-sm md:text-13">{data.phone || "not provided"}</p>
+            <p className="text-sm md:text-13">{phone || "not provided"}</p>
             <img
               src="/assets/images/mdi_phone-outline.png"
               alt="phone"
@@ -43,8 +71,8 @@ function Footer() {
           </div>
           {/* Email Section */}
           <div className="flex items-center gap-2">
-            <a href="/" target="_blank" className="text-sm md:text-13 ">
-            {data.email || "not provided"}
+            <a href={`mailto:${email}`} className="text-sm md:text-13">
+              {email || "not provided"}
             </a>
             <img
               src="/assets/images/email.png"
@@ -62,16 +90,22 @@ function Footer() {
         </div>
         {/* social media */}
         <div className="flex gap-2 mt-5 lg:mt-0 md:mt-0">
-          <a href="/" target="_blank" className="mt-1.5">
+          {/* {social_links?.twitter && ( */}
+          <a
+            href={social_links.twitter}
+            target="_blank"
+            className="mt-1.5"
+            rel="noreferrer"
+          >
             <FaXTwitter size={23} />
           </a>
-          <a href="/" target="_blank">
+          <a href={social_links.WhatsApp} target="_blank" rel="noreferrer">
             <WhatsApp />
           </a>
-          <a href="/" target="_blank">
+          <a href={social_links.facebook} target="_blank" rel="noreferrer">
             <Facebook />
           </a>
-          <a href="/" target="_blank">
+          <a href={social_links.instagram} target="_blank" rel="noreferrer">
             <Instegram />
           </a>
         </div>
@@ -79,4 +113,5 @@ function Footer() {
     </footer>
   );
 }
+
 export default Footer;

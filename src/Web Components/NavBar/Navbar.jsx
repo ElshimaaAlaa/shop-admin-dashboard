@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import HamburgerMenu from "./HamburgerMenu";
 import DesktopButtons from "./DesktopButtons";
 import { useNavigate } from "react-router-dom";
-import { settings } from "../../ApiServices/Settings";
+import { getGeneralSettings } from "../../ApiServices/GeneralSettings";
 function Navbar() {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const settingsData = await settings();
+        const settingsData = await getGeneralSettings();
         setData(settingsData);
       } catch (error) {
         console.error(error);
