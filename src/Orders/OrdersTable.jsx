@@ -13,17 +13,27 @@ export const OrdersTable = ({
   const navigate = useNavigate();
 
   if (error) {
-    return <div className="text-red-500 text-center mt-10">Failed to fetch data. Please try again.</div>;
+    return (
+      <div className="text-red-500 text-center mt-10">
+        Failed to fetch data. Please try again.
+      </div>
+    );
   }
 
   if (isLoading) {
-    return <div className="text-gray-400 text-center mt-10"><ClipLoader color="#E0A75E" /></div>;
+    return (
+      <div className="text-gray-400 text-center mt-10">
+        <ClipLoader color="#E0A75E" />
+      </div>
+    );
   }
 
   if (filteredOrders.length === 0) {
     return (
       <div className="text-gray-400 text-center mt-10">
-        {debouncedSearchQuery ? "No orders match your search." : "No orders found."}
+        {debouncedSearchQuery
+          ? "No orders match your search."
+          : "No orders found."}
       </div>
     );
   }
@@ -51,12 +61,20 @@ export const OrdersTable = ({
             <tr
               key={order.id}
               className="hover:bg-gray-50 cursor-pointer"
-              onClick={() => navigate(`/Dashboard/RecivedOrders/${order.id}`, {
-                state: { status: order.status, status_name: order.status_name }
-              })}
+              onClick={() =>
+                navigate(`/Dashboard/RecivedOrders/${order.id}`, {
+                  state: {
+                    status: order.status,
+                    status_name: order.status_name,
+                  },
+                })
+              }
             >
               <td className="px-3 py-3 border-t border-r  text-gray-600 text-14">
-                {order.order_number}
+                <p className="flex items-center gap-3">
+                  <input type="checkbox" className="form-checkbox h-4 w-4" />
+                  {order.order_number}
+                </p>
               </td>
               <td className="flex items-center gap-2 px-3 py-3 border-t border-r text-gray-600 text-13">
                 <IoCalendarNumberOutline color="#69ABB5" size={15} />
@@ -69,13 +87,16 @@ export const OrdersTable = ({
                 {order.items_count}
               </td>
               <td className="px-3 py-3 border-t border-r w-36">
-                <StatusDisplay 
-                  statusName={order.payment_status} 
+                <StatusDisplay
+                  statusName={order.payment_status}
                   status={order.payment_status === "paid" ? 2 : 1}
                 />
               </td>
               <td className="px-3 py-3 border-t w-36">
-                <StatusDisplay status={order.status} statusName={order.status_name} />
+                <StatusDisplay
+                  status={order.status}
+                  statusName={order.status_name}
+                />
               </td>
             </tr>
           ))}

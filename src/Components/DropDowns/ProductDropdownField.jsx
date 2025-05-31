@@ -1,4 +1,3 @@
-import React from "react";
 import PropTypes from "prop-types";
 import CustomDropdown from "./CustomDropdown";
 
@@ -24,7 +23,7 @@ const ProductDropdownField = ({ field, form, products, ...props }) => {
       placeholder="Select product"
       touched={touched}
       {...props}
-      className="text-14 bg-white text-gray-400 rounded-md"
+      className="text-14 bg-white text-gray-400 h-12 rounded-lg"
     />
   );
 };

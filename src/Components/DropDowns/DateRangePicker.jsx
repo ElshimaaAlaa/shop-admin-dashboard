@@ -154,7 +154,7 @@ const DateRangePicker = ({
           <div className="relative">
             <input
               type="text"
-              className={`w-full text-14 h-12 p-2 border-2 rounded-md outline-none ${
+              className={`w-full text-14 h-12 p-2 border-2 rounded-lg outline-none ${
                 startError && startTouched
                   ? "border-red-500"
                   : "border-gray-200"
@@ -174,7 +174,7 @@ const DateRangePicker = ({
           <div className="relative">
             <input
               type="text"
-              className={`w-full text-14 h-12 p-2 border-2 rounded-md outline-none ${
+              className={`w-full text-14 h-12 p-2 border-2 rounded-lg outline-none ${
                 endError && endTouched ? "border-red-500" : "border-gray-200"
               } focus:border-primary`}
               placeholder="End date"

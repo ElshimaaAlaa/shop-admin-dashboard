@@ -44,11 +44,11 @@ export const TagsInput = ({ setFieldValue, values }) => {
     <div className="w-full">
       {/* English Tags Input */}
       <div className="mt-3">
-        <div className="flex flex-grow h-14 gap-2 bg-transparent outline-none border-2 border-gray-200 rounded-md p-2 focus-within:border-primary">
+        <div className="flex flex-grow h-12 gap-2 bg-transparent outline-none border-2 border-gray-200 rounded-md p-2 focus-within:border-primary">
           {values.tags.en.map((tag, index) => (
             <div
               key={index}
-              className="bg-customOrange-mediumOrange rounded-md px-3 py-1 flex items-center justify-between gap-2"
+              className="bg-customOrange-mediumOrange rounded-lg px-3 py-1 flex items-center justify-between gap-2"
             >
               <span className="text-15 text-primary mt-1">{tag}</span>
               <button
@@ -72,11 +72,11 @@ export const TagsInput = ({ setFieldValue, values }) => {
       </div>
       {/* Arabic Tags Input */}
       <div className="mt-3">
-        <div className="flex flex-grow h-14 gap-2 bg-transparent outline-none border-2 border-gray-200 rounded-md p-2 focus-within:border-primary">
+        <div className="flex flex-grow h-12 gap-2 bg-transparent outline-none border-2 border-gray-200 rounded-md p-2 focus-within:border-primary">
           {values.tags.ar.map((tag, index) => (
             <div
               key={index}
-              className="bg-customOrange-mediumOrange rounded-md px-3 py-1 flex items-center justify-between gap-2"
+              className="bg-customOrange-mediumOrange rounded-lg px-3 py-1 flex items-center justify-between gap-2"
             >
               <span className="text-15 text-primary mt-1">{tag}</span>
               <button

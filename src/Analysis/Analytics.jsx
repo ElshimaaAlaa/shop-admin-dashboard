@@ -5,7 +5,7 @@ import {
   FaMagnifyingGlassDollar,
   FaMoneyBillWave,
 } from "react-icons/fa6";
-import { ClipLoader } from "react-spinners";
+// import { ClipLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
 import MonthlyTrendChart from "./MonthlyTrendChart";
 import StatisticsCard from "../Pages/Dashboard/ReportItems";
@@ -24,7 +24,7 @@ function Analytics() {
     },
     popular_products: [],
   });
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -44,7 +44,7 @@ function Analytics() {
         setError(error.message);
         console.error("Analytics data fetch error:", error);
       } finally {
-        setIsLoading(false);
+        // setIsLoading(false);
       }
     };
     getAnalyticsData();
@@ -75,13 +75,13 @@ function Analytics() {
     analyticsData.monthly_income.some((item) => parseFloat(item.income) > 0) ||
     analyticsData.monthly_profit.some((item) => parseFloat(item.profit) > 0);
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center min-h-[89vh]">
-        <ClipLoader color="#E0A75E" size={50} />
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="flex justify-center items-center min-h-[89vh]">
+  //       <ClipLoader color="#E0A75E" size={50} />
+  //     </div>
+  //   );
+  // }
 
   if (error) {
     return (

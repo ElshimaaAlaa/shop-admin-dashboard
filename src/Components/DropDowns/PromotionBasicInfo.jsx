@@ -39,11 +39,11 @@ const PromotionBasicInfo = ({
 
             setFieldValue("items", newItems);
           }}
-          className="w-full h-12 p-2 border-2 rounded-md outline-none focus:border-primary"
+          className="w-full h-12 p-2 border-2 rounded-lg outline-none focus:border-primary"
         />
       </div>
 
-      <div className="bg-customOrange-mediumOrange rounded-md p-4 mb-5 mt-3">
+      <div className="bg-customOrange-mediumOrange rounded-lg p-4 mb-5 mt-3">
         <FieldArray name="items">
           {({ remove }) => (
             <div className="space-y-4">

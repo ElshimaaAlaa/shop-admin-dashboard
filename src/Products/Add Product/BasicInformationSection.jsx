@@ -147,7 +147,7 @@ const InputField = ({ field, form, ...props }) => {
       <input
         {...field}
         {...props}
-        className={`w-full h-12 p-3 border-2 bg-transparent rounded-md outline-none placeholder:text-14 ${
+        className={`w-full h-12 p-3 border-2 bg-transparent rounded-lg outline-none placeholder:text-14 ${
           touched[name] && errors[name] ? "border-red-500" : "border-gray-200"
         } focus:border-2 focus:border-primary`}
       />
@@ -202,7 +202,7 @@ const BasicInformationSection = ({
         <Field name="gender" component={GenderField} />
       </div>
       <div className="flex gap-2 mt-3 mb-3">
-        <div className="relative flex w-full items-center bg-transparent rounded-md focus-within:border-primary">
+        <div className="relative flex w-full items-center bg-transparent rounded-lg focus-within:border-primary">
           <Field
             name="return_percentage"
             component={InputField}
@@ -216,7 +216,7 @@ const BasicInformationSection = ({
       </div>
       <div className="mt-3 relative" ref={tagsDropdownRef}>
         <div
-          className={`w-full min-h-14 p-3 border-2 bg-transparent rounded-md outline-none placeholder:text-14 focus:border-2 focus:border-primary ${
+          className={`w-full min-h-12 p-3 border-2 bg-transparent rounded-lg outline-none placeholder:text-14 focus:border-2 focus:border-primary ${
             errors.tags_ids && touched.tags_ids
               ? "border-red-500"
               : "border-gray-200"
@@ -273,7 +273,7 @@ const BasicInformationSection = ({
         {isTagsDropdownOpen && (
           <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-auto">
             {selectedCategoryTags.length === 0 ? (
-              <div className="px-4 py-2 text-gray-400">No tags available</div>
+              <div className="px-4 py-2 text-gray-600 text-13">No tags available</div>
             ) : (
               selectedCategoryTags.map((tag, index) => (
                 <label
@@ -308,7 +308,7 @@ const BasicInformationSection = ({
         as="textarea"
         placeholder="Description"
         name="description"
-        className="w-full p-3 border-2 h-20 mt-3 bg-transparent border-gray-200 rounded-lg outline-none placeholder:text-14 focus:border-2 focus:border-primary"
+        className="w-full p-3 border-2 h-28 mt-3 bg-transparent border-gray-200 rounded-lg outline-none placeholder:text-14 focus:border-2 focus:border-primary"
       />
     </div>
   );

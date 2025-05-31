@@ -153,6 +153,7 @@ function RefundRequests() {
                         <RejectRefundRequests
                           orderId={order.id}
                           status={order.status}
+                          amount = {order.items_count}
                         />
                       </div>
                     </td>

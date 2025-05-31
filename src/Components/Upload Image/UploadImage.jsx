@@ -17,7 +17,7 @@ export const ImageUpload = ({ previewImage, onImageChange, name }) => {
           <img
             src={previewImage}
             alt="preview"
-            className="w-400 h-48 object-fill rounded-md"
+            className="w-600px h-48  rounded-md"
           />
         ) : (
           <>

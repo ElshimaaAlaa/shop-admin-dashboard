@@ -14,10 +14,10 @@ import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 
 const NewPromotion = () => {
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  // const [success, setSuccess] = useState("");
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [datesSelected, setDatesSelected] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -29,7 +29,7 @@ const NewPromotion = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setIsLoading(true);
+        // setIsLoading(true);
         const [productsResponse, categoriesResponse] = await Promise.all([
           axios.get(`${API_URL}${live_shop_domain}/api/${role}/products`, {
             headers: {
@@ -50,7 +50,7 @@ const NewPromotion = () => {
       } catch (err) {
         setError("Failed to fetch products or categories");
       } finally {
-        setIsLoading(false);
+        // setIsLoading(false);
       }
     };
 
@@ -92,7 +92,7 @@ const NewPromotion = () => {
     if (isSubmitting) return;
     
     setIsSubmitting(true);
-    setIsLoading(true);
+    // setIsLoading(true);
     setError("");
 
     try {
@@ -118,7 +118,7 @@ const NewPromotion = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      setSuccess("Promotion created successfully!");
+      console.log("Promotion created successfully!");
       setShowModal(true);
       resetForm();
     } catch (err) {
@@ -129,7 +129,7 @@ const NewPromotion = () => {
           : "Failed to create promotion");
       setError(errorMessage);
     } finally {
-      setIsLoading(false);
+      // setIsLoading(false);
       setIsSubmitting(false);
     }
   };

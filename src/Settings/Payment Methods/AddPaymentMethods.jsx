@@ -126,7 +126,7 @@ function AddPaymentMethod({ isOpen, onClose }) {
                 <button
                   type="button"
                   onClick={onClose}
-                  className="bg-gray-100 text-gray-500 font-bold p-3 w-32 rounded-md"
+                  className="bg-gray-100 text-gray-400 font-bold p-3 w-32 rounded-md"
                 >
                   Cancel
                 </button>

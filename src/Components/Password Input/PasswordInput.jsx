@@ -14,7 +14,7 @@ function PasswordInput({ name, placeholder, showPassword, togglePasswordVisibili
               type={showPassword ? "text" : "password"}
               placeholder={placeholder}
               className={clsx(
-                "border-2 outline-none rounded-md p-3 w-full placeholder:text-14 transition-all duration-200",
+                "border-2 h-14 outline-none rounded-md p-3 w-full placeholder:text-14 transition-all duration-200",
                 {
                   "border-red-500": meta.touched && meta.error,
                   "border-[#28A513]": meta.touched && !meta.error,

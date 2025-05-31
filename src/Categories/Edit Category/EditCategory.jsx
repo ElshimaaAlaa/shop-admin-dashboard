@@ -39,7 +39,7 @@ const CustomDropdown = ({
   return (
     <div className="relative w-full" ref={dropdownRef}>
       <div
-        className={`w-full bg-transparent outline-none border-2 rounded-md h-12 p-2 flex items-center justify-between cursor-pointer ${
+        className={`w-full bg-transparent outline-none border-2 rounded-md h-14 p-2 flex items-center justify-between cursor-pointer ${
           error && touched ? "border-red-500" : "border-gray-200"
         } focus:border-2 focus:border-primary`}
         onClick={() => setIsOpen(!isOpen)}

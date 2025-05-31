@@ -17,7 +17,7 @@ export const StatusDisplay = ({ status, statusName }) => {
 
   return (
     <span className={`px-2 py-1 rounded-md text-14 ${getStatusStyles()}`}>
-      {statusName}
+      {statusName || "unavailable"}
     </span>
   );
 };

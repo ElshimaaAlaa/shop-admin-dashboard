@@ -68,7 +68,7 @@ const CustomDropdown = ({
       </div>
       
       {isOpen && (
-        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-auto">
+        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto">
           {options.map((option) => (
             <div
               key={option.value}
@@ -218,7 +218,7 @@ function AddCategory() {
                   as="textarea"
                   placeholder="Description"
                   name="description"
-                  className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md p-2 h-24 mt-3 block placeholder:text-14 focus:border-primary"
+                  className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-lg p-2 h-28 mt-3 block placeholder:text-14 focus:border-primary"
                 />
                 {errors.description && touched.description && (
                   <div className="text-red-500 text-xs mt-1">{errors.description}</div>

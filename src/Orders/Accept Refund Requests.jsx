@@ -4,7 +4,7 @@ import { ClipLoader } from "react-spinners";
 import axios from "axios";
 import FailedModal from "../Components/Modal/Failed Modal/FailedModal";
 import SuccessModal from "../Components/Modal/Success Modal/SuccessModal";
-function AcceptRefundRequests({ order_id, status, amount, items_count }) {
+function AcceptRefundRequests({ order_id, status, items_count }) {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState(null);
@@ -20,9 +20,9 @@ function AcceptRefundRequests({ order_id, status, amount, items_count }) {
       const response = await axios.post(
         `${API_BASE_URL}${live_shop_domain}/api/${role}/orders/respond-return-request`,
         {
-          order_id: Number(order_id),
-          status: "accepted",
-          amount: Number(items_count),
+          order_id: order_id,
+          status: status,
+          amount: items_count,
         },
         {
           headers: {
