@@ -1,9 +1,8 @@
 import axios from "axios";
-const API_BASE_URL = "https://";
 export const settings = async () => {
   try {
     const response = await axios({
-      url: `${API_BASE_URL}demo.vrtex.duckdns.org/api/shop/settings`,
+      url: `https://demo.vrtex.duckdns.org/api/shop/settings`,
       method: "GET",
       headers: {
         "Content-Type": "application/json",

@@ -3,15 +3,28 @@ import { AiOutlineClose } from "react-icons/ai";
 import { Plus } from "lucide-react";
 import InputField from "../../Components/InputFields/InputField";
 import { UploadImageForColor } from "../../Components/Upload Image/UploadImageForColor";
-
-const ColorFieldArray = ({ values, setFieldValue, sizeIndex, nested, makeImageOptional = false }) => {
+import { useTranslation } from "react-i18next";
+const ColorFieldArray = ({
+  values,
+  setFieldValue,
+  sizeIndex,
+  nested,
+  makeImageOptional = false,
+}) => {
   const colorsPath = nested ? `sizes[${sizeIndex}].colors` : "colors";
   const colors = nested ? values.sizes[sizeIndex]?.colors : values.colors;
-  const defaultProductImage = values.images?.[0]?.previewImage || values.images?.[0]?.image;
-
+  const defaultProductImage =
+    values.images?.[0]?.previewImage || values.images?.[0]?.image;
+  const { t } = useTranslation();
   return (
-    <div className={`${nested ? 'ml-8 pl-4 border-l-2 border-gray-200' : 'bg-white p-4 rounded-md mt-5 mx-5 w-[920px]'}`}>
-      {!nested && <h2 className="font-bold mb-5 text-16">Inventory</h2>}
+    <div
+      className={`${
+        nested
+          ? "ml-8 pl-4 border-l-2 border-gray-200"
+          : "bg-white p-4 rounded-md mt-5 mx-5 w-[920px]"
+      }`}
+    >
+      {!nested && <h2 className="font-bold mb-5 text-16">{t("inventory")}</h2>}
       <FieldArray name={colorsPath}>
         {({ push, remove }) => (
           <>
@@ -30,35 +43,41 @@ const ColorFieldArray = ({ values, setFieldValue, sizeIndex, nested, makeImageOp
                     existingImage={color.existingImage}
                     isOptional={makeImageOptional}
                   />
-                  <InputField 
-                    name={`${colorsPath}[${index}].name.ar`} 
-                    placeholder="Color Name (ar)"
+                  <InputField
+                    name={`${colorsPath}[${index}].name.ar`}
+                    placeholder={t("colorAr")}
                     value={color.name?.ar || ""}
                     onChange={(e) => {
-                      setFieldValue(`${colorsPath}[${index}].name.ar`, e.target.value);
+                      setFieldValue(
+                        `${colorsPath}[${index}].name.ar`,
+                        e.target.value
+                      );
                     }}
                   />
-                  <InputField 
-                    name={`${colorsPath}[${index}].name.en`} 
-                    placeholder="Color Name (en)"
+                  <InputField
+                    name={`${colorsPath}[${index}].name.en`}
+                    placeholder={t("colorEn")}
                     value={color.name?.en || ""}
                     onChange={(e) => {
-                      setFieldValue(`${colorsPath}[${index}].name.en`, e.target.value);
+                      setFieldValue(
+                        `${colorsPath}[${index}].name.en`,
+                        e.target.value
+                      );
                     }}
                   />
                   <InputField
                     name={`${colorsPath}[${index}].code`}
-                    placeholder="Color Code"
+                    placeholder={t("colorCode")}
                     value={color.code || ""}
                   />
                   <InputField
                     name={`${colorsPath}[${index}].stock`}
-                    placeholder="Stock"
+                    placeholder={t("stock")}
                     value={color.stock || ""}
                   />
                   <InputField
                     name={`${colorsPath}[${index}].price`}
-                    placeholder="Price"
+                    placeholder={t("price")}
                     value={color.price || ""}
                   />
                   <button
@@ -94,13 +113,13 @@ const ColorFieldArray = ({ values, setFieldValue, sizeIndex, nested, makeImageOp
                       </svg>
                     </span>
                   </label>
-                  <div className="font-bold text-15">Schedule a discount</div>
+                  <div className="font-bold text-15">{t("schedule")}</div>
                 </div>
                 {color.schedule_discount && (
                   <div className="flex gap-2">
                     <InputField
                       name={`${colorsPath}[${index}].discount_percentage`}
-                      placeholder="Discount"
+                      placeholder={t("discount")}
                       value={color.discount_percentage || ""}
                     />
                     <InputField
@@ -132,8 +151,11 @@ const ColorFieldArray = ({ values, setFieldValue, sizeIndex, nested, makeImageOp
                 }
                 type="button"
               >
-                <Plus className="font-bold border-2 border-primary rounded-full" size={18} />
-                Add Color
+                <Plus
+                  className="font-bold border-2 border-primary rounded-full"
+                  size={18}
+                />
+                {t("addColor")}
               </button>
             </div>
           </>

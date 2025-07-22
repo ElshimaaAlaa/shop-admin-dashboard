@@ -10,15 +10,16 @@ import InputField from "../../Components/InputFields/InputField";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { Helmet } from "react-helmet";
+import { useTranslation } from "react-i18next";
 const StoreProfile = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [themeData, setThemeData] = useState(null);
-
+  const { t } = useTranslation();
   const steps = [
-    { number: 1, title: "Store Theme" },
-    { number: 2, title: "Store Profile" },
-    { number: 3, title: "Pricing Plan" },
+    { number: 1, title: t("storeTheme") },
+    { number: 2, title: t("storeProfile") },
+    { number: 3, title: t("pricingPlan") },
   ];
 
   useEffect(() => {
@@ -87,7 +88,7 @@ const StoreProfile = () => {
   return (
     <div className="p-3 bg-gradient-to-r from-customBlue-mediumBlue via-customOrange-mediumOrange to-customOrange-mediumOrange min-h-screen flex items-center justify-center">
       <Helmet>
-        <title>Set Up Store </title>
+        <title>{t("setUpStore")} </title>
       </Helmet>
       <div className="bg-white rounded-md py-5 flex flex-col w-full max-w-2xl">
         <div className="flex justify-center my-5">
@@ -97,9 +98,7 @@ const StoreProfile = () => {
           <div className="rounded-full border-[5px] border-primary p-2 font-bold">
             1/3
           </div>
-          <h3 className="text-15 font-bold">
-            Let’s Get Started To Set Up Your Own Store .
-          </h3>
+          <h3 className="text-15 font-bold">{t("startStore")}</h3>
         </div>
         <StepIndicator currentStep={2} steps={steps} />
         <Formik
@@ -139,7 +138,7 @@ const StoreProfile = () => {
                     <ClipLoader size={22} color="#fff" />
                   ) : (
                     <>
-                      Next
+                      {t("next")}
                       <FaArrowRightLong />
                     </>
                   )}

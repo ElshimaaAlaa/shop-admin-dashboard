@@ -1,4 +1,7 @@
+import { useTranslation } from "react-i18next";
+
 export const ImageUpload = ({ previewImage, onImageChange, name }) => {
+  const { t } = useTranslation();
   return (
     <div className="border-2 w-full border-dashed bg-gray-50 border-gray-400 rounded-md p-1 h-52 flex items-center justify-center">
       <input
@@ -26,9 +29,9 @@ export const ImageUpload = ({ previewImage, onImageChange, name }) => {
               alt="upload-image-file"
               className="mt-8 mb-3 w-9"
             />
-            <p className="text-center text-14">Upload Your Category Image</p>
-            <p className="text-gray-400 leading-8 text-11 w-44 text-center m-auto">
-              Only PNG, SVG Format Allowed. Size: 500KB Max.
+            <p className="text-center text-14">{t("uploadCat")}</p>
+            <p className="text-gray-400 leading-8 rtl:leading-5 text-11 w-44 text-center m-auto">
+              {t("imageSize")}
             </p>
           </>
         )}

@@ -1,9 +1,12 @@
+import { useTranslation } from "react-i18next";
 function OurProcess() {
+  const { t } = useTranslation();
   const steps = [
     {
       number: "01",
-      title: "Create Your Account",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed",
+      title: t("createAcc"),
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed",
       icon: (
         <div className="flex justify-center">
           <img
@@ -16,8 +19,9 @@ function OurProcess() {
     },
     {
       number: "02",
-      title: "Customizable Templates",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed",
+      title: t("tamplates"),
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed",
       icon: (
         <div className="flex justify-center">
           <img
@@ -30,8 +34,9 @@ function OurProcess() {
     },
     {
       number: "03",
-      title: "Choose Pricing Plan",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed",
+      title: t("choosePlan"),
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed",
       icon: (
         <div className="flex justify-center">
           <img
@@ -47,15 +52,13 @@ function OurProcess() {
   return (
     <section className="px-5 lg:px-20 mt-10">
       <div>
-        <p
-          className="text-primary text-17 bg-customOrange-lightOrange p-2 w-32 text-center rounded"
-        >
-          Our Process
+        <p className="text-primary text-17 bg-customOrange-lightOrange p-2 w-32 text-center rounded">
+          {t("ourProceess")}
         </p>
-        <h2 className="text-xl md:text-xl font-bold mt-5 text-center md:text-left">
-          Here's How You Can Design Your
+        <h2 className="text-xl md:text-xl font-bold mt-5 text-center md:text-left rtl:text-start">
+          {t("design")}
           <span className="text-primary block md:inline ms-3">
-            Own E-commerce Website
+            {t("e-commerce")}
           </span>
         </h2>
       </div>
@@ -69,11 +72,7 @@ function OurProcess() {
             }`}
           >
             {/* Text Section */}
-            <div
-              className={`flex-1 text-center ${
-                index % 2 === 1 ? "" : ""
-              }`}
-            >
+            <div className={`flex-1 text-center ${index % 2 === 1 ? "" : ""}`}>
               <h3 className="text-lg md:text-xl font-bold mb-4 text-center">
                 {step.title}
               </h3>
@@ -117,5 +116,4 @@ function OurProcess() {
     </section>
   );
 }
-
 export default OurProcess;

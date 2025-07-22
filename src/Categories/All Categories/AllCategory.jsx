@@ -8,6 +8,7 @@ import { fetchCategories } from "../../ApiServices/AllCategoriesApi";
 import { Helmet } from "react-helmet";
 import SearchBar from "../../Components/Search Bar/SearchBar";
 import { Plus } from "lucide-react";
+import { useTranslation } from "react-i18next";
 function AllCategory() {
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -16,7 +17,8 @@ function AllCategory() {
   const [itemsPerPage] = useState(5);
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
-
+  const { t, i18n } = useTranslation();
+  const [isRTL, setIsRTL] = useState(false);
   useEffect(() => {
     const getCategories = async () => {
       setIsLoading(true);
@@ -33,12 +35,16 @@ function AllCategory() {
     getCategories();
   }, []);
 
-
   const handleDeleteCategory = (categoryId) => {
     setCategories((prevCategories) => {
-      const updatedCategories = prevCategories.filter((category) => category.id !== categoryId);
-      if (updatedCategories.length <= (currentPage - 1) * itemsPerPage && currentPage > 1) {
-        setCurrentPage(currentPage - 1); 
+      const updatedCategories = prevCategories.filter(
+        (category) => category.id !== categoryId
+      );
+      if (
+        updatedCategories.length <= (currentPage - 1) * itemsPerPage &&
+        currentPage > 1
+      ) {
+        setCurrentPage(currentPage - 1);
       }
       return updatedCategories;
     });
@@ -82,43 +88,48 @@ function AllCategory() {
     }
     return { bgColor, textColor, dotColor };
   };
-
+  useEffect(() => {
+    setIsRTL(i18n.language === "ar");
+  }, [i18n.language]);
   return (
     <div className="bg-gray-100 p-4 h-[89vh] pt-5">
       <Helmet>
-        <title>All Categories - VERTEX</title>
+        <title>
+          {t("cats")} | {t("vertex")}
+        </title>
       </Helmet>
       <section className="bg-white p-5 rounded-md mb-3">
-        <p className="text-gray-400 text-13">Menu / Categories</p>
-        <h1 className="font-bold text-17 mt-2">Categories</h1>
+        <p className="text-gray-400 text-13">{t("catHead")}</p>
+        <h1 className="font-bold text-17 mt-2">{t("cats")}</h1>
       </section>
       <section className="bg-white p-5 rounded-md">
         <SearchBar
           onclick={() => navigate("/Dashboard/addCategory")}
           value={searchQuery}
           onchange={(e) => setSearchQuery(e.target.value)}
-          text="Add New Category"
-          icon={<Plus className="text-white rounded-full border-2 border-white font-bold" size={20}/>}
+          text={t("addNewCat")}
+          icon={
+            <Plus
+              className="text-white rounded-full border-2 border-white font-bold"
+              size={20}
+            />
+          }
         />
         {error ? (
-          <div className="text-red-500 text-center mt-10">
-            Failed to fetch data. Please try again.
-          </div>
+          <div className="text-red-500 text-center mt-10">{t("error")}</div>
         ) : isLoading ? (
           <div className="text-gray-400 text-center mt-10">
             <ClipLoader color="#E0A75E" />
           </div>
         ) : filteredCategories.length === 0 ? (
-          <div className="text-gray-400 text-center mt-10">
-            No data found.
-          </div>
+          <div className="text-gray-400 text-center mt-10">{t("noData")}</div>
         ) : (
           <>
             <div className="border border-gray-200 rounded-lg overflow-hidden">
               <table className="bg-white min-w-full table">
                 <thead>
                   <tr>
-                    <th className="px-3 py-3 border-t border-b text-left w-12">
+                    <th className="px-3 py-3 border-t border-b text-left rtl:text-right w-12">
                       <input
                         type="checkbox"
                         className="form-checkbox h-4 w-4"
@@ -127,14 +138,16 @@ function AllCategory() {
                     </th>
                     <th className="px-6 py-3 text-left border w-500px">
                       <p className="flex justify-between items-center">
-                        Category
+                        {t("category")}
                       </p>
                     </th>
                     <th className="px-6 py-3 text-left border w-500px">
-                      <p className="flex justify-between items-center">Type</p>
+                      <p className="flex justify-between items-center">
+                        {t("type")}
+                      </p>
                     </th>
                     <th className="px-6 py-3 text-left w-5 border-t border-b">
-                      Actions
+                      {t("actions")}
                     </th>
                   </tr>
                 </thead>
@@ -160,7 +173,7 @@ function AllCategory() {
                           />
                           {category.name}
                         </td>
-                        <td className="px-6 py-3 border-t border-l">
+                        <td className="px-6 py-3 border-t border-l rtl:border-r">
                           <div
                             className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${bgColor}`}
                           >
@@ -174,17 +187,24 @@ function AllCategory() {
                             </span>
                           </div>
                         </td>
-                        <td className="px-6 py-3 w-10 border-t border-l">
+                        <td className="px-6 py-3 w-10 border-t border-l rtl:border-r">
                           <div className="flex items-center justify-center gap-2">
                             <button
                               aria-label={`Edit ${category.name}`}
                               onClick={() =>
-                                navigate(`/Dashboard/editCategory/${category.id}`, {
-                                  state: category,
-                                })
+                                navigate(
+                                  `/Dashboard/editCategory/${category.id}`,
+                                  {
+                                    state: category,
+                                  }
+                                )
                               }
                             >
-                              <img src="/assets/svgs/editIcon.svg" alt="edit category" className="w-6"/>
+                              <img
+                                src="/assets/svgs/editIcon.svg"
+                                alt="edit category"
+                                className="w-6"
+                              />
                             </button>
                             <DeleteCategory
                               categoryId={category.id}
@@ -206,8 +226,20 @@ function AllCategory() {
               containerClassName="flex items-center justify-end mt-5 text-gray-400 text-14"
               pageClassName="mx-1 px-3 py-1 rounded"
               activeClassName="bg-customOrange-lightOrange text-primary"
-              previousLabel={<ChevronLeft className="w-5 h-5 text-center" />}
-              nextLabel={<ChevronRight className="w-5 h-5" />}
+              previousLabel={
+                isRTL ? (
+                  <ChevronRight className="w-5 h-5 text-primary" />
+                ) : (
+                  <ChevronLeft className="w-5 h-5 text-center text-primary" />
+                )
+              }
+              nextLabel={
+                isRTL ? (
+                  <ChevronLeft className="w-5 h-5 text-center text-primary" />
+                ) : (
+                  <ChevronRight className="w-5 h-5 text-primary" />
+                )
+              }
               previousClassName="mx-1 px-1 py-1 font-bold text-primary text-18 "
               nextClassName="mx-1 px-1 py-1 font-bold text-primary text-18"
             />

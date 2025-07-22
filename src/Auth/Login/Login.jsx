@@ -10,20 +10,24 @@ import MainBtn from "../../Components/Main Button/MainBtn";
 import { loginService } from "../../ApiServices/LoginService";
 import AuthInputField from "../../Components/AuthInput Field/AuthInputField";
 import PasswordInput from "../../Components/Password Input/PasswordInput";
-
+import { useTranslation } from "react-i18next";
+import { IoIosArrowDown } from "react-icons/io";
 function Login() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
+  const { t, i18n } = useTranslation();
+  const [isRTL, setIsRTL] = useState(false);
   const [initialValues, setInitialValues] = useState({
     email: "",
     password: "",
   });
 
   useEffect(() => {
-    const savedEmail = localStorage.getItem("Email");
+    const savedEmail = localStorage.getItem("shop admin email");
     const savedPassword = localStorage.getItem("password");
     if (savedEmail && savedPassword) {
       setInitialValues({ email: savedEmail, password: savedPassword });
@@ -33,11 +37,11 @@ function Login() {
 
   const validationSchema = Yup.object({
     email: Yup.string()
-      .email("Invalid email address")
-      .required("Email is required"),
+      .email(t("invaildEmail"))
+      .required(t("emailRequired")),
     password: Yup.string()
-      .min(8, "Password must be at least 8 characters long")
-      .required("Password is required"),
+      .min(8,t("passwordLenght"))
+      .required(t("passwordReq")),
   });
 
   const handleSubmit = async (values) => {
@@ -56,7 +60,7 @@ function Login() {
       }, 1500);
     } catch (error) {
       console.error(error);
-      setError("Invalid email or password. Please try again.");
+      setError(t("loginError"));
     } finally {
       setLoading(false);
     }
@@ -65,21 +69,68 @@ function Login() {
   const togglePasswordVisibility = useCallback(() => {
     setShowPassword((prev) => !prev);
   }, []);
-
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
+    i18n.changeLanguage(savedLanguage);
+    setIsRTL(savedLanguage === "ar");
+  }, [i18n]);
+  // Update RTL state and localStorage when language changes
+  useEffect(() => {
+    const currentLanguage = i18n.language;
+    setIsRTL(currentLanguage === "ar");
+    localStorage.setItem("selectedLanguage", currentLanguage);
+  }, [i18n.language]);
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    setShowLanguageDropdown(false);
+    localStorage.setItem("selectedLanguage", lng);
+  };
   return (
     <div className="main-container">
       <Helmet>
         <meta charSet="utf-8" />
-        <title>Login</title>
+        <title>{t("login")}</title>
+        <html dir={isRTL ? "rtl" : "ltr"} lang={i18n.language} />
       </Helmet>
       <div className="loginContainer w-[350px] p-5 lg:p-7 md:p-7  lg:w-450 md:w-450 sm:w-80 xs:w-450 s:w-80 bg-gray-50 rounded-md">
-        <img
-          src="/assets/svgs/vertex.svg"
-          alt="logo"
-          className="w-48 h-10 mb-4"
-        />
+        <div className="flex justify-between items-center">
+          <img
+            src="/assets/svgs/vertex.svg"
+            alt="logo"
+            className="w-48 h-10 mb-3"
+          />
+          <div className="relative">
+            <button
+              className="flex items-center gap-1 text-14 bg-customOrange-lightOrange text-primary rounded-md p-2"
+              onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
+            >
+              {i18n.language.toUpperCase()}
+              <IoIosArrowDown size={20} />
+            </button>
+            {showLanguageDropdown && (
+              <div
+                className={`absolute ${
+                  isRTL ? "left-0" : "right-0"
+                } w-14 bg-white rounded-md shadow-lg z-10`}
+              >
+                <button
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={() => changeLanguage("en")}
+                >
+                  EN
+                </button>
+                <button
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={() => changeLanguage("ar")}
+                >
+                  AR
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
         <div className="flex items-center gap-3 mt-3">
-          <h1 className="font-bold text-[20px]">Welcome Back</h1>
+          <h1 className="font-bold text-[20px]">{t("welcome")}</h1>
           <img
             src="/assets/images/waving-hand_svgrepo.com.png"
             alt="welcome-back"
@@ -95,17 +146,19 @@ function Login() {
             <Form className="loginForm mt-3">
               <AuthInputField
                 name={"email"}
-                placeholder={"Email"}
+                placeholder={t("email")}
                 error={touched.email && errors.email}
                 active={touched.email}
+                dir={isRTL ? "rtl" : "ltr"}
               />
               <PasswordInput
                 name={"password"}
-                placeholder={"Password"}
+                placeholder={t("password")}
                 showPassword={showPassword}
                 togglePasswordVisibility={togglePasswordVisibility}
                 error={touched.password && errors.password}
                 active={touched.password}
+                dir={isRTL ? "rtl" : "ltr"}
               />
               {error && <p className="text-red-500 text-sm mt-3">{error}</p>}
               <div className="flex items-center justify-between mt-5">
@@ -129,7 +182,7 @@ function Login() {
                       </svg>
                     </span>
                     <span className="text-11 lg:text-13 text-gray-600 ms-1">
-                      Remember Me
+                      {t("rememberMe")}
                     </span>
                   </label>
                 </div>
@@ -139,13 +192,13 @@ function Login() {
                   className="font-bold text-11 lg:text-13 cursor-pointer"
                   onClick={() => navigate("/Login/ForgotPassword")}
                 >
-                  Forget your password?
+                  {t("forgotpassword")}
                 </div>
               </div>
               <div className="mt-5">
                 <MainBtn
                   text={
-                    loading ? <ClipLoader color="#fff" size={22} /> : "Login"
+                    loading ? <ClipLoader color="#fff" size={22} /> : t("login")
                   }
                   btnType="submit"
                   disabled={loading}
@@ -156,17 +209,19 @@ function Login() {
         </Formik>
         <div className="flex items-center justify-center mt-3">
           <div className="border-t border-gray-300 flex-grow"></div>
-          <span className="mx-4 text-gray-400 text-13 font-bold">OR</span>
+          <span className="mx-4 text-gray-400 text-13 font-bold">
+            {t("or")}
+          </span>
           <div className="border-t border-gray-300 flex-grow"></div>
         </div>
         <OAuth />
         <p className="text-center text-gray-400 text-15 mt-5">
-          Don’t Have An Account ?
+          {t("haveAcc")}
           <span
             className="ms-1 text-primary font-bold text-16 cursor-pointer"
             onClick={() => navigate("/Register")}
           >
-            Register
+            {t("register")}
           </span>
         </p>
       </div>

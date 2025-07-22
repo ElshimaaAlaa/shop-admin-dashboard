@@ -4,20 +4,20 @@ import { IoIosCloseCircle } from "react-icons/io";
 import FailedModal from "../Components/Modal/Failed Modal/FailedModal";
 import { ClipLoader } from "react-spinners";
 import "./OrderStyle.scss";
-
+import { useTranslation } from "react-i18next";
 function CancelOrder({ order_id, status }) {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const API_BASE_URL = "https://";
   const live_shop_domain = localStorage.getItem("live_shop_domain");
   const role = localStorage.getItem("role");
+  const { t } = useTranslation();
   const handleCancelOrder = async () => {
     setIsLoading(true);
     setErrorMessage("");
     try {
       const response = await axios({
-        url: `${API_BASE_URL}${live_shop_domain}/api/${role}/orders/respond-cancel-request`,
+        url: `https://${live_shop_domain}/api/${role}/orders/respond-cancel-request`,
         method: "POST",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -54,18 +54,14 @@ function CancelOrder({ order_id, status }) {
         disabled={status === 8 || status === "cancelled"}
       >
         <IoIosCloseCircle size={22} />
-        {status === 8 || status === "cancelled"
-          ? "Cancelled"
-          : "Cancel"}
+        {status === 8 || status === "cancelled" ? "Cancelled" : t("cancel")}
       </button>
 
       <FailedModal isOpen={showModal} onClose={() => setShowModal(false)}>
         <div className="bg-red-50 rounded-md p-2 mt-5 mb-5">
           <IoIosCloseCircle color="#DC2626" size={30} />
         </div>
-        <p className="font-bold text-center">
-          Are You Sure You Want To Cancel This <br /> Order?
-        </p>
+        <p className="font-bold text-center">{t("cancelOrder")}</p>
 
         {errorMessage && (
           <p className="text-red-500 text-sm text-center mt-2">
@@ -73,24 +69,22 @@ function CancelOrder({ order_id, status }) {
           </p>
         )}
 
-        <div className="mt-5 flex items-center gap-3">
+        <div className="mt-5 flex items-center gap-3 rtl:flex-row-reverse">
           <button
-            className="bg-gray-100 text-gray-400 rounded-md p-3 w-40 font-bold"
+            className="bg-gray-100 text-gray-400 rounded-md p-3 w-32 font-bold"
             onClick={() => {
               setShowModal(false);
               setErrorMessage("");
             }}
           >
-            Cancel
+            {t("no")}
           </button>
           <button
-            className="bg-red-600 rounded-md text-white p-3 w-40 font-bold"
+            className="bg-red-600 rounded-md text-white p-3 w-32 font-bold"
             onClick={handleCancelOrder}
-            disabled={
-              isLoading || status === 8 || status === "cancelled"
-            }
+            disabled={isLoading || status === 8 || status === "cancelled"}
           >
-            {isLoading ? <ClipLoader size={22} color="#fff" /> : "Yes, Cancel"}
+            {isLoading ? <ClipLoader size={22} color="#fff" /> : t("yesCancel")}
           </button>
         </div>
       </FailedModal>

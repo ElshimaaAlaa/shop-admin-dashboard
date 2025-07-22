@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { FaCalendarAlt } from "react-icons/fa";
-
+import { useTranslation } from "react-i18next";
 const DateRangePicker = ({
   startDate,
   endDate,
@@ -16,10 +16,20 @@ const DateRangePicker = ({
   const [isOpen, setIsOpen] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const calendarRef = useRef(null);
-
+  const { t } = useTranslation();
   const monthNames = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
   ];
 
   const handleClickOutside = (event) => {
@@ -154,17 +164,17 @@ const DateRangePicker = ({
           <div className="relative">
             <input
               type="text"
-              className={`w-full text-14 h-12 p-2 border-2 rounded-lg outline-none ${
+              className={`w-full text-14 h-14 p-2 rtl:ps-8 border-2 rounded-lg outline-none ${
                 startError && startTouched
                   ? "border-red-500"
                   : "border-gray-200"
               } focus:border-primary`}
-              placeholder="Start date"
+              placeholder={t("startDate")}
               value={formatDisplayDate(startDate)}
               readOnly
               onClick={() => setIsOpen(true)}
             />
-            <FaCalendarAlt className="absolute right-3 top-4 text-primary" />
+            <FaCalendarAlt className="absolute right-3 top-5 text-primary" />
           </div>
           {startError && startTouched && (
             <div className="text-red-500 text-xs mt-1">{startError}</div>
@@ -174,15 +184,15 @@ const DateRangePicker = ({
           <div className="relative">
             <input
               type="text"
-              className={`w-full text-14 h-12 p-2 border-2 rounded-lg outline-none ${
+              className={`w-full text-14 rtl:ps-8 h-14 p-2 border-2 rounded-lg outline-none ${
                 endError && endTouched ? "border-red-500" : "border-gray-200"
               } focus:border-primary`}
-              placeholder="End date"
+              placeholder={t("endDate")}
               value={formatDisplayDate(endDate)}
               readOnly
               onClick={() => setIsOpen(true)}
             />
-            <FaCalendarAlt className="absolute right-3 top-4 text-primary" />
+            <FaCalendarAlt className="absolute right-3  top-5 text-primary" />
           </div>
           {endError && endTouched && (
             <div className="text-red-500 text-xs mt-1">{endError}</div>

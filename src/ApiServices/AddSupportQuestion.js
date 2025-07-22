@@ -1,11 +1,10 @@
 import axios from "axios";
-const API_BASE_URL = "https://";
 const live_shop_domain = localStorage.getItem("live_shop_domain");
 const role = localStorage.getItem("role");
 export const AddNewSupportQuestion = async (question, answer) => {
   try {
     const response = await axios({
-      url: `${API_BASE_URL}${live_shop_domain}/api/${role}/support-questions/store`,
+      url: `https://${live_shop_domain}/api/${role}/support-questions/store`,
       method: "POST",
       headers: {
         "Content-Type": "application/json",

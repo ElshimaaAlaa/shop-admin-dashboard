@@ -1,8 +1,10 @@
-import React from "react";
+import { useTranslation } from "react-i18next";
+
 export const UploadProductImage = ({ previewImages, onImageChange }) => {
+  const { t } = useTranslation();
   return (
     <>
-      <h2 className="font-bold text-16 mb-3">Product Icon / Image</h2>
+      <h2 className="font-bold text-16 mb-3">{t("productImage")}</h2>
       <div className="bg-gray-50 w-full border-2 border-gray-400 border-dashed outline-none h-48 rounded-md ">
         <input
           type="file"
@@ -52,9 +54,9 @@ export const UploadProductImage = ({ previewImages, onImageChange }) => {
                   className="mt-8 mb-3 w-9"
                 />
               </div>
-              <p className="text-center text-14">Upload Your Product Image</p>
-              <p className="text-gray-400 leading-8 text-11 w-44 text-center m-auto">
-                Only PNG, SVG Format Allowed. Size: 500KB Max.
+              <p className="text-center text-14">{t("uploadProductImage")}</p>
+              <p className="text-gray-400 leading-8 rtl:leading-4 mt-2 text-11 w-44 text-center m-auto">
+                {t("imageSize")}
               </p>
             </>
           )}

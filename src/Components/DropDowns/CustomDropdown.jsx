@@ -99,5 +99,4 @@ CustomDropdown.propTypes = {
   touched: PropTypes.bool,
   className: PropTypes.string,
 };
-
 export default CustomDropdown;

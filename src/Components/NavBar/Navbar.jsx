@@ -1,29 +1,46 @@
 import { useNavigate } from "react-router-dom";
-import { CiSearch, CiCircleRemove } from "react-icons/ci";
-import { FaRegArrowAltCircleLeft } from "react-icons/fa";
-import { useSearch } from "../../Context/SearchContext";
 import ProfileMenu from "../../Profile/Profile";
+import { IoIosArrowDown } from "react-icons/io";
+import { useTranslation } from "react-i18next";
+import { useState, useEffect } from "react";
+import { GrLanguage } from "react-icons/gr";
+import { RiArrowRightCircleLine } from "react-icons/ri";
+import { RiArrowLeftCircleLine } from "react-icons/ri";
 
 function Navbar() {
-  const { searchQuery, setSearchQuery } = useSearch();
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
+  const [isRTL, setIsRTL] = useState(false);
+  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
+  const currentLanguage = i18n.language;
 
-  const handleSearchChange = (e) => {
-    const value = e.target.value;
-    setSearchQuery(value.toLowerCase());
-  };
-
-  const clearSearch = () => {
-    setSearchQuery("");
-  };
-
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    console.log("Search submitted:", searchQuery);
-  };
+  // Set initial language from localStorage or default to 'en'
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
+    if (savedLanguage !== currentLanguage) {
+      i18n.changeLanguage(savedLanguage).then(() => {
+        document.documentElement.dir = savedLanguage === "ar" ? "rtl" : "ltr";
+        document.documentElement.lang = savedLanguage;
+      });
+    }
+    setIsRTL(i18n.language==="ar")
+  }, [currentLanguage, i18n ,i18n.language]);
 
   const goBack = () => {
     navigate(-1);
+  };
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng).then(() => {
+      document.documentElement.dir = lng === "ar" ? "rtl" : "ltr";
+      document.documentElement.lang = lng;
+      localStorage.setItem("selectedLanguage", lng); 
+      setShowLanguageDropdown(false);
+    });
+  };
+
+  const toggleLanguageDropdown = () => {
+    setShowLanguageDropdown(!showLanguageDropdown);
   };
 
   return (
@@ -33,43 +50,61 @@ function Navbar() {
           {/* Back button */}
           <button
             onClick={goBack}
-            aria-label="Go back"
+            aria-label={t("goBack")}
             className="hover:opacity-80 transition-opacity"
           >
-            <FaRegArrowAltCircleLeft size={30} color="#E0A75E" />
+            {isRTL ? <RiArrowRightCircleLine size={35} color="#E0A75E" />:<RiArrowLeftCircleLine size={35} color="#E0A75E" /> }
           </button>
-          
-          {/* Search Input */}
-          <form onSubmit={handleSearchSubmit} className="relative w-[400px]">
-            <input
-              type="text"
-              placeholder="Search something here..."
-              className="w-full p-2.5 border border-gray-200 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary pl-10 pr-8 placeholder:text-sm"
-              value={searchQuery}
-              onChange={handleSearchChange}
-            />
-            <div className="absolute left-3 top-3 text-gray-400">
-              <CiSearch size={22} color="#E0A75E" />
-            </div>
-            {searchQuery && (
-              <button
-                type="button"
-                onClick={clearSearch}
-                className="absolute right-3 top-3 text-gray-400 hover:text-primary transition-colors"
-                aria-label="Clear search"
-              >
-                <CiCircleRemove size={22} />
-              </button>
-            )}
-          </form>
         </div>
-        
-        <div className="flex items-center gap-5">
+
+        <div className="flex items-center gap-5 relative">
+          {/* Language selector */}
+          <div
+            className="flex items-center justify-between w-40 border-1 bg-gray-50 border-gray-100 rounded-md py-3 px-4 cursor-pointer "
+            onClick={toggleLanguageDropdown}
+          >
+            <div className="flex items-center gap-2">
+              <GrLanguage color="#71717A" size={21} />
+              <p className="text-15">
+                {currentLanguage === "en" ? "English" : "العربية"}
+              </p>
+            </div>
+
+            <IoIosArrowDown
+              color="#71717A"
+              size={20}
+              className={`transition-transform ${
+                showLanguageDropdown ? "rotate-180" : ""
+              }`}
+            />
+
+            {/* Language dropdown */}
+            {showLanguageDropdown && (
+              <div className="absolute top-full right-24 rtl:-right-0 w-40 bg-white rounded-md shadow-lg z-50 border border-gray-200">
+                <button
+                  className={`w-full text-left px-4 py-2 hover:bg-gray-100 ${
+                    currentLanguage === "en" ? "bg-gray-100" : ""
+                  }`}
+                  onClick={() => changeLanguage("en")}
+                >
+                  English
+                </button>
+                <button
+                  className={`w-full text-right px-4 py-2 hover:bg-gray-100 ${
+                    currentLanguage === "ar" ? "bg-gray-100" : ""
+                  }`}
+                  onClick={() => changeLanguage("ar")}
+                >
+                  العربية
+                </button>
+              </div>
+            )}
+          </div>
+
           <ProfileMenu />
         </div>
       </nav>
     </div>
   );
 }
-
 export default Navbar;

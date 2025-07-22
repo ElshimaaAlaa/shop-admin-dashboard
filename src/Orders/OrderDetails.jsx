@@ -7,7 +7,8 @@ import PhoneNum from "../Svgs/PhoneNum";
 import EmailAddress from "../Svgs/EmailAddress";
 import Acc from "../Svgs/Acc";
 import { StatusDisplay } from "./StatusDisplay";
-
+import { FaCheckCircle } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 function OrderDetails() {
   const [orderDetail, setOrderDetails] = useState({
     products: [],
@@ -20,21 +21,24 @@ function OrderDetails() {
     balance: 0,
     refund_price: 0,
     return_price: 0,
-    paid_amount: 0
+    paid_amount: 0,
   });
   const { orderId } = useParams();
   const location = useLocation();
-  const API_BASE_URL = "https://";
   const live_shop_domain = localStorage.getItem("live_shop_domain");
   const role = localStorage.getItem("role");
-  const [orderStatus, setOrderStatus] = useState(location.state?.status || null);
-  const [orderStatusName, setOrderStatusName] = useState(location.state?.status_name || null);
-
+  const [orderStatus, setOrderStatus] = useState(
+    location.state?.status || null
+  );
+  const [orderStatusName, setOrderStatusName] = useState(
+    location.state?.status_name || null
+  );
+  const { t } = useTranslation();
   useEffect(() => {
     const fetchOrderDetails = async () => {
       try {
         const response = await axios({
-          url: `${API_BASE_URL}${live_shop_domain}/api/${role}/orders/${orderId}?dashboard=1`,
+          url: `https://${live_shop_domain}/api/${role}/orders/${orderId}?dashboard=1`,
           method: "GET",
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -42,12 +46,12 @@ function OrderDetails() {
           },
         });
         if (response.status === 200) {
-          setOrderDetails(prev => ({
+          setOrderDetails((prev) => ({
             ...prev,
             ...response.data.data,
             transactions: response.data.data.transactions || [],
             products: response.data.data.products || [],
-            history: response.data.data.history || []
+            history: response.data.data.history || [],
           }));
           if (!orderStatus) {
             setOrderStatus(response.data.data.status);
@@ -69,37 +73,42 @@ function OrderDetails() {
 
   const getOrderProgress = () => {
     const statusWeights = {
-      1: 0,  // Pending
+      1: 0, // Pending
       2: 25, // Processing
       3: 50, // Shipped
       4: 75, // In Transit
-      5: 100 // Delivered
+      5: 100, // Delivered
     };
     return statusWeights[orderStatus] || 0;
   };
 
   const formatCurrency = (value) => {
-    const num = typeof value === 'number' ? value : parseFloat(value) || 0;
-    return num.toLocaleString('en-US', {
-      style: 'currency',
-      currency: 'USD',
+    const num = typeof value === "number" ? value : parseFloat(value) || 0;
+    return num.toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
       minimumFractionDigits: 2,
-      maximumFractionDigits: 2
+      maximumFractionDigits: 2,
     });
   };
 
   return (
     <div className="bg-gray-100 pb-10 mx-5 pt-5">
       <Helmet>
-        <title>Orders Details | VERTEX</title>
+        <title>
+          {t("orderDetail")} | {t("vertex")}
+        </title>
       </Helmet>
-      
+
       <section className="bg-white mb-3 p-5 rounded-md flex justify-between items-center">
         <div>
-          <p className="text-gray-400 text-13">Menu / Orders / Received Orders / view order</p>
-          <h1 className="font-bold text-17 mt-2">Order Details</h1>
+          <p className="text-gray-400 text-13">{t("viewOrderHead")}</p>
+          <h1 className="font-bold text-17 mt-2">{t("orderDetail")}</h1>
         </div>
-        <CancelOrder orderId={orderDetail.id} orderStatus={orderDetail.status} />
+        <CancelOrder
+          orderId={orderDetail.id}
+          orderStatus={orderDetail.status}
+        />
       </section>
 
       <section className="grid grid-cols-1 lg:grid-cols-3 gap-3">
@@ -107,35 +116,76 @@ function OrderDetails() {
           <section className="border border-gray-200 rounded-md p-4 bg-white">
             <div className="flex justify-between items-center mb-4">
               <h2 className="font-bold text-17">
-                Order ID: <span className="text-14 ms-2">{orderDetail.order_number}</span>
+                {t("orderId")}:{" "}
+                <span className="text-14 ms-2">{orderDetail.order_number}</span>
               </h2>
-              <StatusDisplay status={orderStatus} statusName={orderStatusName || orderDetail.status_name} />
+              <StatusDisplay
+                status={orderStatus}
+                statusName={orderStatusName || orderDetail.status_name}
+              />
             </div>
             <div className="mb-6">
               <div className="flex justify-between text-12 text-gray-500 mt-5 mb-3">
-                <span>Order Status</span>
-                <span>{getOrderProgress()}% Complete</span>
+                <span>{t("orderStatus")}</span>
+                <span>
+                  {getOrderProgress()}% {t("complete")}
+                </span>
               </div>
               <div className="w-full bg-gray-100 rounded-full h-2.5">
-                <div 
-                  className="bg-primary h-2.5 rounded-full" 
+                <div
+                  className="bg-primary h-2.5 rounded-full"
                   style={{ width: `${getOrderProgress()}%` }}
                 ></div>
               </div>
             </div>
+            <div className="mt-5 space-y-4">
+              {orderDetail.history?.map((statusItem, index) => {
+                const statusDisplayMap = {
+                  جارالتجهيز: "Processing",
+                  "تم الشحن": "Shipped",
+                  "في الطريق": "In Transit",
+                  "تم التوصيل": "Delivered",
+                  "": "Cancelled",
+                  مسترجع: "Refunded",
+                };
+
+                const displayName =
+                  statusDisplayMap[statusItem.status_name] ||
+                  statusItem.status_name;
+
+                const dateToShow = statusItem.date || t("notProvided");
+
+                return (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between"
+                  >
+                    <p className="text-14 flex gap-2 items-center">
+                      <FaCheckCircle
+                        size={20}
+                        color={statusItem.active ? "#E0A75E" : "#D1D5DB"}
+                      />
+                      {displayName} ({statusItem.status_name}){" "}
+                      {/* Shows both English and Arabic */}
+                    </p>
+                    <span className="text-gray-400 text-12">{dateToShow}</span>
+                  </div>
+                );
+              })}
+            </div>
           </section>
 
           <section className="border border-gray-200 rounded-md p-4 bg-white">
-            <h2 className="font-bold text-16">Order Details</h2>
+            <h2 className="font-bold text-16">{t("orderDetail")}</h2>
             <div className="flex flex-wrap gap-8 md:gap-36 mt-4">
               <div>
-                <h4 className="text-gray-400 text-14">Item No</h4>
+                <h4 className="text-gray-400 text-14">{t("itemNo")}</h4>
                 <p className="text-14 mt-3">{orderDetail.items_count || 0}</p>
               </div>
               <div>
-                <h4 className="text-gray-400 text-14 mb-3">Payment</h4>
-                <StatusDisplay 
-                  statusName={orderDetail.payment_status} 
+                <h4 className="text-gray-400 text-14 mb-3">{t("paymentStatus")}</h4>
+                <StatusDisplay
+                  statusName={orderDetail.payment_status}
                   status={orderDetail.payment_status === "paid" ? 2 : 1}
                 />
               </div>
@@ -143,7 +193,7 @@ function OrderDetails() {
           </section>
 
           <section className="border border-gray-200 rounded-md p-4 bg-white">
-            <h2 className="font-bold text-16">List Items</h2>
+            <h2 className="font-bold text-16">{t("listItems")}</h2>
             <table className="table mt-3 w-full">
               <tbody>
                 {orderDetail.products?.map((item) => (
@@ -158,7 +208,9 @@ function OrderDetails() {
                           />
                         )}
                         <span className="text-13">
-                          {item.product?.name || item.product?.name_ar || "N/A"}
+                          {item.product?.name ||
+                            item.product?.name_ar ||
+                            t("notProvided")}
                         </span>
                       </div>
                     </td>
@@ -184,19 +236,21 @@ function OrderDetails() {
             </table>
             <section className="bg-gray-50 rounded-lg px-3 py-5 mt-4 flex flex-col gap-7">
               <div className="flex items-center justify-between">
-                <p className="text-15 font-bold">Subtotal</p>
+                <p className="text-15 font-bold">{t("subTotal")}</p>
                 <p className="text-gray-400 text-15">
                   {formatCurrency(orderDetail.sub_total)}
                 </p>
               </div>
               <div className="flex items-center justify-between">
-                <p className="text-15 font-bold">Shipping</p>
+                <p className="text-15 font-bold">{t("shipping")}</p>
                 <p className="text-gray-400 text-15">
-                  {formatCurrency(orderDetail.shipping_price || orderDetail.shipping)}
+                  {formatCurrency(
+                    orderDetail.shipping_price || orderDetail.shipping
+                  )}
                 </p>
               </div>
               <div className="flex items-center justify-between border-t-2 pt-3">
-                <p className="text-15 font-bold">Total</p>
+                <p className="text-15 font-bold">{t("total")}</p>
                 <p className="text-gray-400 text-15">
                   {formatCurrency(orderDetail.total)}
                 </p>
@@ -205,74 +259,85 @@ function OrderDetails() {
           </section>
 
           <section className="border border-gray-200 rounded-md p-4 bg-white">
-            <h2 className="font-bold text-16">Transactions</h2>
+            <h2 className="font-bold text-16">{t("transaction")}</h2>
             {orderDetail.transactions?.length > 0 ? (
               orderDetail.transactions.map((transaction, index) => (
                 <div key={index} className="mt-4 flex  justify-between">
                   <p className="text-15 flex flex-col">
-                    Payment <span className="text-gray-400 text-15">{transaction.payment_method}</span>
+                    {t("payment")}{" "}
+                    <span className="text-gray-400 text-15">
+                      {transaction.payment_method}
+                    </span>
                   </p>
                   <p className="text-16 text-gray-600">
-                   {formatCurrency(transaction.amount)}
+                    {formatCurrency(transaction.amount)}
                   </p>
                 </div>
               ))
             ) : (
-              <p className="text-14 text-gray-500 mt-4">No transactions found</p>
+              <p className="text-14 text-gray-500 mt-4 text-center">
+                {t("noTransactions")}
+              </p>
             )}
           </section>
         </div>
 
         <div className="space-y-5">
           <section className="border border-gray-200 rounded-md p-4 bg-white">
-            <h2 className="font-bold text-16">Shipping Address</h2>
+            <h2 className="font-bold text-16">{t("shippingAdd")}</h2>
             <p className="text-12 mt-2">
-              {orderDetail.shipping_address || "Not Available"}
+              {orderDetail.shipping_address || t("notProvided")}
             </p>
           </section>
 
           <section className="border border-gray-200 rounded-md p-4 bg-white">
-            <h2 className="font-bold text-16 mb-4">Customer Details</h2>
+            <h2 className="font-bold text-16 mb-4">{t("customerDetails")}</h2>
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-2 text-14">
                 <span className="text-gray-500">{icons[2].icon}</span>
-                <span className="underline font-bold">{orderDetail.user?.name || "No name provided"}</span>
+                <span className="underline font-bold">
+                  {orderDetail.user?.name || t("notProvided")}
+                </span>
               </div>
               <div className="flex items-center gap-2 text-14">
                 <span className="text-gray-500">{icons[1].icon}</span>
-                <span className="underline font-bold">{orderDetail.user?.email || "No email provided"}</span>
+                <span className="underline font-bold">
+                  {orderDetail.user?.email || t("notProvided")}
+                </span>
               </div>
               <div className="flex items-center gap-2 text-14">
                 <span className="text-gray-500">{icons[0].icon}</span>
-                <span className="font-bold underline">{orderDetail.user?.phone || "No phone provided"}</span>
+                <span className="font-bold underline">
+                  {orderDetail.user?.phone || t("notProvided")}
+                </span>
               </div>
             </div>
           </section>
 
           <section className="border border-gray-200 rounded-md p-4 bg-white">
-            <h2 className="font-bold text-16 mb-3">Balance</h2>
+            <h2 className="font-bold text-16 mb-3">{t("balance")}</h2>
             <div className="bg-gray-50 border border-gray-200 rounded-md p-3">
               <div className="flex justify-between items-center">
-                <p className="text-14">Order Total</p>
+                <p className="text-14">{t("orderTotal")}</p>
                 <p className="text-gray-400 text-14">
                   {formatCurrency(orderDetail.total)}
                 </p>
               </div>
               <div className="flex justify-between items-center mt-3">
-                <p className="text-14">Return Total</p>
+                <p className="text-14">{t("returnTotal")}</p>
                 <p className="text-gray-400 text-14">
                   {formatCurrency(orderDetail.return_price)}
                 </p>
               </div>
               <hr className="border-gray-300 my-2" />
               <div className="flex justify-between items-center mt-3">
-                <p className="text-14">Paid by customer</p>
+                <p className="text-14">{t("paidByCustomer")}</p>
                 <p className="text-gray-400 text-14">
                   {formatCurrency(orderDetail.paid_amount)}
                 </p>
               </div>
               <div className="flex items-center justify-between mt-3">
-                <p className="text-14">Refunded</p>
+                <p className="text-14">{t("refund")}</p>
                 <p className="text-gray-400 text-14">
                   {formatCurrency(orderDetail.refund_price)}
                 </p>
@@ -280,10 +345,8 @@ function OrderDetails() {
               <hr className="border-gray-300 my-2" />
               <div className="mt-3 flex justify-between">
                 <div>
-                  <p className="text-14">Balance</p>
-                  <span className="text-gray-500 text-13">
-                    (customer owes you)
-                  </span>
+                  <p className="text-14">{t("balance")}</p>
+                  <span className="text-gray-500 text-13">{t("own")}</span>
                 </div>
                 <p className="text-gray-400 text-15">
                   {formatCurrency(orderDetail.balance)}
@@ -296,5 +359,4 @@ function OrderDetails() {
     </div>
   );
 }
-
 export default OrderDetails;

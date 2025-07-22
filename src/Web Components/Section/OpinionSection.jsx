@@ -1,7 +1,10 @@
-import React, { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import "./SectionsStyle.scss";
+import { useTranslation } from "react-i18next";
+import { IoIosArrowRoundForward } from "react-icons/io";
+import { IoIosArrowRoundBack } from "react-icons/io";
 const testimonials = [
   {
     id: 1,
@@ -18,7 +21,8 @@ const testimonials = [
 
 function OpinionSection() {
   const carouselRef = useRef();
-
+  const { t, i18n } = useTranslation();
+  const [isRTL, setIsRTL] = useState(false);
   const responsive = {
     desktop: {
       breakpoint: { max: 3000, min: 1024 },
@@ -44,19 +48,20 @@ function OpinionSection() {
   const handleNext = () => {
     carouselRef.current.next();
   };
+  useEffect(() => {
+    setIsRTL(i18n.language === "ar");
+  }, [i18n.language]);
 
   return (
     <section className="opinion-section px-5 lg:px-20 mt-10 mb-20">
       {/* Header */}
       <p className="text-primary bg-customOrange-mediumOrange p-3 rounded-md w-32 text-center text-sm md:text-base">
-        Opinions
+        {t("opinions")}
       </p>
-      <h1 className="text-[19px] font-bold mt-5 text-center md:text-left">
-        What Our Clients Say About Us
-      </h1>
+      <h1 className="text-[19px] font-bold mt-5 ">{t("clients")}</h1>
 
       {/* Carousel */}
-      <div className="carousel-container mt-5">
+      <div className={`carousel-container mt-5 ${isRTL ? "rtl" : "ltr"}`}>
         <Carousel
           responsive={responsive}
           infinite={true}
@@ -66,6 +71,7 @@ function OpinionSection() {
           showDots={false}
           containerClass="carousel"
           itemClass="carousel-item"
+          rtl={isRTL}
         >
           {testimonials.map((testimonial) => (
             <div
@@ -87,7 +93,12 @@ function OpinionSection() {
                   xmlns="http://www.w3.org/2000/svg"
                   className="w-6 md:w-8"
                 >
-                  <circle cx="25.9696" cy="25.7855" r="25.3788" fill="#69ABB5" />
+                  <circle
+                    cx="25.9696"
+                    cy="25.7855"
+                    r="25.3788"
+                    fill="#69ABB5"
+                  />
                   <path
                     d="M36.955 35.2551H28.5164C27.6919 32.534 27.2797 29.714 27.2797 26.795C27.2797 23.8265 28.0314 21.4765 29.5348 19.7449C31.0868 17.9638 33.3662 17.0733 36.3731 17.0733V21.2291C33.9482 21.2291 32.7357 22.7381 32.7357 25.756V27.1661H36.955V35.2551ZM24.6607 35.2551H16.2221C15.3976 32.534 14.9854 29.714 14.9854 26.795C14.9854 23.8265 15.7371 21.4765 17.2405 19.7449C18.7925 17.9638 21.0719 17.0733 24.0788 17.0733V21.2291C21.6539 21.2291 20.4414 22.7381 20.4414 25.756V27.1661H24.6607V35.2551Z"
                     fill="white"
@@ -104,9 +115,7 @@ function OpinionSection() {
                   className="mt-3 w-24 md:w-28 lg:w-52"
                 />
                 <div className="flex gap-3 items-center mt-3">
-                  <p className="font-bold text-14">
-                    {testimonial.name}
-                  </p>
+                  <p className="font-bold text-14">{testimonial.name}</p>
                   <p className="text-gray-500 text-13 mt-1">
                     {testimonial.role}
                   </p>
@@ -125,18 +134,26 @@ function OpinionSection() {
       {/* Navigation Arrows */}
       <div className="flex items- justify-center mt-10 gap-5">
         <button
-          className="bg-primary text-white p-2 w-11 h-11 font-bold rounded-full text-lg md:text-lg"
+          className="bg-primary text-white p-2 w-10 h-10 font-bold rounded-full text-lg md:text-2xl hover:bg-primary-dark transition-colors"
           onClick={handlePrev}
           aria-label="Previous testimonial"
         >
-          &#8592;
+          {isRTL ? (
+            <IoIosArrowRoundForward size={25} />
+          ) : (
+            <IoIosArrowRoundBack size={25} />
+          )}
         </button>
         <button
-          className="bg-primary text-white p-2 w-11 h-11 font-bold rounded-full text-lg md:text-lg"
+          className="bg-primary text-white p-2 w-10 h-10 font-bold rounded-full text-lg md:text-2xl hover:bg-primary-dark transition-colors"
           onClick={handleNext}
           aria-label="Next testimonial"
         >
-          &#8594;
+          {isRTL ? (
+            <IoIosArrowRoundBack size={25} />
+          ) : (
+            <IoIosArrowRoundForward size={25} />
+          )}
         </button>
       </div>
     </section>

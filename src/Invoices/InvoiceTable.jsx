@@ -1,6 +1,6 @@
 import { IoCalendarNumberOutline } from "react-icons/io5";
 import { ClipLoader } from "react-spinners";
-
+import { useTranslation } from "react-i18next";
 export const InvoiceTable = ({
   isLoading,
   error,
@@ -8,12 +8,10 @@ export const InvoiceTable = ({
   navigate,
   searchQuery,
 }) => {
+  const { t } = useTranslation();
+
   if (error) {
-    return (
-      <div className="text-red-500 text-center mt-10">
-        Failed to fetch data. Please try again.
-      </div>
-    );
+    return <div className="text-red-500 text-center mt-10">{t("error")}</div>;
   }
 
   if (isLoading) {
@@ -44,14 +42,24 @@ export const InvoiceTable = ({
                   className="form-checkbox h-4 w-4"
                   aria-label="Select all invoices"
                 />
-                Invoice ID
+                {t("invoiceId")}
               </p>
             </th>
-            <th className="px-3 py-3 text-left border">Customer</th>
-            <th className="px-3 py-3 text-left border">Date</th>
-            <th className="px-3 py-3 text-left border">Price</th>
-            <th className="px-3 py-3 border text-left">Payment Method</th>
-            <th className="px-3 py-3 border text-left ">Status</th>
+            <th className="px-3 py-3 text-left rtl:text-right border">
+              {t("customer")}
+            </th>
+            <th className="px-3 py-3 text-left rtl:text-right border">
+              {t("date")}
+            </th>
+            <th className="px-3 py-3 text-left rtl:text-right border">
+              {t("price")}
+            </th>
+            <th className="px-3 py-3 border text-left rtl:text-right">
+              {t("payMethod")}
+            </th>
+            <th className="px-3 py-3 border text-left rtl:text-right ">
+              {t("status")}
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -67,27 +75,27 @@ export const InvoiceTable = ({
                     className="form-checkbox h-4 w-4"
                     aria-label="Select invoice"
                   />
-                  {invoice.invoice_number || "N/A"}
+                  {invoice.invoice_number || t("notProvided")}
                 </p>
               </td>
-              <td className="px-3 py-3 border-t text-gray-600 border-r text-15 w-250">
-                {invoice.customer_name || "N/A"}
+              <td className="px-3 py-3 border-t text-gray-600 border-r text-14 w-250">
+                {invoice.customer_name || t("notProvided")}
               </td>
               <td className="px-3 py-3 border-t text-gray-600 border-r text-13 w-250">
                 <p className="flex items-center gap-2">
                   <IoCalendarNumberOutline size={17} color="#69ABB5" />
-                  {invoice.date || "N/A"}
+                  {invoice.date || t("notProvided")}
                 </p>
               </td>
-              <td className="px-3 py-3 border-t text-gray-600 border-r text-15 w-28">
+              <td className="px-3 py-3 border-t text-gray-600 border-r rtl:text-right text-14 w-28">
                 {invoice.total || 0} $
               </td>
-              <td className="text-left border-r px-3 py-3 text-gray-600 text-15">
-                {"N/A"}
+              <td className="text-left rtl:text-right border-r px-3 py-3 text-gray-600 text-14">
+                {t("notProvided")}
               </td>
-              <td className="text-left px-3 py-3">
+              <td className="text-left px-3 py-3 rtl:border-r rtl:text-right">
                 <span
-                  className={`px-2 py-2 rounded-md text-14 ${
+                  className={`px-2 rtl:py-0 py-2  rounded-md text-14 ${
                     invoice.payment_status === "unpaid"
                       ? "bg-gray-100 text-gray-400"
                       : invoice.payment_status === "paid"

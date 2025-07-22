@@ -1,13 +1,15 @@
 import { IoMdClose } from "react-icons/io";
+import { useTranslation } from "react-i18next";
 const UploadUpdatedProductImages = ({
   previewImages,
   onImageChange,
   onRemoveImage,
   setFieldValue,
 }) => {
+  const { t } = useTranslation();
   return (
     <div className="bg-white p-4 rounded-md w-2/4 h-80">
-      <h2 className="font-bold mb-3 text-16">Product Icon / Image</h2>
+      <h2 className="font-bold mb-3 text-16">{t("productImage")}</h2>
       <div className="bg-transparent w-full border-2 border-dashed border-gray-400 outline-none h-48 p-1 rounded-md">
         <input
           type="file"
@@ -55,7 +57,7 @@ const UploadUpdatedProductImages = ({
                       }}
                       className="text-white text-15 absolute top-0 left-10"
                     >
-                      <IoMdClose size={20}/>
+                      <IoMdClose size={20} />
                     </button>
                   </div>
                 ))}
@@ -68,9 +70,9 @@ const UploadUpdatedProductImages = ({
                 alt="upload-image-file"
                 className="mt-8 mb-3 w-9"
               />
-              <p className="text-center text-14">Upload Your Category Image</p>
+              <p className="text-center text-14">{t("uploadProductImage")}</p>
               <p className="text-gray-400 leading-8 text-11 w-44 text-center m-auto">
-                Only PNG, SVG Format Allowed. Size: 500KB Max.
+                {t("imageSize")}
               </p>
             </div>
           )}

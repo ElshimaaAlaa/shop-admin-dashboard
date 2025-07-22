@@ -2,7 +2,7 @@ import { IoCalendarNumberOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 import { StatusDisplay } from "./StatusDisplay";
-
+import { useTranslation } from "react-i18next";
 export const OrdersTable = ({
   filteredOrders,
   isLoading,
@@ -11,11 +11,11 @@ export const OrdersTable = ({
   debouncedSearchQuery,
 }) => {
   const navigate = useNavigate();
-
+  const { t } = useTranslation();
   if (error) {
     return (
       <div className="text-red-500 text-center mt-10">
-        Failed to fetch data. Please try again.
+        {t("error")}
       </div>
     );
   }
@@ -32,8 +32,8 @@ export const OrdersTable = ({
     return (
       <div className="text-gray-400 text-center mt-10">
         {debouncedSearchQuery
-          ? "No orders match your search."
-          : "No orders found."}
+          ? t("noMatchResults")
+          : t("noMatchResults")}
       </div>
     );
   }
@@ -46,14 +46,14 @@ export const OrdersTable = ({
             <th className="px-3 py-3  border-b text-left cursor-pointer">
               <p className="flex items-center gap-3">
                 <input type="checkbox" className="form-checkbox h-4 w-4" />
-                Order
+                {t("order")}
               </p>
             </th>
-            <th className="px-3 py-3 text-left border-l">Date</th>
-            <th className="px-3 py-3 text-left border-l">Price</th>
-            <th className="px-3 py-3 text-left border-l">Items</th>
-            <th className="px-3 py-3 text-left border-l">Payment</th>
-            <th className="px-3 py-3 text-left border-l">Status</th>
+            <th className="px-3 py-3 text-left rtl:text-right border-l rtl:border-r">{t("date")}</th>
+            <th className="px-3 py-3 text-left rtl:text-right border-l">{t("price")}</th>
+            <th className="px-3 py-3 text-left rtl:text-right border-l">{t("items")}</th>
+            <th className="px-3 py-3 text-left rtl:text-right border-l">{t("payment")}</th>
+            <th className="px-3 py-3 text-left rtl:text-right border-l">{t("status")}</th>
           </tr>
         </thead>
         <tbody>
@@ -76,7 +76,7 @@ export const OrdersTable = ({
                   {order.order_number}
                 </p>
               </td>
-              <td className="flex items-center gap-2 px-3 py-3 border-t border-r text-gray-600 text-13">
+              <td className="flex items-center gap-2 px-3 py-3 border-t border-r rtl:border-r text-gray-600 text-13">
                 <IoCalendarNumberOutline color="#69ABB5" size={15} />
                 {order.date}
               </td>
@@ -92,7 +92,7 @@ export const OrdersTable = ({
                   status={order.payment_status === "paid" ? 2 : 1}
                 />
               </td>
-              <td className="px-3 py-3 border-t w-36">
+              <td className="px-3 py-3 rtl:border-r  border-t w-36 text-center">
                 <StatusDisplay
                   status={order.status}
                   statusName={order.status_name}

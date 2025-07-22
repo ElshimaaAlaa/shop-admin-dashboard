@@ -7,8 +7,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-// import { IoArrowForwardSharp } from "react-icons/io5";
-
+import { useTranslation } from "react-i18next";
 export default function SalesChangeChart({ rate }) {
   // Generate sample data based on the rate
   const generateData = () => {
@@ -19,11 +18,13 @@ export default function SalesChangeChart({ rate }) {
   };
 
   const data = generateData();
-
+  const { t } = useTranslation();
   return (
     <div className="bg-white border-1 border-gray-200 p-4 rounded-md h-[400px]">
-      <h3 className="font-bold text-16 text-center">Sales Change Rate</h3>
-      <div className="text-12 text-gray-400 text-center mt-1">Jan 01 - Dec 31</div>
+      <h3 className="font-bold text-16 text-center">{t("saleChange")}</h3>
+      <div className="text-12 text-gray-400 text-center mt-1">
+        Jan 01 - Dec 31
+      </div>
       <div className="h-[200px] mt-2">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
@@ -64,15 +65,10 @@ export default function SalesChangeChart({ rate }) {
           {rate}%
         </div>
         <div className="text-13 text-gray-500 font-extralight text-center leading-normal">
-          Your sales performance is {Math.abs(rate) || "0"}% <br />
-          {rate >= 0 ? "better" : "worse"} compared to last month.
+          {t("per1")} {Math.abs(rate) || "0"}% <br />
+          {t("per2")}
         </div>
       </div>
-      {/* <div className="flex justify-center mt-5">
-        <button className="text-primary font-bold flex justify-center items-center gap-2 text-15">
-          View Details <IoArrowForwardSharp size={19} />
-        </button>
-      </div> */}
     </div>
   );
 }

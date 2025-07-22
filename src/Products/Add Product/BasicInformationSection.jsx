@@ -1,6 +1,7 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Field } from "formik";
 import "./style.scss";
+import { useTranslation } from "react-i18next";
 
 const CustomDropdown = ({
   options,
@@ -14,6 +15,7 @@ const CustomDropdown = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const { t } = useTranslation();
 
   const selectedOption = options.find((opt) => opt.value === value);
 
@@ -39,7 +41,7 @@ const CustomDropdown = ({
         onClick={() => setIsOpen(!isOpen)}
       >
         <span className={value ? "text-black" : "text-gray-400"}>
-          {selectedOption ? selectedOption.label : placeholder}
+          {selectedOption ? t(selectedOption.label) : t(placeholder)}
         </span>
         <svg
           className={`w-5 h-5 transition-transform duration-200 ${
@@ -72,7 +74,7 @@ const CustomDropdown = ({
                 setIsOpen(false);
               }}
             >
-              {option.label}
+              {t(option.label)}
             </div>
           ))}
         </div>
@@ -91,11 +93,12 @@ const CategoryField = ({
   categories = [],
   handleCategoryChange,
 }) => {
+  
   const options = [
-    { value: "", label: "Category" },
+    { value: "", label: "category" },
     ...categories.map((category) => ({
       value: category.id,
-      label: category.name,
+      label: `${category.name}`,
     })),
   ];
 
@@ -108,7 +111,7 @@ const CategoryField = ({
         handleCategoryChange(value, form.setFieldValue);
       }}
       name={field.name}
-      placeholder="Category"
+      placeholder="category"
       error={form.errors[field.name]}
       touched={form.touched[field.name]}
       className="h-12"
@@ -117,11 +120,13 @@ const CategoryField = ({
 };
 
 const GenderField = ({ field, form }) => {
+  const { t } = useTranslation();
+  
   const options = [
-    { value: "", label: "Gender" },
-    { value: "male", label: "Male" },
-    { value: "female", label: "Female" },
-    { value: "children", label: "Children" },
+    { value: "", label: "gender" },
+    { value: "male", label: "male" },
+    { value: "female", label: "female" },
+    { value: "children", label: "children" },
   ];
 
   return (
@@ -130,7 +135,7 @@ const GenderField = ({ field, form }) => {
       value={field.value}
       onChange={form.setFieldValue}
       name={field.name}
-      placeholder="Gender"
+      placeholder="gender"
       error={form.errors[field.name]}
       touched={form.touched[field.name]}
       className="h-12"
@@ -171,9 +176,13 @@ const BasicInformationSection = ({
   const tagsIds = values.tags_ids || [];
   const [isTagsDropdownOpen, setIsTagsDropdownOpen] = useState(false);
   const tagsDropdownRef = useRef(null);
+  const { t } = useTranslation();
 
   const handleClickOutsideTags = (event) => {
-    if (tagsDropdownRef.current && !tagsDropdownRef.current.contains(event.target)) {
+    if (
+      tagsDropdownRef.current &&
+      !tagsDropdownRef.current.contains(event.target)
+    ) {
       setIsTagsDropdownOpen(false);
     }
   };
@@ -187,9 +196,13 @@ const BasicInformationSection = ({
 
   return (
     <div className="bg-white p-5 rounded-md w-full mx-5">
-      <h2 className="font-bold mb-3 text-16">Basic Information</h2>
+      <h2 className="font-bold mb-3 text-16">{t("basicInfo")}</h2>
       <div className="flex gap-2">
-        <Field name="name" component={InputField} placeholder="Product Name" />
+        <Field
+          name="name"
+          component={InputField}
+          placeholder={t("productName")}
+        />
         <Field
           name="category_id"
           component={CategoryField}
@@ -198,7 +211,11 @@ const BasicInformationSection = ({
         />
       </div>
       <div className="flex gap-2 mt-3">
-        <Field name="tag_number" component={InputField} placeholder="Tag Number" />
+        <Field
+          name="tag_number"
+          component={InputField}
+          placeholder={t("tagNum")}
+        />
         <Field name="gender" component={GenderField} />
       </div>
       <div className="flex gap-2 mt-3 mb-3">
@@ -206,12 +223,12 @@ const BasicInformationSection = ({
           <Field
             name="return_percentage"
             component={InputField}
-            placeholder="percentage (upon return)"
+            placeholder={t("amountPercentage")}
             className="outline-none ms-32 placeholder:text-14"
           />
         </div>
         <div className="w-full">
-          <Field name="stock" component={InputField} placeholder="Stock" />
+          <Field name="stock" component={InputField} placeholder={t("stock")} />
         </div>
       </div>
       <div className="mt-3 relative" ref={tagsDropdownRef}>
@@ -225,14 +242,14 @@ const BasicInformationSection = ({
         >
           <div className="flex flex-wrap items-center gap-2">
             {tagsIds.length === 0 ? (
-              <p className="text-14 text-gray-400">Select Tags</p>
+              <p className="text-14 text-gray-400">{t("selectedTags")}</p>
             ) : (
               selectedCategoryTags
                 .filter((_, index) => tagsIds.includes(index))
                 .map((tag, index) => (
-                  <span 
+                  <span
                     key={index}
-                    className="bg-customOrange-lightOrange text-primary p-2 text-15  rounded-md  flex items-center"
+                    className="bg-customOrange-lightOrange text-primary p-2 text-15 rounded-md flex items-center"
                   >
                     {tag}
                     <button
@@ -244,7 +261,7 @@ const BasicInformationSection = ({
                           tags_ids: tagsIds,
                         });
                       }}
-                      className="ml-2 text-17 text-red-600"
+                      className="ml-2 rtl:mr-2 text-17 text-red-600"
                     >
                       ×
                     </button>
@@ -269,11 +286,13 @@ const BasicInformationSection = ({
             </svg>
           </div>
         </div>
-        
+
         {isTagsDropdownOpen && (
           <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-auto">
             {selectedCategoryTags.length === 0 ? (
-              <div className="px-4 py-2 text-gray-600 text-13">No tags available</div>
+              <div className="px-4 py-2 text-gray-600 text-13">
+                {t("noTags")}
+              </div>
             ) : (
               selectedCategoryTags.map((tag, index) => (
                 <label
@@ -291,7 +310,7 @@ const BasicInformationSection = ({
                         tags_ids: tagsIds,
                       })
                     }
-                    className="mr-2 custom-checkbox"
+                    className="mr-2 rtl:ml-2 custom-checkbox"
                   />
                   {tag}
                 </label>
@@ -299,14 +318,14 @@ const BasicInformationSection = ({
             )}
           </div>
         )}
-        
+
         {errors.tags_ids && touched.tags_ids && (
           <div className="text-red-500 text-xs mt-1">{errors.tags_ids}</div>
         )}
       </div>
       <Field
         as="textarea"
-        placeholder="Description"
+        placeholder={t("description")}
         name="description"
         className="w-full p-3 border-2 h-28 mt-3 bg-transparent border-gray-200 rounded-lg outline-none placeholder:text-14 focus:border-2 focus:border-primary"
       />

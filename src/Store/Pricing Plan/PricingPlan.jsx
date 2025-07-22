@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FaCheck } from "react-icons/fa6";
 import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
-
+import { useTranslation } from "react-i18next";
 const PLANS = [
   {
     id: 1,
@@ -55,7 +55,7 @@ function Pricing() {
   const navigate = useNavigate();
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const { t } = useTranslation();
   useEffect(() => {
     const planId = localStorage.getItem("plan_id");
     if (planId) {
@@ -72,7 +72,7 @@ function Pricing() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <p>Loading your plan...</p>
+          <p>{t("loadPlan")}</p>
         </div>
       </div>
     );
@@ -82,12 +82,12 @@ function Pricing() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <p>No plan selected yet.</p>
+          <p className="font-bold">{t("noPlan")}</p>
           <button
             onClick={() => navigate("/Register/PricingPlan")}
             className="mt-4 bg-primary text-white px-4 py-2 rounded-md"
           >
-            Select a Plan
+            {t("selectPlan")}
           </button>
         </div>
       </div>
@@ -97,17 +97,17 @@ function Pricing() {
   return (
     <div className="">
       <Helmet>
-        <title>Your Pricing Plan</title>
+        <title>{t("yourPlan")}</title>
       </Helmet>
 
       <div className="">
         <div className="flex justify-between">
-          <h1 className="text-[18px] font-bold">Your Current Plan</h1>
+          <h1 className="text-[18px] font-bold">{t("yourPlan")}</h1>
           <button
             onClick={() => navigate("/Register/PricingPlan")}
             className="bg-primary w-36 font-bold text-white p-3 rounded-md hover:bg-primary-dark transition-colors"
           >
-            Change Plan
+            {t("changePlan")}
           </button>
         </div>
         <div className="border w-300 rounded-md p-5 mt-3">
@@ -128,7 +128,9 @@ function Pricing() {
                     {selectedPlan.period}
                   </span>
                 </p>
-                <p className="text-gray-400 text-13">{selectedPlan.description}</p>
+                <p className="text-gray-400 text-13">
+                  {selectedPlan.description}
+                </p>
               </div>
             </div>
           </div>

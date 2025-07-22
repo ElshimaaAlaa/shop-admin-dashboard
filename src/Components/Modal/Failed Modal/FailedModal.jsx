@@ -1,4 +1,3 @@
-import React from "react";
 import "./Modal.scss";
 function FailedModal({ isOpen, children, onClose }) {
   if (!isOpen) return null;

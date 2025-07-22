@@ -6,21 +6,37 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  ResponsiveContainer
+  ResponsiveContainer,
 } from "recharts";
-
-const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
+import { useTranslation } from "react-i18next";
+const monthNames = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
 
 function MonthlyTrendChart({ monthlyExpended, monthlyIncome, monthlyProfit }) {
   const [activeTab, setActiveTab] = useState("Expend");
-
+  const { t } = useTranslation();
   const transformData = () => {
     return monthNames.map((name, index) => {
       const monthNumber = index + 1;
-      const expended = monthlyExpended.find((item) => item.month === monthNumber)?.expended || "0";
-      const income = monthlyIncome.find((item) => item.month === monthNumber)?.income || "0";
-      const profit = monthlyProfit.find((item) => item.month === monthNumber)?.profit || "0";
+      const expended =
+        monthlyExpended.find((item) => item.month === monthNumber)?.expended ||
+        "0";
+      const income =
+        monthlyIncome.find((item) => item.month === monthNumber)?.income || "0";
+      const profit =
+        monthlyProfit.find((item) => item.month === monthNumber)?.profit || "0";
 
       return {
         name,
@@ -34,16 +50,14 @@ function MonthlyTrendChart({ monthlyExpended, monthlyIncome, monthlyProfit }) {
   const chartData = transformData();
   return (
     <div className="mt-5 border-1 border-gray-200 rounded-lg p-4">
-      <h3 className="font-bold text-17 mb-4">Monthly Trend</h3>
-      
+      <h3 className="font-bold text-17 mb-4">{t("monthlyTrend")}</h3>
+
       <div className="flex mb-4 justify-center md:justify-end ">
-        {["Expend", "Income", "Profit"].map((tab) => (
+        {[t("expend"), t("income"), t("profit")].map((tab) => (
           <button
             key={tab}
             className={`p-2 rounded-md text-14 w-24 font-medium border-1 border-gray-200 transition-colors ${
-              activeTab === tab
-                ? "bg-[#E0A75E] text-white"
-                : "text-gray-400"
+              activeTab === tab ? "bg-[#E0A75E] text-white" : "text-gray-400"
             }`}
             onClick={() => setActiveTab(tab)}
           >

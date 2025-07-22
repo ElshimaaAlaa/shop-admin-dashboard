@@ -3,12 +3,14 @@ import axios from "axios";
 import { ClipLoader } from "react-spinners";
 import FailedModal from "../Components/Modal/Failed Modal/FailedModal";
 import "./DeleteModal.scss";
+import { useTranslation } from "react-i18next";
 function Delete({ id, onDelete }) {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const API_BASE_URL = "https://";
   const live_shop_domain = localStorage.getItem("live_shop_domain");
   const role = localStorage.getItem("role");
+  const { t } = useTranslation();
   const handleDeleteProduct = async () => {
     setIsLoading(true);
     try {
@@ -56,14 +58,14 @@ function Delete({ id, onDelete }) {
           />
         </div>
         <p className="font-bold w-72 text-center">
-          Are You Sure You Want To Delete This Product ?
+          {t("deleteProduct")}
         </p>
-        <div className="flex gap-3 mt-5 mb-3">
+        <div className="flex gap-3 mt-5 mb-3 rtl:flex-row-reverse">
           <button
             className="rounded p-3 bg-gray-100 text-gray-400 font-bold w-32"
             onClick={() => setShowModal(false)}
           >
-            Cancel
+            {t("cancel")}
           </button>
           <button
             className="rounded text-white bg-customred font-bold p-3 w-32"
@@ -72,7 +74,7 @@ function Delete({ id, onDelete }) {
             {isLoading ? (
               <ClipLoader color="#fff" size={"22px"} className="text-center" />
             ) : (
-              "Delete"
+              t("delete")
             )}
           </button>
         </div>

@@ -9,7 +9,7 @@ import { fetchPaymentMethods } from "../../ApiServices/PaymentMethods";
 import { MdPayment } from "react-icons/md";
 import DeletePayment from "./DletePayment";
 import AddShippingProvider from "./AddPaymentMethods";
-
+import { useTranslation } from "react-i18next";
 function PaymentMethods() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -18,7 +18,8 @@ function PaymentMethods() {
   const [paymentData, setPaymentData] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage] = useState(10);
-
+  const { t, i18n } = useTranslation();
+  const [isRTL, setIsRTL] = useState(false);
   const fetchData = async () => {
     setIsLoading(true);
     try {
@@ -35,7 +36,8 @@ function PaymentMethods() {
 
   useEffect(() => {
     fetchData();
-  }, [searchQuery]);
+    setIsRTL(i18n.language==="ar")
+  }, [searchQuery,i18n.language]);
 
   const filteredPaymentData = useMemo(() => {
     return paymentData.filter((payment) =>
@@ -58,7 +60,7 @@ function PaymentMethods() {
   const handleDeleteSuccess = (deletedId) => {
     const updatedData = paymentData.filter((item) => item.id !== deletedId);
     setPaymentData(updatedData);
-    
+
     if (currentItems.length === 1 && currentPage > 0) {
       setCurrentPage(currentPage - 1);
     }
@@ -74,16 +76,18 @@ function PaymentMethods() {
   return (
     <div className="bg-gray-100 flex flex-col h-[89vh] ">
       <Helmet>
-        <title>Payment Methods | vertex</title>
+        <title>
+          {t("paymentMethod")} | {t("vertex")}
+        </title>
       </Helmet>
       <div className="rounded-md p-5 mx-5 bg-white mt-5">
-        <p className="text-13 text-gray-400">Menu / Payment Methods</p>
-        <h1 className="mt-2 text-17 font-bold">Payment Methods</h1>
+        <p className="text-13 text-gray-400">{t("paymentMethodMenu")}</p>
+        <h1 className="mt-2 text-17 font-bold">{t("paymentMethod")}</h1>
       </div>
       <div className="rounded-md bg-customOrange-mediumOrange border mt-3 border-primary p-4 mx-5 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <MdPayment color="#E0A75E" size={24} />
-          <p className="text-gray-500 text-15">Payment Methods</p>
+          <p className="text-gray-500 text-15">{t("paymentMethod")}</p>
         </div>
         <p className="font-bold text-16">{filteredPaymentData.length}</p>
       </div>
@@ -95,34 +99,30 @@ function PaymentMethods() {
               size={20}
             />
           }
-          text={"Add Payment Method"}
+          text={t("addPay")}
           onclick={() => setShowModal(true)}
           value={searchQuery}
           onchange={(e) => {
             setSearchQuery(e.target.value);
-            setCurrentPage(0); 
+            setCurrentPage(0);
           }}
         />
         <AddShippingProvider
           isOpen={showModal}
           onClose={() => {
             setShowModal(false);
-            fetchData(); 
+            fetchData();
           }}
         />
         {error ? (
-          <div className="text-red-500 text-center mt-10">
-            Failed to fetch data. Please try again.
-          </div>
+          <div className="text-red-500 text-center mt-10">{t("error")}</div>
         ) : isLoading ? (
           <div className="text-gray-400 text-center mt-10">
             <ClipLoader color="#E0A75E" />
           </div>
         ) : filteredPaymentData.length === 0 ? (
           <div className="text-gray-400 text-center mt-10">
-            {searchQuery
-              ? "No payment methods match your search."
-              : "No payment methods found."}
+            {searchQuery ? t("noMatchResults") : t("noMatchResults")}
           </div>
         ) : (
           <>
@@ -137,11 +137,11 @@ function PaymentMethods() {
                           className="form-checkbox h-4 w-4"
                           aria-label="Select all categories"
                         />
-                        Payment Methods
+                        {t("paymentMethod")}
                       </p>
                     </th>
                     <th className="px-6 py-3 border text-center w-12">
-                      Actions
+                      {t("actions")}
                     </th>
                   </tr>
                 </thead>
@@ -158,7 +158,7 @@ function PaymentMethods() {
                           {item.name}
                         </p>
                       </td>
-                      <td className="text-center px-3 py-3">
+                      <td className="text-center px-3 py-3 bordr-l border-r">
                         <div className="flex justify-center items-center">
                           <DeletePayment
                             id={item.id}
@@ -171,18 +171,30 @@ function PaymentMethods() {
                 </tbody>
               </table>
             </div>
-              <ReactPaginate
-                pageCount={pageCount}
-                onPageChange={handlePageClick}
-                forcePage={currentPage}
-                containerClassName="flex items-center justify-end mt-5 text-gray-400 text-14"
-                pageClassName="mx-1 px-3 py-1 rounded"
-                activeClassName="bg-customOrange-lightOrange text-primary"
-                previousLabel={<ChevronLeft className="w-5 h-5 text-center" />}
-                nextLabel={<ChevronRight className="w-5 h-5" />}
-                previousClassName="mx-1 px-3 py-1 font-bold text-primary text-18"
-                nextClassName="mx-1 px-3 py-1 font-bold text-primary text-18"
-              />
+            <ReactPaginate
+              pageCount={pageCount}
+              onPageChange={handlePageClick}
+              forcePage={currentPage}
+              containerClassName="flex items-center justify-end mt-5 text-gray-400 text-14"
+              pageClassName="mx-1 px-3 py-1 rounded"
+              activeClassName="bg-customOrange-lightOrange text-primary"
+              previousLabel={
+                isRTL ? (
+                  <ChevronRight className="w-5 h-5 text-primary" />
+                ) : (
+                  <ChevronLeft className="w-5 h-5 text-center text-primary" />
+                )
+              }
+              nextLabel={
+                isRTL ? (
+                  <ChevronLeft className="w-5 h-5 text-center text-primary" />
+                ) : (
+                  <ChevronRight className="w-5 h-5 text-primary" />
+                )
+              }
+              previousClassName="mx-1 px-3 py-1 font-bold text-primary text-18"
+              nextClassName="mx-1 px-3 py-1 font-bold text-primary text-18"
+            />
           </>
         )}
       </div>

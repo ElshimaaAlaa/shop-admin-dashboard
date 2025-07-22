@@ -2,37 +2,62 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+
 const FALLBACK_TEXT = "__";
+
 const InventoryItem = ({ label, value }) => (
   <div>
     <h2 className="text-gray-400 text-15">{label}</h2>
     <p className="text-14 mt-1">{value || FALLBACK_TEXT}</p>
   </div>
 );
-const ColorItem = React.memo(({ color }) => (
-  <div className="flex gap-10 items-center">
-    <div>
-      <h2 className="text-gray-400 text-15">Color</h2>
-      <div
-        className="w-14 h-7 mt-1 rounded-md"
-        style={{ backgroundColor: color.code }}
-      ></div>
+
+const ColorItem = React.memo(({ color }) => {
+  const { t } = useTranslation();
+  return (
+    <div className="flex gap-10 items-center">
+      <div>
+        <h2 className="text-gray-400 text-15">{t("productColor")}</h2>
+        <div className="flex items-center gap-2 mt-1">
+          <div
+            className="w-14 h-7 rounded-md"
+            style={{ backgroundColor: color.code }}
+            aria-label={t("colorSample")}
+          ></div>
+        </div>
+      </div>
     </div>
-  </div>
-));
+  );
+});
+ColorItem.displayName = "ColorItem";
+
+const SizeItem = React.memo(({ size }) => {
+  const { t } = useTranslation();
+  return (
+    <div>
+      <h2 className="text-gray-400 text-15">{t("size")}</h2>
+      <p className="text-14 mt-1 bg-customOrange-mediumOrange rounded-md p-1 text-primary">
+        {size.name}
+      </p>
+    </div>
+  );
+});
+SizeItem.displayName = "SizeItem";
 
 function ViewProduct() {
   const [productData, setProductData] = useState({});
   const { productId } = useParams();
   const [mainImage, setMainImage] = useState(null);
-  const API_BASE_URL = "https://";
   const live_shop_domain = localStorage.getItem("live_shop_domain");
   const role = localStorage.getItem("role");
+  const { t } = useTranslation();
+
   useEffect(() => {
     const fetchProductDetails = async () => {
       try {
         const response = await axios({
-          url: `${API_BASE_URL}${live_shop_domain}/api/${role}/products/${productId}`,
+          url: `https://${live_shop_domain}/api/${role}/products/${productId}`,
           method: "GET",
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -44,9 +69,6 @@ function ViewProduct() {
         if (response.status === 200) {
           setProductData(response.data.data);
           setMainImage(response.data.data.images?.[0]?.src);
-          console.log("Product Data:", response.data.data);
-        } else {
-          console.error("Failed to fetch data");
         }
       } catch (error) {
         console.error("Failed to fetch product", error);
@@ -61,42 +83,44 @@ function ViewProduct() {
   return (
     <div className="bg-gray-100 min-h-screen flex flex-col mx-5">
       <Helmet>
-        <title>View Product - VERTEX</title>
-        <meta name="description" content="View product details in VERTEX" />
+        <title>{t("viewProduct")} - {t("vertex")}</title>
+        <meta name="description" content={t("viewProductDescription")} />
       </Helmet>
+
       <section className="bg-white p-4 rounded-md mt-5 mb-3">
-        <p className="text-gray-400 text-12">Menu / Products / View Product</p>
-        <h1 className="text-17 mt-3 font-bold">View Product</h1>
+        <p className="text-gray-400 text-12">{t("viewProductHead")}</p>
+        <h1 className="text-17 mt-3 font-bold">{t("viewProduct")}</h1>
       </section>
+
       <div className="flex flex-col">
         <div className="flex gap-5">
           {/* Product Basic Information */}
           <section className="bg-white p-4 rounded-md w-full">
-            <h2 className="font-bold mb-3 text-16">Basic Information</h2>
+            <h2 className="font-bold mb-3 text-16">{t("basicInfo")}</h2>
             <div className="w-full bg-transparent border border-gray-200 rounded-md ps-2 pt-4 pb-2 block">
-              <div className="flex items-center px-3 w-560px justify-between">
-                <InventoryItem label="Product Name" value={productData.name} />
+              <div className="flex items-center px-3 w-560px rtl:w-[510px] justify-between">
+                <InventoryItem label={t("productName")} value={productData.name} />
                 <InventoryItem
-                  label="Category Name"
+                  label={t("categoryName")}
                   value={productData.category?.name}
                 />
               </div>
-              <div className="flex items-center w-500px justify-between p-3">
+              <div className="flex items-center w-500px rtl:w-[460px] justify-between p-3">
                 <InventoryItem
-                  label="Tag Number"
+                  label={t("tagNum")}
                   value={productData.tag_number}
                 />
-                <InventoryItem label="Gender" value={productData.gender} />
+                <InventoryItem label={t("gender")} value={productData.gender} />
               </div>
-              <div className="flex items-center justify-between w-485px px-3">
+              <div className="flex items-center justify-between w-485px rtl:w-[480px] px-3">
                 <InventoryItem
-                  label="Amount percentage (upon return)"
+                  label={t("amountPercentage")}
                   value={productData.return_percentage}
                 />
-                <InventoryItem label="Stock" value={productData.stock} />
+                <InventoryItem label={t("stock")} value={productData.stock} />
               </div>
               <div className="p-3">
-                <h2 className="text-gray-400 text-15">Tags</h2>
+                <h2 className="text-gray-400 text-15">{t("tags")}</h2>
                 <div className="flex flex-wrap items-center gap-2 ">
                   {productData.tags?.length ? (
                     productData.tags.map((tag, index) => (
@@ -109,22 +133,23 @@ function ViewProduct() {
                     ))
                   ) : (
                     <span className="bg-customOrange-mediumOrange text-primary mt-1 text-14 w-fit text-center p-2 rounded-md">
-                      No tags available
+                      {t("noTags")}
                     </span>
                   )}
                 </div>
               </div>
               <div className="px-3">
                 <InventoryItem
-                  label="Description"
+                  label={t("description")}
                   value={productData.description}
                 />
               </div>
             </div>
           </section>
+
           {/* Product Image & Thumbnails */}
           <section className="bg-white rounded-md w-2/4 p-4 h-72">
-            <p className="font-bold text-16">Product Icons / Images</p>
+            <p className="font-bold text-16">{t("productImage")}</p>
             <div className="image-section">
               {mainImage ? (
                 <div className="main-image">
@@ -136,7 +161,7 @@ function ViewProduct() {
                 </div>
               ) : (
                 <p className="text-gray-400 my-5 text-15">
-                  No images available
+                  {t("noImage")}
                 </p>
               )}
               {productData.images && productData.images.length > 0 && (
@@ -145,7 +170,7 @@ function ViewProduct() {
                     <img
                       key={index}
                       src={image.src}
-                      alt={`Thumbnail ${index + 1}`}
+                      alt={`${t("thumbnail")} ${index + 1}`}
                       onClick={() => setMainImage(image.src)}
                       className={`h-12 w-12 object-cover cursor-pointer rounded-md ${
                         mainImage === image.src
@@ -159,31 +184,32 @@ function ViewProduct() {
             </div>
           </section>
         </div>
+
         {/* Stock & Pricing Information */}
         <section className="flex gap-5 my-3">
           <div className="w-full bg-white p-4 rounded-md">
-            <h2 className="font-bold mb-3 text-16">Pricing</h2>
-            <div className="bg-transparent border border-gray-200 rounded-md ps-2 pt-2 pb-2  block">
+            <h2 className="font-bold mb-3 text-16">{t("pricing")}</h2>
+            <div className="bg-transparent border border-gray-200 rounded-md ps-2 pt-2 pb-2 block">
               <div className="flex items-center p-3 w-500px justify-between">
                 <InventoryItem
-                  label="Price(for piece)"
+                  label={t("piecePrice")}
                   value={productData.price}
                 />
-                <InventoryItem label="Cost" value={productData.cost} />
+                <InventoryItem label={t("cost")} value={productData.cost} />
               </div>
-              <div className="flex items-center gap px-3 w-530px justify-between">
+              <div className="flex items-center gap px-3 w-530px rtl:w-[500px] justify-between">
                 <InventoryItem
-                  label="Revenue"
+                  label={t("revenue")}
                   value={`${productData.revenue} $`}
                 />
                 <InventoryItem
-                  label="Discount"
+                  label={t("discount")}
                   value={productData.discount_percentage}
                 />
               </div>
               <div className="flex items-center p-3">
                 <InventoryItem
-                  label="Date"
+                  label={t("date")}
                   value={productData.discount_expire_at}
                 />
               </div>
@@ -191,67 +217,59 @@ function ViewProduct() {
           </div>
           <div className="w-2/4 h-72"></div>
         </section>
+
         {(hasColors || hasSizes) && (
           <section className="w-[920px] p-4 mb-7 bg-white rounded-md">
-            <h2 className="font-bold mb-5 text-16">Inventory</h2>
+            <h2 className="font-bold mb-5 text-16">{t("inventory")}</h2>
             {hasColors && (
               <div>
-                <div>
-                  {productData.colors.map((color, index) => (
-                    <div key={color.id || index} className="flex gap-3">
-                      <div>
-                        <img
-                          src={
-                            color.image || productData.images?.[0]?.src || ""
-                          }
-                          alt={`Color: ${color.name}`}
-                          className="h-16 w-24 object-cover rounded-xl"
-                        />
-                      </div>
-                      <div className="flex w-full items-center justify-between mb-3 border-2 border-gray-200 rounded-lg p-2">
-                        <ColorItem color={color} />
-                        <InventoryItem label="Stock" value={color.stock} />
-                        <InventoryItem label="Price" value={color.price} />
-                        <InventoryItem
-                          label="Discount"
-                          value={color.discount_percentage}
-                        />
-                        <InventoryItem
-                          label="Date"
-                          value={color.discount_expire_at}
-                        />
-                      </div>
+                {productData.colors.map((color, index) => (
+                  <div key={color.id || index} className="flex gap-3 mb-3">
+                    <div>
+                      <img
+                        src={color.image || productData.images?.[0]?.src || ""}
+                        alt={`${t("color")}: ${color.name}`}
+                        className="h-16 w-24 object-cover rounded-xl"
+                      />
                     </div>
-                  ))}
-                </div>
+                    <div className="flex w-full items-center justify-between border-2 border-gray-200 rounded-lg p-2">
+                      <ColorItem color={color} />
+                      <InventoryItem label={t("stock")} value={color.stock} />
+                      <InventoryItem label={t("price")} value={color.price} />
+                      <InventoryItem
+                        label={t("discount")}
+                        value={color.discount_percentage}
+                      />
+                      <InventoryItem
+                        label={t("date")}
+                        value={color.discount_expire_at}
+                      />
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
             {hasSizes && (
-              <section>
+              <div>
                 {productData.sizes.map((size, index) => (
                   <div
                     key={size.id || index}
                     className="flex items-center border-2 border-gray-200 rounded-lg mb-3 p-2 justify-between"
                   >
-                    <div>
-                      <h3 className="text-gray-400 text-15">Size</h3>
-                      <p className="text-14 mt-1 bg-customOrange-mediumOrange rounded-md p-1 text-primary">
-                        {size.name}
-                      </p>
-                    </div>
-                    <InventoryItem label="Stock" value={size.stock} />
-                    <InventoryItem label="Price" value={size.price} />
+                    <SizeItem size={size} />
+                    <InventoryItem label={t("stock")} value={size.stock} />
+                    <InventoryItem label={t("price")} value={size.price} />
                     <InventoryItem
-                      label="Discount"
+                      label={t("discount")}
                       value={size.discount_percentage}
                     />
                     <InventoryItem
-                      label="Date"
+                      label={t("date")}
                       value={size.discount_expire_at}
                     />
                   </div>
                 ))}
-              </section>
+              </div>
             )}
           </section>
         )}
@@ -259,4 +277,5 @@ function ViewProduct() {
     </div>
   );
 }
+
 export default ViewProduct;

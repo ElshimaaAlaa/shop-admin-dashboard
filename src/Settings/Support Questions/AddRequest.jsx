@@ -6,10 +6,11 @@ import { Form, Formik, Field } from "formik";
 import { AddNewRequest } from "../../ApiServices/AddRequest";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import { IoMdClose } from "react-icons/io";
-
+import { useTranslation } from "react-i18next";
 function AddRequest({ isOpen, onClose, onSuccess, questionId }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { t } = useTranslation();
   const initialValues = {
     answer: "",
   };
@@ -50,7 +51,7 @@ function AddRequest({ isOpen, onClose, onSuccess, questionId }) {
             alt="chat"
             className="w-14 my-4"
           />
-          <h3 className="text-16 font-bold">Add Response</h3>
+          <h3 className="text-16 font-bold">{t("addResponse")}</h3>
           {error && (
             <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">
               {error}
@@ -61,11 +62,11 @@ function AddRequest({ isOpen, onClose, onSuccess, questionId }) {
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
           >
-            <Form className="w-350 ms-3 mt-3 flex flex-col gap-3">
+            <Form className="w-350 ms-3 rtl:me-3 mt-3 flex flex-col gap-3">
               <Field
                 as="textarea"
                 name="answer"
-                placeholder="Your Response"
+                placeholder={t("response")}
                 className="w-full h-24 p-3 border-2 rounded-md outline-none transition-all duration-200 placeholder:text-14 focus:border-primary placeholder:text-gray-400"
               />
               <button
@@ -77,7 +78,7 @@ function AddRequest({ isOpen, onClose, onSuccess, questionId }) {
                   <ClipLoader color="#fff" size={26} />
                 ) : (
                   <>
-                    <IoMdAddCircleOutline size={23} /> Add
+                    <IoMdAddCircleOutline size={23} /> {t("add")}
                   </>
                 )}
               </button>

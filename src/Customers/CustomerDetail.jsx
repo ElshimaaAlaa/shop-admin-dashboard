@@ -6,6 +6,7 @@ import { CustomerBalance } from "./CustomerBalance";
 import { CustomerPersonalInfo } from "./CustomerPersonalInfo";
 import { CustomerStatistics } from "./CustomerStatistics";
 import { CustomerTransactions } from "./CustomerTransactions";
+import { useTranslation } from "react-i18next";
 function CustomerDetail() {
   const [customerData, setCustomerData] = useState([]);
   const [statistics, setStatistics] = useState([]);
@@ -13,17 +14,18 @@ function CustomerDetail() {
   const [error, setError] = useState(false);
   const [orders, setOrders] = useState([]);
   const { customerId } = useParams();
-  const API_BASE_URL = "https://";
   const live_shop_domain = localStorage.getItem("live_shop_domain");
   const role = localStorage.getItem("role");
+  const { t } = useTranslation();
   useEffect(() => {
     const CustomerDetails = async () => {
       setIsLoading(true);
       try {
         const response = await axios({
-          url: `${API_BASE_URL}${live_shop_domain}/api/${role}/customers/${customerId}`,
+          url: `https://${live_shop_domain}/api/${role}/customers/${customerId}`,
           method: "GET",
           headers: {
+            "Accept-Language": "en",
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
@@ -47,11 +49,11 @@ function CustomerDetail() {
       navigator.clipboard
         .writeText(customerData.personal_info?.phone)
         .then(() => {
-          alert("Phone number copied to clipboard!");
+          alert(t("successCopy"));
         })
         .catch((err) => {
           console.error("Failed to copy phone number: ", err);
-          alert("Failed to copy phone number");
+          alert(t("faildCopy"));
         });
     }
   };
@@ -59,13 +61,13 @@ function CustomerDetail() {
   return (
     <div className="bg-gray-100 mx-5 py-5">
       <Helmet>
-        <title>Customers Details | VERTEX</title>
+        <title>
+          {t("customerDetails")} | {t("vertex")}
+        </title>
       </Helmet>
       <section className="bg-white mb-3 p-5 rounded-md w-full">
-        <p className="text-gray-400 text-13">
-          Menu / Customers / Customer Details
-        </p>
-        <h1 className="font-bold text-17 mt-2">Customers Details</h1>
+        <p className="text-gray-400 text-13">{t("customerDetailsHead")}</p>
+        <h1 className="font-bold text-17 mt-2">{t("customerDetails")}</h1>
       </section>
       <CustomerBalance balance={customerData.personal_info?.balance} />
       <div className="mt-3 flex gap-3">

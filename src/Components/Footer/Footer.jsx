@@ -1,4 +1,3 @@
-import React from "react";
 import { ClipLoader } from "react-spinners";
 import { FaCircleCheck } from "react-icons/fa6";
 
@@ -12,7 +11,7 @@ function Footer({
   cancelBtnType,
 }) {
   return (
-    <div className="flex gap-5 items-center border-t justify-end bg-white rounded p-5 w-full mt-5 absolute bottom-0">
+    <div className="flex gap-5 items-center border-t justify-end bg-white rounded p-5 w-full mt-5 absolute bottom-0 rtl:flex-row-reverse">
       <button
         type={"button"}
         className="bg-gray-100 text-gray-400 p-3 w-40 rounded-md"

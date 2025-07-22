@@ -1,13 +1,17 @@
 import axios from "axios";
-import React from "react";
+import { useTranslation } from "react-i18next";
 function ResendCode() {
+  const live_shop_domain = sessionStorage.getItem("live_shop_domain");
+  const role = sessionStorage.getItem("role");
+  const { t } = useTranslation();
   const resndCode = async () => {
-    const email = localStorage.getItem("Email Admin");
+    const email = localStorage.getItem("shop admin email");
     const response = await axios({
-      url: "https://demo.vrtex.duckdns.org/api/shop/send-otp",
+      url: `https://${live_shop_domain}/api/${role}/send-otp`,
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Accept-Language": "ar",
       },
       data: { email },
     });
@@ -23,7 +27,7 @@ function ResendCode() {
         onClick={resndCode}
         className="font-bold text-primary text-15 cursor-pointer"
       >
-        Resend
+        {t("resend")}
       </p>
     </div>
   );

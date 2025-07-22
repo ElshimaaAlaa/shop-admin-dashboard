@@ -1,5 +1,5 @@
 import { Formik, Form, Field } from "formik";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as Yup from "yup";
 import MainBtn from "../../Components/Main Button/MainBtn";
 import "./VerifayPassword.scss";
@@ -8,9 +8,13 @@ import { Helmet } from "react-helmet";
 import { VerifayPasswordService } from "../../ApiServices/VerifayPasswordService";
 import ResendCode from "../Resend Code/ResendCode";
 import { useNavigate } from "react-router-dom";
-
+import { useTranslation } from "react-i18next";
+import { IoIosArrowDown } from "react-icons/io";
 function VerifayPassword() {
   const [loading, setLoading] = useState(false);
+  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
+  const { t, i18n } = useTranslation();
+  const [isRTL, setIsRTL] = useState(false);
   const navigate = useNavigate();
   const initialValues = {
     email: "",
@@ -24,7 +28,7 @@ function VerifayPassword() {
 
   const handleSubmit = async (values) => {
     setLoading(true);
-    const email = localStorage.getItem("Email Admin");
+    const email = localStorage.getItem("shop admin email");
     const otp =
       values.otp1 +
       values.otp2 +
@@ -47,6 +51,22 @@ function VerifayPassword() {
     } finally {
       setLoading(false);
     }
+  };
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
+    i18n.changeLanguage(savedLanguage);
+    setIsRTL(savedLanguage === "ar");
+  }, [i18n]);
+  // Update RTL state and localStorage when language changes
+  useEffect(() => {
+    const currentLanguage = i18n.language;
+    setIsRTL(currentLanguage === "ar");
+    localStorage.setItem("selectedLanguage", currentLanguage);
+  }, [i18n.language]);
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    setShowLanguageDropdown(false);
+    localStorage.setItem("selectedLanguage", lng);
   };
 
   const validationSchema = Yup.object().shape({
@@ -71,17 +91,49 @@ function VerifayPassword() {
     <div className="main-container min-h-screen flex items-center justify-center">
       <Helmet>
         <meta charSet="utf-8" />
-        <title>Verifay Password</title>
+        <title>{t("verification")}</title>
+        <html dir={isRTL ? "rtl" : "ltr"} lang={i18n.language} />
       </Helmet>
       <div className="verivayContainer w-96 lg:w-450 md:w-450 sm:w-450 xs:w-450 s:w-450 bg-gray-50 rounded-md">
-        <img
-          src="/assets/svgs/vertex.svg"
-          alt="logo"
-          className="w-48 h-10 mb-3"
-        />
-        <h1 className="font-bold text-[20px] mt-3">Verification Code</h1>
+        <div className="flex justify-between items-center">
+          <img
+            src="/assets/svgs/vertex.svg"
+            alt="logo"
+            className="w-48 h-10 mb-3"
+          />
+          <div className="relative">
+            <button
+              className="flex items-center gap-1 text-14 bg-customOrange-lightOrange text-primary rounded-md p-2"
+              onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
+            >
+              {i18n.language.toUpperCase()}
+              <IoIosArrowDown size={20} />
+            </button>
+            {showLanguageDropdown && (
+              <div
+                className={`absolute ${
+                  isRTL ? "left-0" : "right-0"
+                } w-14 bg-white rounded-md shadow-lg z-10`}
+              >
+                <button
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={() => changeLanguage("en")}
+                >
+                  EN
+                </button>
+                <button
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={() => changeLanguage("ar")}
+                >
+                  AR
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+        <h1 className="font-bold text-[20px] mt-3">{t("verification")}</h1>
         <p className="text-secondary mt-2 text-15">
-          Enter the verification code we just sent on your email address.
+          {t("enterVerifayCode")}
         </p>
         <Formik
           initialValues={initialValues}
@@ -108,12 +160,12 @@ function VerifayPassword() {
                   ))}
               </div>
               <div className="text-gray-600 mt-3 mb-3 flex items-center gap-2 text-15">
-                <p className="">Didn’t Get Code?</p>
+                <p className="">{t("notGetCode")}</p>
                 <ResendCode />
               </div>
               <MainBtn
                 text={
-                  loading ? <ClipLoader color="#fff" size={22} /> : "Verify"
+                  loading ? <ClipLoader color="#fff" size={22} /> : t("verifay")
                 }
                 btnType="submit"
               />

@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +10,9 @@ import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 import "./CreateNewPassword.scss";
 import { CreateNewPasswordService } from "../../ApiServices/CreateNewPasswordService";
 import PasswordInput from "../../Components/Password Input/PasswordInput";
+import { useTranslation } from "react-i18next";
+import { IoIosArrowDown } from "react-icons/io";
+
 function CreateNewPassword() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -16,24 +20,27 @@ function CreateNewPassword() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
+  const { t, i18n } = useTranslation();
+  const [isRTL, setIsRTL] = useState(false);
   const initialValues = {
     password: "",
     password_confirmation: "",
   };
   const validationSchema = Yup.object({
     password: Yup.string()
-      .min(8, "Password must be at least 8 characters long")
-      .required("Password is required"),
+      .min(8, t("passwordLenght"))
+      .required(t("passwordRequired")),
     password_confirmation: Yup.string()
-      .oneOf([Yup.ref("password"), null], "Passwords must match")
-      .required("Confirm Password is required"),
+      .oneOf([Yup.ref("password"), null], t("matchPassword"))
+      .required(t("confirmRequired")),
   });
 
   const handleSubmit = async (values) => {
     setLoading(true);
     setError(null);
-    const email = localStorage.getItem("Email Admin");
-    const token = localStorage.getItem("access token");
+    const email = localStorage.getItem("shop admin email");
+    const token = localStorage.getItem("token");
     try {
       await CreateNewPasswordService(
         values.password,
@@ -42,7 +49,7 @@ function CreateNewPassword() {
         token
       );
       setShowSuccessModal(true);
-      localStorage.removeItem("Email");
+      localStorage.removeItem("shop admin email");
       setTimeout(() => navigate("/Login"), 2500);
     } catch (error) {
       setError(error);
@@ -50,19 +57,68 @@ function CreateNewPassword() {
       setLoading(false);
     }
   };
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
+    i18n.changeLanguage(savedLanguage);
+    setIsRTL(savedLanguage === "ar");
+  }, [i18n]);
+  // Update RTL state and localStorage when language changes
+  useEffect(() => {
+    const currentLanguage = i18n.language;
+    setIsRTL(currentLanguage === "ar");
+    localStorage.setItem("selectedLanguage", currentLanguage);
+  }, [i18n.language]);
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    setShowLanguageDropdown(false);
+    localStorage.setItem("selectedLanguage", lng);
+  };
+
   return (
     <div className="p-4 sm:p-8 md:p-16 main-container min-h-screen flex items-center justify-center">
       <Helmet>
         <meta charSet="utf-8" />
-        <title>Create New Password</title>
+        <title>{t("createNewPassword")}</title>
+        <html dir={isRTL ? "rtl" : "ltr"} lang={i18n.language} />
       </Helmet>
       <div className="CreateNewPasswordContainer w-96 lg:w-450 md:w-450 sm:w-450 xs:w-450 s:w-450 bg-gray-50">
-        <img
-          src="/assets/svgs/vertex.svg"
-          alt="logo"
-          className="w-48 h-10 mb-3"
-        />
-        <h1 className="font-bold mt-3 text-[20px]">Create New Password</h1>
+        <div className="flex justify-between items-center">
+          <img
+            src="/assets/svgs/vertex.svg"
+            alt="logo"
+            className="w-48 h-10 mb-3"
+          />
+          <div className="relative">
+            <button
+              className="flex items-center gap-1 text-14 bg-customOrange-lightOrange text-primary rounded-md p-2"
+              onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
+            >
+              {i18n.language.toUpperCase()}
+              <IoIosArrowDown size={20} />
+            </button>
+            {showLanguageDropdown && (
+              <div
+                className={`absolute ${
+                  isRTL ? "left-0" : "right-0"
+                } w-14 bg-white rounded-md shadow-lg z-10`}
+              >
+                <button
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={() => changeLanguage("en")}
+                >
+                  EN
+                </button>
+                <button
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={() => changeLanguage("ar")}
+                >
+                  AR
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+        <h1 className="font-bold mt-3 text-[20px]">{t("createNewPassword")}</h1>
         <Formik
           initialValues={initialValues}
           onSubmit={handleSubmit}
@@ -72,17 +128,19 @@ function CreateNewPassword() {
             <Form className="flex flex-col justify-center ">
               <PasswordInput
                 name={"password"}
-                placeholder={"Password"}
+                placeholder={t("password")}
                 showPassword={showConfirmPassword}
                 togglePasswordVisibility={() =>
                   setShowConfirmPassword(!showConfirmPassword)
                 }
+                dir={isRTL ? "rtl" : "ltr"}
               />
               <PasswordInput
                 name={"password_confirmation"}
-                placeholder={"Confirm Password"}
+                placeholder={t("confirmPassword")}
                 showPassword={showPassword}
                 togglePasswordVisibility={() => setShowPassword(!showPassword)}
+                dir={isRTL ? "rtl" : "ltr"}
               />
               {error && (
                 <div className="text-red-500 text-sm mb-4">{error}</div>
@@ -90,7 +148,7 @@ function CreateNewPassword() {
               <div className="mt-3">
                 <MainBtn
                   text={
-                    loading ? <ClipLoader color="#fff" size={22} /> : "Save"
+                    loading ? <ClipLoader color="#fff" size={22} /> : t("save")
                   }
                   btnType="submit"
                 />
@@ -108,9 +166,8 @@ function CreateNewPassword() {
               alt="success"
               className="w-32 mt-6"
             />
-            <h2 className="font-bold text-xl mt-4">Password Changed!</h2>
-            <p className="w-80 text-secondary text-14 text-center mt-2">
-              Your password has been changed successfully.
+            <p className="w-80 text-black text-14 text-center mt-2 rtl:text-[17px]">
+              {t("successChange")}
             </p>
           </div>
         </SuccessModal>

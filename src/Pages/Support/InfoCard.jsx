@@ -1,10 +1,11 @@
-import { useEffect ,useState} from "react";
+import { useEffect, useState } from "react";
 import EmailAddress from "../../Svgs/EmailAddress";
 import PhoneNum from "../../Svgs/PhoneNum";
 import { settings } from "../../ApiServices/Settings";
-
+import { useTranslation } from "react-i18next";
 function InfoCard() {
   const [settingData, setSettingData] = useState([]);
+  const { t } = useTranslation();
   const ContactCard = ({ icon, title, value, link }) => (
     <div className="flex items-center justify-between bg-gray-50 p-4 rounded-md mb-6">
       <div className="flex gap-4">
@@ -35,17 +36,17 @@ function InfoCard() {
   return (
     <section className="bg-white rounded-md drop-shadow-lg p-5 w-450 h-72 mt-10">
       <h2 className="font-bold text-17 mb-3 mt-2 relative pb-1 gradient-border-bottom">
-        Contact information
+        {t("contactInfo")}
       </h2>
       <ContactCard
         icon={<PhoneNum />}
-        title="Call us"
-        value={settingData.phone || "Not provided"}
+        title={t("callUs")}
+        value={settingData.phone || t("notProvided")}
       />
       <ContactCard
         icon={<EmailAddress />}
-        title="Email"
-        value={settingData.email || "Not provided"}
+        title={t("email")}
+        value={settingData.email || t("notProvided")}
         link="mailto:Vertex@gmail.com"
       />
     </section>

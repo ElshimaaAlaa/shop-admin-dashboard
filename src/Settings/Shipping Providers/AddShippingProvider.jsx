@@ -3,12 +3,12 @@ import "./style.scss";
 import { Formik, Form } from "formik";
 import { ClipLoader } from "react-spinners";
 import { AddShipping } from "../../ApiServices/AddShipping";
-
+import { useTranslation } from "react-i18next";
 function AddShippingProvider({ isOpen, onClose }) {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedProviders, setSelectedProviders] = useState([]);
   const [error, setError] = useState(null);
-
+  const { t } = useTranslation();
   const providers = [
     //fetched from end point when back end complete it
     { id: 1, name_ar: "أرامكس", name_en: "Aramex", code: "aramex" },
@@ -67,8 +67,8 @@ function AddShippingProvider({ isOpen, onClose }) {
         id="modal-width"
       >
         <div className="modal-content">
-          <h3 className="font-bold text-16 px-3 py-5">
-            Add New Shipping Provider
+          <h3 className="font-bold text-16 px-3 py-5 rtl:text-[18px]">
+            {t("addNewShipping")}
           </h3>
           {error && (
             <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">
@@ -76,7 +76,7 @@ function AddShippingProvider({ isOpen, onClose }) {
             </div>
           )}
           <Formik initialValues={{}} onSubmit={handleSubmit}>
-            <Form className="ps-3">
+            <Form className="ps-3 rtl:pe-3">
               <div className="space-y-4 mb-4">
                 {providers.map((provider) => {
                   const isSelected = selectedProviders.some(
@@ -121,20 +121,20 @@ function AddShippingProvider({ isOpen, onClose }) {
                   );
                 })}
               </div>
-              <div className="flex justify-end gap-2 mt-3">
+              <div className="flex justify-end gap-2 mt-3  rtl:flex-row-reverse">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="bg-gray-100 text-gray-400 font-bold p-3 w-32 rounded-md"
+                  className="bg-gray-100 text-gray-400 font-bold p-2 w-32 rounded-md"
                 >
-                  Cancel
+                  {t("cancel")}
                 </button>
                 <button
                   type="submit"
-                  className="bg-primary font-bold text-white p-3 w-32 rounded-md"
+                  className="bg-primary font-bold text-white p-2 w-32 rounded-md"
                   disabled={isLoading || selectedProviders.length === 0}
                 >
-                  {isLoading ? <ClipLoader size={22} color="#fff" /> : "Save"}
+                  {isLoading ? <ClipLoader size={22} color="#fff" /> :t("save")}
                 </button>
               </div>
             </Form>

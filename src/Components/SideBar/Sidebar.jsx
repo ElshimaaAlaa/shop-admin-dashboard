@@ -15,6 +15,7 @@ import Clients from "../../Svgs/Clients";
 import Reports from "../../Svgs/reports";
 import Settings from "../../Svgs/Settings";
 import Discount from "../../Svgs/Discount";
+import { useTranslation } from "react-i18next";
 
 const Sidebar = () => {
   const location = useLocation();
@@ -31,6 +32,8 @@ const Sidebar = () => {
   const [expanded, setExpanded] = useState(
     localStorage.getItem("sidebarPinned") === "true"
   );
+  const { t, i18n } = useTranslation();
+  const [isRTL, setIsRTL] = useState(false);
 
   const setSelectedItemPersistent = (item) => {
     setSelectedItem(item);
@@ -44,6 +47,11 @@ const Sidebar = () => {
 
   useEffect(() => {
     const path = location.pathname;
+    
+    // Reset selection first
+    setSelectedItemPersistent("");
+    setOpenSubmenuPersistent(null);
+
     if (
       path === "/Login" ||
       path === "/Dashboard" ||
@@ -54,42 +62,64 @@ const Sidebar = () => {
       return;
     }
 
-    if (path.includes("/Dashboard/Home-dashboard"))
+    if (path.includes("/Dashboard/Home-dashboard")) {
       setSelectedItemPersistent("dashboard");
-    else if (path.includes("/Dashboard/categories"))
+    } 
+    else if (path.includes("/Dashboard/categories")) {
       setSelectedItemPersistent("categories");
-    else if (path.includes("/Dashboard/products")) setSelectedItemPersistent("products");
+    } 
+    else if (path.includes("/Dashboard/products")) {
+      setSelectedItemPersistent("products");
+    } 
     else if (path.includes("/Dashboard/orders")) {
-      setSelectedItemPersistent("orders");
       if (path.includes("/Dashboard/RecivedOrders")) {
         setSelectedItemPersistent("orders,orders-pending");
         setOpenSubmenuPersistent("orders");
-      } else if (path.includes("/Dashboard/RefundRequests")) {
+      } 
+      else if (path.includes("/Dashboard/RefundRequests")) {
         setSelectedItemPersistent("orders,orders-processing");
         setOpenSubmenuPersistent("orders");
+      } 
+      else {
+        setSelectedItemPersistent("orders");
       }
-    } else if (path.includes("/Dashboard/AllInvoices"))
+    } 
+    else if (path.includes("/Dashboard/AllInvoices")) {
       setSelectedItemPersistent("invoices");
-    else if (path.includes("/Dashboard/AllCustomers"))
+    } 
+    else if (path.includes("/Dashboard/AllCustomers")) {
       setSelectedItemPersistent("clients");
-    else if (path.includes("/Dashboard/AllDiscounts"))
+    } 
+    else if (path.includes("/Dashboard/AllDiscounts")) {
       setSelectedItemPersistent("promotions");
-    else if (path.includes("/Dashboard/Analytics")) setSelectedItemPersistent("reports");
+    } 
+    else if (path.includes("/Dashboard/Analytics")) {
+      setSelectedItemPersistent("reports");
+    } 
     else if (path.includes("/Dashboard/ShippingProviders")) {
       setSelectedItemPersistent("settings,shipping-providers");
       setOpenSubmenuPersistent("settings");
-    } else if (path.includes("/Dashboard/PaymentMethods")) {
+    } 
+    else if (path.includes("/Dashboard/PaymentMethods")) {
       setSelectedItemPersistent("settings,payment-methods");
       setOpenSubmenuPersistent("settings");
-    } else if (path.includes("/Dashboard/SupportQuestion")) {
+    } 
+    else if (path.includes("/Dashboard/SupportQuestion")) {
       setSelectedItemPersistent("settings,support-questions");
       setOpenSubmenuPersistent("settings");
-    } else if (path.includes("/Dashboard/support")) setSelectedItemPersistent("support");
-    else if (path.includes("/Dashboard/Faqs")) setSelectedItemPersistent("help");
-    else if (path === "/Dashboard" || path === "/Dashboard/") {
+    } 
+    else if (path.includes("/Dashboard/support")) {
+      setSelectedItemPersistent("support");
+    } 
+    else if (path.includes("/Dashboard/Faqs")) {
+      setSelectedItemPersistent("help");
+    } 
+    else {
       setSelectedItemPersistent("dashboard");
     }
-  }, [location]);
+
+    setIsRTL(i18n.language === "ar");
+  }, [location, i18n.language]);
 
   const togglePin = (e) => {
     e.stopPropagation();
@@ -114,46 +144,47 @@ const Sidebar = () => {
 
   const handleSubItemClick = (mainItem, subItem) => {
     setSelectedItemPersistent(`${mainItem.id},${subItem.id}`);
+    setOpenSubmenuPersistent(mainItem.id);
     if (subItem.onclick) subItem.onclick();
   };
 
   const menuItems = [
     {
       id: "dashboard",
-      label: "Dashboard",
+      label: t("dashboard"),
       icon: <Home />,
       onclick: () => navigate("Home-dashboard"),
       path: "Home-dashboard",
     },
     {
       id: "categories",
-      label: "Categories",
+      label: t("cats"),
       icon: <Cat />,
       onclick: () => navigate("categories"),
       path: "categories",
     },
     {
       id: "products",
-      label: "Products",
+      label: t("products"),
       icon: <Products />,
       onclick: () => navigate("products"),
       path: "products",
     },
     {
       id: "orders",
-      label: "Orders",
+      label: t("orders"),
       icon: <Orders />,
       path: "orders",
       subItems: [
         {
           id: "orders-pending",
-          label: "Received Orders",
+          label: t("recivedOrders"),
           onclick: () => navigate("RecivedOrders"),
           path: "RecivedOrders",
         },
         {
           id: "orders-processing",
-          label: "Refund Requests",
+          label: t("refundRquests"),
           onclick: () => navigate("RefundRequests"),
           path: "RefundRequests",
         },
@@ -161,53 +192,53 @@ const Sidebar = () => {
     },
     {
       id: "invoices",
-      label: "Invoices",
+      label: t("invoices"),
       icon: <Invoices />,
       onclick: () => navigate("AllInvoices"),
       path: "AllInvoices",
     },
     {
       id: "clients",
-      label: "Customers",
+      label: t("customers"),
       icon: <Clients />,
       onclick: () => navigate("AllCustomers"),
       path: "AllCustomers",
     },
     {
       id: "promotions",
-      label: "Disc and Promotion",
+      label: t("discounts"),
       icon: <Discount />,
       onclick: () => navigate("AllDiscounts"),
       path: "AllDiscounts",
     },
     {
       id: "reports",
-      label: "Reports",
+      label: t("repors"),
       icon: <Reports />,
       onclick: () => navigate("Analytics"),
       path: "Analytics",
     },
     {
       id: "settings",
-      label: "Settings",
+      label: t("settings"),
       icon: <Settings />,
       path: "settings",
       subItems: [
         {
           id: "shipping-providers",
-          label: "Shipping Providers",
+          label: t("shippingProvider"),
           onclick: () => navigate("ShippingProviders"),
           path: "ShippingProviders",
         },
         {
           id: "payment-methods",
-          label: "Payment Methods",
+          label: t("paymentMethod"),
           onclick: () => navigate("PaymentMethods"),
           path: "PaymentMethods",
         },
         {
           id: "support-questions",
-          label: "Support Questions",
+          label: t("supportQ"),
           onclick: () => navigate("SupportQuestion"),
           path: "SupportQuestion",
         },
@@ -218,14 +249,14 @@ const Sidebar = () => {
   const bottomMenuItems = [
     {
       id: "support",
-      label: "Support",
+      label: t("support"),
       icon: <Support />,
       onclick: () => navigate("support"),
       path: "support",
     },
     {
       id: "help",
-      label: "Help",
+      label: t("help"),
       icon: <Help />,
       onclick: () => navigate("Faqs"),
       path: "Faqs",
@@ -234,9 +265,9 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`sidebar min-h-screen ${expanded ? "expanded" : ""} ${
-        isPinned ? "pinned" : ""
-      }`}
+      className={`sidebar min-h-screen ${isRTL ? "rtl" : "ltr"} ${
+        isRTL ? "ltr-style" : ""
+      } ${expanded ? "expanded" : ""} ${isPinned ? "pinned" : ""}`}
       onMouseEnter={() => !isPinned && setExpanded(true)}
       onMouseLeave={() => !isPinned && setExpanded(false)}
     >
@@ -247,8 +278,8 @@ const Sidebar = () => {
             <button
               onClick={togglePin}
               className="pin-button"
-              title={isPinned ? "Unpin sidebar" : "Pin sidebar"}
-              aria-label={isPinned ? "Unpin sidebar" : "Pin sidebar"}
+              title={isPinned ? t("unpinSidebar") : t("pinSidebar")}
+              aria-label={isPinned ? t("unpinSidebar") : t("pinSidebar")}
             >
               {isPinned ? (
                 <PinOff size={18} className="text-white" />
@@ -270,7 +301,7 @@ const Sidebar = () => {
             <div key={item.id} className="menu-item-container">
               <div
                 className={`menu-item ${
-                  selectedItem.includes(item.id) ? "active" : ""
+                  selectedItem.includes(item.id) && !selectedItem.includes(',') ? "active" : ""
                 }`}
                 onClick={() => handleItemClick(item)}
                 data-id={item.id}
@@ -322,14 +353,16 @@ const Sidebar = () => {
             <div
               key={item.id}
               className={`menu-item ${
-                selectedItem.includes(item.id) ? "active" : ""
+                selectedItem === item.id ? "active" : ""
               }`}
               onClick={() => handleItemClick(item)}
               data-id={item.id}
             >
               <div className="menu-icon">
                 {React.cloneElement(item.icon, {
-                  className: `${selectedItem.includes(item.id) ? "icon-active" : ""}`,
+                  className: `${
+                    selectedItem === item.id ? "icon-active" : ""
+                  }`,
                 })}
               </div>
               {expanded && (

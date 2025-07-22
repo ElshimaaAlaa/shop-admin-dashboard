@@ -13,7 +13,7 @@ import BasicInformationSection from "./BasicInformationSection";
 import SizeFieldArray from "./SizeFieldArray";
 import * as Yup from "yup";
 import ColorFieldArray from "./ColorFieldArray";
-
+import { useTranslation } from "react-i18next";
 const AddProduct = () => {
   const [categories, setCategories] = useState([]);
   const [selectedCategoryTags, setSelectedCategoryTags] = useState([]);
@@ -23,7 +23,7 @@ const AddProduct = () => {
   const [previewImages, setPreviewImages] = useState([]);
   const [isDiscountScheduled, setIsDiscountScheduled] = useState(false);
   const [showModal, setShowModal] = useState(false);
-
+  const { t } = useTranslation();
   const initialValues = {
     name: "",
     category_id: "",
@@ -44,19 +44,19 @@ const AddProduct = () => {
   };
 
   const validationSchema = Yup.object({
-    name: Yup.string().required("Product name is required"),
-    category_id: Yup.string().required("Category is required"),
-    tag_number: Yup.string().required("Tag number is required"),
-    gender: Yup.string().required("Gender is required"),
-    return_percentage: Yup.number().required("Return percentage is required"),
-    stock: Yup.number().required("Stock is required"),
-    description: Yup.string().required("Description is required"),
-    price: Yup.number().required("Price is required"),
-    cost: Yup.number().required("Cost is required"),
-    revenue: Yup.number().required("Revenue is required"),
+    name: Yup.string().required(t("productNameRequired")),
+    category_id: Yup.string().required(t("catNameRequired")),
+    tag_number: Yup.string().required(t("tagNumRequired")),
+    gender: Yup.string().required(t("genderRequired")),
+    return_percentage: Yup.number().required(t("returnRequird")),
+    stock: Yup.number().required(t("stockRequired")),
+    description: Yup.string().required(t("descRequired")),
+    price: Yup.number().required(t("priceRequired")),
+    cost: Yup.number().required(t("costRequired")),
+    revenue: Yup.number().required(t("revenueRequired")),
     discount_percentage: Yup.number().when("isDiscountScheduled", {
       is: true,
-      then: Yup.number().required("Discount percentage is required"),
+      then: Yup.number().required(t("discountRequired")),
     }),
   });
 
@@ -94,7 +94,10 @@ const AddProduct = () => {
               if (field !== "name" && field !== "previewImage") {
                 if (field === "image") {
                   if (!fieldValue && values.images.length > 0) {
-                    formData.append(`colors[${index}][image]`, values.images[0]);
+                    formData.append(
+                      `colors[${index}][image]`,
+                      values.images[0]
+                    );
                   } else if (fieldValue instanceof File) {
                     formData.append(`colors[${index}][${field}]`, fieldValue);
                   }
@@ -243,7 +246,7 @@ const AddProduct = () => {
   return (
     <div className={`bg-gray-100 pb-32 min-h-screen relative `}>
       <Helmet>
-        <title>Add New Product - VERTEX</title>
+        <title>{t("addProduct")} | {t("vertex")}</title>
         <meta name="description" content="Add a new product to VERTEX" />
       </Helmet>
       <Formik
@@ -254,8 +257,10 @@ const AddProduct = () => {
         {({ setFieldValue, isSubmitting, errors, values }) => (
           <Form className="flex flex-col ">
             <sectio className="rounded-md p-4 bg-white mb-3 mt-5 mx-5">
-              <p className="text-gray-400 text-13">Menu / Product  / Add Product</p>
-              <h1 className="text-17 mt-2 font-bold">Add Product</h1>
+              <p className="text-gray-400 text-13">
+                {t("addProductHead")}
+              </p>
+              <h1 className="text-17 mt-2 font-bold">{t("addProduct")}</h1>
             </sectio>
             <div className="flex">
               <BasicInformationSection
@@ -280,9 +285,9 @@ const AddProduct = () => {
               setIsDiscountScheduled={setIsDiscountScheduled}
             />
             {categoryType === "Color" && (
-              <ColorFieldArray 
-                values={values} 
-                setFieldValue={setFieldValue} 
+              <ColorFieldArray
+                values={values}
+                setFieldValue={setFieldValue}
                 productImages={values.images}
               />
             )}
@@ -303,8 +308,8 @@ const AddProduct = () => {
               />
             )}
             <Footer
-              saveText="Save"
-              cancelText="Cancel"
+              saveText={t("save")}
+              cancelText={t("cancel")}
               cancelOnClick={() => navigate("/Dashboard/products")}
               saveBtnType="submit"
               cancelBtnType="button"
@@ -321,14 +326,14 @@ const AddProduct = () => {
             className="w-32 mt-6"
           />
           <p className="font-bold mt-5 text-center">
-            Product added successfully!
+            {t("productSuccessAdded")}
           </p>
           <button
-            className="bg-primary text-white rounded-md p-2 text-14 mt-4 w-64"
+            className="bg-primary text-white rounded-md p-2 text-14 mt-4 w-40"
             onClick={() => navigate("/Dashboard/products")}
             aria-label="Back to products"
           >
-            Back to products
+            {t("backToProducts")}
           </button>
         </div>
       </SuccessModal>

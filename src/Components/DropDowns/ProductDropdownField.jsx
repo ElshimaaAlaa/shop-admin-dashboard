@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import CustomDropdown from "./CustomDropdown";
-
+import { useTranslation } from "react-i18next";
 const ProductDropdownField = ({ field, form, products, ...props }) => {
   const options = products.map((product) => ({
     value: product.id,
@@ -13,14 +13,14 @@ const ProductDropdownField = ({ field, form, products, ...props }) => {
   const touched =
     form.touched.items &&
     form.touched.items[field.name.split("[")[1].split("]")[0]]?.product_id;
-
+  const { t } = useTranslation();
   return (
     <CustomDropdown
       options={options}
       value={field.value}
       onChange={form.setFieldValue}
       name={field.name}
-      placeholder="Select product"
+      placeholder={t("selectProduct")}
       touched={touched}
       {...props}
       className="text-14 bg-white text-gray-400 h-12 rounded-lg"

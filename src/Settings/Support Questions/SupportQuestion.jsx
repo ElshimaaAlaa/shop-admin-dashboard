@@ -8,7 +8,7 @@ import AddSupportQuestion from "./AddSupportQuestion";
 import { ClipLoader } from "react-spinners";
 import DeleteQuestion from "./DeleteQuestion";
 import { useNavigate } from "react-router-dom";
-
+import { useTranslation } from "react-i18next";
 function SupportQuestion() {
   const [faqsData, setFaqsData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -16,7 +16,7 @@ function SupportQuestion() {
   const [showAddQuestionModal, setShowAddQuestionModal] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-
+  const { t } = useTranslation();
   const fetchSupportQuestions = async () => {
     setIsLoading(true);
     setError(null);
@@ -41,7 +41,9 @@ function SupportQuestion() {
   };
 
   const handleDeleteQuestion = async (questionId) => {
-    setFaqsData(prevQuestions => prevQuestions.filter(q => q.id !== questionId));
+    setFaqsData((prevQuestions) =>
+      prevQuestions.filter((q) => q.id !== questionId)
+    );
     try {
       await fetchSupportQuestions();
     } catch (error) {
@@ -50,21 +52,21 @@ function SupportQuestion() {
   };
 
   const handleAddSuccess = (newQuestion) => {
-    setFaqsData(prev => [...prev, newQuestion]);
-    fetchSupportQuestions(); 
+    setFaqsData((prev) => [...prev, newQuestion]);
+    fetchSupportQuestions();
   };
 
   return (
     <div className="bg-gray-100 flex flex-col h-[89vh]">
       <Helmet>
-        <title>Support Questions | vertex</title>
+        <title>{t("supportQ")} | {t("vertex")}</title>
       </Helmet>
       <section className="rounded-md p-5 mx-5 bg-white mt-5 flex items-center justify-between">
         <div>
           <p className="text-gray-400 text-13">
-            Menu / Customers / Support Questions
+            {t("supportMenu")}
           </p>
-          <h1 className="text-17 font-bold mt-2">Support Questions</h1>
+          <h1 className="text-17 font-bold mt-2">{t("supportQ")}</h1>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -72,14 +74,14 @@ function SupportQuestion() {
             onClick={() => setShowAddQuestionModal(true)}
           >
             <IoMdAddCircleOutline size={24} />
-            Add Question
+            {t("addQ")}
           </button>
           <button
             className="font-bold text-white flex items-center justify-center gap-3 p-3 rounded-md bg-primary w-40"
             onClick={() => navigate("/Dashboard/Requests")}
           >
             <GoMail size={20} />
-            Requests
+            {t("requests")}
           </button>
         </div>
       </section>
@@ -91,7 +93,7 @@ function SupportQuestion() {
       />
 
       <section className="bg-white mx-5 p-5 mt-3 rounded-md">
-        <h3 className="text-16 font-bold">Questions</h3>
+        <h3 className="text-16 font-bold">{t("questions")}</h3>
         {isLoading ? (
           <div className="flex justify-center mt-5">
             <ClipLoader color="#E0A75E" />
@@ -99,7 +101,7 @@ function SupportQuestion() {
         ) : error ? (
           <div className="mt-5 text-red-500">{error}</div>
         ) : faqsData.length === 0 ? (
-          <p className="mt-5 text-gray-400 text-14">No questions found</p>
+          <p className="mt-5 text-gray-400 text-14 text-center">{t("noQ")}</p>
         ) : (
           faqsData.slice(0, 4).map((item, index) => (
             <div

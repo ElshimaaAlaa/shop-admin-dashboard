@@ -9,8 +9,8 @@ import "./invoiceStyle.scss";
 import { FaTimesCircle } from "react-icons/fa";
 import { FaCircleCheck } from "react-icons/fa6";
 import { FaUndo } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 function InvoiceDetails() {
-  const API_BASE_URL = "https://";
   const live_shop_domain = localStorage.getItem("live_shop_domain");
   const role = localStorage.getItem("role");
   const [data, setData] = useState([]);
@@ -19,18 +19,18 @@ function InvoiceDetails() {
   const [isLoading, setIsLoading] = useState(false);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const invoiceRef = useRef();
-
+  const { t } = useTranslation();
   useEffect(() => {
     const getInvoicesDetails = async () => {
       setIsLoading(true);
       try {
         const response = await axios({
-          url: `${API_BASE_URL}${live_shop_domain}/api/${role}/invoices/${id}`,
+          url: `https://${live_shop_domain}/api/${role}/invoices/${id}`,
           method: "GET",
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
-            "Accept-Language": "ar",
+            "Accept-Language": "en",
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
@@ -80,10 +80,12 @@ function InvoiceDetails() {
   return (
     <div className="bg-gray-100 py-5 flex flex-col min-h-[89vh] mx-10">
       <Helmet>
-        <title>Invoice Details | vertex</title>
+        <title>
+          {t("invoiceDetails")} | {t("vertex")}
+        </title>
       </Helmet>
       <section className="flex justify-between items-center">
-        <h1 className="text-xl font-bold">Invoice Details</h1>
+        <h1 className="text-xl font-bold">{t("invoiceDetails")}</h1>
         <button
           onClick={downloadPdf}
           disabled={isGeneratingPdf || isLoading}
@@ -105,7 +107,7 @@ function InvoiceDetails() {
                   clipRule="evenodd"
                 />
               </svg>
-              Download Invoice
+              {t("downloadInvoice")}
             </>
           )}
         </button>
@@ -126,17 +128,17 @@ function InvoiceDetails() {
             </div>
             <div className="flex items-center justify-between mt-8 gap-14 ms-6">
               <div>
-                <p className="text-gray-500 text-15">Issued on</p>
+                <p className="text-gray-500 text-15">{t("issueOn")}</p>
                 <p className="text-14 mt-1">{data.date}</p>
               </div>
               <div>
-                <p className="text-gray-500 text-15">Payment Due</p>
+                <p className="text-gray-500 text-15">{t("paymentDue")}</p>
                 <p className="mt-1 text-14">{data.payment_date}</p>
               </div>
             </div>
           </div>
           <div className="flex flex-col items-end gap-4">
-            <p className="text-gray-500 text-15 text-right">Invoice No.</p>
+            <p className="text-gray-500 text-15 text-right">{t("invoiceNo")}</p>
             <p className="font-bold text-xl">{data.invoice_number}</p>
             <p
               className={`px-2 py-2 flex items-center justify-center gap-1 w-20 rounded-md text-[14px] ${
@@ -159,44 +161,44 @@ function InvoiceDetails() {
         {/* Issue From and For */}
         <div className="mt-8 flex items-center gap-32 mx-1">
           <div className="flex flex-col gap-5">
-            <h2 className="font-bold text-17 mb-4">Issue From :</h2>
-            <p className="flex items-center gap-8 text-15">
-              Name
+            <h2 className="font-bold text-17 mb-4">{t("issueFrom")}</h2>
+            <p className="flex items-center gap-3 rtl:gap-1 text-15">
+              {t("name")} :
               <span className="text-gray-500">
-                {data.customer_name || "N/A"}
+                {data.customer_name || t("notProvided")}
               </span>
             </p>
-            <p className="flex items-center gap-8 text-15">
-              Email
+            <p className="flex items-center gap-3 rtl:gap-1 text-15">
+              {t("email")} :
               <span className="text-gray-500">
-                {data.customer_email || "N/A"}
+                {data.customer_email || t("notProvided")}
               </span>
             </p>
-            <p className="flex items-center gap-8 text-15">
-              Phone
+            <p className="flex items-center gap-3 rtl:gap-1 text-15">
+              {t("phone")} :
               <span className="text-gray-500">
-                {data.customer_phone || "N/A"}
+                {data.customer_phone || t("notProvided")}
               </span>
             </p>
           </div>
           <div className="flex flex-col gap-4">
-            <h2 className="font-bold text-17 mb-4">Issue For :</h2>
-            <p className="flex items-center gap-8 text-15">
-              Name
+            <h2 className="font-bold text-17 mb-4">{t("issueFor")}</h2>
+            <p className="flex items-center gap-3 rtl:gap-1 text-15">
+              {t("name")} :
               <span className="text-gray-500">
-                {data.issued_for?.name || "N/A"}
+                {data.issued_for?.name || t("notProvided")}
               </span>
             </p>
-            <p className="flex items-center gap-8 text-15">
-              Email
+            <p className="flex items-center gap-3 rtl:gap-1 text-15">
+              {t("email")} :
               <span className="text-gray-500">
-                {data.issued_for?.email || "N/A"}
+                {data.issued_for?.email || t("notProvided")}
               </span>
             </p>
-            <p className="flex items-center gap-8 text-15">
-              Phone
+            <p className="flex items-center gap-3 rtl:gap-1 text-15">
+              {t("phone")} :
               <span className="text-gray-500">
-                {data.issued_for?.phone || "N/A"}
+                {data.issued_for?.phone || t("notProvided")}
               </span>
             </p>
           </div>
@@ -204,36 +206,32 @@ function InvoiceDetails() {
 
         {/* Products Table */}
         <section>
-          <h2 className="font-bold text-17 mt-10 mb-4 mx-1">Products</h2>
+          <h2 className="font-bold text-17 mt-10 mb-4 mx-1">{t("products")}</h2>
           {error ? (
-            <div className="text-red-500 text-center mt-10">
-              Failed to fetch products. Please try again.
-            </div>
+            <div className="text-red-500 text-center mt-10">{t("error")}</div>
           ) : isLoading ? (
             <div className="flex justify-center mt-10">
               <ClipLoader color="#E0A75E" size={40} />
             </div>
           ) : data.products?.length === 0 ? (
-            <div className="text-gray-400 text-center mt-10">
-              No products available
-            </div>
+            <div className="text-gray-400 text-center mt-10">{t("noData")}</div>
           ) : (
             <>
               <div className="overflow-hidden mx-1">
                 <table className="min-w-full">
                   <thead>
                     <tr className="bg-gray-50">
-                      <th className="text-left text-gray-500 text-15 font-light px-3 py-3">
-                        Items
+                      <th className="text-left text-gray-500 text-15 font-light px-3 py-3 rtl:text-right">
+                        {t("items")}
                       </th>
-                      <th className="text-gray-500 text-15 font-light py-3 text-left">
-                        Qty.
+                      <th className="text-gray-500 text-15 font-light py-3 text-left rtl:text-right">
+                        {t("qty")}
                       </th>
-                      <th className="text-gray-500 text-15 font-light py-3 text-left">
-                        Price
+                      <th className="text-gray-500 text-15 font-light py-3 text-left rtl:text-right">
+                        {t("price")}
                       </th>
-                      <th className="text-gray-500 text-15 font-light py-3 text-left">
-                        Total
+                      <th className="text-gray-500 text-15 font-light py-3 text-left rtl:text-right">
+                        {t("totalPrice")}
                       </th>
                     </tr>
                   </thead>
@@ -256,15 +254,16 @@ function InvoiceDetails() {
 
                             <div className="flex flex-col ms-10">
                               <span className="text-gray-500 text-15">
-                                size : {product.size}
+                                {t("size")} :{" "}
+                                <span className="text-12">{product.size}</span>
                               </span>
                               <span className="text-gray-500 text-15 mt-1">
-                                color :
+                                {t("color")} :{" "}
                                 <span
                                   style={{
                                     display: "inline-block",
-                                    width: "25px",
-                                    height: "25px",
+                                    width: "23px", 
+                                    height: "23px",
                                     backgroundColor: product.color,
                                     borderRadius: "50%",
                                     marginLeft: "5px",
@@ -300,20 +299,20 @@ function InvoiceDetails() {
         <section className="flex justify-end">
           <div className="flex flex-col gap-5 mt-7 w-400 justify-end bg-gray-50 rounded-xl p-5">
             <p className="text-15 flex items-center justify-between">
-              Subtotal
+              {t("subTotal")}
               <span className="text-gray-500">
                 {data.sub_total?.toFixed(2) || "0"} $
               </span>
             </p>
             <p className="text-15 flex items-center justify-between">
-              Shipping
+              {t("shipping")}
               <span className="text-gray-500">
                 {data.shipping_price?.toFixed(2) || "0"} $
               </span>
             </p>
             <hr />
             <p className="text-15 flex items-center justify-between">
-              Total
+              {t("totalPrice")}
               <span className="text-gray-500">
                 {data.total?.toFixed(2) || "0"} $
               </span>

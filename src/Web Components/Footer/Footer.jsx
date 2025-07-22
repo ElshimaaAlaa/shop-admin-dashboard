@@ -4,8 +4,9 @@ import Instegram from "../../Svgs/instegram";
 import WhatsApp from "../../Svgs/WhatsApp";
 import { FaXTwitter } from "react-icons/fa6";
 import { getGeneralSettings } from "../../ApiServices/GeneralSettings";
-
+import { useTranslation } from "react-i18next";
 function Footer() {
+  const { t } = useTranslation();
   const [data, setData] = useState({
     email: "",
     phone: "",
@@ -86,7 +87,7 @@ function Footer() {
       {/* footer bottom items */}
       <div className="flex flex-col lg:flex-row md:flex-row items-center justify-between mt-5">
         <div>
-          <p className="text-13">© 2024 Cadet UI. All Rights Reserved.</p>
+          <p className="text-13">{t("reservedCopy")}</p>
         </div>
         {/* social media */}
         <div className="flex gap-2 mt-5 lg:mt-0 md:mt-0">
@@ -113,5 +114,4 @@ function Footer() {
     </footer>
   );
 }
-
 export default Footer;

@@ -1,8 +1,9 @@
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 const BannerUpload = ({ banners = [], setFieldValue, errors, touched }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [uploadProgress, setUploadProgress] = useState({});
-
+  const { t } = useTranslation();
   const handleDragEnter = useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -66,7 +67,7 @@ const BannerUpload = ({ banners = [], setFieldValue, errors, touched }) => {
 
   return (
     <div className="w-full mb-6 px-6">
-      <h3 className="text-16 font-semibold mb-3">Upload Banner Files</h3>
+      <h3 className="text-16 font-semibold mb-3">{t("uploadBanner")}</h3>
       <div
         className={`border-2 border-dashed border-primary rounded-md p-3 text-center cursor-pointer transition-colors ${
           isDragging
@@ -94,19 +95,19 @@ const BannerUpload = ({ banners = [], setFieldValue, errors, touched }) => {
             className="w-6 mr-3"
           />
           <p className="text-14 text-gray-600">
-            {isDragging ? "Drop files here" : "Drag & drop banners OR"}
+            {isDragging ? "Drop files here" : t("dropFile")}
           </p>
           <button
             type="button"
             className="text-primary hover:text-primary-dark text-14 ml-2 font-bold"
           >
-            Browse files
+            {t("browseFile")}
           </button>
         </div>
       </div>
 
       {touched?.banners && errors?.banners && (
-        <p className="text-red-500 text-xs mt-1">{errors.banners}</p>
+        <p className="text-red-500 text-xs mt-1">{t("oneBanner")}</p>
       )}
 
       {banners.length > 0 && (

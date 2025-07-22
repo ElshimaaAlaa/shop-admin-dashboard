@@ -5,14 +5,14 @@ import {
   FaMagnifyingGlassDollar,
   FaMoneyBillWave,
 } from "react-icons/fa6";
-// import { ClipLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
 import MonthlyTrendChart from "./MonthlyTrendChart";
 import StatisticsCard from "../Pages/Dashboard/ReportItems";
 import Delete from "./DeleteProduct";
 import { fetchAnalyticsData } from "../ApiServices/Analytics";
-
+import { useTranslation } from "react-i18next";
 function Analytics() {
+  const { t } = useTranslation();
   const [analyticsData, setAnalyticsData] = useState({
     monthly_expended: [],
     monthly_income: [],
@@ -24,7 +24,6 @@ function Analytics() {
     },
     popular_products: [],
   });
-  // const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -43,8 +42,6 @@ function Analytics() {
       } catch (error) {
         setError(error.message);
         console.error("Analytics data fetch error:", error);
-      } finally {
-        // setIsLoading(false);
       }
     };
     getAnalyticsData();
@@ -75,27 +72,16 @@ function Analytics() {
     analyticsData.monthly_income.some((item) => parseFloat(item.income) > 0) ||
     analyticsData.monthly_profit.some((item) => parseFloat(item.profit) > 0);
 
-  // if (isLoading) {
-  //   return (
-  //     <div className="flex justify-center items-center min-h-[89vh]">
-  //       <ClipLoader color="#E0A75E" size={50} />
-  //     </div>
-  //   );
-  // }
-
   if (error) {
     return (
       <div className="bg-gray-100 min-h-[89vh] mx-5 pt-5 pb-10">
         <div className="bg-white rounded-md p-5 mb-5 text-center py-10">
-          <h2 className="text-red-500 text-lg font-bold mb-2">
-            Error Loading Data
-          </h2>
-          <p className="text-gray-600">{error}</p>
+          <h2 className="text-red-500 text-lg font-bold mb-2">{t("error")}</h2>
           <button
             onClick={() => window.location.reload()}
             className="mt-4 px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark"
           >
-            Retry
+            {t("retry")}
           </button>
         </div>
       </div>
@@ -105,38 +91,40 @@ function Analytics() {
   return (
     <div className="bg-gray-100 min-h-[89vh] mx-5 pt-5 pb-10">
       <Helmet>
-        <title>Reports | VERTEX</title>
+        <title>
+          {t("reports")} | {t("vertex")}
+        </title>
       </Helmet>
 
       <section className="bg-white mb-2 p-4 rounded-md">
-        <p className="text-gray-400 text-13">Menu / Analytics & Reports</p>
-        <h1 className="font-bold text-17 mt-2">Analytics & Reports</h1>
+        <p className="text-gray-400 text-13">{t("reportMenu")}</p>
+        <h1 className="font-bold text-17 mt-2">{t("analytics")}</h1>
       </section>
 
       <div className="bg-white rounded-md p-5 mb-5">
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 mb-8">
           <StatisticsCard
             icon={FaMoneyBillWave}
-            title="Total Expend"
+            title={t("totalExpend")}
             totalNumber={analyticsData.overview.total_expended.amount}
             percentage={analyticsData.overview.total_expended.change_rate}
-            duration="Last month: 0.00"
+            duration={t("lastMonth")}
             increased={analyticsData.overview.total_expended.increased}
           />
           <StatisticsCard
             icon={FaMagnifyingGlassDollar}
-            title="Total Income"
+            title={t("totalIncome")}
             totalNumber={analyticsData.overview.total_income.amount}
             percentage={analyticsData.overview.total_income.change_rate}
-            duration="Last month: 0"
+            duration={t("lastMonth")}
             increased={analyticsData.overview.total_income.increased}
           />
           <StatisticsCard
             icon={FaSackDollar}
-            title="Total Profit"
+            title={t("totalProfit")}
             totalNumber={analyticsData.overview.total_profit.amount}
             percentage={analyticsData.overview.total_profit.change_rate}
-            duration="Last month: 0"
+            duration={t("lastMonth")}
             increased={analyticsData.overview.total_profit.increased}
           />
         </section>
@@ -148,11 +136,11 @@ function Analytics() {
           hasData={hasFinancialData}
         />
         <section className="mt-10">
-          <h3 className="font-bold text-17 mb-4">Top Selling Products</h3>
+          <h3 className="font-bold text-17 mb-4">{t("topProducts")}</h3>
           {analyticsData.popular_products.length === 0 ? (
             <div className="text-center py-3 border-1 border-gray-200 bg-gray-50 rounded-lg">
               <p className="text-gray-400 mb-2 text-15">
-                No popular products data available
+                {t("noData")}
               </p>
             </div>
           ) : (
@@ -161,19 +149,19 @@ function Analytics() {
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Product
+                      {t("product")}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Price
+                      {t("price")}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Stock
+                      {t("stock")}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Colors
+                      {t("color")}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Actions
+                      {t("actions")}
                     </th>
                   </tr>
                 </thead>
@@ -232,7 +220,7 @@ function Analytics() {
                             }
                             className="text-indigo-600 hover:text-indigo-900"
                           >
-                            Edit
+                        {t("edit")}
                           </button>
                           <Delete
                             id={product.id}
@@ -251,5 +239,4 @@ function Analytics() {
     </div>
   );
 }
-
 export default Analytics;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Formik, Form, Field } from "formik";
 import { Helmet } from "react-helmet";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -12,6 +12,7 @@ import SizeFieldArray from "../Add Product/SizeFieldArray";
 import ColorFieldArray from "../Add Product/ColorFieldArray";
 import PricingSection from "../Add Product/PricingSection";
 import { ClipLoader } from "react-spinners";
+import { useTranslation } from "react-i18next";
 
 // Custom Dropdown Component
 const CustomDropdown = ({
@@ -47,7 +48,7 @@ const CustomDropdown = ({
   return (
     <div className={`relative w-full ${className}`} ref={dropdownRef}>
       <div
-        className={`w-full bg-white outline-none border-2 rounded-md h-12 px-3 flex items-center justify-between cursor-pointer transition-all duration-200 ${
+        className={`w-full bg-white outline-none border-2 rounded-md h-14 px-3 flex items-center justify-between cursor-pointer transition-all duration-200 ${
           error && touched
             ? "border-red-500"
             : "border-gray-200 hover:border-primary"
@@ -123,7 +124,7 @@ const TagPill = ({ tag, onRemove, isExisting }) => {
       <button
         type="button"
         onClick={() => onRemove(tag)}
-        className="ml-2 text-red-600 text-15 focus:outline-none hover:scale-125 transition-transform"
+        className="ml-2 rtl:mr-2 text-red-600 text-15 focus:outline-none hover:scale-125 transition-transform"
         aria-label={`Remove tag ${tag.name || tag}`}
       >
         ×
@@ -131,7 +132,6 @@ const TagPill = ({ tag, onRemove, isExisting }) => {
     </div>
   );
 };
-
 
 function EditProduct() {
   const [categories, setCategories] = useState([]);
@@ -146,7 +146,7 @@ function EditProduct() {
   const { state } = useLocation();
   const navigate = useNavigate();
   const product = state?.product || {};
-
+  const { t } = useTranslation();
   const [previewImages, setPreviewImages] = useState(
     product?.images?.map(
       (img) => img.src || "/assets/images/default-product.png"
@@ -248,17 +248,18 @@ function EditProduct() {
     formData.append("stock", values.stock);
     formData.append("schedule_discount", values.schedule_discount);
 
-    // Handle tags
+    // Handle tags - Updated approach
     values.tags_id.forEach((tag, index) => {
-      if (!tag.id && !product.tags?.includes(tag.name)) {
-        formData.append(`new_tags[${index}]`, tag.name);
+      if (tag.id) {
+        formData.append(`tags[${index}][id]`, tag.id);
+      } else {
+        formData.append(`tags[${index}][name]`, tag.name);
       }
     });
 
-    tagsToRemove.forEach((tagName, index) => {
-      if (product.tags?.includes(tagName)) {
-        formData.append(`tags_to_remove[${index}]`, tagName);
-      }
+    // Handle tags to remove
+    tagsToRemove.forEach((tagId, index) => {
+      formData.append(`tags_to_remove[${index}]`, tagId);
     });
 
     // Handle colors with their images
@@ -272,16 +273,16 @@ function EditProduct() {
         formData.append(`colors[${index}][code]`, color.code || "");
         formData.append(`colors[${index}][stock]`, color.stock || 0);
         formData.append(`colors[${index}][price]`, color.price || 0);
-        
+
         // Handle image uploads
         if (color.newImage instanceof File) {
-          // New image uploaded
           formData.append(`colors[${index}][image]`, color.newImage);
         } else if (color.existingImage && !color.newImage) {
-          // Keep existing image
-          formData.append(`colors[${index}][existing_image]`, color.existingImage);
+          formData.append(
+            `colors[${index}][existing_image]`,
+            color.existingImage
+          );
         }
-        // If both are null, it means remove the image
 
         formData.append(
           `colors[${index}][schedule_discount]`,
@@ -323,12 +324,14 @@ function EditProduct() {
 
   const handleRemoveTag = (tagToRemove, setFieldValue, values) => {
     const newTags = values.tags_id.filter(
-      (tag) => tag.name !== tagToRemove.name
+      (tag) => tag.id !== tagToRemove.id && tag.name !== tagToRemove.name
     );
     setFieldValue("tags_id", newTags);
-    if (product.tags?.includes(tagToRemove.name)) {
-      setTagsToRemove((prev) => [...prev, tagToRemove.name]);
+    
+    if (tagToRemove.id) {
+      setTagsToRemove((prev) => [...prev, tagToRemove.id]);
     }
+    
     if (tagsToAdd.includes(tagToRemove.name)) {
       setTagsToAdd((prev) => prev.filter((name) => name !== tagToRemove.name));
     }
@@ -345,12 +348,13 @@ function EditProduct() {
 
     if (
       !values.tags_id.some(
-        (t) => t.name.toLowerCase() === newTagName.toLowerCase()
+        (t) => (t.id && t.id === newTag.id) || 
+               (t.name && t.name.toLowerCase() === newTagName.toLowerCase())
       )
     ) {
       setFieldValue("tags_id", [...values.tags_id, newTag]);
 
-      if (!product.tags?.includes(newTagName)) {
+      if (!existingTag) {
         setTagsToAdd((prev) => [...prev, newTagName]);
       }
     }
@@ -361,13 +365,14 @@ function EditProduct() {
       try {
         const data = await fetchCategories();
         setCategories(data);
-        
+
         // Extract tags from all categories
-        const allTags = data.flatMap(category => 
-          category.tags?.map(tag => ({
-            id: tag.id,
-            name: tag.name
-          })) || []
+        const allTags = data.flatMap(
+          (category) =>
+            category.tags?.map((tag) => ({
+              id: tag.id,
+              name: tag.name,
+            })) || []
         );
         setAvailableTags(allTags);
       } catch (error) {
@@ -405,7 +410,7 @@ function EditProduct() {
     } else {
       setTagSuggestions([]);
     }
-  }, [initialValues.tagInput, availableTags]);
+  }, [initialValues.tagInput, availableTags, initialValues.tags_id]);
 
   const hasColors = product.colors && product.colors.length > 0;
   const hasSizes = product.sizes && product.sizes.length > 0;
@@ -427,12 +432,14 @@ function EditProduct() {
   return (
     <div className={`bg-gray-100 flex flex-col min-h-screen pb-32 relative`}>
       <Helmet>
-        <title>Edit Product - VERTEX</title>
+        <title>
+          {t("editProduct")} | {t("vertex")}
+        </title>
         <meta name="description" content="Edit product details in VERTEX" />
       </Helmet>
       <section className="rounded-md p-5 mx-5 bg-white mt-5 mb-3">
-        <p className="text-gray-400 text-13">Menu / Products / Edit Product</p>
-        <h1 className="text-17 mt-3 font-bold"> Edit Product</h1>
+        <p className="text-gray-400 text-13">{t("editProductHead")}</p>
+        <h1 className="text-17 mt-3 font-bold">{t("editProduct")}</h1>
       </section>
       <Formik
         initialValues={initialValues}
@@ -444,10 +451,10 @@ function EditProduct() {
           <Form className="flex flex-col flex-grow">
             <div className="flex gap-4 mx-5">
               <section className="bg-white p-4 rounded-md w-full">
-                <h2 className="font-bold mb-4 text-16">Basic Information</h2>
+                <h2 className="font-bold mb-4 text-16">{t("basicInfo")}</h2>
                 <div className="flex gap-2">
                   <InputField
-                    placeholder="Product Name"
+                    placeholder={t("productName")}
                     name="name"
                     error={errors.name}
                     touched={touched.name}
@@ -466,7 +473,7 @@ function EditProduct() {
                   />
                 </div>
                 <div className="flex items-center gap-2 mt-3">
-                  <InputField name={"tag_number"} placeholder={"Tag Number"} />
+                  <InputField name={"tag_number"} placeholder={t("tagNum")} />
                   <CustomDropdown
                     name="gender"
                     options={genderOptions}
@@ -481,12 +488,12 @@ function EditProduct() {
                   <div className="w-full">
                     <Field
                       name="return_percentage"
-                      placeholder="percentage (upon return)"
-                      className={`w-full h-12 p-3 border-2 rounded-md outline-none transition-all duration-200 placeholder:text-14 focus:border-primary placeholder:text-gray-400`}
+                      placeholder={t("amountPercentage")}
+                      className={`w-full h-14 p-3 border-2 rounded-lg outline-none transition-all duration-200 placeholder:text-14 focus:border-primary placeholder:text-gray-400`}
                     />
                   </div>
                   <div className="w-full">
-                    <InputField name="stock" placeholder="Stock" />
+                    <InputField name="stock" placeholder={t("stock")} />
                   </div>
                 </div>
 
@@ -497,21 +504,21 @@ function EditProduct() {
                         <TagPill
                           key={`${tag.id || tag.name}-${index}`}
                           tag={tag}
-                          isExisting={product.tags?.includes(tag.name)}
+                          isExisting={!!tag.id}
                           onRemove={() =>
                             handleRemoveTag(tag, setFieldValue, values)
                           }
                         />
                       ))
                     ) : (
-                      <p className="text-gray-500 text-sm">No tags added yet</p>
+                      <p className="text-gray-500 text-sm">{t("noTags")}</p>
                     )}
                   </div>
 
                   <div className="relative">
                     <input
                       type="text"
-                      placeholder="Add new tag (press enter to add)"
+                      placeholder={t("addNeWTag")}
                       className="w-full p-3 border-2 bg-transparent border-gray-200 rounded-lg outline-none placeholder:text-14 focus:border-2 focus:border-primary"
                       value={values.tagInput || ""}
                       onChange={(e) => {
@@ -552,7 +559,7 @@ function EditProduct() {
                 </div>
                 <Field
                   as="textarea"
-                  placeholder="Description"
+                  placeholder={t("description")}
                   name="description"
                   className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-md p-2 h-20 mt-3 placeholder:text-14 focus:border-primary"
                 />
@@ -592,7 +599,8 @@ function EditProduct() {
                     onRemoveColorImage={(index) => {
                       const newColors = [...values.colors];
                       newColors[index].newImage = null;
-                      newColors[index].previewImage = newColors[index].existingImage || null;
+                      newColors[index].previewImage =
+                        newColors[index].existingImage || null;
                       setFieldValue("colors", newColors);
                     }}
                   />
@@ -610,10 +618,10 @@ function EditProduct() {
                 isLoading ? (
                   <ClipLoader color="#fff" size={22} />
                 ) : (
-                  "Save Changes"
+                  t("saveChanges")
                 )
               }
-              cancelText={"Cancel"}
+              cancelText={t("cancel")}
               cancelOnClick={() => navigate("/Home/products")}
               cancelBtnType={"button"}
               saveBtnType={"submit"}
@@ -630,18 +638,19 @@ function EditProduct() {
             className="w-32 mt-6"
           />
           <p className="font-bold mt-5 text-center">
-            Product updated successfully!
+            {t("successUpdateProduct")}
           </p>
           <button
-            className="bg-primary text-white rounded-md p-2 text-14 mt-4 w-64"
+            className="bg-primary text-white rounded-md p-2 text-14 mt-4 w-40"
             onClick={() => navigate("/Dashboard/products")}
             aria-label="Back to products"
           >
-            Back to products
+            {t("backToProducts")}
           </button>
         </div>
       </SuccessModal>
     </div>
   );
 }
+
 export default EditProduct;

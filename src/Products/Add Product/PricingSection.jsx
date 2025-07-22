@@ -1,18 +1,17 @@
-import React from "react";
 import { Field, useFormikContext } from "formik";
 import InputField from "../../Components/InputFields/InputField";
-
+import { useTranslation } from "react-i18next";
 const PricingSection = ({ isDiscountScheduled, setIsDiscountScheduled }) => {
   const { setFieldValue } = useFormikContext();
-
+  const { t } = useTranslation();
   return (
     <div className="flex gap-6 mx-5">
       <div className="bg-white p-4 rounded-md mt-3 w-full">
-        <h2 className="font-bold text-16 mb-3">Pricing</h2>
+        <h2 className="font-bold text-16 mb-3">{t("pricing")}</h2>
         <div className="flex gap-2">
-          <InputField name="price" placeholder="Price (For Piece)" />
-          <InputField name="cost" placeholder="Cost" />
-          <InputField name="revenue" placeholder="Revenue"/>
+          <InputField name="price" placeholder={t("piecePrice")} />
+          <InputField name="cost" placeholder={t("cost")} />
+          <InputField name="revenue" placeholder={t("revenue")} />
         </div>
         <div className="flex items-center gap-2 mt-3 mb-3">
           <label className="inline-flex items-center cursor-pointer">
@@ -38,11 +37,11 @@ const PricingSection = ({ isDiscountScheduled, setIsDiscountScheduled }) => {
               </svg>
             </span>
           </label>
-          <div className="font-bold text-15">Schedule a discount</div>
+          <div className="font-bold text-15">{t("schedule")}</div>
         </div>
         {isDiscountScheduled && (
           <div className="flex gap-2">
-            <InputField name="discount_percentage" placeholder="Discount" />
+            <InputField name="discount_percentage" placeholder={t("discount")} />
             <InputField
               name="discount_expire_at"
               type="date"

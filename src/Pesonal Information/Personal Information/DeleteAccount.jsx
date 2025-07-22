@@ -4,13 +4,13 @@ import { ClipLoader } from "react-spinners";
 import axios from "axios";
 import "./UpdatePassword.scss";
 import { AiOutlineDelete } from "react-icons/ai";
-
+import { useTranslation } from "react-i18next";
 function DeleteAccount() {
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const API_BASE_URL = "https://";
   const live_shop_domain = localStorage.getItem("live_shop_domain");
   const role = localStorage.getItem("role");
+  const { t } = useTranslation();
   useEffect(() => {
     document.body.classList.add("no-scroll");
   });
@@ -18,7 +18,7 @@ function DeleteAccount() {
     setIsLoading(true);
     try {
       const response = await axios({
-        url: `${API_BASE_URL}${live_shop_domain}/api/${role}/delete-account`,
+        url: `https://${live_shop_domain}/api/${role}/delete-account`,
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")} `,
@@ -50,7 +50,7 @@ function DeleteAccount() {
       >
         <AiOutlineDelete color="#DC2626" size={24} className="me-2" />
         <p className="font-semibold text-15 mt-1 text-red-600">
-          Delete Account
+          {t("deleteAcc")}
         </p>
       </div>
       <FailedModal isOpen={showModal} onClose={() => setShowModal(false)}>
@@ -62,14 +62,14 @@ function DeleteAccount() {
           />
         </div>
         <p className="font-bold w-72 text-center">
-          Are You Sure You Want To Delete Your Account ?
+          {t("sureDeleteAcc")}
         </p>
-        <div className="flex gap-3 mt-5 mb-3">
+        <div className="flex gap-3 mt-5 mb-3 rtl:flex-row-reverse">
           <button
             className="rounded p-3 bg-gray-100 text-gray-400 font-bold w-32"
             onClick={() => setShowModal(false)}
           >
-            Cancel
+            {t("cancel")}
           </button>
           <button
             className="rounded text-white bg-customred font-bold p-3 w-32"
@@ -78,7 +78,7 @@ function DeleteAccount() {
             {isLoading ? (
               <ClipLoader color="#fff" size={"22px"} className="text-center" />
             ) : (
-              "Delete"
+              t("delete")
             )}
           </button>
         </div>

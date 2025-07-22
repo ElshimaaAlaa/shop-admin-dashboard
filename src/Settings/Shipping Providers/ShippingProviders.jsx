@@ -9,16 +9,17 @@ import { fetchShippingProviders } from "../../ApiServices/ShippingProviders";
 import DeleteShipping from "./DeleteShipping";
 import AddShippingProvider from "./AddShippingProvider";
 import { FaShippingFast } from "react-icons/fa";
-
+import { useTranslation } from "react-i18next";
 function ShippingProviders() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [shippingData, setShippingData] = useState([]);
-  const [currentPage, setCurrentPage] = useState(0); 
+  const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage] = useState(5);
-
+  const { t, i18n } = useTranslation();
+  const [isRTL, setIsRTL] = useState(false);
   const fetchData = async () => {
     setIsLoading(true);
     try {
@@ -35,7 +36,8 @@ function ShippingProviders() {
 
   useEffect(() => {
     fetchData();
-  }, [searchQuery]);
+    setIsRTL(i18n.language === "ar");
+  }, [searchQuery, i18n.language]);
 
   const filteredShippingData = useMemo(() => {
     return shippingData.filter((shipping) =>
@@ -70,16 +72,18 @@ function ShippingProviders() {
   return (
     <div className="bg-gray-100 pb-10 flex flex-col h-[89vh] ">
       <Helmet>
-        <title>Shipping Providers | vertex</title>
+        <title>
+          {t("shippingProvider")} | {t("vertex")}
+        </title>
       </Helmet>
       <section className="rounded-md p-5 mx-5 bg-white mt-5">
-        <p className="text-gray-400 text-13">Menu / Shipping Providers</p>
-        <h1 className="text-17 font-bold mt-2">Shipping Providers</h1>
+        <p className="text-gray-400 text-13">{t("shippingMenu")}</p>
+        <h1 className="text-17 font-bold mt-2">{t("shippingProvider")}</h1>
       </section>
       <section className="rounded-md bg-customOrange-mediumOrange border mt-3 border-primary p-4 mx-5 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <FaShippingFast color="#E0A75E" size={22} />
-          <p className="text-gray-500 text-15">Shipping Providers</p>
+          <p className="text-gray-500 text-15">{t("shippingProvider")}</p>
         </div>
         <p className="text-16 font-bold">{shippingData.length}</p>
       </section>
@@ -91,7 +95,7 @@ function ShippingProviders() {
               size={20}
             />
           }
-          text={"Add Shipping Provider"}
+          text={t("addShipping")}
           onclick={() => setShowModal(true)}
           value={searchQuery}
           onchange={(e) => {
@@ -103,22 +107,18 @@ function ShippingProviders() {
           isOpen={showModal}
           onClose={() => {
             setShowModal(false);
-            fetchData(); 
+            fetchData();
           }}
         />
         {error ? (
-          <div className="text-red-500 text-center mt-10">
-            Failed to fetch data. Please try again.
-          </div>
+          <div className="text-red-500 text-center mt-10">{t("error")}</div>
         ) : isLoading ? (
           <div className="text-gray-400 text-center mt-10">
             <ClipLoader color="#E0A75E" />
           </div>
         ) : shippingData.length === 0 ? (
           <div className="text-gray-400 text-center mt-10">
-            {searchQuery
-              ? "No shipping providers match your search."
-              : "No shipping providers found."}
+            {searchQuery ? t("noMatchResults") : t("noMatchResults")}
           </div>
         ) : (
           <>
@@ -133,11 +133,11 @@ function ShippingProviders() {
                           className="form-checkbox h-4 w-4"
                           aria-label="Select all categories"
                         />
-                        Shipping Providers
+                        {t("shippingProvider")}
                       </p>
                     </th>
                     <th className="px-6 py-3 border text-center w-12">
-                      Actions
+                      {t("actions")}
                     </th>
                   </tr>
                 </thead>
@@ -154,7 +154,7 @@ function ShippingProviders() {
                           {item.name}
                         </p>
                       </td>
-                      <td className="text-center px-3 py-3">
+                      <td className="text-center px-3 py-3 border-l border-r">
                         <div className="flex justify-center items-center">
                           <DeleteShipping
                             id={item.id}
@@ -174,8 +174,20 @@ function ShippingProviders() {
               containerClassName="flex items-center justify-end mt-5 text-gray-400 text-14"
               pageClassName="mx-1 px-3 py-1 rounded"
               activeClassName="bg-customOrange-lightOrange text-primary"
-              previousLabel={<ChevronLeft className="w-5 h-5 text-center" />}
-              nextLabel={<ChevronRight className="w-5 h-5" />}
+              previousLabel={
+                isRTL ? (
+                  <ChevronRight className="w-5 h-5 text-primary" />
+                ) : (
+                  <ChevronLeft className="w-5 h-5 text-center text-primary" />
+                )
+              }
+              nextLabel={
+                isRTL ? (
+                  <ChevronLeft className="w-5 h-5 text-center text-primary" />
+                ) : (
+                  <ChevronRight className="w-5 h-5 text-primary" />
+                )
+              }
               previousClassName="mx-1 px-3 py-1 font-bold text-primary text-18"
               nextClassName="mx-1 px-3 py-1 font-bold text-primary text-18"
             />

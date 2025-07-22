@@ -8,7 +8,7 @@ import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 import { FaCircleCheck } from "react-icons/fa6";
 import InputField from "../../Components/InputFields/InputField";
 import { AiOutlineDelete } from "react-icons/ai";
-
+import { useTranslation } from "react-i18next";
 function EditInfo() {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -17,10 +17,9 @@ function EditInfo() {
   const navigate = useNavigate();
   const { state } = useLocation();
   const personalInfo = state || {};
-  const API_BASE_URL = "https://";
   const live_shop_domain = localStorage.getItem("live_shop_domain");
   const role = localStorage.getItem("role");
-
+  const { t } = useTranslation();
   const initialValues = {
     name: personalInfo?.name || "",
     email: personalInfo?.email || "",
@@ -40,7 +39,7 @@ function EditInfo() {
         formData.append("image", selectedImage);
       }
       const response = await axios.post(
-        `${API_BASE_URL}${live_shop_domain}/api/${role}/update-profile`,
+        `https://${live_shop_domain}/api/${role}/update-profile`,
         formData,
         {
           headers: {
@@ -64,10 +63,10 @@ function EditInfo() {
   return (
     <div>
       <Helmet>
-        <title>Edit Personal Information</title>
+        <title>{t("editPersonalInfo")}</title>
       </Helmet>
       <section>
-        <h1 className="font-bold text-[18px]">Edit Personal Information</h1>
+        <h1 className="font-bold text-[18px]">{t("editPersonalInfo")}</h1>
         <Formik
           initialValues={initialValues}
           enableReinitialize
@@ -108,7 +107,7 @@ function EditInfo() {
                           alt="Upload new-image"
                           className="w-5"
                         />
-                        Upload Picture
+                        {t("uploadPic")}
                       </label>
                       <button
                         type="button"
@@ -124,26 +123,26 @@ function EditInfo() {
                     </div>
                   </div>
                 ) : (
-                  <p className="text-gray-500">No image available</p>
+                  <p className="text-gray-500">{t("noImage")}</p>
                 )}
               </div>
               <div className="border p-3 rounded-md bg-gray-50 w-full">
                 <div className="flex flex-col md:flex-row gap-2">
-                  <InputField placeholder="Name" name="name" />
-                  <InputField placeholder="Email" name="email" />
+                  <InputField placeholder={t("name")} name="name" />
+                  <InputField placeholder={t("email")} name="email" />
                 </div>
                 <div className="mt-3 flex flex-col md:flex-row gap-2">
-                  <InputField placeholder="Phone" name="phone" />
+                  <InputField placeholder={t("phone")} name="phone" />
                   <div className="w-full"></div>
                 </div>
               </div>
-              <div className="mt-5 flex items-center justify-end gap-3">
+              <div className="mt-5 flex items-center justify-end gap-3 rtl:flex-row-reverse">
                 <button
                   type="button"
                   className="bg-gray-100 text-gray-400 font-bold p-3 w-32 rounded-md"
                   onClick={() => navigate("/Dashboard/MainInfo")}
                 >
-                  Cancel
+                  {t("cancel")}
                 </button>
                 <button
                   type="submit"
@@ -153,7 +152,7 @@ function EditInfo() {
                     <ClipLoader color="#fff" size={22} />
                   ) : (
                     <>
-                      <FaCircleCheck /> Save
+                      <FaCircleCheck /> {t("save")}
                     </>
                   )}
                 </button>
@@ -171,13 +170,13 @@ function EditInfo() {
             className="w-32 mt-6"
           />
           <p className="font-bold mt-5 text-center">
-            Profile updated successfully!
+            {t("successUpdateProfile")}
           </p>
           <button
-            className="bg-primary text-white rounded-md p-2 text-14 mt-4 w-60 "
+            className="bg-primary text-white rounded-md p-2 text-14 mt-4 w-32 "
             onClick={() => navigate("/Dashboard/MainInfo")}
           >
-            Done ! Updated Successfully
+            {t("done")}
           </button>
         </div>
       </SuccessModal>

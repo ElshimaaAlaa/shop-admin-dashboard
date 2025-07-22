@@ -8,7 +8,7 @@ import Footer from "../../Components/Footer/Footer";
 import { ImageUpload } from "../../Components/Upload Image/UploadUpdatedImage";
 import InputField from "../../Components/InputFields/InputField";
 import "./style.scss";
-
+import { useTranslation } from "react-i18next";
 const CustomDropdown = ({
   options,
   value,
@@ -20,8 +20,7 @@ const CustomDropdown = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = React.useRef(null);
-
-  const selectedOption = options.find(opt => opt.value === value);
+  const selectedOption = options.find((opt) => opt.value === value);
 
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -64,7 +63,7 @@ const CustomDropdown = ({
           />
         </svg>
       </div>
-      
+
       {isOpen && (
         <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-auto">
           {options.map((option) => (
@@ -95,6 +94,7 @@ function EditCategory() {
   const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState(null);
   const category = state || {};
+  const { t } = useTranslation();
 
   useEffect(() => {
     console.log("Category data received:", category);
@@ -107,7 +107,7 @@ function EditCategory() {
   const initialValues = {
     name: category?.name || "",
     description: category?.description || "",
-    type: category?.type?.toString() || "", 
+    type: category?.type?.toString() || "",
     image: null,
     tagsEn: initialTagsEn,
     tagsAr: initialTagsAr,
@@ -178,7 +178,7 @@ function EditCategory() {
     return (
       <CustomDropdown
         options={options}
-        value={field.value?.toString()} 
+        value={field.value?.toString()}
         onChange={(name, value) => {
           form.setFieldValue(name, value);
         }}
@@ -199,14 +199,14 @@ function EditCategory() {
   return (
     <div className="bg-gray-100 h-[89vh] flex flex-col relative">
       <Helmet>
-        <title>Edit Category - VERTEX</title>
+        <title>
+          {t("editCat")} | {t("vertex")}
+        </title>
         <meta name="description" content="Edit category details in VERTEX" />
       </Helmet>
       <section className="rounded-md p-5 mx-5 bg-white mt-5 mb-3">
-        <p className="text-gray-400 text-13">
-          Menu / Categories / Edit Category
-        </p>
-        <h1 className="font-bold text-17 mt-2">Edit Category</h1>
+        <p className="text-gray-400 text-13">{t("editCatHead")}</p>
+        <h1 className="font-bold text-17 mt-2">{t("editCat")}</h1>
       </section>
       <Formik
         initialValues={initialValues}
@@ -217,7 +217,7 @@ function EditCategory() {
           <Form className="flex flex-col">
             <div className="flex flex-col md:flex-row gap-4 mx-5">
               <div className="bg-white p-4 rounded-md w-full">
-                <h2 className="font-bold mb-3 text-16">Basic Information</h2>
+                <h2 className="font-bold mb-3 text-16">{t("basicInfo")}</h2>
                 <div className="flex flex-col md:flex-row items-center gap-2 mb-3">
                   <InputField
                     name="name"
@@ -244,7 +244,7 @@ function EditCategory() {
                   <input
                     type="text"
                     name="newTagEn"
-                    placeholder="Enter English Tags Name"
+                    placeholder={t("enTag")}
                     value={values.newTagEn}
                     onChange={(e) => setFieldValue("newTagEn", e.target.value)}
                     onKeyDown={(e) => {
@@ -278,7 +278,7 @@ function EditCategory() {
                   <input
                     type="text"
                     name="newTagAr"
-                    placeholder="Enter Arabic Tags Name"
+                    placeholder={t("arTag")}
                     value={values.newTagAr}
                     onChange={(e) => setFieldValue("newTagAr", e.target.value)}
                     onKeyDown={(e) => {
@@ -303,7 +303,7 @@ function EditCategory() {
                 />
               </div>
               <div className="bg-white p-4 rounded-md w-full md:w-1/2 h-80">
-                <h2 className="font-bold mb-3 text-16">Category Icon / Image</h2>
+                <h2 className="font-bold mb-3 text-16">{t("catIcon")}</h2>
                 <ImageUpload
                   previewImage={previewImage}
                   onImageChange={(event) => {
@@ -320,8 +320,8 @@ function EditCategory() {
               <div className="text-red-500 text-center mt-5">{error}</div>
             )}
             <Footer
-              saveText={"Save Changes"}
-              cancelText={"Cancel"}
+              saveText={t("saveChanges")}
+              cancelText={t("cancel")}
               cancelOnClick={() => navigate("/Home/categories")}
               saveBtnType={"submit"}
               cancelBtnType={"button"}
@@ -337,15 +337,13 @@ function EditCategory() {
             alt="Success"
             className="w-32 mt-6"
           />
-          <p className="font-bold mt-5 text-center">
-            Category updated successfully!
-          </p>
+          <p className="font-bold mt-5 text-center">{t("successUpdateCat")}</p>
           <button
-            className="bg-primary text-white rounded-md p-2 text-14 mt-4 w-64"
+            className="bg-primary text-white rounded-md p-2 text-14 mt-4"
             onClick={() => navigate("/Dashboard/categories")}
             aria-label="Back to categories"
           >
-            Back to Categories
+            {t("backToCat")}
           </button>
         </div>
       </SuccessModal>

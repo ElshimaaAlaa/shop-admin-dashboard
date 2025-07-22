@@ -4,14 +4,14 @@ import { IoMdAddCircleOutline } from "react-icons/io";
 import { getRequests } from "../../ApiServices/Requests";
 import AddRequest from "./AddRequest";
 import { ClipLoader } from "react-spinners";
-
+import { useTranslation } from "react-i18next";
 function Requests() {
   const [showModal, setShowModal] = useState(false);
   const [requestData, setRequestData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedQuestionId, setSelectedQuestionId] = useState(null);
   const [error, setError] = useState(null);
-
+  const { t } = useTranslation();
   useEffect(() => {
     const fetchRequests = async () => {
       setIsLoading(true);
@@ -50,14 +50,14 @@ function Requests() {
   return (
     <div className="bg-gray-100 flex flex-col h-[89vh]">
       <Helmet>
-        <title>Requests | vertex</title>
+        <title>
+          {t("requests")} | {t("vertex")}
+        </title>
       </Helmet>
       <div className="rounded-md p-5 mx-5 bg-white mt-5 flex items-center justify-between">
         <div>
-          <p className="text-gray-400 text-13">
-            Menu / Customers / Support Questions/ Requests
-          </p>
-          <h1 className="text-17 font-bold mt-2">Requests</h1>
+          <p className="text-gray-400 text-13">{t("requestMenu")}</p>
+          <h1 className="text-17 font-bold mt-2">{t("requests")}</h1>
         </div>
       </div>
 
@@ -89,12 +89,12 @@ function Requests() {
                 onClick={() => handleAddResponse(request.id)}
               >
                 <IoMdAddCircleOutline size={23} />
-                Add Response
+                {t("addResponse")}
               </div>
             </div>
           ))
         ) : (
-          <p className="text-gray-400 text-center text-14">No requests found</p>
+          <p className="text-gray-400 text-center text-14">{t("noRequest")}</p>
         )}
       </div>
     </div>

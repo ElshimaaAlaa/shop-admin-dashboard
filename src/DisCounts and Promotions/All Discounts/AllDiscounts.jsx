@@ -10,13 +10,15 @@ import ReactPaginate from "react-paginate";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import SearchBar from "../../Components/Search Bar/SearchBar";
 import { Plus } from "lucide-react";
-
+import { useTranslation } from "react-i18next";
 function AllDiscounts() {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const [discounts, setDiscounts] = useState([]);
+  const { t, i18n } = useTranslation();
+  const [isRTL, setIsRTL] = useState(false);
   const [pagination, setPagination] = useState({
     current_page: 1,
     per_page: 5,
@@ -40,7 +42,7 @@ function AllDiscounts() {
           ...prev,
           current_page: prev.current_page - 1,
         }));
-        return; 
+        return;
       }
     } catch (error) {
       console.error("Error fetching promotions:", error);
@@ -51,7 +53,8 @@ function AllDiscounts() {
   };
   useEffect(() => {
     fetchData();
-  }, [searchQuery, pagination.current_page]);
+    setIsRTL(i18n.language === "ar");
+  }, [searchQuery, pagination.current_page, i18n.language]);
 
   const handlePageClick = (event) => {
     setPagination((prev) => ({
@@ -67,13 +70,13 @@ function AllDiscounts() {
   return (
     <div className="bg-gray-100 flex flex-col h-[89vh] mx-5">
       <Helmet>
-        <title>Discounts and Promotion | vertex</title>
+        <title>
+          {t("promo")} | {t("vertex")}
+        </title>
       </Helmet>
       <section className=" rounded-md p-5 bg-white mt-5">
-        <p className="text-gray-400 text-13">
-          Menu / Promotions & Discounts / Promotions
-        </p>
-        <h1 className="mt-2 text-17 font-bold">Promotions</h1>
+        <p className="text-gray-400 text-13">{t("promoMenu")}</p>
+        <h1 className="mt-2 text-17 font-bold">{t("promo")}</h1>
       </section>
       <div className="bg-white rounded-md p-5  my-2">
         <SearchBar
@@ -83,7 +86,7 @@ function AllDiscounts() {
               size={20}
             />
           }
-          text={"Add New Promotion"}
+          text={t("addNewPromo")}
           onclick={() => navigate("/Dashboard/AddDiscounts")}
           value={searchQuery}
           onchange={(e) => {
@@ -92,18 +95,14 @@ function AllDiscounts() {
           }}
         />
         {error ? (
-          <div className="text-red-500 text-center mt-10">
-            Failed to fetch data. Please try again.
-          </div>
+          <div className="text-red-500 text-center mt-10">{t("error")}</div>
         ) : isLoading ? (
           <div className="text-gray-400 text-center mt-10">
             <ClipLoader color="#E0A75E" />
           </div>
         ) : discounts.length === 0 ? (
           <div className="text-gray-400 text-center mt-10">
-            {searchQuery
-              ? "No promotions match your search."
-              : "No promotions found."}
+            {searchQuery ? t("noMatchResults") : t("noMatchResults")}
           </div>
         ) : (
           <>
@@ -118,17 +117,17 @@ function AllDiscounts() {
                           className="form-checkbox h-4 w-4"
                           aria-label="Select all categories"
                         />
-                        Promotions
+                        {t("promo")}
                       </p>
                     </th>
-                    <th className="px-3 py-3 text-left text-15 border w-200">
-                      Products Number
+                    <th className="px-3 py-3 text-left text-15 border w-200 rtl:text-right">
+                      {t("productNum")}
                     </th>
-                    <th className="px-3 py-3 text-left border text-15 w-200">
-                      End Date
+                    <th className="px-3 py-3 text-left border text-15 w-200 rtl:text-right">
+                      {t("endDate")}
                     </th>
                     <th className="px-6 py-3 border text-center text-15 w-12">
-                      Actions
+                      {t("actions")}
                     </th>
                   </tr>
                 </thead>
@@ -157,7 +156,7 @@ function AllDiscounts() {
                           {discount.end_date || "N/A"}
                         </p>
                       </td>
-                      <td className="text-center px- py-3">
+                      <td className="text-center px- py-3 rtl:border-r">
                         <div className="flex justify-center items-center">
                           <DeleteDiscount
                             id={discount.id}
@@ -177,8 +176,20 @@ function AllDiscounts() {
               containerClassName="flex items-center justify-end mt-5  text-gray-400 text-14"
               pageClassName="px-3 py-1 rounded "
               activeClassName="bg-customOrange-lightOrange text-primary"
-              previousLabel={<ChevronLeft className="w-5 h-5 text-primary" />}
-              nextLabel={<ChevronRight className="w-5 h-5 text-primary" />}
+              previousLabel={
+                isRTL ? (
+                  <ChevronRight className="w-5 h-5 text-primary" />
+                ) : (
+                  <ChevronLeft className="w-5 h-5 text-center text-primary" />
+                )
+              }
+              nextLabel={
+                isRTL ? (
+                  <ChevronLeft className="w-5 h-5 text-center text-primary" />
+                ) : (
+                  <ChevronRight className="w-5 h-5 text-primary" />
+                )
+              }
               previousClassName={`px-3 py-1 rounded ${
                 pagination.current_page === 1
                   ? "opacity-50 cursor-not-allowed"

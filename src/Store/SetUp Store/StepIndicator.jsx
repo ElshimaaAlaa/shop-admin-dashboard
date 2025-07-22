@@ -1,5 +1,7 @@
 import PropTypes from "prop-types";
+import { useTranslation } from "react-i18next";
 const StepIndicator = ({ currentStep, steps }) => {
+  const { t } = useTranslation();
   return (
     <div className="flex justify-between border-t border-b items-center mt-2 rounded-md mb-6">
       {steps.map((step) => (
@@ -41,7 +43,7 @@ const StepIndicator = ({ currentStep, steps }) => {
             )}
           </div>
           <div className="flex flex-col gap-2 text-xs mt-3">
-            <p className="text-gray-400 text-12  font-light text-left">{`Step ${step.number}`}</p>
+            <p className="text-gray-400 text-12  font-light text-left">{`${t("step")} ${step.number}`}</p>
             <p className="font-bold text-black">{step.title}</p>
           </div>
           {step.number === currentStep && (

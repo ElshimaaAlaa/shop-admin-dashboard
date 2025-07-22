@@ -7,10 +7,11 @@ import InputField from "../../Components/InputFields/InputField";
 import { FaCircleCheck } from "react-icons/fa6";
 import { AddNewSupportQuestion } from "../../ApiServices/AddSupportQuestion";
 import { IoMdClose } from "react-icons/io";
-
+import { useTranslation } from "react-i18next";
 function AddSupportQuestion({ isOpen, onClose, onSuccess }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { t } = useTranslation();
   const initialValues = {
     question: "",
     answer: "",
@@ -43,7 +44,10 @@ function AddSupportQuestion({ isOpen, onClose, onSuccess }) {
 
   return (
     <div className="modal-overlay rounded relative">
-      <button className="text-white bg-red-600 p-2  absolute top-2 right-2 rounded-md" onClick={onClose}>
+      <button
+        className="text-white bg-red-600 p-2  absolute top-2 right-2 rounded-md"
+        onClick={onClose}
+      >
         <IoMdClose size={20} />
       </button>
       <div className="modalContent modal-width rounded" id="modal-width">
@@ -53,7 +57,7 @@ function AddSupportQuestion({ isOpen, onClose, onSuccess }) {
             alt="chat"
             className="w-14 my-4"
           />
-          <h3 className="text-17 font-bold">Add Another Question</h3>
+          <h3 className="text-17 font-bold">{t("addAnthorQue")}</h3>
           {error && (
             <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">
               {error}
@@ -64,12 +68,12 @@ function AddSupportQuestion({ isOpen, onClose, onSuccess }) {
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
           >
-            <Form className="w-350 ms-3 mt-3 flex flex-col gap-3">
-              <InputField name={"question"} placeholder={"Question"} />
+            <Form className="w-350 ms-3 rtl:me-3 mt-3 flex flex-col gap-3">
+              <InputField name={"question"} placeholder={t("question")} />
               <Field
                 as="textarea"
                 name={"answer"}
-                placeholder={"Response"}
+                placeholder={t("response")}
                 className={`w-full h-24 p-3 border-2 rounded-md outline-none transition-all duration-200 placeholder:text-14 focus:border-primary placeholder:text-gray-400`}
               />
               <button
@@ -81,7 +85,7 @@ function AddSupportQuestion({ isOpen, onClose, onSuccess }) {
                   <ClipLoader color="#fff" size={33} />
                 ) : (
                   <>
-                    <FaCircleCheck /> {"Add Question"}
+                    <FaCircleCheck /> {t("sendq")}
                   </>
                 )}
               </button>

@@ -1,9 +1,9 @@
 import { useState } from "react";
-
+import { useTranslation } from "react-i18next";
 export const TagsInput = ({ setFieldValue, values }) => {
   const [inputValueEn, setInputValueEn] = useState("");
   const [inputValueAr, setInputValueAr] = useState("");
-
+  const { t } = useTranslation();
   const handleKeyDown = (e, language) => {
     if (e.key === "Enter" && e.target.value.trim()) {
       e.preventDefault();
@@ -65,7 +65,7 @@ export const TagsInput = ({ setFieldValue, values }) => {
             value={inputValueEn}
             onChange={(e) => setInputValueEn(e.target.value)}
             onKeyDown={(e) => handleKeyDown(e, "en")}
-            placeholder="English Tags"
+            placeholder={t("tagEn")}
             className="outline-none placeholder:text-14"
           />
         </div>
@@ -93,7 +93,7 @@ export const TagsInput = ({ setFieldValue, values }) => {
             value={inputValueAr}
             onChange={(e) => setInputValueAr(e.target.value)}
             onKeyDown={(e) => handleKeyDown(e, "ar")}
-            placeholder="Arabic Tags"
+            placeholder={t("tagAr")}
             className="outline-none placeholder:text-14"
           />
         </div>

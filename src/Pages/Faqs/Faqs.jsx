@@ -2,25 +2,28 @@ import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { ClipLoader } from "react-spinners";
 import { Formik, Form, Field } from "formik";
-import { getFaqs } from "../../ApiServices/AllFaqs";
+import { getFaqs } from "../../ApiServices/AllFaqs-Web";
 import { LuSend } from "react-icons/lu";
 import * as Yup from "yup";
 import { addFaqs } from "../../ApiServices/AddFags";
 import InputField from "../../Components/InputFields/InputField";
 import MainBtn from "../../Components/Main Button/MainBtn";
 import AllFaqs from "./AllFaqs";
+import { useTranslation } from "react-i18next";
+import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 function Faqs() {
   const [isLoading, setIsLoading] = useState(false);
   const [faqsData, setFaqsData] = useState([]);
-
+  const [showModal, setShowModal] = useState(false);
+  const { t } = useTranslation();
   const initialValues = {
     question: "",
     answer: "",
   };
 
   const validationSchema = Yup.object({
-    question: Yup.string().required("Question is required"),
-    answer: Yup.string().required("Answer is required"),
+    question: Yup.string(),
+    answer: Yup.string(),
   });
 
   const handleSubmit = async (values, { resetForm }) => {
@@ -29,8 +32,9 @@ function Faqs() {
       const questionData = await addFaqs(values.question, values.answer);
       if (questionData && questionData.data) {
         setFaqsData((prevFaqs) => [questionData.data, ...prevFaqs]);
-        resetForm();
       }
+      resetForm();
+      setShowModal(true);
     } catch (error) {
       console.error("Failed to add FAQ:", error);
     } finally {
@@ -53,16 +57,17 @@ function Faqs() {
   return (
     <div className="bg-white pb-5">
       <Helmet>
-        <title>Frequently Asked Questions | VERTEX</title>
+        <title>
+          {t("faq")} | {t("vertex")}
+        </title>
       </Helmet>
-      <h2 className="font-bold text-center text-17 mt-8">
-        Frequently Asked Questions
+      <h2 className="font-bold text-center text-17 mt-8 rtl:text-[20px]">
+        {t("faq")}
       </h2>
-      <p className="text-gray-400 text-center mt-2 text-15">
-        We're here to help with any questions you have about plans, pricing,
-        <br /> and supported features.
+      <p className="text-gray-400 text-center mt-2 text-15 w-500px m-auto rtl:w-390 rtl:text-[17px]">
+        {t("faqsP")}
       </p>
-      <div className="flex justify-center gap-5 mx-20">
+      <div className="flex justify-center gap-5 mx-20 rtl:flex-row-reverse">
         {/* FAQ Section */}
         <AllFaqs />
         {/* Add Question Section */}
@@ -75,10 +80,10 @@ function Faqs() {
             />
           </div>
           <h2 className="font-bold text-17 text-center mb-1">
-            Add Another Question
+            {t("addQuestion")}
           </h2>
           <p className="text-gray-400 text-14 text-center mb-3">
-            We are here to help you
+            {t("helpYou")}
           </p>
           <Formik
             initialValues={initialValues}
@@ -87,12 +92,12 @@ function Faqs() {
           >
             {({ isSubmitting }) => (
               <Form>
-                <InputField name="question" placeholder="Question" />
+                <InputField name="question" placeholder={t("question")} />
                 <Field
                   as="textarea"
                   name="answer"
-                  placeholder="Your Answer"
-                  className="w-full mt-2 mb-1 outline-none border-2 border-gray-200 rounded-lg p-2 h-24 placeholder:text-14 focus:border-primary"
+                  placeholder={t("answer")}
+                  className="w-full mt-2 mb-1 outline-none border-2 border-gray-200 rounded-lg p-2 h-32 placeholder:text-13 focus:border-primary"
                 />
                 <MainBtn
                   btnType={"submit"}
@@ -101,7 +106,7 @@ function Faqs() {
                       <ClipLoader color="#fff" size={22} />
                     ) : (
                       <div className="flex items-center gap-2 justify-center">
-                        <LuSend /> Send Question
+                        <LuSend /> {t("sendQ")}
                       </div>
                     )
                   }
@@ -111,6 +116,24 @@ function Faqs() {
           </Formik>
         </section>
       </div>
+      <SuccessModal isOpen={showModal} onClose={() => setShowModal(false)}>
+        <div className="flex flex-col w-370 items-center">
+          <img
+            src="/assets/images/success.png"
+            alt="Success"
+            className="w-32 mt-6"
+          />
+          <p className="font-bold text-16 mt-5 text-center rtl:text-[18px]">
+            {t("successMessage")}
+          </p>
+          <button
+            className="bg-primary text-white rounded-md p-2 text-14 mt-4 w-24 font-bold rtl:text-[15px]"
+            onClick={() => setShowModal(false)}
+          >
+            {t("done")}
+          </button>
+        </div>
+      </SuccessModal>
     </div>
   );
 }

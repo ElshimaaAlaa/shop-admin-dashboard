@@ -8,7 +8,7 @@ import { fetchProducts } from "../../ApiServices/AllProuctsApi";
 import { Helmet } from "react-helmet";
 import SearchBar from "../../Components/Search Bar/SearchBar";
 import { Plus } from "lucide-react";
-
+import { useTranslation } from "react-i18next";
 function AllProducts() {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -17,7 +17,8 @@ function AllProducts() {
   const [itemsPerPage] = useState(5);
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
-
+  const { t, i18n } = useTranslation();
+  const [isRTL, setIsRtl] = useState(false);
   useEffect(() => {
     const getProducts = async () => {
       setIsLoading(true);
@@ -40,7 +41,8 @@ function AllProducts() {
       }
     };
     getProducts();
-  }, []);
+    setIsRtl(i18n.language === "ar");
+  }, [i18n.language]);
 
   const handleDeleteProduct = (productId) => {
     setProducts((prevProducts) => {
@@ -78,12 +80,14 @@ function AllProducts() {
   return (
     <div className="bg-gray-100 h-[89vh] mx-5 pt-5">
       <Helmet>
-        <title>All Products | VERTEX</title>
+        <title>
+          {t("products")} | {t("vertex")}
+        </title>
       </Helmet>
 
       <div className="bg-white mb-3 p-4 rounded-md">
-        <p className="text-gray-400 text-13">Menu / Products</p>
-        <h1 className="font-bold text-17 mt-2">Products</h1>
+        <p className="text-gray-400 text-13">{t("productHead")}</p>
+        <h1 className="font-bold text-17 mt-2">{t("products")}</h1>
       </div>
 
       <div className="bg-white p-5 rounded-md">
@@ -91,7 +95,7 @@ function AllProducts() {
           onclick={() => navigate("/Dashboard/addProduct")}
           value={searchQuery}
           onchange={(e) => setSearchQuery(e.target.value)}
-          text={"Add New Product"}
+          text={t("addNewProduct")}
           icon={
             <Plus
               className="text-white rounded-full border-2 border-white font-bold"
@@ -101,18 +105,14 @@ function AllProducts() {
         />
 
         {error ? (
-          <div className="text-red-500 text-center mt-10">
-            Failed to fetch products. Please try again.
-          </div>
+          <div className="text-red-500 text-center mt-10">{t("error")}</div>
         ) : isLoading ? (
           <div className="flex justify-center mt-10">
             <ClipLoader color="#E0A75E" size={40} />
           </div>
         ) : filteredProducts.length === 0 ? (
           <div className="text-gray-400 text-center mt-10">
-            {searchQuery
-              ? "No products match your search."
-              : "No products available."}
+            {searchQuery ? t("noMatchResults") : t("noMatchResults")}
           </div>
         ) : (
           <>
@@ -126,14 +126,24 @@ function AllProducts() {
                           type="checkbox"
                           className="form-checkbox h-4 w-4 rounded text-primary focus:ring-primary border-gray-300"
                         />
-                        Product
+                        {t("product")}
                       </p>
                     </th>
-                    <th className="px-3 py-3 border-b border-r text-left">Category</th>
-                    <th className="px-3 py-3 border-r border-b text-left">Price</th>
-                    <th className="px-3 py-3 border-r border-b text-left">Stock</th>
-                    <th className="px-3 py-3 border-r text-left border-b ">Colors</th>
-                    <th className="px-3 py-3 border-b">Actions</th>
+                    <th className="px-3 py-3 border-b border-r text-left rtl:text-right ">
+                      {t("category")}
+                    </th>
+                    <th className="px-3 py-3 border-r border-b text-left rtl:text-right ">
+                      {t("price")}
+                    </th>
+                    <th className="px-3 py-3 border-r border-b text-left rtl:text-right ">
+                      {t("stock")}
+                    </th>
+                    <th className="px-3 py-3 border-r text-left border-b rtl:text-right ">
+                      {t("color")}
+                    </th>
+                    <th className="px-3 py-3 border-b rtl:border-r text-center">
+                      {t("actions")}
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -161,7 +171,7 @@ function AllProducts() {
                           {product.name}
                         </div>
                       </td>
-                      <td className="px-3 py-3 border-t border-l text-gray-600 text-15">
+                      <td className="px-3 py-3 border-t border-l text-gray-600 text-15  rtl:border-r">
                         <div className="flex items-center gap-3">
                           <img
                             className="h-7 w-7 rounded-full object-cover"
@@ -178,11 +188,9 @@ function AllProducts() {
                         {product.price?.toFixed(2) || "0.00"} $
                       </td>
                       <td className="px-3 text-gray-600 text-15 py-3 border-t border-l w-200">
-                      {product.stock}
+                        {product.stock}
                       </td>
-                      <td
-                        className="px-6 py-3 border-t border-l"
-                      >
+                      <td className="px-6 py-3 border-t border-l">
                         <div className="flex">
                           {product.colors?.slice(0, 4).map((color, idx) => (
                             <div
@@ -240,8 +248,20 @@ function AllProducts() {
                   activeLinkClassName="active-link"
                   previousClassName=" px-1 py-1 font-bold text-primary text-[20px] "
                   nextClassName="py-1 px-1 font-bold text-primary text-[20px]"
-                  previousLabel={<ChevronLeft className="h-4 w-5 text-center" />}
-                  nextLabel={<ChevronRight className="h-4 w-5" />}
+                  previousLabel={
+                    isRTL ? (
+                      <ChevronRight className="w-5 h-5 text-primary" />
+                    ) : (
+                      <ChevronLeft className="w-5 h-5 text-center text-primary" />
+                    )
+                  }
+                  nextLabel={
+                    isRTL ? (
+                      <ChevronLeft className="w-5 h-5 text-center text-primary" />
+                    ) : (
+                      <ChevronRight className="w-5 h-5 text-primary" />
+                    )
+                  }
                   breakLabel="..."
                   breakClassName=" py-1 text-gray-700"
                   marginPagesDisplayed={1}

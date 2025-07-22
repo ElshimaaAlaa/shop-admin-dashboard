@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
 const LogoUpload = ({ name, setFieldValue, error }) => {
   const [file, setFile] = useState(null);
   const [uploadProgress, setUploadProgress] = useState(0);
-
+  const { t } = useTranslation();
   const handleFileChange = (e) => {
     const uploadedFile = e.target.files[0];
     if (!uploadedFile) return;
@@ -29,7 +30,7 @@ const LogoUpload = ({ name, setFieldValue, error }) => {
 
   return (
     <div className="w-full px-6">
-      <p className="text-16 font-semibold mb-3">Upload Logo File</p>
+      <p className="text-16 font-semibold mb-3">{t("uploadLogo")}</p>
       <label
         htmlFor="logo-upload"
         className="flex items-center border-2 border-dashed border-primary rounded-md p-3 cursor-pointer text-gray-600 text-13"
@@ -48,8 +49,8 @@ const LogoUpload = ({ name, setFieldValue, error }) => {
             alt="upload logo"
             className="w-6"
           />
-          Drag & Drop Your logo File Here OR
-          <span className="text-primary font-bold">Browse Files</span>
+         {t("dropFile")}
+          <span className="text-primary font-bold">{t("browseFile")}</span>
         </span>
       </label>
       {file && (

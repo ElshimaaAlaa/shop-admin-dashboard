@@ -9,18 +9,18 @@ import BannerUpload from "../../Components/Upload Image/UploadBanner";
 import StepIndicator from "./StepIndicator";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { Helmet } from "react-helmet";
-
+import { useTranslation } from "react-i18next";
 function ThemeStore() {
   const navigate = useNavigate();
   const [previewImage, setPreviewImage] = useState(null);
   const [bannerPreviews, setBannerPreviews] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [submitError, setSubmitError] = useState(null);
-
+  const { t } = useTranslation();
   const steps = [
-    { number: 1, title: "Store Theme" },
-    { number: 2, title: "Store Profile" },
-    { number: 3, title: "Pricing Plan" },
+    { number: 1, title: t("storeTheme") },
+    { number: 2, title: t("storeProfile") },
+    { number: 3, title: t("pricingPlan") },
   ];
 
   const initialValues = {
@@ -114,7 +114,7 @@ function ThemeStore() {
   return (
     <div className="p-3 bg-gradient-to-r from-customBlue-mediumBlue via-customOrange-mediumOrange to-customOrange-mediumOrange min-h-screen flex items-center justify-center">
       <Helmet>
-        <title>Set Up Store </title>
+        <title>{t("setUpStore")}</title>
       </Helmet>
       <div className="bg-white rounded-md py-5 flex flex-col w-full max-w-2xl">
         <div className="flex justify-center my-5">
@@ -124,9 +124,7 @@ function ThemeStore() {
           <div className="rounded-full border-[5px] border-primary p-2 font-bold">
             1/3
           </div>
-          <h3 className="text-15 font-bold">
-            Let’s Get Started To Set Up Your Own Store .
-          </h3>
+          <h3 className="text-15 font-bold">{t("startStore")}</h3>
         </div>
         <StepIndicator currentStep={1} steps={steps} />
 
@@ -167,12 +165,12 @@ function ThemeStore() {
                 touched={touched}
               />
               <h3 className="text-16 font-semibold mb-3 px-6">
-                Enter Your Store Theme Colors
+                {t("enterColor")}
               </h3>
               <div className="flex gap-2 mb-6 px-6">
                 <Field
                   name="theme_primary_color"
-                  placeholder="Primary Color"
+                  placeholder={t("primColor")}
                   className={`w-full bg-gray-50 p-3 border rounded-md outline-none transition-all duration-200 placeholder:text-14 placeholder:text-gray-500 focus:border-primary ${
                     touched.theme_primary_color && errors.theme_primary_color
                       ? "border-red-500"
@@ -181,7 +179,7 @@ function ThemeStore() {
                 />
                 <Field
                   name="theme_secondary_color"
-                  placeholder="Secondary Color"
+                  placeholder={t("secColor")}
                   className={`w-full bg-gray-50 p-3 border rounded-md outline-none transition-all duration-200 placeholder:text-14 placeholder:text-gray-500 focus:border-primary${
                     touched.theme_secondary_color &&
                     errors.theme_secondary_color
@@ -201,7 +199,7 @@ function ThemeStore() {
                     <ClipLoader size={22} color="#fff" />
                   ) : (
                     <>
-                      Next
+                      {t("next")}
                       <FaArrowRightLong />
                     </>
                   )}

@@ -10,7 +10,7 @@ import Footer from "../../Components/Footer/Footer";
 import { ImageUpload } from "../../Components/Upload Image/UploadImage";
 import { TagsInput } from "../../Components/Tag Input/TagInput";
 import InputField from "../../Components/InputFields/InputField";
-
+import { useTranslation } from "react-i18next";
 const CustomDropdown = ({
   options,
   value,
@@ -23,7 +23,7 @@ const CustomDropdown = ({
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = React.useRef(null);
 
-  const selectedOption = options.find(opt => opt.value === value);
+  const selectedOption = options.find((opt) => opt.value === value);
 
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -41,7 +41,7 @@ const CustomDropdown = ({
   return (
     <div className="relative w-full" ref={dropdownRef}>
       <div
-        className={`w-full bg-transparent outline-none border-2 rounded-md h-12 p-2 flex items-center justify-between cursor-pointer ${
+        className={`w-full bg-transparent outline-none border-2 rounded-lg placeholder:text-12 h-14 p-2 flex items-center justify-between cursor-pointer ${
           error && touched ? "border-red-500" : "border-gray-200"
         } focus:border-2 focus:border-primary`}
         onClick={() => setIsOpen(!isOpen)}
@@ -66,7 +66,7 @@ const CustomDropdown = ({
           />
         </svg>
       </div>
-      
+
       {isOpen && (
         <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto">
           {options.map((option) => (
@@ -85,7 +85,7 @@ const CustomDropdown = ({
           ))}
         </div>
       )}
-      
+
       {error && touched && (
         <div className="text-red-500 text-xs mt-1">{error}</div>
       )}
@@ -94,6 +94,7 @@ const CustomDropdown = ({
 };
 
 const TypeField = ({ field, form, ...props }) => {
+  const { t } = useTranslation();
   const options = [
     { value: "1", label: "Standard" },
     { value: "2", label: "Color-Only" },
@@ -107,7 +108,7 @@ const TypeField = ({ field, form, ...props }) => {
       value={field.value}
       onChange={form.setFieldValue}
       name={field.name}
-      placeholder="Type"
+      placeholder={t("type")}
       error={form.errors[field.name]}
       touched={form.touched[field.name]}
     />
@@ -119,7 +120,7 @@ function AddCategory() {
   const [isLoading, setIsLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
   const [showModal, setShowModal] = useState(false);
-
+  const { t } = useTranslation();
   const initialValues = {
     name: "",
     description: "",
@@ -193,7 +194,9 @@ function AddCategory() {
   return (
     <div className="bg-gray-100 h-[89vh] relative">
       <Helmet>
-        <title>Add Category | Vertex Dashboard</title>
+        <title>
+          {t("addCat")} | {t("vertex")}
+        </title>
       </Helmet>
       <Formik
         initialValues={initialValues}
@@ -203,29 +206,31 @@ function AddCategory() {
         {({ setFieldValue, values, errors, touched }) => (
           <Form className="flex flex-col">
             <h1 className=" rounded-md p-5 mx-4 bg-white mt-5 mb-3">
-              <p className="text-gray-400 text-13">Menu / Categories / Add Category</p>
-              <h3 className="text-17 font-bold mt-2">Add Category</h3>
+              <p className="text-gray-400 text-13">{t("addCatHead")}</p>
+              <h3 className="text-17 font-bold mt-2">{t("addCat")}</h3>
             </h1>
             <div className="flex gap-3 mx-4">
               <section className="bg-white p-4 rounded-md w-full">
-                <h2 className="font-bold mb-5 text-16">Basic Information</h2>
+                <h2 className="font-bold mb-5 text-16">{t("basicInfo")}</h2>
                 <div className="flex items-center gap-2">
-                  <InputField placeholder="Category Name" name="name" />
+                  <InputField placeholder={t("categoryName")} name="name" />
                   <Field name="type" component={TypeField} />
                 </div>
                 <TagsInput setFieldValue={setFieldValue} values={values} />
                 <Field
                   as="textarea"
-                  placeholder="Description"
+                  placeholder={t("description")}
                   name="description"
                   className="w-full bg-transparent outline-none border-2 border-gray-200 rounded-lg p-2 h-28 mt-3 block placeholder:text-14 focus:border-primary"
                 />
                 {errors.description && touched.description && (
-                  <div className="text-red-500 text-xs mt-1">{errors.description}</div>
+                  <div className="text-red-500 text-xs mt-1">
+                    {errors.description}
+                  </div>
                 )}
               </section>
               <section className="bg-white p-4 rounded-md w-2/4 h-72">
-                <h2 className="font-bold mb-3 text-16">Category Icon / Image</h2>
+                <h2 className="font-bold mb-3 text-16">{t("catIcon")}</h2>
                 <ImageUpload
                   name={"image"}
                   previewImage={previewImage}
@@ -238,13 +243,15 @@ function AddCategory() {
                   }}
                 />
                 {errors.image && touched.image && (
-                  <div className="text-red-500 text-xs mt-1">{errors.image}</div>
+                  <div className="text-red-500 text-xs mt-1">
+                    {errors.image}
+                  </div>
                 )}
               </section>
             </div>
             <Footer
-              saveText={"Save"}
-              cancelText={"Cancel"}
+              saveText={t("save")}
+              cancelText={t("cancel")}
               cancelOnClick={() => navigate("/Home/categories")}
               saveBtnType={"submit"}
               cancelBtnType={"button"}
@@ -261,17 +268,16 @@ function AddCategory() {
             alt="success"
             className="w-32 mt-6"
           />
-          <p className="font-bold mt-5">Category added successfully!</p>
+          <p className="font-bold mt-5">{t("successAddCat")}</p>
           <button
-            className="bg-primary text-white rounded-md p-2 text-14 w-48 mt-4"
+            className="bg-primary text-white rounded-md p-2 text-14  mt-4"
             onClick={() => navigate("/Dashboard/categories")}
           >
-            Back to Categories
+            {t("backToCat")}
           </button>
         </div>
       </SuccessModal>
     </div>
   );
 }
-
 export default AddCategory;

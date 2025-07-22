@@ -3,11 +3,11 @@ import axios from "axios";
 import { ClipLoader } from "react-spinners";
 import FailedModal from "../../Components/Modal/Failed Modal/FailedModal";
 import "./style.scss";
-
+import { useTranslation } from "react-i18next";
 function DeleteShipping({ id, onDelete }) {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const API_BASE_URL = "https://";
+  const { t } = useTranslation();
   const live_shop_domain = localStorage.getItem("live_shop_domain");
   const role = localStorage.getItem("role");
 
@@ -15,9 +15,10 @@ function DeleteShipping({ id, onDelete }) {
     setIsLoading(true);
     try {
       const response = await axios({
-        url: `${API_BASE_URL}${live_shop_domain}/api/${role}/shipping-providers/delete/${id}`,
+        url: `https://${live_shop_domain}/api/${role}/shipping-providers/delete/${id}`,
         method: "GET",
         headers: {
+          "Accept-Language": "en",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",
         },
@@ -58,15 +59,13 @@ function DeleteShipping({ id, onDelete }) {
             className="h-14 w-14 p-1"
           />
         </div>
-        <p className="font-bold w-72 text-center">
-          Are You Sure You Want To Delete This Shipping Provider?
-        </p>
-        <div className="flex gap-3 mt-5 mb-3">
+        <p className="font-bold w-72 text-center">{t("deleteShipping")}</p>
+        <div className="flex gap-3 mt-5 mb-3 rtl:flex-row-reverse">
           <button
             className="rounded p-3 bg-gray-100 text-gray-400 font-bold w-32"
             onClick={() => setShowModal(false)}
           >
-            Cancel
+            {t("cancel")}
           </button>
           <button
             className="rounded text-white bg-customred font-bold p-3 w-32"
@@ -76,7 +75,7 @@ function DeleteShipping({ id, onDelete }) {
             {isLoading ? (
               <ClipLoader color="#fff" size={22} className="text-center" />
             ) : (
-              "Delete"
+              t("delete")
             )}
           </button>
         </div>

@@ -1,7 +1,7 @@
 import { TbInvoice } from "react-icons/tb";
 import { FaShippingFast } from "react-icons/fa";
 import { FaSackDollar } from "react-icons/fa6";
-
+import { useTranslation } from "react-i18next";
 const Statistics = ({ icon: Icon, title, totalNumber }) => (
   <div className="bg-white rounded-md border border-gray-200 flex-1 min-w-[200px]">
     <div className="flex items-center gap-2 bg-gray-100 rounded-tl-md rounded-tr-md p-3">
@@ -13,21 +13,22 @@ const Statistics = ({ icon: Icon, title, totalNumber }) => (
 );
 
 export const CustomerStatistics = ({ statistics }) => {
+  const { t } = useTranslation();
   return (
     <div className="bg-white rounded-md border border-gray-200 p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
       <Statistics
         icon={TbInvoice}
-        title="Total Invoices"
+        title={t("totalInvoice")}
         totalNumber={statistics?.orders_count}
       />
       <Statistics
         icon={FaShippingFast}
-        title="Total Orders"
+        title={t("totalOrders")}
         totalNumber={statistics?.invoices_count}
       />
       <Statistics
         icon={FaSackDollar}
-        title="Total Expense"
+        title={t("totalExpense")}
         totalNumber={statistics?.total_spent}
       />
     </div>

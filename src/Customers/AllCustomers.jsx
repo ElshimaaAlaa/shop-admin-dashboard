@@ -13,7 +13,7 @@ import ReactPaginate from "react-paginate";
 import { RiUser3Fill } from "react-icons/ri";
 import StatisticsCard from "../Pages/Dashboard/ReportItems";
 import { IoCopyOutline } from "react-icons/io5";
-
+import { useTranslation } from "react-i18next";
 function AllCustomers() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
@@ -28,7 +28,8 @@ function AllCustomers() {
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage] = useState(5);
   const [copiedId, setCopiedId] = useState(null);
-
+  const { t, i18n } = useTranslation();
+  const [isRTL, setIsRTL] = useState(false);
   const fetchCustomers = async () => {
     setIsLoading(true);
     try {
@@ -53,7 +54,8 @@ function AllCustomers() {
 
   useEffect(() => {
     fetchCustomers();
-  }, [searchQuery]);
+    setIsRTL(i18n.language === "ar");
+  }, [searchQuery, i18n.language]);
 
   const filteredCustomers = useMemo(() => {
     return customers.filter(
@@ -102,52 +104,54 @@ function AllCustomers() {
   return (
     <div className="bg-gray-100 min-h-screen pb-10 mx-5 pt-5">
       <Helmet>
-        <title>Customers | VERTEX</title>
+        <title>
+          {t("customers")} | {t("vertex")}
+        </title>
       </Helmet>
       <section className="bg-white mb-3 p-4 rounded-md flex justify-between items-center">
         <div>
-          <p className="text-gray-400 text-13">Menu / Customers </p>
-          <h1 className="font-bold text-17 mt-2">Customers</h1>
+          <p className="text-gray-400 text-13">{t("customerHead")}</p>
+          <h1 className="font-bold text-17 mt-2">{t("customers")}</h1>
         </div>
         <button
-          className="flex items-center gap-1 font-bold text-white bg-primary rounded-md p-4"
+          className="flex items-center gap-1 font-bold text-white bg-primary rounded-md p-4 rtl:flex-row-reverse"
           onClick={() => navigate("/Dashboard/SupportQuestion")}
         >
-          Customers Support Questions
+          {t("customerSupport")}
           <IoHelpCircleOutline size={27} />
         </button>
       </section>
       <section className="bg-white rounded-md p-4 mb-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
         <StatisticsCard
           icon={RiUser3Fill}
-          title="All Customers"
+          title={t("allCustomers")}
           totalNumber={statistics.customers?.change_rate || 0}
           percentage={`${
             statistics.customers?.current_month_count || 0
-          }% vs. previous month`}
-          duration={`Last month: ${
+          }% vs. ${t("previousMonth")}`}
+          duration={`${t("lastMonth")} ${
             statistics.customers?.previous_month_count || 0
           }`}
         />
         <StatisticsCard
           icon={BiSupport}
-          title="Support Requests"
+          title={t("supportRequest")}
           totalNumber={statistics.contacts?.change_rate || 0}
           percentage={`${
             statistics.contacts?.current_month_count || 0
-          }% vs. previous month`}
-          duration={`Last month: ${
+          }% vs. ${t("previousMonth")}`}
+          duration={`${t("lastMonth")} ${
             statistics.contacts?.previous_month_count || 0
           }`}
         />
         <StatisticsCard
           icon={FaSackDollar}
-          title="Payments"
+          title={t("payment")}
           totalNumber={statistics.payments?.change_rate || 0}
           percentage={`${
             statistics.payments?.current_month_count || 0
-          }% vs. previous month`}
-          duration={`Last month: ${
+          }% vs. ${t("previousMonth")}`}
+          duration={`${t("lastMonth")} ${
             statistics.payments?.previous_month_count || 0
           }`}
         />
@@ -155,34 +159,30 @@ function AllCustomers() {
       <section className="bg-white rounded-md p-4">
         <div className="relative w-full mt-3">
           <Search
-            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5"
+            className="absolute left-3 rtl:right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5"
             color="#E0A75E"
           />
           <input
             type="text"
-            placeholder="Search"
+            placeholder={t("search")}
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value);
               setCurrentPage(0);
             }}
-            className="w-full h-12 pl-10 pr-4 py-4 bg-muted/50 rounded-md text-sm focus:outline-none border-2 border-gray-200 bg-gray-50 placeholder:text-15 focus:border-primary"
+            className="w-full h-12 pl-10 rtl:pr-10 pr-4 py-4 bg-muted/50 rounded-md text-sm focus:outline-none border-2 border-gray-200 bg-gray-50 placeholder:text-15 focus:border-primary"
           />
         </div>
 
         {error ? (
-          <div className="text-red-500 text-center mt-10">
-            Failed to fetch data. Please try again.
-          </div>
+          <div className="text-red-500 text-center mt-10">{t("error")}</div>
         ) : isLoading ? (
           <div className="text-gray-400 text-center mt-10">
             <ClipLoader color="#E0A75E" />
           </div>
         ) : filteredCustomers.length === 0 ? (
           <div className="text-gray-400 text-center text-14 mt-10">
-            {searchQuery
-              ? "No customers match your search."
-              : "No customers found."}
+            {searchQuery ? t("noMatchResults") : t("noMatchResults")}
           </div>
         ) : (
           <>
@@ -197,20 +197,20 @@ function AllCustomers() {
                           className="form-checkbox h-4 w-4"
                           aria-label="Select all categories"
                         />
-                        Customer
+                        {t("customer")}
                       </p>
                     </th>
-                    <th className="px-3 py-3 text-left border ">
-                      Phone Number
+                    <th className="px-3 py-3 text-left border rtl:text-right ">
+                      {t("phone")}
                     </th>
-                    <th className="px-3 py-3 text-left border">
-                      Joining Date
+                    <th className="px-3 py-3 text-left border rtl:text-right">
+                      {t("joinDate")}
                     </th>
-                    <th className="px-3 py-3 text-left border">
-                      Spent
+                    <th className="px-3 py-3 text-left border rtl:text-right">
+                      {t("spent")}
                     </th>
                     <th className="px-3 py-3 border text-center w-20">
-                      Actions
+                      {t("actions")}
                     </th>
                   </tr>
                 </thead>
@@ -251,8 +251,8 @@ function AllCustomers() {
                                 <IoCopyOutline color="#E0A75E" size={15} />
                               </button>
                               {copiedId === customer.id && (
-                                <span className="absolute -top-7 left-0 bg-gray-800 text-white text-xs px-2 py-1 rounded">
-                                  Copied!
+                                <span className="absolute w-32 -top-7 left-0 rtl:right-3 bg-gray-800 text-white text-xs px-2 py-1 rounded">
+                                  {t("copied")}
                                 </span>
                               )}
                             </div>
@@ -268,7 +268,7 @@ function AllCustomers() {
                       <td className="px-3 py-3 border-t text-gray-600 border-r text-15 w-36">
                         {customer.spent || 0} $
                       </td>
-                      <td className="text-center px-3 py-3">
+                      <td className="text-center px-3 py-3 rtl:border-r">
                         <DeleteCustomer
                           id={customer.id}
                           onDelete={handleDeleteSuccess}
@@ -286,8 +286,20 @@ function AllCustomers() {
               containerClassName="flex items-center justify-end mt-5 text-gray-400 text-14"
               pageClassName="mx-1 px-3 py-1 rounded"
               activeClassName="bg-customOrange-lightOrange text-primary"
-              previousLabel={<ChevronLeft className="w-5 h-5 text-center" />}
-              nextLabel={<ChevronRight className="w-5 h-5" />}
+              previousLabel={
+                isRTL ? (
+                  <ChevronRight className="w-5 h-5 text-primary" />
+                ) : (
+                  <ChevronLeft className="w-5 h-5 text-center text-primary" />
+                )
+              }
+              nextLabel={
+                isRTL ? (
+                  <ChevronLeft className="w-5 h-5 text-center text-primary" />
+                ) : (
+                  <ChevronRight className="w-5 h-5 text-primary" />
+                )
+              }
               previousClassName="mx-1 px-3 py-1 font-bold text-primary text-18"
               nextClassName="mx-1 px-3 py-1 font-bold text-primary text-18"
             />

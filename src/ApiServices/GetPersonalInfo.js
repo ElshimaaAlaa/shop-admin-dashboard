@@ -1,13 +1,13 @@
 import axios from "axios";
-const API_BASE_URL = "https://";
 const live_shop_domain = localStorage.getItem("live_shop_domain");
 const role = localStorage.getItem("role");
 export const GetPersonalInfo = async () => {
   try {
     const response = await axios({
-      url: `${API_BASE_URL}${live_shop_domain}/api/${role}/profile`,
+      url: `https://${live_shop_domain}/api/${role}/profile`,
       method: "GET",
       headers: {
+        "Accept-Language": "en",
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     });

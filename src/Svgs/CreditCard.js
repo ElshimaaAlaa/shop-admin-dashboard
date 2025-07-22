@@ -1,4 +1,3 @@
-import * as React from "react";
 const CreditCard = (props) => (
   <svg
     width={56}

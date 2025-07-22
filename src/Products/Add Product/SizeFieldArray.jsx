@@ -3,30 +3,34 @@ import { AiOutlineClose } from "react-icons/ai";
 import { Plus } from "lucide-react";
 import InputField from "../../Components/InputFields/InputField";
 import ColorFieldArray from "./ColorFieldArray";
-
+import { useTranslation } from "react-i18next";
 const SizeFieldArray = ({ values, setFieldValue, hasNestedColors }) => {
+  const { t } = useTranslation();
   return (
     <div className="bg-white p-4 rounded-md mt-3 mx-5 w-[920px]">
-      <h2 className="font-bold mb-3">Inventory</h2>
+      <h2 className="font-bold mb-3">{t("inventory")}</h2>
       <FieldArray name="sizes">
         {({ push, remove }) => (
           <>
             {values.sizes.map((size, index) => (
-              <div key={index} className="flex flex-col gap-4 mb-4 bg-gray-50 p-4 rounded-md">
+              <div
+                key={index}
+                className="flex flex-col gap-4 mb-4 bg-gray-50 p-4 rounded-md"
+              >
                 <div className="flex gap-2">
                   <InputField
                     name={`sizes[${index}].name`}
-                    placeholder="Size"
+                    placeholder={t("size")}
                     value={size.name || ""}
                   />
                   <InputField
                     name={`sizes[${index}].stock`}
-                    placeholder="Stock"
+                    placeholder={t("stock")}
                     value={size.stock || ""}
                   />
                   <InputField
                     name={`sizes[${index}].price`}
-                    placeholder="Price"
+                    placeholder={t("price")}
                     value={size.price || ""}
                   />
                   <button
@@ -62,13 +66,13 @@ const SizeFieldArray = ({ values, setFieldValue, hasNestedColors }) => {
                       </svg>
                     </span>
                   </label>
-                  <div className="font-bold text-15">Schedule a discount</div>
+                  <div className="font-bold text-15">{t("schedule")}</div>
                 </div>
                 {size.schedule_discount && (
                   <div className="flex gap-2">
                     <InputField
                       name={`sizes[${index}].discount_percentage`}
-                      placeholder="Discount"
+                      placeholder={t("discount")}
                       value={size.discount_percentage || ""}
                     />
                     <InputField
@@ -110,7 +114,7 @@ const SizeFieldArray = ({ values, setFieldValue, hasNestedColors }) => {
                   className="font-bold border-2 border-primary rounded-full"
                   size={18}
                 />
-                Add Size
+                {t("addSize")}
               </button>
             </div>
           </>

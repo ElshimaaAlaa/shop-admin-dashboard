@@ -3,13 +3,14 @@ import "./PaymentStyle.scss";
 import { Formik, Form } from "formik";
 import { ClipLoader } from "react-spinners";
 import { AddPayment } from "../../ApiServices/AddPaymentMethod";
-
+import { useTranslation } from "react-i18next";
 function AddPaymentMethod({ isOpen, onClose }) {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedpaymentmethod, setSelectedpaymentmethod] = useState([]);
   const [error, setError] = useState(null);
-
-  const PaymentMethods = [//fetched form end poitn when back end complete it
+  const { t } = useTranslation();
+  const PaymentMethods = [
+    //fetched form end poitn when back end complete it
     { id: 1, name_ar: "Visa", name_en: "Visa", code: "visa" },
     { id: 2, name_ar: "Credit Card", name_en: "Credit Card", code: "Credit" },
     { id: 3, name_ar: "PayPal", name_en: "PayPal", code: "PayPal" },
@@ -50,9 +51,7 @@ function AddPaymentMethod({ isOpen, onClose }) {
       onClose();
       // window.location.reload();
     } catch (error) {
-      setError(
-        error.response?.data?.message || "Failed to add payment method"
-      );
+      setError(error.response?.data?.message || "Failed to add payment method");
       console.error("Error adding payment method:", error);
     } finally {
       setIsLoading(false);
@@ -68,16 +67,14 @@ function AddPaymentMethod({ isOpen, onClose }) {
         id="modal-width"
       >
         <div className="modal-content">
-          <h3 className="font-bold text-16 px-3 py-5">
-            Add New Payment Method(s)
-          </h3>
+          <h3 className="font-bold text-16 px-3 py-5 rtl:text-[18px]">{t("addNewPay")}</h3>
           {error && (
             <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">
               {error}
             </div>
           )}
           <Formik initialValues={{}} onSubmit={handleSubmit}>
-            <Form className="ps-3">
+            <Form className="ps-3 rtl:pe-3">
               <div className="space-y-4 mb-4">
                 {PaymentMethods.map((payment) => {
                   const isSelected = selectedpaymentmethod.some(
@@ -122,20 +119,24 @@ function AddPaymentMethod({ isOpen, onClose }) {
                   );
                 })}
               </div>
-              <div className="flex justify-end gap-2 mt-3">
+              <div className="flex justify-end gap-2 mt-3 rtl:flex-row-reverse">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="bg-gray-100 text-gray-400 font-bold p-3 w-32 rounded-md"
+                  className="bg-gray-100 text-gray-400 font-bold p-2 w-32 rounded-md"
                 >
-                  Cancel
+                  {t("cancel")}
                 </button>
                 <button
                   type="submit"
-                  className="bg-primary font-bold text-white p-3 w-32 rounded-md"
+                  className="bg-primary font-bold text-white p-2 w-32 rounded-md"
                   disabled={isLoading || selectedpaymentmethod.length === 0}
                 >
-                  {isLoading ? <ClipLoader size={22} color="#fff" /> : "Save"}
+                  {isLoading ? (
+                    <ClipLoader size={22} color="#fff" />
+                  ) : (
+                    t("save")
+                  )}
                 </button>
               </div>
             </Form>

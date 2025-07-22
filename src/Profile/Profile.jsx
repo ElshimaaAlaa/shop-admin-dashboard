@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ChevronDown,
   ChevronRight,
@@ -7,6 +8,7 @@ import {
   Plus,
   Bell,
   ChevronUp,
+  ChevronLeft,
 } from "lucide-react";
 import LogOut from "../Auth/LogOut/LogOut";
 import { useNavigate } from "react-router-dom";
@@ -20,7 +22,8 @@ export default function ProfileMenu() {
   const dropdownRef = useRef(null);
   const triggerRef = useRef(null);
   const [personalInfo, setPersonalInfo] = useState({});
-
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language;
   useEffect(() => {
     const getInfo = async () => {
       try {
@@ -71,53 +74,65 @@ export default function ProfileMenu() {
       {isOpen && (
         <div
           ref={dropdownRef}
-          className="absolute right-0 mt-2 w-300 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50 px-3 flex flex-col gap-3"
+          className="absolute right-0 rtl:-right-52 mt-2 w-300 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50 px-3 flex flex-col gap-3"
         >
-          <div className="flex items-center gap-4 py-2">
+          <div className="flex items-center rtl:flex-row-reverse gap-4 py-2">
             <div className="w-14 h-14 rounded-full overflow-hidden">
               <img
                 src={userImage}
                 alt="Profile"
-                width={50}
-                height={50}
+                width={60}
+                height={60}
                 className="object-cover"
               />
             </div>
             <div className="flex flex-col gap-1">
               <span className="font-bold text-17">{userName}</span>
-              <span className="text-14 text-gray-500">Vertex CEO</span>
+              <span className="text-14 text-gray-500 rtl:text-left">Shop Admin</span>
             </div>
             <ChevronUp className="w-5 h-5 font-bold text-black ml-auto" />
           </div>
           <div className="border-t-1 border-gray-400"></div>
           <button
-            className="w-full flex items-center gap-3 p-2 hover:bg-gray-50"
+            className="w-full flex items-center justify-between gap-3 p-2 hover:bg-gray-50"
             onClick={() => navigate("/Dashboard/MainInfo")}
           >
-            <Eye className="w-6 h-6" />
-            <span className="flex-grow text-left text-gray-500 text-15">
-              My Account
-            </span>
-            <ChevronRight className="w-5 h-5 text-black" />
+            <div className="flex items-center gap-2">
+              <Eye className="w-6 h-6" />
+              <span className="flex-grow text-left text-gray-500 text-15">
+                {t("acc")}
+              </span>
+            </div>
+            {isRTL ? (
+              <ChevronLeft className="w-5 h-5 text-black" />
+            ) : (
+              <ChevronRight className="w-5 h-5 text-black" />
+            )}{" "}
           </button>
 
           <button
-            className="w-full flex items-center gap-3 p-2 hover:bg-gray-50"
+            className="w-full flex justify-between items-center gap-3 p-2 hover:bg-gray-50"
             onClick={() =>
               navigate("/Dashboard/MainInfo/EditInfo", { state: personalInfo })
             }
           >
-            <PenLine className="w-6 h-6" />
-            <span className="flex-grow text-left text-gray-500 text-15">
-              Edit Profile
-            </span>
-            <ChevronRight className="w-5 h-5 text-black" />
+            <div className="flex items-center gap-2">
+              <PenLine className="w-6 h-6" />
+              <span className="flex-grow text-left text-gray-500 text-15">
+                {t("editProfile")}
+              </span>
+            </div>
+            {isRTL ? (
+              <ChevronLeft className="w-5 h-5 text-black" />
+            ) : (
+              <ChevronRight className="w-5 h-5 text-black" />
+            )}
           </button>
 
           <div className="flex items-center gap-3 p-2">
             <Bell className="w-5 h-5" />
             <span className="flex-grow text-gray-500 text-15">
-              Allow Notifications
+              {t("allNotification")}
             </span>
             <button
               onClick={() => setNotifications(!notifications)}
@@ -132,12 +147,21 @@ export default function ProfileMenu() {
               />
             </button>
           </div>
-          <button className="w-full flex items-center gap-3 p-2 hover:bg-gray-50">
-            <Plus className="w-5 h-5" />
-            <span className="flex-grow text-left text-gray-500 text-15" onClick={()=>navigate('/Register')}>
-              Add Account
-            </span>
-            <ChevronRight className="w-5 h-5 text-black" />
+          <button className="w-full flex justify-between items-center gap-3 p-2 hover:bg-gray-50">
+            <div className="flex items-center gap-2">
+              <Plus className="w-5 h-5" />
+              <span
+                className="flex-grow text-left text-gray-500 text-15"
+                onClick={() => navigate("/Register")}
+              >
+                {t("addAcc")}
+              </span>
+            </div>
+            {isRTL ? (
+              <ChevronLeft className="w-5 h-5 text-black" />
+            ) : (
+              <ChevronRight className="w-5 h-5 text-black" />
+            )}
           </button>
 
           <div className="border-t-1 border-gray-400 mt-2">

@@ -1,17 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as Yup from "yup";
 import { LuSend } from "react-icons/lu";
 import MainBtn from "../../Components/Main Button/MainBtn";
 import InputField from "../../Components/InputFields/InputField";
 import { Formik, Form, Field } from "formik";
 import AuthInputField from "../../Components/AuthInput Field/AuthInputField";
-import { sendSupport } from "../../ApiServices/Support";
+import { sendContact } from "../../ApiServices/SendSupport";
 import { ClipLoader } from "react-spinners";
-
+import { useTranslation } from "react-i18next";
 function SendSupport({ onSuccess }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-
+  const { t, i18n } = useTranslation();
+  const [isRTL, setIsRTL] = useState(false);
   const initialValues = {
     name: "",
     email: "",
@@ -20,42 +21,33 @@ function SendSupport({ onSuccess }) {
   };
 
   const validationSchema = Yup.object({
-    name: Yup.string()
-      .min(3, "Name should be at least 3 characters long")
-      .max(50, "Name should not exceed 50 characters")
-      .required("Name is required"),
-    email: Yup.string()
-      .email("Invalid email address")
-      .required("Email is required"),
-    phone: Yup.string()
-      .min(10, "Phone number should be at least 10 digits long")
-      .max(15, "Phone number should not exceed 15 digits")
-      .required("Phone number is required"),
-    message: Yup.string()
-      .min(10, "Message should be at least 10 characters long")
-      .max(500, "Message should not exceed 500 characters")
-      .required("Message is required"),
+    name: Yup.string().required(t("nameRequired")),
+    email: Yup.string().email(t("invaildEmail")).required(t("emailRequired")),
+    phone: Yup.string().required(t("phoneRequired")),
+    message: Yup.string().required(t("messageRequired")),
   });
 
-  const handleSubmit = async (values ,{resetForm}) => {
+  const handleSubmit = async (values, { resetForm }) => {
     setIsLoading(true);
     setError(null);
     try {
-      await sendSupport(
+      await sendContact(
         values.name,
         values.email,
         values.phone,
         values.message
       );
-      onSuccess(); 
-      resetForm()
+      onSuccess();
+      resetForm();
     } catch (error) {
       setError("Failed to send the message. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
-
+  useEffect(() => {
+    setIsRTL(i18n.language);
+  }, [i18n.language]);
   return (
     <div>
       <Formik
@@ -65,14 +57,18 @@ function SendSupport({ onSuccess }) {
       >
         {({ errors, touched }) => (
           <Form className="flex flex-col gap-2">
-            <InputField name="name" placeholder="Name" />
-            <AuthInputField name="email" placeholder="Email" />
-            <InputField name="phone" placeholder="Phone Number" />
+            <InputField name="name" placeholder={t("name")} />
+            <AuthInputField
+              name="email"
+              placeholder={t("email")}
+              dir={isRTL ? "rtl" : "ltr"}
+            />
+            <InputField name="phone" placeholder={t("phone")} />
             <Field
               as="textarea"
-              placeholder="Description"
+              placeholder={t("message")}
               name="message"
-              className={`w-full bg-white outline-none border-2 rounded-lg p-2 h-24 block placeholder:text-14 
+              className={`w-full bg-white outline-none border-2 rounded-lg p-2 h-28 block placeholder:text-13 
                       ${
                         errors.message && touched.message
                           ? "border-red-500 focus:border-red-500"
@@ -90,7 +86,7 @@ function SendSupport({ onSuccess }) {
                 ) : (
                   <div className="flex justify-center items-center gap-2">
                     <LuSend />
-                    Send Message
+                    {t("sendMessage")}
                   </div>
                 )
               }

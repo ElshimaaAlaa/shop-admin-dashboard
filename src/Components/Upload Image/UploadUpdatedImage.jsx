@@ -1,4 +1,7 @@
+import { useTranslation } from "react-i18next";
+
 export const ImageUpload = ({ previewImage, onImageChange }) => {
+  const { t } = useTranslation();
   return (
     <div className="rounded-md h-52 flex items-center justify-center">
       <input
@@ -35,7 +38,7 @@ export const ImageUpload = ({ previewImage, onImageChange }) => {
                   alt="Upload another-image"
                   className="h-4 text-12"
                 />
-                Upload Another Image
+                {t("uploadImage")}
               </button>
             </div>
           </>
@@ -46,7 +49,6 @@ export const ImageUpload = ({ previewImage, onImageChange }) => {
               alt="Upload category-image"
               className="mb-2 "
             />
-            <p>Upload Your Category Image</p>
           </>
         )}
       </label>

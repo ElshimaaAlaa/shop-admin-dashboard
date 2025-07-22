@@ -10,26 +10,22 @@ import PromotionBasicInfo from "../../Components/DropDowns/PromotionBasicInfo";
 import PromotionDetails from "../../Components/DropDowns/PromotionDetails";
 import Footer from "../../Components/Footer/Footer";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
-// import { ClipLoader } from "rea  ct-spinners";
-
+import { useTranslation } from "react-i18next";
 const NewPromotion = () => {
   const [error, setError] = useState("");
-  // const [success, setSuccess] = useState("");
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
-  // const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [datesSelected, setDatesSelected] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
-
+  const { t } = useTranslation();
   const live_shop_domain = localStorage.getItem("live_shop_domain");
   const role = localStorage.getItem("role");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // setIsLoading(true);
         const [productsResponse, categoriesResponse] = await Promise.all([
           axios.get(`${API_URL}${live_shop_domain}/api/${role}/products`, {
             headers: {
@@ -49,8 +45,6 @@ const NewPromotion = () => {
         setCategories(categoriesResponse.data.data);
       } catch (err) {
         setError("Failed to fetch products or categories");
-      } finally {
-        // setIsLoading(false);
       }
     };
 
@@ -63,7 +57,7 @@ const NewPromotion = () => {
     start_date: null,
     end_date: null,
     items: [{ product_id: "", quantity: "", category_id: "" }],
-    quantity:""
+    quantity: "",
   };
 
   const promotionSchema = Yup.object().shape({
@@ -85,14 +79,13 @@ const NewPromotion = () => {
         })
       )
       .min(1, "At least one product is required"),
-      quantity:Yup.string().required('quantity is required')
+    quantity: Yup.string().required("quantity is required"),
   });
 
   const handleSubmit = async (values, { resetForm }) => {
     if (isSubmitting) return;
-    
+
     setIsSubmitting(true);
-    // setIsLoading(true);
     setError("");
 
     try {
@@ -102,8 +95,8 @@ const NewPromotion = () => {
       formData.append("total_price", values.total_price);
       formData.append("start_date", formatDate(values.start_date));
       formData.append("end_date", formatDate(values.end_date));
-      formData.append("quantity",values.quantity)
-      
+      formData.append("quantity", values.quantity);
+
       values.items.forEach((item, index) => {
         formData.append(`items[${index}][product_id]`, item.product_id);
         formData.append(`items[${index}][quantity]`, item.quantity);
@@ -113,6 +106,7 @@ const NewPromotion = () => {
       await axios.post(API_BASE_URL, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
+          "Accept-Language": "en",
           live_shop_domain: live_shop_domain,
           role: role,
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -129,7 +123,6 @@ const NewPromotion = () => {
           : "Failed to create promotion");
       setError(errorMessage);
     } finally {
-      // setIsLoading(false);
       setIsSubmitting(false);
     }
   };
@@ -137,12 +130,12 @@ const NewPromotion = () => {
   return (
     <div className="bg-gray-100 flex flex-col min-h-screen relative">
       <Helmet>
-        <title>Add New Promotion | vertex</title>
+        <title>{t("addNewPromo")} | {t("vertex")}</title>
       </Helmet>
 
       <section className="rounded-md p-5 mx-5 bg-white mt-5">
-        <p className="text-13 text-gray-400">Menu / Product / Add Promotion</p>
-        <h1 className="mt-2 text-16 font-bold">Add New Promotions</h1>
+        <p className="text-13 text-gray-400">{t("promoHead")}</p>
+        <h1 className="mt-2 text-16 font-bold">{t("addNewPromo")}</h1>
       </section>
       {error && (
         <div className="mx-5 mt-5 p-3 bg-red-100 text-red-700 rounded-md">
@@ -157,9 +150,9 @@ const NewPromotion = () => {
         {({ values, errors, touched, setFieldValue, isValid, dirty }) => (
           <Form className="my-3">
             <div className="flex gap-3 mx-5 pb-32">
-              <PromotionBasicInfo 
-                products={products} 
-                categories={categories} 
+              <PromotionBasicInfo
+                products={products}
+                categories={categories}
                 values={values}
                 setFieldValue={setFieldValue}
                 errors={errors}
@@ -176,8 +169,8 @@ const NewPromotion = () => {
             </div>
             <Footer
               saveBtnType="submit"
-              saveText={"Save"}
-              cancelText="Cancel"
+              saveText={t("save")}
+              cancelText={t("cancel")}
               cancelBtnType="button"
               saveDisabled={isSubmitting || !isValid || !dirty}
               onCancel={() => navigate("/Dashboard/AllDiscounts")}
@@ -192,17 +185,16 @@ const NewPromotion = () => {
             alt="success"
             className="w-32 mt-6"
           />
-          <p className="font-bold mt-5">Promotion added successfully!</p>
+          <p className="font-bold mt-5">{t("successAddpromo")}</p>
           <button
             className="bg-primary text-white rounded-md p-2 text-14 w-48 mt-4"
             onClick={() => navigate("/Dashboard/AllDiscounts")}
           >
-            Back to Promotions
+            {t("backToPromo")}
           </button>
         </div>
       </SuccessModal>
     </div>
   );
 };
-
 export default NewPromotion;

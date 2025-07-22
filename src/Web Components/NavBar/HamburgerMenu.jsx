@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
 function HamburgerMenu({ onLoginClick, onRegisterClick }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { t } = useTranslation();
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -53,14 +54,14 @@ function HamburgerMenu({ onLoginClick, onRegisterClick }) {
             onClick={onLoginClick}
             aria-label="Open Login Modal"
           >
-            Login
+            {t("login")}
           </button>
           <button
             className="text-primary w-full py-3 rounded font-bold focus:bg-primary focus:text-white"
             onClick={onRegisterClick}
             aria-label="Open Register Modal"
           >
-            Register
+            {t("register")}
           </button>
         </div>
       )}

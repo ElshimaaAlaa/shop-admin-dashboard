@@ -1,44 +1,31 @@
-import React from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { IoMdArrowBack, IoMdArrowForward } from "react-icons/io";
+import { useEffect, useState } from "react";
 function Header() {
+  const { t, i18n } = useTranslation();
+  const [isRTL, setIsRTL] = useState(false);
+  useEffect(() => {
+    setIsRTL(i18n.language === "ar");
+  }, [i18n.language]);
   return (
     <header className="ps-5 pe-5 lg:px-20 lg:pt-40 flex flex-col items-center pt-48 md:flex-row lg:flex-row ">
       <div>
         <h1 className=" leading-normal lg:w-400 text-4xl font-bold lg:leading-normal lg:text-4xl md:text-3xl md:leading-normal">
-          We bring
-          <span className="text-primary ms-3 me-3">
-            rapid solutions
-          </span>
-          for your business
+          {t("weBring")}
+          <span className="text-primary ms-3 me-3">{t("rapidSolution")}</span>
+          {t("for")}
         </h1>
         <p className="text-gray-400  leading-normal lg:w-2/4 md:w-96  mb-5">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam
+          {t("headerP")}
         </p>
         <Link to={""} className="relative inline-block text-lg group">
           <span className="relative  -z-[1] block px-5 py-3 overflow-hidden font-medium leading-tight text-primary transition-colors duration-300 ease-out border-2 border-primary rounded-lg group-hover:text-white">
             <span className="absolute inset-0 w-full h-full px-5 py-3 rounded-lg bg-gray-50"></span>
             <span className="absolute left-0 w-48 h-48 -ml-2 transition-all duration-300 origin-top-right -rotate-90 -translate-x-full translate-y-12 bg-primary group-hover:-rotate-180 ease"></span>
             <span className="relative flex items-center gap-4 font-semibold">
-              Get Started
-              <svg
-                width="18"
-                height="17"
-                viewBox="0 0 18 17"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="transition-colors duration-300 ease-out"
-              >
-                <path
-                  d="M1 8.60685H17M17 8.60685L10.3333 1.94019M17 8.60685L10.3333 15.2735"
-                  className="transition-colors duration-300 ease-out group-hover:stroke-white"
-                  stroke="#E0A75E"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              {t("getStarted")}
+              {isRTL ? <IoMdArrowBack  size={22}/> : <IoMdArrowForward size={22}/>}
             </span>
           </span>
         </Link>

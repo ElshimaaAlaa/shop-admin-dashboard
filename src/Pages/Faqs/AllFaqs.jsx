@@ -1,15 +1,15 @@
 import { useState, useEffect, useRef } from "react";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
-import { getFaqs } from "../../ApiServices/AllFaqs";
+import { getFaqs } from "../../ApiServices/GetFaqs";
 import { ClipLoader } from "react-spinners";
-
+import { useTranslation } from "react-i18next";
 function AllFaqs({ refreshTrigger }) {
   const [openIndex, setOpenIndex] = useState(null);
   const [displayCount, setDisplayCount] = useState(5);
   const [faqsData, setFaqsData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const containerRef = useRef(null);
-
+  const { t } = useTranslation();
   useEffect(() => {
     const fetchFaqs = async () => {
       try {
@@ -23,7 +23,7 @@ function AllFaqs({ refreshTrigger }) {
         setIsLoading(false);
       }
     };
-    
+
     fetchFaqs();
   }, [refreshTrigger]);
 
@@ -38,7 +38,7 @@ function AllFaqs({ refreshTrigger }) {
   };
 
   const showMoreFaqs = () => {
-    setDisplayCount(prev => Math.min(prev + 5, faqsData.length));
+    setDisplayCount((prev) => Math.min(prev + 5, faqsData.length));
   };
 
   const showLessFaqs = () => {
@@ -58,7 +58,7 @@ function AllFaqs({ refreshTrigger }) {
   }
   return (
     <section className="mt-5 w-full">
-      <div 
+      <div
         ref={containerRef}
         className="overflow-y-auto max-h-[600px] pr-2 custom-scrollbar"
       >
@@ -91,7 +91,7 @@ function AllFaqs({ refreshTrigger }) {
         ))}
         {faqsData.length === 0 && !isLoading && (
           <div className="mt-5 p-5 bg-gray-50 rounded-lg text-center">
-            <p className="text-gray-500">No FAQs found</p>
+            <p className="text-gray-500">{t("noFaqs")}</p>
           </div>
         )}
       </div>
@@ -101,7 +101,7 @@ function AllFaqs({ refreshTrigger }) {
             onClick={showMoreFaqs}
             className="text-center text-15 font-bold bg-primary text-white cursor-pointer w-44 px-4 py-2 rounded-lg hover:bg-opacity-90 transition"
           >
-            Show More (5)
+            {t("showMore")}
           </button>
         )}
         {displayCount > 5 && (
@@ -109,7 +109,7 @@ function AllFaqs({ refreshTrigger }) {
             onClick={showLessFaqs}
             className="text-center text-15 font-bold bg-gray-50 text-gray-500 cursor-pointer w-44 px-4 py-2 rounded-lg hover:bg-opacity-90 transition"
           >
-            Show Less
+            {t("showLess")}
           </button>
         )}
       </div>

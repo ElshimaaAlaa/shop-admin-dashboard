@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
-
+import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 function AboutUs() {
+  const { t } = useTranslation();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const images = [
     "/assets/images/slide 1.png",
@@ -26,21 +27,16 @@ function AboutUs() {
         />
       </div>
       <div className="mt-5">
-        <p
-          className="text-primary bg-customOrange-lightOrange p-2 rounded w-28 text-center text-18"
-        >
-          About us
+        <p className="text-primary bg-customOrange-lightOrange p-2 rounded w-28 text-center text-18">
+         {t("aboutUs")}
         </p>
         <h1 className="leading-normal text-2xl md:text-2xl lg:text-3xl font-bold lg:leading-normal md:leading-normal mt-4 md:w-450 lg:w-450">
-          Vertex helps you
-          <span className="me-3 ms-3 text-primary">
-            build your own store
-          </span>
-          in a more effective way
+          {t("vertexHelp")}
+          <span className="me-3 ms-3 text-primary">{t("buildStore")}</span>
+          {t("moreEffective")}
         </h1>
         <p className="text-gray-400 text-14 lg:w-85 mt-3">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor
+          {t("aboutUsP")}
         </p>
       </div>
     </section>

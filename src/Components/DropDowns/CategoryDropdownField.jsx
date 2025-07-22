@@ -1,20 +1,19 @@
-import React from "react";
 import PropTypes from "prop-types";
 import CustomDropdown from "./CustomDropdown";
-
+import { useTranslation } from "react-i18next";
 const CategoryDropdownField = ({ field, form, categories, ...props }) => {
   const options = categories.map((category) => ({
     value: category.id,
     label: category.name,
   }));
-
+  const { t } = useTranslation();
   return (
     <CustomDropdown
       options={options}
       value={field.value}
       onChange={form.setFieldValue}
       name={field.name}
-      placeholder="Select category"
+      placeholder={t("selectCat")}
       error={form.errors[field.name]}
       touched={form.touched[field.name]}
       {...props}

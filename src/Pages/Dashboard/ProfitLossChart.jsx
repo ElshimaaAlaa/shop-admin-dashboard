@@ -8,7 +8,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-
+import { useTranslation } from "react-i18next";
 function getMonthName(monthNumber) {
   const date = new Date();
   date.setMonth(monthNumber - 1);
@@ -16,14 +16,15 @@ function getMonthName(monthNumber) {
 }
 
 export default function ProfitLossChart({ data }) {
+  const { t } = useTranslation();
   if (!data?.monthly_expended || data.monthly_expended.length === 0) {
     return (
       <div className="bg-white p-4 border-1 border-gray-200 rounded-md">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="font-bold text-16">Profit & Loss</h3>
+          <h3 className="font-bold text-16">{t("profitLoss")}</h3>
         </div>
         <div className="h-[300px] text-14 flex items-center justify-center text-gray-400">
-          No profit / loss data available
+          {t("noProfit")}
         </div>
       </div>
     );
@@ -43,7 +44,7 @@ export default function ProfitLossChart({ data }) {
   return (
     <div className="bg-white p-4 border-1 border-gray-200 rounded-md">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="font-bold text-16">Profit & Loss</h3>
+        <h3 className="font-bold text-16">{t("profitLoss")}</h3>
       </div>
       <div className="h-[300px]">
         <ResponsiveContainer width="100%" height="100%">
@@ -52,50 +53,50 @@ export default function ProfitLossChart({ data }) {
             margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
           >
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
-            <XAxis 
-              dataKey="name" 
+            <XAxis
+              dataKey="name"
               tick={{ fontSize: 12 }}
-              axisLine={{ stroke: '#e0e0e0' }}
-              tickLine={{ stroke: '#e0e0e0' }}
+              axisLine={{ stroke: "#e0e0e0" }}
+              tickLine={{ stroke: "#e0e0e0" }}
             />
             <YAxis
-              tick={{ fontSize: 12 }} 
+              tick={{ fontSize: 12 }}
               tickFormatter={(value) => `$${value.toLocaleString()}`}
               domain={[0, maxValue * 1.1]}
-              axisLine={{ stroke: '#e0e0e0' }}
-              tickLine={{ stroke: '#e0e0e0' }}
+              axisLine={{ stroke: "#e0e0e0" }}
+              tickLine={{ stroke: "#e0e0e0" }}
             />
             <Tooltip
               formatter={(value) => [`$${value.toLocaleString()}`]}
               labelFormatter={(label) => `Month: ${label}`}
               contentStyle={{
-                fontSize: 12, 
-                borderRadius: '4px',
-                border: '1px solid #e0e0e0',
+                fontSize: 12,
+                borderRadius: "4px",
+                border: "1px solid #e0e0e0",
               }}
             />
-            <Legend 
+            <Legend
               wrapperStyle={{
-                fontSize: 12, 
-                paddingTop: '20px'
+                fontSize: 12,
+                paddingTop: "20px",
               }}
             />
             <Bar
               dataKey="expend"
               fill="#5EAAA8"
-              name="Expenses"
+              name={t("expense")}
               radius={[4, 4, 0, 0]}
             />
             <Bar
               dataKey="income"
               fill="#E0A75E"
-              name="Income"
+              name={t("income")}
               radius={[4, 4, 0, 0]}
             />
             <Bar
               dataKey="profit"
               fill="#EB8A90"
-              name="Profit"
+              name={t("profit")}
               radius={[4, 4, 0, 0]}
             />
           </BarChart>
