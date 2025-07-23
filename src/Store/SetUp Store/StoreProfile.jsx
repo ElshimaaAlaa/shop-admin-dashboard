@@ -109,16 +109,16 @@ const StoreProfile = () => {
           {({ setFieldValue, values, errors, touched }) => (
             <Form className="w-full px-6">
               <h3 className="text-16 font-semibold mb-3">
-                Fill The Store Profile
+                {t("fillProfile")}
               </h3>
               <div className="flex items-center gap-2 mb-3">
-                <InputField name="store_name" placeholder="Store Name" />
-                <InputField name="address" placeholder="Location" />
+                <InputField name="store_name" placeholder={t("storeName")} />
+                <InputField name="address" placeholder={t("location")} />
               </div>
               <Field
                 as="textarea"
                 name="bio"
-                placeholder="Bio"
+                placeholder={t("bio")}
                 className={`w-full p-3 h-28 border-2 rounded-md outline-none transition-all duration-200 placeholder:text-14 placeholder:text-gray-400 focus:border-primary`}
               />
               <div className="flex justify-between mt-5">
@@ -128,7 +128,7 @@ const StoreProfile = () => {
                   className="flex font-bold items-center gap-3 text-dark px-6 py-2"
                 >
                   <FaArrowLeftLong />
-                  Back
+                  {t("back")}
                 </button>
                 <button
                   type="submit"

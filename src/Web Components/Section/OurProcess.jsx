@@ -1,6 +1,9 @@
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 function OurProcess() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const [isRTL, setIsRTL] = useState(false);
+
   const steps = [
     {
       number: "01",
@@ -48,9 +51,11 @@ function OurProcess() {
       ),
     },
   ];
-
+  useEffect(() => {
+    setIsRTL(i18n.language === "ar");
+  }, [i18n.language]);
   return (
-    <section className="px-5 lg:px-20 mt-10">
+    <section className={`px-5 lg:px-20 mt-10 ${isRTL?"rtl":"ltr"}`}>
       <div>
         <p className="text-primary text-17 bg-customOrange-lightOrange p-2 w-32 text-center rounded">
           {t("ourProceess")}

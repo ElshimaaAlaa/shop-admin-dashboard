@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { setUpStore } from "../../ApiServices/setUpStore";
-
+import { useTranslation } from "react-i18next";
 const PLANS = [
   {
     id: 1,
@@ -63,6 +63,7 @@ const PricingPlan = ({
 }) => {
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
+  const { t } = useTranslation();
   const [selectedPlan, setSelectedPlan] = useState(
     location.state?.plan_id
       ? PLANS.find((p) => p.id === location.state.plan_id)
@@ -71,9 +72,9 @@ const PricingPlan = ({
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const steps = [
-    { number: 1, title: "Store Theme" },
-    { number: 2, title: "Store Profile" },
-    { number: 3, title: "Pricing Plan" },
+    { number: 1, title: t("storeTheme") },
+    { number: 2, title: t("storeProfile") },
+    { number: 3, title: t("pricingPlan") },
   ];
 
   const handlePlanSelect = (planId) => {
@@ -82,7 +83,7 @@ const PricingPlan = ({
       setSelectedPlan(plan);
       setError(null);
       updateFormData("plan_id", plan.id);
-      localStorage.setItem("plan_id" , plan.id)
+      localStorage.setItem("plan_id", plan.id);
     }
   };
 
@@ -129,7 +130,7 @@ const PricingPlan = ({
   return (
     <div className="bg-gradient-to-r from-customBlue-mediumBlue via-customOrange-mediumOrange to-customOrange-mediumOrange p-6 flex items-center justify-center">
       <Helmet>
-        <title>Set Up Store - Pricing Plan</title>
+        <title>Set Up Store | Pricing Plan</title>
       </Helmet>
       <div className="w-full lg:w-750 md:w-700px bg-white rounded-lg shadow-lg">
         <div className="flex justify-center my-7">

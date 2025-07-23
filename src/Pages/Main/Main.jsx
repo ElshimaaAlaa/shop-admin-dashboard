@@ -1,4 +1,3 @@
-import React from "react";
 import { Helmet } from "react-helmet";
 import Navbar from "../../Web Components/NavBar/Navbar";
 import Header from "../../Web Components/Header/Header";
@@ -10,14 +9,15 @@ import Fags from "../../Web Components/Section/Faq";
 import OpinionSection from "../../Web Components/Section/OpinionSection";
 import ContactUsSection from "../../Web Components/Section/ContactUsSection";
 import Footer from "../../Web Components/Footer/Footer";
+import { useTranslation } from "react-i18next";
 function Main() {
+  const { t } = useTranslation();
   return (
     <div>
       <Helmet>
         <meta charSet="utf-8" />
-        <title>Vertex Website</title>
+        <title>{t("vertexWebsite")}</title>
       </Helmet>
-      {/* Main Content */}
       <Navbar />
       <Header />
       <AboutUs />

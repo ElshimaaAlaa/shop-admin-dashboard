@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import "./style.scss";
 export default function CompletionRate({ products = [], title, subtitle }) {
   const [sortBy, setSortBy] = useState("quantity");
   const { t } = useTranslation();
@@ -28,7 +29,7 @@ export default function CompletionRate({ products = [], title, subtitle }) {
   );
 
   return (
-    <section className="bg-white border-1 border-gray-200 p-5 rounded-md mb-5 h-[400px]">
+    <section className="bg-white border-1 border-gray-200 p-5 rounded-md mb-5 compeletion">
       <div className="flex justify-between items-center mb-4">
         <div>
           <h3 className="font-bold text-16">{title}</h3>

@@ -83,7 +83,7 @@ export default function Dashboard() {
         <InventoryStatus data={dashboardData?.inventory_status} />
       </div>
       {/* Completion Rate Section */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 h-[500px]">
         <RevenueChart data={dashboardData?.monthly_revenue} />
         <SalesChangeChart rate={dashboardData?.sales_change_rate} />
         <CompletionRate

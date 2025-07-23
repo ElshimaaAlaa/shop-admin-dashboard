@@ -1,5 +1,5 @@
 import { Formik, Form } from "formik";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as Yup from "yup";
 import "./SectionsStyle.scss";
 import { ClipLoader } from "react-spinners";
@@ -7,7 +7,9 @@ import InputField from "../Input Field/InputField";
 import { useTranslation } from "react-i18next";
 function FreetrialSection() {
   const [loading, setLoading] = useState(false);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const [isRTL, setIsRTL] = useState(false);
+
   const initialValues = {
     email: "",
   };
@@ -19,8 +21,12 @@ function FreetrialSection() {
       .email("Invalid email address")
       .required("Email is required"),
   });
+
+  useEffect(() => {
+    setIsRTL(i18n.language === "ar");
+  }, [i18n.language]);
   return (
-    <section className="bg-gradient-to-r from-customBlue-mediumBlue via-customOrange-mediumOrange to-customOrange-mediumOrange pt-20 pb-20 pe-5 ps-5 text-center lg:p-20 flex flex-col items-center">
+    <section className={`bg-gradient-to-r from-customBlue-mediumBlue via-customOrange-mediumOrange to-customOrange-mediumOrange pt-20 pb-20 pe-5 ps-5 text-center lg:p-20 flex flex-col items-center ${isRTL ? "rtl" : "ltr"}`}>
       <h1 className="text-primary font-bold text-2xl md:text-2xl lg:text-2xl">
         {t("buildBusiness")}
       </h1>

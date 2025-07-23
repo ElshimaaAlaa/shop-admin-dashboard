@@ -166,7 +166,7 @@ function CreateNewPassword() {
               alt="success"
               className="w-32 mt-6"
             />
-            <p className="w-80 text-black text-14 text-center mt-2 rtl:text-[17px]">
+            <p className="w-80 text-black text-14 text-center mt-2 font-bold rtl:text-[17px]">
               {t("successChange")}
             </p>
           </div>

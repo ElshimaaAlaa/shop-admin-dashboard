@@ -157,7 +157,7 @@ function EditCategory() {
       <button
         type="button"
         onClick={onDelete}
-        className="ml-2 text-lg text-red-600"
+        className="ml-2 rtl:mr-2 text-lg text-red-600"
         aria-label="Delete tag"
       >
         ×

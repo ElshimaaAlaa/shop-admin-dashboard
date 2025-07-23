@@ -7,19 +7,19 @@ const cardData = (t) => [
     id: 1,
     image: "/assets/images/task 1.png",
     title: t("tamplates"),
-    description: t("lorem"),
+    description: t("whatToDoP"),
   },
   {
     id: 2,
     image: "/assets/images/task 2.png",
     title: t("onePlace"),
-    description: t("lorem"),
+    description: t("whatToDoP"),
   },
   {
     id: 3,
     image: "/assets/images/task 3.png",
     title: t("effective"),
-    description: t("lorem"),
+    description: t("whatToDoP"),
   },
 ];
 

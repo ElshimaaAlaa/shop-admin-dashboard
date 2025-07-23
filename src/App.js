@@ -48,6 +48,7 @@ import Analytics from "./Analysis/Analytics";
 import AllInvoices from "./Invoices/AllInvoices";
 import InvoiceDetails from "./Invoices/InvoiceDetails";
 import Dashboard from "./Pages/Dashboard/Dashboard";
+import Coupons from "./Coupons/Coupons";
 //translation
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
@@ -178,6 +179,7 @@ function App() {
           {/* invoices */}
           <Route path="AllInvoices" element={<AllInvoices />} />
           <Route path="AllInvoices/:id" element={<InvoiceDetails />} />
+          <Route path="Coupons" element={<Coupons />} />
         </Route>
       </Routes>
     </BrowserRouter>

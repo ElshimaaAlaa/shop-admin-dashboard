@@ -1,4 +1,3 @@
-import * as React from "react";
 const Discount = (props) => (
   <svg
     width={29}

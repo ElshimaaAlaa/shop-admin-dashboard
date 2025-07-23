@@ -392,6 +392,22 @@
   "next":"Next",
   "browseFile":"Browse Files",
   "dropFile":"Drag & Drop Your logo File Here OR",
-  "oneBanner":"At least one banner is required"
-
+  "oneBanner":"At least one banner is required",
+  "fillProfile":"Fill The Store Profile",
+  "storeName":"Store Name",
+  "back":"Back",
+  "homePage":"Home Page",
+  "vertexWebsite":"Vertex Website",
+  "stortBy":"Sort By",
+  "coupons":"Coupons",
+  "couponsHead":"Menu / Coupons",
+  "addNewCoupon":"Add New Coupon",
+  "publish":"Publish",
+  "codes":"Codes",
+  "amount":"Amount",
+  "deleteCoupon":"Are You Sure You Want To Delete This Coupon ?",
+  "addCoupon":"Add Coupon",
+  "coupon":"Coupon",
+  "discountType":"Discount Type",
+  "couponError":"The coupon has already been taken."
 }
