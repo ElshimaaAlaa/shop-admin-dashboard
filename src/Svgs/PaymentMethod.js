@@ -1,4 +1,3 @@
-import * as React from "react";
 const PaymentMethod = (props) => (
   <svg
     width={32}

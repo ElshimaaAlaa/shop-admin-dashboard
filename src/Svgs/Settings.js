@@ -1,4 +1,3 @@
-import * as React from "react";
 const Settings = (props) => (
   <svg
     width={26}

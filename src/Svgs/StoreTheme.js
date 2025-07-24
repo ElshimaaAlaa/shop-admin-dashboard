@@ -1,4 +1,3 @@
-import * as React from "react";
 const StoreTheme = (props) => (
   <svg
     width={32}

@@ -1,4 +1,3 @@
-import * as React from "react";
 const Cat = (props) => (
   <svg
     width={28}

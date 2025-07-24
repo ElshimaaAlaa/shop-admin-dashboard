@@ -1,4 +1,3 @@
-import React from "react";
 const Instegram = ({ width = 32, height = 32, fill = "#3E67C6", ...props }) => {
   return (
     <svg

@@ -1,5 +1,3 @@
-import React from "react";
-
 const Message = ({ width = 22, height = 26, fill = "#3E67C6", ...props }) => {
   return (
     <svg

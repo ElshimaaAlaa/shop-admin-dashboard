@@ -1,4 +1,3 @@
-import * as React from "react";
 const Paypal = (props) => (
   <svg
     width={86}

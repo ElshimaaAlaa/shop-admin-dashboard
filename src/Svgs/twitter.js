@@ -1,4 +1,3 @@
-import React from "react";
 const Twitter = ({ width = 32, height = 32, fill = "#fff", ...props }) => {
   return (
     <svg

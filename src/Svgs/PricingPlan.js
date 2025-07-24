@@ -1,4 +1,3 @@
-import * as React from "react";
 const PricingPlan = (props) => (
   <svg
     width={32}

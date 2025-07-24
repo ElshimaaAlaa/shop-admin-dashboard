@@ -1,4 +1,3 @@
-import * as React from "react";
 const Clients = (props) => (
   <svg
     width={26}

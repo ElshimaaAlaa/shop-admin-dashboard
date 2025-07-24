@@ -1,4 +1,3 @@
-import * as React from "react";
 const Products = (props) => (
   <svg
     width={28}

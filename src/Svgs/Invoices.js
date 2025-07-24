@@ -1,4 +1,3 @@
-import * as React from "react";
 const Invoices = (props) => (
   <svg
     width={32}

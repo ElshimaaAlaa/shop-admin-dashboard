@@ -1,5 +1,3 @@
-import React from "react";
-
 const GoogleIcon = ({ width = 22, height = 26, ...props }) => {
   return (
     <svg

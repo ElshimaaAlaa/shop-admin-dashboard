@@ -1,4 +1,3 @@
-import * as React from "react";
 const GooglePay = (props) => (
   <svg
     width={54}
