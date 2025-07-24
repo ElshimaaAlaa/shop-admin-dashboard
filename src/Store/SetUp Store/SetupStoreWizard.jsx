@@ -10,7 +10,6 @@ const StoreSetupWizard = () => {
   const [step, setStep] = useState(1);
   const [previewImage, setPreviewImage] = useState(null);
   const [bannerPreviews, setBannerPreviews] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [submitError, setSubmitError] = useState(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [formData, setFormData] = useState({});
@@ -20,16 +19,16 @@ const StoreSetupWizard = () => {
     theme_primary_color: "",
     theme_secondary_color: "",
     image: null,
-    
+
     // Step 2: Profile
     store_name: "",
     address: "",
     bio: "",
     banners: [],
-    
+
     // Step 3: Pricing
     plan_id: null,
-    
+
     // Step 4: Payment
     name: "",
     email: "",
@@ -51,11 +50,17 @@ const StoreSetupWizard = () => {
       .matches(/^#[0-9A-F]{6}$/i, "Invalid hex color format"),
     image: Yup.mixed()
       .required("Theme image is required")
-      .test("fileSize", "File too large (max 5MB)", 
-        (value) => value && value.size <= 5 * 1024 * 1024)
-      .test("fileType", "Unsupported format (JPEG/PNG only)", 
-        (value) => value && ["image/jpeg", "image/png"].includes(value.type)),
-    
+      .test(
+        "fileSize",
+        "File too large (max 5MB)",
+        (value) => value && value.size <= 5 * 1024 * 1024
+      )
+      .test(
+        "fileType",
+        "Unsupported format (JPEG/PNG only)",
+        (value) => value && ["image/jpeg", "image/png"].includes(value.type)
+      ),
+
     // Step 2 validation
     store_name: Yup.string()
       .required("Store name is required")
@@ -66,10 +71,18 @@ const StoreSetupWizard = () => {
     bio: Yup.string().max(500, "Bio cannot exceed 500 characters"),
     banners: Yup.array()
       .min(1, "At least one banner is required")
-      .test("fileSize", "One or more files are too large (max 5MB each)", 
-        (files) => files && files.every((file) => file.size <= 5 * 1024 * 1024))
-      .test("fileType", "Unsupported format (JPEG/PNG only)", 
-        (files) => files && files.every((file) => ["image/jpeg", "image/png"].includes(file.type)))
+      .test(
+        "fileSize",
+        "One or more files are too large (max 5MB each)",
+        (files) => files && files.every((file) => file.size <= 5 * 1024 * 1024)
+      )
+      .test(
+        "fileType",
+        "Unsupported format (JPEG/PNG only)",
+        (files) =>
+          files &&
+          files.every((file) => ["image/jpeg", "image/png"].includes(file.type))
+      ),
   });
 
   useEffect(() => {
@@ -109,7 +122,6 @@ const StoreSetupWizard = () => {
     }
 
     // Final submission (step 4)
-    setIsLoading(true);
     setSubmitError(null);
     setSubmitSuccess(false);
 
@@ -128,12 +140,12 @@ const StoreSetupWizard = () => {
           card_number: values.card_number,
           expiration_date: values.expiration_date,
           card_cvv: values.card_cvv,
-        }
+        },
       };
 
       // Convert to FormData properly
       Object.entries(completeData).forEach(([section, data]) => {
-        if (data && typeof data === 'object') {
+        if (data && typeof data === "object") {
           Object.entries(data).forEach(([key, value]) => {
             if (Array.isArray(value)) {
               value.forEach((item, index) => {
@@ -164,11 +176,9 @@ const StoreSetupWizard = () => {
       console.error("Submission error:", error);
       setSubmitError(
         error.response?.data?.message ||
-        error.message ||
-        "Failed to complete store setup"
+          error.message ||
+          "Failed to complete store setup"
       );
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -177,8 +187,11 @@ const StoreSetupWizard = () => {
       <h2>Store Setup Wizard</h2>
       <div className="step-indicator">
         {[1, 2, 3, 4].map((stepNum) => (
-          <div key={stepNum} className={`step ${step === stepNum ? "active" : ""}`}>
-            {stepNum}. {['Theme', 'Profile', 'Pricing', 'Payment'][stepNum - 1]}
+          <div
+            key={stepNum}
+            className={`step ${step === stepNum ? "active" : ""}`}
+          >
+            {stepNum}. {["Theme", "Profile", "Pricing", "Payment"][stepNum - 1]}
           </div>
         ))}
       </div>
@@ -199,17 +212,13 @@ const StoreSetupWizard = () => {
         {({ values, setFieldValue }) => (
           <Form className="setup-form">
             {step === 1 && (
-              <div className="form-step">
-                {/* Theme step form fields */}
-              </div>
+              <div className="form-step">{/* Theme step form fields */}</div>
             )}
-            
+
             {step === 2 && (
-              <div className="form-step">
-                {/* Profile step form fields */}
-              </div>
+              <div className="form-step">{/* Profile step form fields */}</div>
             )}
-            
+
             {step === 3 && (
               <PricingPlan
                 formData={formData}
@@ -218,7 +227,7 @@ const StoreSetupWizard = () => {
                 onBack={() => setStep(2)}
               />
             )}
-            
+
             {step === 4 && (
               <PaymentInfo
                 formData={formData}

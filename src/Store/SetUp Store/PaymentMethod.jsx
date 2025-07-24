@@ -7,14 +7,17 @@ import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { setUpStore } from "../../ApiServices/setUpStore";
 import { fetchPaymentMethods } from "../../ApiServices/PaymentMethods";
-
+import { useTranslation } from "react-i18next";
+import { IoIosArrowDown } from "react-icons/io";
 function PaymentMethods() {
   const [paymentMethods, setpaymentMethods] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-
+  const { t, i18n } = useTranslation();
+  const [isRTL, setIsRTL] = useState(false);
+  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
   useEffect(() => {
     const getPaymentMethods = async () => {
       try {
@@ -70,24 +73,73 @@ function PaymentMethods() {
       setIsLoading(false);
     }
   };
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
+    i18n.changeLanguage(savedLanguage);
+    setIsRTL(savedLanguage === "ar");
+  }, [i18n]);
 
+  useEffect(() => {
+    const currentLanguage = i18n.language;
+    setIsRTL(currentLanguage === "ar");
+    localStorage.setItem("selectedLanguage", currentLanguage);
+  }, [i18n.language]);
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    setShowLanguageDropdown(false);
+    localStorage.setItem("selectedLanguage", lng);
+  };
   return (
     <div className="min-h-screen bg-gradient-to-r from-customBlue-mediumBlue via-customOrange-mediumOrange to-customOrange-mediumOrange p-6 flex items-center justify-center">
       <Helmet>
-        <title>Set Up Store - Payment Methods</title>
+        <title>
+          {t("setUpStore")} - {t("paymentMethods")}
+        </title>
+        <html dir={isRTL ? "rtl" : "ltr"} lang={i18n.language} />
       </Helmet>
       <div className="w-full lg:w-[600px] md:w-[600px] bg-white rounded-lg shadow-lg">
         <div className="flex justify-center my-7">
           <img src="/assets/svgs/vertex.svg" alt="logo" className="w-28" />
         </div>
-        <div className="flex items-center gap-5 mb-5 px-6">
-          <div className="rounded-full border-[5px] border-primary p-2 font-bold">
-            2/3
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3 mb-5 px-6">
+            <div className="rounded-full border-[5px] border-primary p-2 font-bold">
+              2/2
+            </div>
+            <h3 className="text-15 font-bold">{t("setUpShipping")}</h3>
           </div>
-          <h3 className="text-15 font-bold">
-            Set UP The Shipping Providers and Shipping Rates
-          </h3>
+          <div className="relative mx-5">
+            <button
+              className="flex items-center gap-1 text-14 bg-customOrange-lightOrange text-primary rounded-md p-2"
+              onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
+            >
+              {i18n.language.toUpperCase()}
+              <IoIosArrowDown size={20} />
+            </button>
+            {showLanguageDropdown && (
+              <div
+                className={`absolute ${
+                  isRTL ? "left-0" : "right-0"
+                } w-14 bg-white rounded-md shadow-lg z-10`}
+              >
+                <button
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={() => changeLanguage("en")}
+                >
+                  EN
+                </button>
+                <button
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={() => changeLanguage("ar")}
+                >
+                  AR
+                </button>
+              </div>
+            )}
+          </div>
         </div>
+
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -106,7 +158,7 @@ function PaymentMethods() {
               ) : (
                 <>
                   <h3 className="text-15 font-bold my-5 px-6">
-                    Select Payment Methods
+                    {t("selectPayment")}
                   </h3>
                   <div className="px-6 pb-6">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -181,25 +233,25 @@ function PaymentMethods() {
                   </div>
                 </>
               )}
-              <div className="flex justify-between mb-5">
+              <div className="flex justify-between mb-5 rtl:flex-row-reverse">
                 <button
                   type="button"
                   onClick={() => navigate("/Register/ShippingProvider")}
                   className="flex font-bold items-center gap-3 text-dark pb-4 mx-6"
                 >
                   <FaArrowLeftLong />
-                  Back
+                  {t("back")}
                 </button>
                 <button
                   type="submit"
-                  className="bg-primary me-5 text-white rounded-md p-3 w-32 flex items-center gap-2 justify-center disabled:opacity-70"
+                  className="bg-primary me-5 rtl:ms-5 text-white rounded-md p-3 w-32 flex items-center gap-2 justify-center disabled:opacity-70"
                   disabled={isLoading || values.payment_method.length === 0}
                 >
                   {isLoading ? (
                     <ClipLoader size={22} color="#fff" />
                   ) : (
                     <>
-                      Next
+                      {t("next")}
                       <FaArrowRightLong />
                     </>
                   )}

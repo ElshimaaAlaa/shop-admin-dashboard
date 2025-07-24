@@ -7,14 +7,17 @@ import { FaArrowRightLong, FaArrowLeftLong } from "react-icons/fa6";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { setUpStore } from "../../ApiServices/setUpStore";
-
+import { useTranslation } from "react-i18next";
+import { IoIosArrowDown } from "react-icons/io";
 function ShippingProvider() {
   const [providers, setProviders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-
+  const { t, i18n } = useTranslation();
+  const [isRTL, setIsRTL] = useState(false);
+  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
   useEffect(() => {
     const getShippingProviders = async () => {
       try {
@@ -40,50 +43,102 @@ function ShippingProvider() {
   }, []);
 
   const initialValues = {
-    shipping_provider: []
+    shipping_provider: [],
   };
 
   const validationSchema = Yup.object().shape({
-    shipping_provider: Yup.array()
-      .min(1, "Please select at least one shipping provider")
+    shipping_provider: Yup.array().min(
+      1,
+      "Please select at least one shipping provider"
+    ),
   });
 
   const handleSubmit = async (values) => {
     setIsLoading(true);
     try {
       const formData = new FormData();
-      const providersString = values.shipping_provider.join(',');
-      formData.append('shipping_provider', providersString);
-      localStorage.setItem('shipping_provider', providersString);
+      const providersString = values.shipping_provider.join(",");
+      formData.append("shipping_provider", providersString);
+      localStorage.setItem("shipping_provider", providersString);
       const response = await setUpStore(formData);
-      console.log('shipping' , response)
+      console.log("shipping", response);
       if (response) {
         navigate("/Register/PaymentMethod");
       }
     } catch (error) {
       console.error("Submission failed:", error);
-      setError(error.response?.data?.message || "Failed to save shipping providers");
+      setError(
+        error.response?.data?.message || "Failed to save shipping providers"
+      );
     } finally {
       setIsLoading(false);
     }
   };
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
+    i18n.changeLanguage(savedLanguage);
+    setIsRTL(savedLanguage === "ar");
+  }, [i18n]);
 
+  useEffect(() => {
+    const currentLanguage = i18n.language;
+    setIsRTL(currentLanguage === "ar");
+    localStorage.setItem("selectedLanguage", currentLanguage);
+  }, [i18n.language]);
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    setShowLanguageDropdown(false);
+    localStorage.setItem("selectedLanguage", lng);
+  };
   return (
     <div className="min-h-screen bg-gradient-to-r from-customBlue-mediumBlue via-customOrange-mediumOrange to-customOrange-mediumOrange p-6 flex items-center justify-center">
       <Helmet>
-        <title>Set Up Store - Shipping Providers</title>
+        <title>
+          {t("setUpStore")} | {t("shippingProvider")}
+        </title>
+        <html dir={isRTL ? "rtl" : "ltr"} lang={i18n.language} />
       </Helmet>
       <div className="w-full lg:w-[600px] md:w-[600px] bg-white rounded-lg shadow-lg">
         <div className="flex justify-center my-7">
           <img src="/assets/svgs/vertex.svg" alt="logo" className="w-28" />
         </div>
-        <div className="flex items-center gap-5 mb-5 px-6">
-          <div className="rounded-full border-[5px] border-primary p-2 font-bold">
-            2/3
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3 mb-5 px-6">
+            <div className="rounded-full border-[5px] border-primary p-2 font-bold">
+              1/2
+            </div>
+            <h3 className="text-15 font-bold">{t("setUpProvider")}</h3>
           </div>
-          <h3 className="text-15 font-bold">
-            Set UP The Shipping Providers and Shipping Rates
-          </h3>
+          <div className="relative mx-5">
+            <button
+              className="flex items-center gap-1 text-14 bg-customOrange-lightOrange text-primary rounded-md p-2"
+              onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
+            >
+              {i18n.language.toUpperCase()}
+              <IoIosArrowDown size={20} />
+            </button>
+            {showLanguageDropdown && (
+              <div
+                className={`absolute ${
+                  isRTL ? "left-0" : "right-0"
+                } w-14 bg-white rounded-md shadow-lg z-10`}
+              >
+                <button
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={() => changeLanguage("en")}
+                >
+                  EN
+                </button>
+                <button
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={() => changeLanguage("ar")}
+                >
+                  AR
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
         <Formik
@@ -104,7 +159,7 @@ function ShippingProvider() {
               ) : (
                 <>
                   <h3 className="text-15 font-bold my-5 px-6">
-                    Select Shipping Providers
+                    {t("selectProvider")}
                   </h3>
                   <div className="px-6 pb-6">
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
@@ -118,16 +173,23 @@ function ShippingProvider() {
                                 : "border-gray-200 hover:border-gray-300"
                             }`}
                             onClick={() => {
-                              const currentProviders = [...values.shipping_provider];
-                              const providerIndex = currentProviders.indexOf(provider.name);
-                              
+                              const currentProviders = [
+                                ...values.shipping_provider,
+                              ];
+                              const providerIndex = currentProviders.indexOf(
+                                provider.name
+                              );
+
                               if (providerIndex === -1) {
                                 currentProviders.push(provider.name);
                               } else {
                                 currentProviders.splice(providerIndex, 1);
                               }
-                              
-                              setFieldValue('shipping_provider', currentProviders);
+
+                              setFieldValue(
+                                "shipping_provider",
+                                currentProviders
+                              );
                             }}
                           >
                             <label className="inline-flex items-center cursor-pointer w-full">
@@ -136,7 +198,9 @@ function ShippingProvider() {
                                 name="shipping_provider"
                                 value={provider.name}
                                 className="hidden peer"
-                                checked={values.shipping_provider.includes(provider.name)}
+                                checked={values.shipping_provider.includes(
+                                  provider.name
+                                )}
                                 onChange={() => {}}
                               />
                               <span className="w-4 h-4 border border-black rounded flex items-center justify-center transition-all duration-200 peer-checked:border-primary">
@@ -158,7 +222,7 @@ function ShippingProvider() {
                         ))
                       ) : (
                         <p className="col-span-2 text-center text-gray-400 text-15 py-4">
-                          No shipping providers available
+                          {t("noData")}
                         </p>
                       )}
                     </div>
@@ -170,25 +234,25 @@ function ShippingProvider() {
                   </div>
                 </>
               )}
-              <div className="flex justify-between mb-5">
+              <div className="flex justify-between mb-5 rtl:flex-row-reverse">
                 <button
                   type="button"
                   onClick={() => navigate("/Register/ThemeStore")}
-                  className="flex font-bold items-center gap-3 text-dark pb-4 mx-6"
+                  className="flex rtl:flex-row-reverse font-bold items-center gap-3 text-dark pb-4 mx-6"
                 >
                   <FaArrowLeftLong />
-                  Back
+                  {t("back")}
                 </button>
                 <button
                   type="submit"
-                  className="bg-primary me-5 text-white rounded-md p-3 w-32 flex items-center gap-2 justify-center disabled:opacity-70"
+                  className="bg-primary me-5 rtl:ms-5 text-white rounded-md p-3 w-32 flex rtl:flex-row-reverse items-center gap-2 justify-center disabled:opacity-70"
                   disabled={isLoading || values.shipping_provider.length === 0}
                 >
                   {isLoading ? (
                     <ClipLoader size={22} color="#fff" />
                   ) : (
                     <>
-                      Next
+                      {t("next")}
                       <FaArrowRightLong />
                     </>
                   )}

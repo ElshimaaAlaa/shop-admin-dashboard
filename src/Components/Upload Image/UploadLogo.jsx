@@ -1,15 +1,18 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-const LogoUpload = ({ name, setFieldValue, error }) => {
-  const [file, setFile] = useState(null);
+
+const LogoUpload = ({ name, setFieldValue, error, logoUrl, setLogoUrl }) => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const { t } = useTranslation();
+
   const handleFileChange = (e) => {
     const uploadedFile = e.target.files[0];
     if (!uploadedFile) return;
 
-    setFile(uploadedFile);
     setFieldValue(name, uploadedFile);
+    if (logoUrl) URL.revokeObjectURL(logoUrl);
+    const url = URL.createObjectURL(uploadedFile);
+    setLogoUrl(url);
     simulateUpload();
   };
 
@@ -23,9 +26,12 @@ const LogoUpload = ({ name, setFieldValue, error }) => {
   };
 
   const handleRemove = () => {
-    setFile(null);
-    setUploadProgress(0);
     setFieldValue(name, null);
+    setUploadProgress(0);
+    if (logoUrl) {
+      URL.revokeObjectURL(logoUrl);
+      setLogoUrl(null);
+    }
   };
 
   return (
@@ -43,29 +49,33 @@ const LogoUpload = ({ name, setFieldValue, error }) => {
           className="hidden"
           onChange={handleFileChange}
         />
-        <span className="flex items-center gap-2 text-gray-600 ">
+        <span className="flex items-center gap-2 text-gray-600">
           <img
             src="/assets/svgs/upload-file_svgrepo.com.svg"
             alt="upload logo"
             className="w-6"
           />
-         {t("dropFile")}
+          {t("dropFile")}
           <span className="text-primary font-bold">{t("browseFile")}</span>
         </span>
       </label>
-      {file && (
+      {logoUrl && (
         <div className="bg-gray-50 mt-3 rounded-md border-2 border-gray-200 p-4 flex items-center justify-between">
-          <div className="w-full">
-            <p className="text-sm font-semibold text-gray-700 mb-2">
-              {file.name}
-            </p>
-            <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-              <div
-                className="bg-primary h-full transition-all duration-300"
-                style={{ width: `${uploadProgress}%` }}
-              ></div>
+          <div className="flex items-center gap-3">
+            <img 
+              src={logoUrl} 
+              alt="Logo preview" 
+              className="w-12 h-12 object-cover rounded" 
+            />
+            <div className="w-full">
+              <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                <div
+                  className="bg-primary h-full transition-all duration-300"
+                  style={{ width: `${uploadProgress}%` }}
+                ></div>
+              </div>
+              <p className="text-xs text-gray-500 mt-1">{uploadProgress}% done</p>
             </div>
-            <p className="text-xs text-gray-500 mt-1">{uploadProgress}% done</p>
           </div>
           <button
             type="button"
@@ -80,7 +90,9 @@ const LogoUpload = ({ name, setFieldValue, error }) => {
           </button>
         </div>
       )}
+      {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
     </div>
   );
 };
+
 export default LogoUpload;

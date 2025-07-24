@@ -8,11 +8,12 @@ export const setUpStore = async (formData) => {
       url: `https://${live_shop_domain}/api/${role}/setup-store`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
-        'Content-Type': 'multipart/form-data'
+        "Content-Type": "multipart/form-data",
+        "Accept-Language": "ar",
       },
       data: formData,
     });
-    
+
     if (response.status === 200) {
       return response.data;
     }
@@ -24,8 +25,8 @@ export const setUpStore = async (formData) => {
       status: error.response?.status,
       request: {
         data: error.config?.data,
-        headers: error.config?.headers
-      }
+        headers: error.config?.headers,
+      },
     });
     throw error;
   }

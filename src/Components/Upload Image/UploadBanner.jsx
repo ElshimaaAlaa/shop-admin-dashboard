@@ -1,9 +1,18 @@
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
-const BannerUpload = ({ banners = [], setFieldValue, errors, touched }) => {
+
+const BannerUpload = ({ 
+  banners = [], 
+  setFieldValue, 
+  errors, 
+  touched, 
+  setBannerUrls, 
+  bannerUrls 
+}) => {
   const [isDragging, setIsDragging] = useState(false);
   const [uploadProgress, setUploadProgress] = useState({});
   const { t } = useTranslation();
+
   const handleDragEnter = useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -48,9 +57,18 @@ const BannerUpload = ({ banners = [], setFieldValue, errors, touched }) => {
   const handleFiles = (files) => {
     const fileList = Array.from(files);
     const startIndex = banners.length;
+    const newUrls = [];
 
-    fileList.forEach((_, i) => simulateUpload(startIndex + i));
+    fileList.forEach((file) => {
+      newUrls.push(URL.createObjectURL(file));
+    });
+
+    setBannerUrls(prev => [...prev, ...newUrls]);
     setFieldValue("banners", [...banners, ...fileList]);
+    
+    fileList.forEach((_, i) => {
+      simulateUpload(startIndex + i);
+    });
   };
 
   const removeBanner = (index) => {
@@ -58,8 +76,13 @@ const BannerUpload = ({ banners = [], setFieldValue, errors, touched }) => {
     updatedBanners.splice(index, 1);
     setFieldValue("banners", updatedBanners);
 
+    const updatedUrls = [...bannerUrls];
+    URL.revokeObjectURL(updatedUrls[index]);
+    updatedUrls.splice(index, 1);
+    setBannerUrls(updatedUrls);
+
     setUploadProgress((prev) => {
-      const updated = { ...prev };
+      const updated = { ...prev};
       delete updated[index];
       return updated;
     });
@@ -88,18 +111,18 @@ const BannerUpload = ({ banners = [], setFieldValue, errors, touched }) => {
           onChange={handleFileInputChange}
           className="hidden"
         />
-        <div className="flex items-center ">
+        <div className="flex items-center">
           <img
             src="/assets/svgs/upload-file_svgrepo.com.svg"
             alt="upload"
-            className="w-6 mr-3"
+            className="w-6 mr-3 rtl:mr-0 rtl:ml-3"
           />
           <p className="text-14 text-gray-600">
             {isDragging ? "Drop files here" : t("dropFile")}
           </p>
           <button
             type="button"
-            className="text-primary hover:text-primary-dark text-14 ml-2 font-bold"
+            className="text-primary hover:text-primary-dark text-14 ml-2 rtl:mr-2 font-bold"
           >
             {t("browseFile")}
           </button>
@@ -118,15 +141,22 @@ const BannerUpload = ({ banners = [], setFieldValue, errors, touched }) => {
                 key={index}
                 className="border-2 bg-gray-50 border-gray-200 rounded-md p-4 flex items-center justify-between"
               >
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-700 truncate">
-                    {file.name}
-                  </p>
-                  <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
-                    <div
-                      className="bg-primary h-2 rounded-full transition-all"
-                      style={{ width: `${uploadProgress[index] || 0}%` }}
-                    ></div>
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <img
+                    src={bannerUrls[index]}
+                    alt="Banner preview"
+                    className="w-12 h-12 object-cover rounded "
+                  />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-700 truncate">
+                      {file.name}
+                    </p>
+                    <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+                      <div
+                        className="bg-primary h-2 rounded-full transition-all"
+                        style={{ width: `${uploadProgress[index] || 0}%` }}
+                      ></div>
+                    </div>
                   </div>
                 </div>
                 <button

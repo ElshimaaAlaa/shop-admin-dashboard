@@ -3,17 +3,26 @@ const live_shop_domain = localStorage.getItem("live_shop_domain");
 const role = localStorage.getItem("role");
 export const logOut = async () => {
   try {
+    // Save the current language before clearing localStorage
+    const currentLanguage = localStorage.getItem("i18nextLng");
+    
     const response = await axios({
       url: `https://${live_shop_domain}/api/${role}/logout`,
       method: "POST",
-          headers: {
+      headers: {
         Accept: "application/json",
         "Accept-Language": "ar",
       },
     });
+    
     if (response.status === 200) {
       console.log("Logged out successfully");
-      sessionStorage.removeItem("token");
+      localStorage.clear();
+      
+      // Restore the language preference after clearing
+      if (currentLanguage) {
+        localStorage.setItem("i18nextLng", currentLanguage);
+      }
       return true;
     } else {
       console.error("Failed to log out");

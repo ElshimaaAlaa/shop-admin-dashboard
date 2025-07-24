@@ -26,17 +26,21 @@ function StoreInformation() {
         <div className=" border border-gray-200 rounded-md p-5 w-full">
           <div className="flex flex-col md:flex-row items-center gap-x-96">
             <div className="text-center md:text-left">
-              <h2 className="text-15  text-gray-400">{t("name")}</h2>
+              <h2 className="text-15 rtl:text-right text-gray-400">
+                {t("name")}
+              </h2>
               <p className="mt-2 text-15">{storeInformation.store_name}</p>
             </div>
             <div className="text-center md:text-left">
-              <h2 className="text-15 text-gray-400">{t("location")}</h2>
+              <h2 className="text-15 text-gray-400 rtl:text-right">
+                {t("location")}
+              </h2>
               <p className="mt-2 text-15">{storeInformation.address}</p>
             </div>
           </div>
           <h2 className="text-15 mt-5 text-gray-400">{t("bio")}</h2>
           <p className="mt-2 text-15">{storeInformation.bio}</p>
-          <div className="flex flex-col lg:flex-row md:flex-row items-end gap-x-[360px]">
+          <div className="flex flex-col lg:flex-row md:flex-row items-end gap-x-[390px]">
             <div>
               <p className="text-1xl font-bold mb-3 mt-7">{t("banners")}</p>
               <div className="flex flex-wrap gap-4">

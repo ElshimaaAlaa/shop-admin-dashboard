@@ -10,13 +10,18 @@ import StepIndicator from "./StepIndicator";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { Helmet } from "react-helmet";
 import { useTranslation } from "react-i18next";
+import { IoIosArrowDown } from "react-icons/io";
+
 function ThemeStore() {
   const navigate = useNavigate();
-  const [previewImage, setPreviewImage] = useState(null);
-  const [bannerPreviews, setBannerPreviews] = useState([]);
+  const [logoUrl, setLogoUrl] = useState(null);
+  const [bannerUrls, setBannerUrls] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [submitError, setSubmitError] = useState(null);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const [isRTL, setIsRTL] = useState(false);
+  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
+
   const steps = [
     { number: 1, title: t("storeTheme") },
     { number: 2, title: t("storeProfile") },
@@ -28,7 +33,6 @@ function ThemeStore() {
     theme_secondary_color: "",
     image: null,
     banners: [],
-    bannerPreviews: [],
   };
 
   const validationSchema = Yup.object({
@@ -62,10 +66,10 @@ function ThemeStore() {
 
   useEffect(() => {
     return () => {
-      if (previewImage) URL.revokeObjectURL(previewImage);
-      bannerPreviews.forEach((preview) => URL.revokeObjectURL(preview));
+      if (logoUrl) URL.revokeObjectURL(logoUrl);
+      bannerUrls.forEach((url) => URL.revokeObjectURL(url));
     };
-  }, [previewImage, bannerPreviews]);
+  }, [logoUrl, bannerUrls]);
 
   const handleSubmit = async (values, { setSubmitting }) => {
     setIsLoading(true);
@@ -80,25 +84,19 @@ function ThemeStore() {
       values.banners.forEach((banner, index) => {
         formData.append(`banners[${index}]`, banner);
       });
-      const bannersData = values.banners.map((banner) => ({
-        name: banner.name,
-        size: banner.size,
-        type: banner.type,
-        lastModified: banner.lastModified,
-      }));
+
       localStorage.setItem(
         "storeThemeData",
         JSON.stringify({
           theme_primary_color: values.theme_primary_color,
           theme_secondary_color: values.theme_secondary_color,
-          banners: bannersData,
-          image: previewImage,
+          logoUrl: logoUrl,
+          bannerUrls: bannerUrls,
         })
       );
+
       const response = await setUpStore(formData);
       if (response?.status === true || response?.code === 200) {
-        console.log("Navigation to StoreProfile");
-        console.log("response", response);
         navigate("/Register/StoreProfile", { replace: true });
       } else {
         throw new Error(response?.message || "Theme setup failed");
@@ -111,20 +109,69 @@ function ThemeStore() {
       setSubmitting(false);
     }
   };
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
+    i18n.changeLanguage(savedLanguage);
+    setIsRTL(savedLanguage === "ar");
+  }, [i18n]);
+  // Update RTL state and localStorage when language changes
+  useEffect(() => {
+    const currentLanguage = i18n.language;
+    setIsRTL(currentLanguage === "ar");
+    localStorage.setItem("selectedLanguage", currentLanguage);
+  }, [i18n.language]);
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    setShowLanguageDropdown(false);
+    localStorage.setItem("selectedLanguage", lng);
+  };
+
   return (
     <div className="p-3 bg-gradient-to-r from-customBlue-mediumBlue via-customOrange-mediumOrange to-customOrange-mediumOrange min-h-screen flex items-center justify-center">
       <Helmet>
         <title>{t("setUpStore")}</title>
+        <html dir={isRTL ? "rtl" : "ltr"} lang={i18n.language} />
       </Helmet>
       <div className="bg-white rounded-md py-5 flex flex-col w-full max-w-2xl">
         <div className="flex justify-center my-5">
           <img src="/assets/svgs/vertex.svg" alt="logo" className="w-28" />
         </div>
-        <div className=" flex items-center gap-3 mb-5 px-6">
-          <div className="rounded-full border-[5px] border-primary p-2 font-bold">
-            1/3
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3 mb-5 px-6">
+            <div className="rounded-full border-[5px] border-primary p-2 font-bold">
+              1/3
+            </div>
+            <h3 className="text-15 font-bold">{t("startStore")}</h3>
           </div>
-          <h3 className="text-15 font-bold">{t("startStore")}</h3>
+          <div className="relative mx-5">
+            <button
+              className="flex items-center gap-1 text-14 bg-customOrange-lightOrange text-primary rounded-md p-2"
+              onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
+            >
+              {i18n.language.toUpperCase()}
+              <IoIosArrowDown size={20} />
+            </button>
+            {showLanguageDropdown && (
+              <div
+                className={`absolute ${
+                  isRTL ? "left-0" : "right-0"
+                } w-14 bg-white rounded-md shadow-lg z-10`}
+              >
+                <button
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={() => changeLanguage("en")}
+                >
+                  EN
+                </button>
+                <button
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={() => changeLanguage("ar")}
+                >
+                  AR
+                </button>
+              </div>
+            )}
+          </div>
         </div>
         <StepIndicator currentStep={1} steps={steps} />
 
@@ -143,19 +190,11 @@ function ThemeStore() {
               <div className="mb-6">
                 <LogoUpload
                   name="image"
-                  setFieldValue={(field, value) => {
-                    if (field === "image") {
-                      setFieldValue("image", value);
-                      if (value) {
-                        if (previewImage) URL.revokeObjectURL(previewImage);
-                        setPreviewImage(URL.createObjectURL(value));
-                      } else {
-                        setPreviewImage(null);
-                      }
-                    }
-                  }}
+                  setFieldValue={setFieldValue}
                   error={touched.image && errors.image}
                   accept="image/jpeg, image/png"
+                  logoUrl={logoUrl}
+                  setLogoUrl={setLogoUrl}
                 />
               </div>
               <BannerUpload
@@ -163,6 +202,8 @@ function ThemeStore() {
                 setFieldValue={setFieldValue}
                 errors={errors}
                 touched={touched}
+                setBannerUrls={setBannerUrls}
+                bannerUrls={bannerUrls}
               />
               <h3 className="text-16 font-semibold mb-3 px-6">
                 {t("enterColor")}
@@ -180,7 +221,7 @@ function ThemeStore() {
                 <Field
                   name="theme_secondary_color"
                   placeholder={t("secColor")}
-                  className={`w-full bg-gray-50 p-3 border rounded-md outline-none transition-all duration-200 placeholder:text-14 placeholder:text-gray-500 focus:border-primary${
+                  className={`w-full bg-gray-50 p-3 border rounded-md outline-none transition-all duration-200 placeholder:text-14 placeholder:text-gray-500 focus:border-primary ${
                     touched.theme_secondary_color &&
                     errors.theme_secondary_color
                       ? "border-red-500"
@@ -189,11 +230,11 @@ function ThemeStore() {
                 />
               </div>
 
-              <div className="flex  justify-end mt-5 px-6">
+              <div className="flex justify-end mt-5 px-6 rtl:justify-start">
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="bg-primary text-white rounded-md p-3 w-32 flex items-center gap-2 justify-center disabled:opacity-70"
+                  className="bg-primary text-white rounded-md p-3 w-32 flex rtl:flex-row-reverse items-center gap-2 justify-center disabled:opacity-70"
                 >
                   {isLoading ? (
                     <ClipLoader size={22} color="#fff" />

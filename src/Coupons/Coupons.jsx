@@ -1,7 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import ReactPaginate from "react-paginate";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import DeleteCoupons from "./DeleteCoupons";
 import { ClipLoader } from "react-spinners";
 import { fetchCoupons } from "../ApiServices/Coupons";
@@ -19,7 +18,6 @@ function Coupons() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
   const [searchQuery, setSearchQuery] = useState("");
-  const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const [isRTL, setIsRTL] = useState(false);
   const [showModal, setShowModal] = useState(false);

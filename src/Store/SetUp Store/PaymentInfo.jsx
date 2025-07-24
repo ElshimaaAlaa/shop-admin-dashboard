@@ -1,10 +1,9 @@
 import { Form, Formik, Field } from "formik";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as Yup from "yup";
 import InputField from "../../Components/InputFields/InputField";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { Helmet } from "react-helmet";
-import { setUpStore } from "../../ApiServices/setUpStore";
 import { ClipLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -12,6 +11,8 @@ import CreditCard from "../../Svgs/CreditCard";
 import Paypal from "../../Svgs/Paypal";
 import Visa from "../../Svgs/Visa";
 import GooglePay from "../../Svgs/GooglePay";
+import { useTranslation } from "react-i18next";
+import { IoIosArrowDown } from "react-icons/io";
 
 function PaymentInfo({
   onSubmit,
@@ -22,27 +23,31 @@ function PaymentInfo({
   const [isLoading, setIsLoading] = useState(false);
   const [submitError, setSubmitError] = useState(null);
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
+  const [isRTL, setIsRTL] = useState(false);
+  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
 
+  // Initialize form values with any existing payment info
   const initialValues = {
-    name: "",
-    email: "",
-    phone: "",
-    payment_method: "",
-    card_holder_name: "",
-    card_number: "",
-    expiration_date: "",
-    card_cvv: "",
+    name: formData.payment_info?.name || "",
+    email: formData.payment_info?.email || "",
+    phone: formData.payment_info?.phone || "",
+    payment_method: formData.payment_info?.payment_method || "",
+    card_holder_name: formData.payment_info?.card_holder_name || "",
+    card_number: formData.payment_info?.card_number || "",
+    expiration_date: formData.payment_info?.card_exp_date || "",
+    card_cvv: formData.payment_info?.card_cvv || "",
   };
 
   const validationSchema = Yup.object({
-    name: Yup.string().required("Name is required"),
-    email: Yup.string().required("Email is required"),
-    phone: Yup.string().required("Phone number is required"),
-    payment_method: Yup.string().required("Payment method is required"),
+    name: Yup.string().required(t("nameRequired")),
+    email: Yup.string().email(t("validEmail")).required(t("emailRequired")),
+    phone: Yup.string().required(t("phoneRequired")),
+    payment_method: Yup.string().required(t("paymentMethodRequired")),
     card_holder_name: Yup.string(),
-    card_number: Yup.string().required("Card number is required"),
-    expiration_date: Yup.string().required("Expiration date is required"),
-    card_cvv: Yup.string().required("CVV is required"),
+    card_number: Yup.string(),
+    expiration_date: Yup.string(),
+    card_cvv: Yup.string(),
   });
 
   const paymentMethods = [
@@ -63,6 +68,7 @@ function PaymentInfo({
   const handleSubmit = async (values) => {
     setIsLoading(true);
     setSubmitError(null);
+
     try {
       const selectedMethod = paymentMethods.find(
         (method) => method.id === values.payment_method
@@ -72,113 +78,133 @@ function PaymentInfo({
         name: values.name,
         phone: values.phone,
         email: values.email,
-        payment_method: selectedMethod
-          ? selectedMethod.label
-          : values.payment_method,
+        payment_method: selectedMethod?.label || values.payment_method,
         card_holder_name: values.card_holder_name,
         card_number: values.card_number,
         card_exp_date: values.expiration_date,
         card_cvv: values.card_cvv,
       };
 
+      // Update parent component's formData
       updateFormData("payment_info", paymentInfo);
 
-      const formDataToSend = new FormData();
-      Object.entries(paymentInfo).forEach(([key, value]) => {
-        formDataToSend.append(key, value);
-      });
+      // Prepare complete data for submission
+      const completeData = {
+        ...formData,
+        payment_info: paymentInfo,
+      };
 
-      Object.entries(formData).forEach(([key, value]) => {
-        if (!formDataToSend.has(key)) {
-          formDataToSend.append(key, value);
-        }
-      });
-
-      const response = await setUpStore(formDataToSend);
-
+      // Call parent's onSubmit if provided
       if (onSubmit) {
-        onSubmit({
-          ...formData,
-          payment_info: paymentInfo,
-          ...response.data,
-        });
+        onSubmit(completeData);
       }
 
-      localStorage.setItem(
-        "paymentInfo",
-        JSON.stringify({
-          name: values.name,
-          phone: values.phone,
-          email: values.email,
-          payment_method: values.payment_method,
-          card_holder_name: values.card_holder_name,
-          card_number: values.card_number,
-          card_exp_date: values.expiration_date,
-          card_cvv: values.card_cvv,
-        })
-      );
-
+      // Navigate to next step with complete data
       navigate("/Register/ShippingProvider", {
-        state: {
-          ...formData,
-          payment_info: paymentInfo,
-          ...response.data,
-        },
+        state: completeData,
       });
     } catch (error) {
       console.error("Submission failed:", error);
       setSubmitError(
-        error.response?.data?.message ||
-          error.message ||
-          "Failed to complete store setup"
+        error.response?.data?.message || error.message || t("setupFailed")
       );
     } finally {
       setIsLoading(false);
     }
   };
 
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
+    i18n.changeLanguage(savedLanguage);
+    setIsRTL(savedLanguage === "ar");
+  }, [i18n]);
+
+  useEffect(() => {
+    const currentLanguage = i18n.language;
+    setIsRTL(currentLanguage === "ar");
+    localStorage.setItem("selectedLanguage", currentLanguage);
+  }, [i18n.language]);
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    setShowLanguageDropdown(false);
+    localStorage.setItem("selectedLanguage", lng);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-r from-customBlue-mediumBlue via-customOrange-mediumOrange to-customOrange-mediumOrange p-6 flex items-center justify-center">
       <Helmet>
-        <title>Set Up Store</title>
+        <title>{t("setUpStore")}</title>
+        <html dir={isRTL ? "rtl" : "ltr"} lang={i18n.language} />
       </Helmet>
+
       <div className="w-full lg:w-[600px] md:w-[600px] bg-white rounded-lg shadow-lg">
-        <div className="flex justify-center my-7">
-          <img src="/assets/svgs/vertex.svg" alt="logo" className="w-28" />
+        <div className="flex items-center justify-between my-8 mx-5">
+          <div>
+            <img src="/assets/svgs/vertex.svg" alt="logo" className="w-28" />
+          </div>
+          <div className="relative mx-5">
+            <button
+              className="flex items-center gap-1 text-14 bg-customOrange-lightOrange text-primary rounded-md p-2"
+              onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
+            >
+              {i18n.language.toUpperCase()}
+              <IoIosArrowDown size={20} />
+            </button>
+            {showLanguageDropdown && (
+              <div
+                className={`absolute ${
+                  isRTL ? "left-0" : "right-0"
+                } w-14 bg-white rounded-md shadow-lg z-10`}
+              >
+                <button
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={() => changeLanguage("en")}
+                >
+                  EN
+                </button>
+                <button
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={() => changeLanguage("ar")}
+                >
+                  AR
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="text-center">
-          <h2 className="text-17 font-bold">Enter Your Payment Info</h2>
-          <p className="text-14 text-gray-500">To Complete the Process</p>
+          <h2 className="text-17 font-bold">{t("enterData")}</h2>
+          <p className="text-14 text-gray-500">{t("completePayment")}</p>
         </div>
+
         {submitError && (
           <div className="alert alert-error mx-6 my-4 p-3 rounded-md bg-red-100 text-red-700">
             {submitError}
           </div>
         )}
+
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
+          enableReinitialize
         >
-          {({ values, setFieldValue }) => (
+          {({ values, setFieldValue, isValid, dirty }) => (
             <Form className="ps-6 pe-6">
               <section>
-                <h2 className="font-bold mb-3 mt-3">Contact Info</h2>
+                <h2 className="font-bold mb-3 mt-3">{t("contactInfo")}</h2>
                 <div className="flex gap-2">
-                  <InputField name="name" placeholder="Name" />
-                  <InputField name="email" placeholder="Email" type="email" />
+                  <InputField name="name" placeholder={t("name")} />
+                  <InputField name="email" placeholder={t("email")} />
                 </div>
                 <div className="flex gap-2 mt-3">
-                  <InputField
-                    name="phone"
-                    placeholder="Phone Number"
-                    type="tel"
-                  />
-                  <div className="w-full"></div>
+                  <InputField name="phone" placeholder={t("phone")} />
                 </div>
               </section>
-              <h2 className="font-bold mt-4 mb-3">Payment Method</h2>
+
+              <h2 className="font-bold mt-4 mb-3">{t("paymentMethod")}</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
                 {paymentMethods.map((method) => (
                   <label
@@ -205,59 +231,83 @@ function PaymentInfo({
                   </label>
                 ))}
               </div>
+
               {values.payment_method && (
                 <section className="bg-gray-50 py-2 px-4 rounded-md">
-                  <h4 className="font-bold mt-4 mb-3">Payment Data</h4>
-                  <div className="flex items-center gap-2">
-                    <InputField name="card_cvv" placeholder="CVV" />
-                    <div className="w-full">
-                      <Field
-                        name="expiration_date"
-                        placeholder="MM/YY"
-                        type="date"
-                        className={`w-full h-12 p-3 border-2 rounded-md outline-none transition-all duration-200 placeholder:text-14 focus:border-primary`}
-                        onChange={(e) => {
-                          let value = e.target.value;
-                          if (value.length === 2 && !value.includes("/")) {
-                            value = value + "/";
-                          }
-                          setFieldValue("expiration_date", value);
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 mt-3">
-                    <InputField
-                      name="card_holder_name"
-                      placeholder="Card Holder Name"
-                    />
-                    <InputField
-                      name="card_number"
-                      placeholder="Card Number"
-                      type="tel"
-                      inputMode="numeric"
-                    />
-                  </div>
+                  <h4 className="font-bold mt-4 mb-3">{t("paymentInfo")}</h4>
+                  {["credit_card", "visa" , "paypal" , "google_pay"].includes(values.payment_method) ? (
+                    <>
+                      <div className="flex items-center gap-2">
+                        <InputField
+                          name="card_cvv"
+                          placeholder={t("cvv")}
+                        />
+                        <InputField
+                          name="expiration_date"
+                          placeholder="MM/YY"
+                          type="date"
+                          onChange={(e) => {
+                            let value = e.target.value.replace(/\D/g, "");
+                            if (value.length > 2) {
+                              value =
+                                value.substring(0, 2) +
+                                "/" +
+                                value.substring(2, 4);
+                            }
+                            setFieldValue("expiration_date", value);
+                          }}
+                        />
+                      </div>
+                      <div className="flex items-center gap-2 mt-3">
+                        <InputField
+                          name="card_holder_name"
+                          placeholder={t("cardHolder")}
+                        />
+                        <InputField
+                          name="card_number"
+                          placeholder={t("cardNumber")}
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/\D/g, "");
+                            setFieldValue(
+                              "card_number",
+                              value.substring(0, 16)
+                            );
+                          }}
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <p className="text-sm text-gray-500 py-4">
+                      {t("redirectToPayment", {
+                        method: values.payment_method,
+                      })}
+                    </p>
+                  )}
                 </section>
               )}
-              <section className="flex items-center gap-3 justify-end my-5">
+
+              <section className="flex items-center gap-3 justify-end my-5 rtl:flex-row-reverse">
                 <button
                   type="button"
                   onClick={() => navigate("/Register/PricingPlan")}
-                  className="bg-gray-100  text-gray-400 w-36 rounded-md px-6 py-3 transition-colors"
+                  className="bg-gray-100 text-gray-400 w-36 rounded-md px-6 py-3 transition-colors"
                 >
-                  Cancel
+                  {t("cancel")}
                 </button>
                 <button
                   type="submit"
-                  disabled={isLoading}
-                  className="bg-primary  text-white flex w-36 justify-center text-16 items-center rounded-md px-6 py-3 gap-3 hover:bg-primary-dark transition-colors"
+                  disabled={isLoading || !isValid || !dirty}
+                  className={`bg-primary text-white flex rtl:flex-row-reverse w-36 justify-center text-16 items-center rounded-md px-6 py-3 gap-3 transition-colors ${
+                    isLoading || !isValid || !dirty
+                      ? "opacity-50"
+                      : "hover:bg-primary-dark"
+                  }`}
                 >
                   {isLoading ? (
                     <ClipLoader size={20} color="#fff" />
                   ) : (
                     <>
-                      Pay Now <FaArrowRightLong />
+                      {t("payNow")} <FaArrowRightLong />
                     </>
                   )}
                 </button>
@@ -269,6 +319,7 @@ function PaymentInfo({
     </div>
   );
 }
+
 PaymentInfo.propTypes = {
   onSubmit: PropTypes.func,
   onBack: PropTypes.func,
@@ -281,4 +332,5 @@ PaymentInfo.defaultProps = {
   onSubmit: () => {},
   onBack: () => {},
 };
+
 export default PaymentInfo;

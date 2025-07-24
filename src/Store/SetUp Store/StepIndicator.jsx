@@ -43,7 +43,7 @@ const StepIndicator = ({ currentStep, steps }) => {
             )}
           </div>
           <div className="flex flex-col gap-2 text-xs mt-3">
-            <p className="text-gray-400 text-12  font-light text-left">{`${t("step")} ${step.number}`}</p>
+            <p className="text-gray-400 text-12  font-light text-left rtl:text-right">{`${t("step")} ${step.number}`}</p>
             <p className="font-bold text-black">{step.title}</p>
           </div>
           {step.number === currentStep && (

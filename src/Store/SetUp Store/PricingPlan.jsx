@@ -1,12 +1,14 @@
 import { FaArrowRightLong, FaArrowLeftLong, FaCheck } from "react-icons/fa6";
 import StepIndicator from "./StepIndicator";
 import { ClipLoader } from "react-spinners";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { setUpStore } from "../../ApiServices/setUpStore";
 import { useTranslation } from "react-i18next";
+import { IoIosArrowDown } from "react-icons/io";
+
 const PLANS = [
   {
     id: 1,
@@ -63,7 +65,9 @@ const PricingPlan = ({
 }) => {
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const [isRTL, setIsRTL] = useState(false);
+  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(
     location.state?.plan_id
       ? PLANS.find((p) => p.id === location.state.plan_id)
@@ -126,31 +130,76 @@ const PricingPlan = ({
       setIsLoading(false);
     }
   };
-
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
+    i18n.changeLanguage(savedLanguage);
+    setIsRTL(savedLanguage === "ar");
+  }, [i18n]);
+  // Update RTL state and localStorage when language changes
+  useEffect(() => {
+    const currentLanguage = i18n.language;
+    setIsRTL(currentLanguage === "ar");
+    localStorage.setItem("selectedLanguage", currentLanguage);
+  }, [i18n.language]);
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    setShowLanguageDropdown(false);
+    localStorage.setItem("selectedLanguage", lng);
+  };
   return (
     <div className="bg-gradient-to-r from-customBlue-mediumBlue via-customOrange-mediumOrange to-customOrange-mediumOrange p-6 flex items-center justify-center">
       <Helmet>
-        <title>Set Up Store | Pricing Plan</title>
+        <title>{t("setUpStore")} | {t("pricingPlan")}</title>
+        <html dir={isRTL ? "rtl" : "ltr"} lang={i18n.language} />
       </Helmet>
       <div className="w-full lg:w-750 md:w-700px bg-white rounded-lg shadow-lg">
         <div className="flex justify-center my-7">
           <img src="/assets/svgs/vertex.svg" alt="logo" className="w-28" />
         </div>
-        <div className="flex items-center gap-3 mb-5 px-6">
-          <div className="rounded-full border-[5px] border-primary p-2 font-bold">
-            1/3
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3 mb-5 px-6">
+            <div className="rounded-full border-[5px] border-primary p-2 font-bold">
+              2/3
+            </div>
+            <h3 className="text-15 font-bold">{t("startStore")}</h3>
           </div>
-          <h3 className="text-15 font-bold">
-            Let's Get Started To Set Up Your Own Store.
-          </h3>
+          <div className="relative mx-5">
+            <button
+              className="flex items-center gap-1 text-14 bg-customOrange-lightOrange text-primary rounded-md p-2"
+              onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
+            >
+              {i18n.language.toUpperCase()}
+              <IoIosArrowDown size={20} />
+            </button>
+            {showLanguageDropdown && (
+              <div
+                className={`absolute ${
+                  isRTL ? "left-0" : "right-0"
+                } w-14 bg-white rounded-md shadow-lg z-10`}
+              >
+                <button
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={() => changeLanguage("en")}
+                >
+                  EN
+                </button>
+                <button
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={() => changeLanguage("ar")}
+                >
+                  AR
+                </button>
+              </div>
+            )}
+          </div>
         </div>
         <StepIndicator currentStep={3} steps={steps} />
 
         <h2 className="text-17 font-bold text-center mt-3">
-          Our Product Packages
+          {t("package")}
         </h2>
         <p className="text-12 mt-1 text-gray-600 text-center mb-8">
-          Choose The Perfect Plan For Your Needs
+        {t("chooseNeeds")}
         </p>
 
         {error && (
@@ -201,29 +250,29 @@ const PricingPlan = ({
                     : "bg-gray-100 text-gray-400"
                 }`}
               >
-                {selectedPlan?.id === plan.id ? "Selected" : "Select Plan"}
+                {selectedPlan?.id === plan.id ? t("selected") : t("selectPlan")}
               </button>
             </div>
           ))}
         </div>
 
-        <div className="flex justify-between mt-4 my-5 mx-5">
+        <div className="flex justify-between mt-4 my-5 mx-5 rtl:flex-row-reverse">
           <button
             onClick={() => navigate("/Register/StoreProfile")}
-            className="flex items-center font-bold gap-3 text-dark px-6 py-2"
+            className="flex items-center font-bold gap-3 text-dark px-6 py-2 rtl:flex-row-reverse"
           >
-            <FaArrowLeftLong size={15} /> Back
+            <FaArrowLeftLong size={15} /> {t("back")}
           </button>
           <button
             onClick={handleNext}
-            className="flex items-center justify-center gap-3 w-32 bg-primary text-white px-6 py-3 rounded-md hover:bg-primary-dark transition-colors"
+            className="flex items-center rtl:flex-row-reverse justify-center gap-3 w-32 bg-primary text-white px-6 py-3 rounded-md hover:bg-primary-dark transition-colors"
             disabled={isLoading}
           >
             {isLoading ? (
               <ClipLoader size={22} color="#fff" />
             ) : (
               <>
-                Next <FaArrowRightLong />
+                {t("next")} <FaArrowRightLong />
               </>
             )}
           </button>

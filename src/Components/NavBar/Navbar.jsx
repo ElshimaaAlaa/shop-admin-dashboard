@@ -110,7 +110,6 @@ function Navbar() {
               </div>
             )}
           </div>
-
           <ProfileMenu />
         </div>
       </nav>
