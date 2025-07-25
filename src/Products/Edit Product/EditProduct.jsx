@@ -410,7 +410,7 @@ function EditProduct() {
     } else {
       setTagSuggestions([]);
     }
-  }, [initialValues.tagInput, availableTags, initialValues.tags_id]);
+  }, [initialValues.tagInput, availableTags]);
 
   const hasColors = product.colors && product.colors.length > 0;
   const hasSizes = product.sizes && product.sizes.length > 0;
@@ -622,7 +622,7 @@ function EditProduct() {
                 )
               }
               cancelText={t("cancel")}
-              cancelOnClick={() => navigate("/Home/products")}
+              cancelOnClick={() => navigate("/Dashboard/products")}
               cancelBtnType={"button"}
               saveBtnType={"submit"}
               isLoading={isLoading}

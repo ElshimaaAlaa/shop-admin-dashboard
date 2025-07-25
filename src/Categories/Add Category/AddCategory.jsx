@@ -148,7 +148,6 @@ function AddCategory() {
   });
 
   const handleSubmit = async (values) => {
-    console.log("Formik values:", values);
     setIsLoading(true);
 
     const formData = new FormData();
@@ -176,10 +175,6 @@ function AddCategory() {
       setShowModal(true);
     } catch (error) {
       console.error("Failed to add category", error);
-      alert(
-        error.response?.data?.message ||
-          "Failed to add category. Please try again."
-      );
     } finally {
       setIsLoading(false);
     }
@@ -252,7 +247,7 @@ function AddCategory() {
             <Footer
               saveText={t("save")}
               cancelText={t("cancel")}
-              cancelOnClick={() => navigate("/Home/categories")}
+              cancelOnClick={() => navigate("/Dashboard/categories")}
               saveBtnType={"submit"}
               cancelBtnType={"button"}
               isLoading={isLoading}

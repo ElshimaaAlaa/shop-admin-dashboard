@@ -1,7 +1,5 @@
 import {
   signInWithPopup,
-  GoogleAuthProvider,
-  FacebookAuthProvider,
 } from "firebase/auth";
 import { auth } from "../Config/firebase-config";
 

@@ -1,61 +1,13 @@
 import { FaArrowRightLong, FaArrowLeftLong, FaCheck } from "react-icons/fa6";
 import StepIndicator from "./StepIndicator";
 import { ClipLoader } from "react-spinners";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { setUpStore } from "../../ApiServices/setUpStore";
 import { useTranslation } from "react-i18next";
 import { IoIosArrowDown } from "react-icons/io";
-
-const PLANS = [
-  {
-    id: 1,
-    name: "Free",
-    price: 0,
-    period: "/mth",
-    description: "Forever free",
-    features: [
-      "Basic store features",
-      "Up to 50 products",
-      "Basic analytics",
-      "Email support",
-      "Community access",
-    ],
-    icon: "/assets/svgs/Featured icon.svg",
-  },
-  {
-    id: 2,
-    name: "Standard",
-    price: 10,
-    period: "/mth",
-    description: "Billed monthly",
-    features: [
-      "All Free features",
-      "Up to 500 products",
-      "Advanced analytics",
-      "Priority support",
-      "Marketing tools",
-    ],
-    icon: "/assets/svgs/Featured icon (1).svg",
-  },
-  {
-    id: 3,
-    name: "Pro",
-    price: 22,
-    period: "/mth",
-    description: "Billed monthly",
-    features: [
-      "All Standard features",
-      "Unlimited products",
-      "Advanced reporting",
-      "24/7 support",
-      "Custom domain",
-    ],
-    icon: "/assets/svgs/Featured icon (2).svg",
-  },
-];
 
 const PricingPlan = ({
   onNext,
@@ -68,13 +20,67 @@ const PricingPlan = ({
   const { t, i18n } = useTranslation();
   const [isRTL, setIsRTL] = useState(false);
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  // Memoized PLANS array with translations
+  const PLANS = useMemo(
+    () => [
+      {
+        id: 1,
+        name: t("free"),
+        price: 0,
+        period: t("perMonth"),
+        description: t("foreverFree"),
+        features: [
+          t("basicStoreFeatures"),
+          t("upTo50Products"),
+          t("basicAnalytics"),
+          t("emailSupport"),
+          t("communityAccess"),
+        ],
+        icon: "/assets/svgs/Featured icon.svg",
+      },
+      {
+        id: 2,
+        name: t("standard"),
+        price: 10,
+        period: t("perMonth"),
+        description: t("billedMonthly"),
+        features: [
+          t("allFreeFeatures"),
+          t("upTo500Products"),
+          t("advancedAnalytics"),
+          t("prioritySupport"),
+          t("marketingTools"),
+        ],
+        icon: "/assets/svgs/Featured icon (1).svg",
+      },
+      {
+        id: 3,
+        name: t("pro"),
+        price: 22,
+        period: t("perMonth"),
+        description: t("billedMonthly"),
+        features: [
+          t("allStandardFeatures"),
+          t("unlimitedProducts"),
+          t("advancedReporting"),
+          t("247Support"),
+          t("customDomain"),
+        ],
+        icon: "/assets/svgs/Featured icon (2).svg",
+      },
+    ],
+    [t]
+  );
+
   const [selectedPlan, setSelectedPlan] = useState(
     location.state?.plan_id
       ? PLANS.find((p) => p.id === location.state.plan_id)
       : null
   );
-  const [error, setError] = useState(null);
-  const navigate = useNavigate();
+
   const steps = [
     { number: 1, title: t("storeTheme") },
     { number: 2, title: t("storeProfile") },
@@ -93,7 +99,7 @@ const PricingPlan = ({
 
   const handleNext = async () => {
     if (!selectedPlan) {
-      setError("Please select a plan");
+      setError(t("pleaseSelectPlan"));
       return;
     }
     setIsLoading(true);
@@ -107,7 +113,6 @@ const PricingPlan = ({
         }
       });
       const response = await setUpStore(formDataToSend);
-      console.log("pricing response", response);
       navigate("/Register/PaymentInfo", {
         state: {
           ...formData,
@@ -123,33 +128,39 @@ const PricingPlan = ({
           ...response.data,
         });
       }
+      console.log("pricing response", response);
     } catch (error) {
       console.error("Error setting up store:", error);
-      setError(error.message || "Failed to setup store. Please try again.");
+      setError(error.message || t("setupStoreFailed"));
     } finally {
       setIsLoading(false);
     }
   };
+
   useEffect(() => {
     const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
     i18n.changeLanguage(savedLanguage);
     setIsRTL(savedLanguage === "ar");
   }, [i18n]);
-  // Update RTL state and localStorage when language changes
+
   useEffect(() => {
     const currentLanguage = i18n.language;
     setIsRTL(currentLanguage === "ar");
     localStorage.setItem("selectedLanguage", currentLanguage);
   }, [i18n.language]);
+
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
     setShowLanguageDropdown(false);
     localStorage.setItem("selectedLanguage", lng);
   };
+
   return (
     <div className="bg-gradient-to-r from-customBlue-mediumBlue via-customOrange-mediumOrange to-customOrange-mediumOrange p-6 flex items-center justify-center">
       <Helmet>
-        <title>{t("setUpStore")} | {t("pricingPlan")}</title>
+        <title>
+          {t("setUpStore")} | {t("pricingPlan")}
+        </title>
         <html dir={isRTL ? "rtl" : "ltr"} lang={i18n.language} />
       </Helmet>
       <div className="w-full lg:w-750 md:w-700px bg-white rounded-lg shadow-lg">
@@ -195,11 +206,9 @@ const PricingPlan = ({
         </div>
         <StepIndicator currentStep={3} steps={steps} />
 
-        <h2 className="text-17 font-bold text-center mt-3">
-          {t("package")}
-        </h2>
+        <h2 className="text-17 font-bold text-center mt-3">{t("package")}</h2>
         <p className="text-12 mt-1 text-gray-600 text-center mb-8">
-        {t("chooseNeeds")}
+          {t("chooseNeeds")}
         </p>
 
         {error && (
@@ -238,7 +247,7 @@ const PricingPlan = ({
               <ul className="space-y-2 mb-6">
                 {plan.features.map((feature, index) => (
                   <li key={index} className="flex items-start">
-                    <FaCheck className="h-5 w-5 p-1 text-primary bg-customOrange-mediumOrange rounded-full mr-2 mt-0.5" />
+                    <FaCheck className="h-5 w-5 p-1 text-primary bg-customOrange-mediumOrange rounded-full mr-2 rtl:me-2 mt-0.5" />
                     <span className="text-xs text-gray-400">{feature}</span>
                   </li>
                 ))}
@@ -281,13 +290,16 @@ const PricingPlan = ({
     </div>
   );
 };
+
 PricingPlan.propTypes = {
   onNext: PropTypes.func,
   onBack: PropTypes.func,
   formData: PropTypes.object,
   updateFormData: PropTypes.func.isRequired,
 };
+
 PricingPlan.defaultProps = {
   formData: {},
 };
+
 export default PricingPlan;

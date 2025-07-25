@@ -7,9 +7,6 @@ const ProductDropdownField = ({ field, form, products, ...props }) => {
     label: product.name,
   }));
 
-  const error =
-    form.errors.items &&
-    form.errors.items[field.name.split("[")[1].split("]")[0]]?.product_id;
   const touched =
     form.touched.items &&
     form.touched.items[field.name.split("[")[1].split("]")[0]]?.product_id;

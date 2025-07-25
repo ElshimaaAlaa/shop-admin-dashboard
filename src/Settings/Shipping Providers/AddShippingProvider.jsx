@@ -4,6 +4,8 @@ import { Formik, Form } from "formik";
 import { ClipLoader } from "react-spinners";
 import { AddShipping } from "../../ApiServices/AddShipping";
 import { useTranslation } from "react-i18next";
+import { LuCirclePlus } from "react-icons/lu";
+
 function AddShippingProvider({ isOpen, onClose }) {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedProviders, setSelectedProviders] = useState([]);
@@ -67,7 +69,8 @@ function AddShippingProvider({ isOpen, onClose }) {
         id="modal-width"
       >
         <div className="modal-content">
-          <h3 className="font-bold text-16 px-3 py-5 rtl:text-[18px]">
+          <h3 className="font-bold text-16 px-3 py-5 rtl:text-[18px] flex items-center gap-2 text-primary">
+            <LuCirclePlus size={22} />
             {t("addNewShipping")}
           </h3>
           {error && (
@@ -134,7 +137,11 @@ function AddShippingProvider({ isOpen, onClose }) {
                   className="bg-primary font-bold text-white p-2 w-32 rounded-md"
                   disabled={isLoading || selectedProviders.length === 0}
                 >
-                  {isLoading ? <ClipLoader size={22} color="#fff" /> :t("save")}
+                  {isLoading ? (
+                    <ClipLoader size={22} color="#fff" />
+                  ) : (
+                    t("save")
+                  )}
                 </button>
               </div>
             </Form>

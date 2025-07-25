@@ -322,7 +322,7 @@ function EditCategory() {
             <Footer
               saveText={t("saveChanges")}
               cancelText={t("cancel")}
-              cancelOnClick={() => navigate("/Home/categories")}
+              cancelOnClick={() => navigate("/Dashboard/categories")}
               saveBtnType={"submit"}
               cancelBtnType={"button"}
               isLoading={isLoading}

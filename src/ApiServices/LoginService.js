@@ -1,5 +1,4 @@
 import axios from "axios";
-
 const live_shop_domain = localStorage.getItem("live_shop_domain");
 const role = localStorage.getItem("role");
 export const loginService = async (email, password) => {

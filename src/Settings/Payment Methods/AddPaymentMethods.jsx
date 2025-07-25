@@ -4,6 +4,8 @@ import { Formik, Form } from "formik";
 import { ClipLoader } from "react-spinners";
 import { AddPayment } from "../../ApiServices/AddPaymentMethod";
 import { useTranslation } from "react-i18next";
+import { LuCirclePlus } from "react-icons/lu";
+
 function AddPaymentMethod({ isOpen, onClose }) {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedpaymentmethod, setSelectedpaymentmethod] = useState([]);
@@ -67,7 +69,10 @@ function AddPaymentMethod({ isOpen, onClose }) {
         id="modal-width"
       >
         <div className="modal-content">
-          <h3 className="font-bold text-16 px-3 py-5 rtl:text-[18px]">{t("addNewPay")}</h3>
+          <h3 className="font-bold text-16 px-3 py-5 rtl:text-[18px] flex items-center gap-2 text-primary">
+            <LuCirclePlus size={22}/>
+            {t("addNewPay")}
+          </h3>
           {error && (
             <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">
               {error}

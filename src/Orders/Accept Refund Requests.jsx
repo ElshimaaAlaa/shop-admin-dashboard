@@ -51,7 +51,11 @@ function AcceptRefundRequests({ order_id, status, items_count }) {
       setIsLoading(false);
     }
   };
-
+  if (showModal) {
+    document.body.classList.add("no-scroll");
+  } else {
+    document.body.classList.remove("no-scroll");
+  }
   return (
     <div>
       <FaCheckCircle
@@ -67,7 +71,7 @@ function AcceptRefundRequests({ order_id, status, items_count }) {
               <FaCheckCircle color="#34B41E" size={30} />
             </div>
             <p className="font-bold text-center text-dark">
-              {t("successAccept")} #{items_count} 
+              {t("successAccept")} #{items_count}
             </p>
           </SuccessModal>
         ) : (
@@ -91,7 +95,11 @@ function AcceptRefundRequests({ order_id, status, items_count }) {
                 onClick={handleAcceptRefund}
                 disabled={isLoading}
               >
-                {isLoading ? <ClipLoader size={22} color="#fff" /> : t("accept")}
+                {isLoading ? (
+                  <ClipLoader size={22} color="#fff" />
+                ) : (
+                  t("accept")
+                )}
               </button>
             </div>
           </FailedModal>

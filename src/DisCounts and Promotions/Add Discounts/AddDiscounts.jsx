@@ -5,12 +5,12 @@ import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { formatDate } from "../../Components/DropDowns/dateFormatter";
-import { API_BASE_URL, API_URL } from "../../ApiServices/apiEndpoints";
 import PromotionBasicInfo from "../../Components/DropDowns/PromotionBasicInfo";
 import PromotionDetails from "../../Components/DropDowns/PromotionDetails";
 import Footer from "../../Components/Footer/Footer";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 import { useTranslation } from "react-i18next";
+import { addDisc } from "../../ApiServices/AddNewDisc";
 const NewPromotion = () => {
   const [error, setError] = useState("");
   const [products, setProducts] = useState([]);
@@ -27,13 +27,13 @@ const NewPromotion = () => {
     const fetchData = async () => {
       try {
         const [productsResponse, categoriesResponse] = await Promise.all([
-          axios.get(`${API_URL}${live_shop_domain}/api/${role}/products`, {
+          axios.get(`https://${live_shop_domain}/api/${role}/products`, {
             headers: {
               "Accept-Language": "en",
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
           }),
-          axios.get(`${API_URL}${live_shop_domain}/api/${role}/categories`, {
+          axios.get(`https://${live_shop_domain}/api/${role}/categories`, {
             headers: {
               "Accept-Language": "en",
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -103,15 +103,7 @@ const NewPromotion = () => {
         formData.append(`items[${index}][category_id]`, item.category_id);
       });
 
-      await axios.post(API_BASE_URL, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          "Accept-Language": "en",
-          live_shop_domain: live_shop_domain,
-          role: role,
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      await addDisc(formData);
       console.log("Promotion created successfully!");
       setShowModal(true);
       resetForm();
@@ -126,11 +118,17 @@ const NewPromotion = () => {
       setIsSubmitting(false);
     }
   };
-
+  if (showModal) {
+    document.body.classList.add("no-scroll");
+  } else {
+    document.body.classList.remove("no-scroll");
+  }
   return (
     <div className="bg-gray-100 flex flex-col min-h-screen relative">
       <Helmet>
-        <title>{t("addNewPromo")} | {t("vertex")}</title>
+        <title>
+          {t("addNewPromo")} | {t("vertex")}
+        </title>
       </Helmet>
 
       <section className="rounded-md p-5 mx-5 bg-white mt-5">

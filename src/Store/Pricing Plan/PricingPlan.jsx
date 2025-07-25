@@ -1,72 +1,82 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FaCheck } from "react-icons/fa6";
 import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-const PLANS = [
-  {
-    id: 1,
-    name: "Free",
-    price: 0,
-    period: "/mth",
-    description: "Forever free",
-    features: [
-      "Basic store features",
-      "Up to 50 products",
-      "Basic analytics",
-      "Email support",
-      "Community access",
-    ],
-    icon: "/assets/svgs/Featured icon.svg",
-  },
-  {
-    id: 2,
-    name: "Standard",
-    price: 10,
-    period: "/mth",
-    description: "Billed monthly",
-    features: [
-      "All Free features",
-      "Up to 500 products",
-      "Advanced analytics",
-      "Priority support",
-      "Marketing tools",
-    ],
-    icon: "/assets/svgs/Featured icon (1).svg",
-  },
-  {
-    id: 3,
-    name: "Pro",
-    price: 22,
-    period: "/mth",
-    description: "Billed monthly",
-    features: [
-      "All Standard features",
-      "Unlimited products",
-      "Advanced reporting",
-      "24/7 support",
-      "Custom domain",
-    ],
-    icon: "/assets/svgs/Featured icon (2).svg",
-  },
-];
 
 function Pricing() {
   const navigate = useNavigate();
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
+
+  // Move PLANS inside the component and use useMemo
+  const PLANS = useMemo(
+    () => [
+      {
+        id: 1,
+        name: t("free"),
+        price: 0,
+        period: t("perMonth"),
+        description: t("foreverFree"),
+        features: [
+          t("basicStoreFeatures"),
+          t("upTo50Products"),
+          t("basicAnalytics"),
+          t("emailSupport"),
+          t("communityAccess"),
+        ],
+        icon: "/assets/svgs/Featured icon.svg",
+      },
+      {
+        id: 2,
+        name: t("standard"),
+        price: 10,
+        period: t("perMonth"),
+        description: t("billedMonthly"),
+        features: [
+          t("allFreeFeatures"),
+          t("upTo500Products"),
+          t("advancedAnalytics"),
+          t("prioritySupport"),
+          t("marketingTools"),
+        ],
+        icon: "/assets/svgs/Featured icon (1).svg",
+      },
+      {
+        id: 3,
+        name: t("pro"),
+        price: 22,
+        period: t("perMonth"),
+        description: t("billedMonthly"),
+        features: [
+          t("allStandardFeatures"),
+          t("unlimitedProducts"),
+          t("advancedReporting"),
+          t("247Support"),
+          t("customDomain"),
+        ],
+        icon: "/assets/svgs/Featured icon (2).svg",
+      },
+    ],
+    [t]
+  );
+
   useEffect(() => {
     const planId = localStorage.getItem("plan_id");
     if (planId) {
       const plan = PLANS.find((p) => p.id === Number(planId));
       if (plan) {
-        setSelectedPlan(plan);
+        setSelectedPlan({
+          ...plan,
+          // Translate the features when setting the selected plan
+          features: plan.features.map(feature => t(feature)),
+          description: t(plan.description)
+        });
       }
     }
-
     setLoading(false);
-  }, []);
+  }, [PLANS, t]);
 
   if (loading) {
     return (
@@ -120,7 +130,7 @@ function Pricing() {
               />
               <div>
                 <h2 className="text-16 mt-2 text-center font-bold text-customOrange-darkOrange">
-                  {selectedPlan.name} Plan
+                  {selectedPlan.name}
                 </h2>
                 <p className="text-center text-3xl my-3 font-bold">
                   ${selectedPlan.price}
@@ -138,7 +148,7 @@ function Pricing() {
             <ul className="space-y-3">
               {selectedPlan.features.map((feature, index) => (
                 <li key={index} className="flex items-start">
-                  <FaCheck className="h-5 w-5 p-1 text-primary bg-customOrange-mediumOrange rounded-full mr-2 mt-0.5 flex-shrink-0" />
+                  <FaCheck className="h-5 w-5 p-1 text-primary bg-customOrange-mediumOrange rounded-full mr-2 rtl:me-2 mt-0.5 flex-shrink-0" />
                   <span className="text-gray-400 text-14">{feature}</span>
                 </li>
               ))}
@@ -149,4 +159,5 @@ function Pricing() {
     </div>
   );
 }
+
 export default Pricing;

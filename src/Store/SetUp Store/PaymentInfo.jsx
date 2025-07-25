@@ -15,9 +15,9 @@ import { useTranslation } from "react-i18next";
 import { IoIosArrowDown } from "react-icons/io";
 
 function PaymentInfo({
-  onSubmit,
-  onBack,
-  formData,
+  onSubmit = () => {},
+  onBack = () => {},
+  formData = {},
   updateFormData = () => {},
 }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -27,16 +27,16 @@ function PaymentInfo({
   const [isRTL, setIsRTL] = useState(false);
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
 
-  // Initialize form values with any existing payment info
+  // Safely initialize form values with default empty object if payment_info is undefined
   const initialValues = {
-    name: formData.payment_info?.name || "",
-    email: formData.payment_info?.email || "",
-    phone: formData.payment_info?.phone || "",
-    payment_method: formData.payment_info?.payment_method || "",
-    card_holder_name: formData.payment_info?.card_holder_name || "",
-    card_number: formData.payment_info?.card_number || "",
-    expiration_date: formData.payment_info?.card_exp_date || "",
-    card_cvv: formData.payment_info?.card_cvv || "",
+    name: formData?.payment_info?.name || "",
+    email: formData?.payment_info?.email || "",
+    phone: formData?.payment_info?.phone || "",
+    payment_method: formData?.payment_info?.payment_method || "",
+    card_holder_name: formData?.payment_info?.card_holder_name || "",
+    card_number: formData?.payment_info?.card_number || "",
+    expiration_date: formData?.payment_info?.card_exp_date || "",
+    card_cvv: formData?.payment_info?.card_cvv || "",
   };
 
   const validationSchema = Yup.object({
@@ -90,14 +90,12 @@ function PaymentInfo({
 
       // Prepare complete data for submission
       const completeData = {
-        ...formData,
+        ...(formData || {}),
         payment_info: paymentInfo,
       };
 
       // Call parent's onSubmit if provided
-      if (onSubmit) {
-        onSubmit(completeData);
-      }
+      onSubmit(completeData);
 
       // Navigate to next step with complete data
       navigate("/Register/ShippingProvider", {
@@ -235,54 +233,46 @@ function PaymentInfo({
               {values.payment_method && (
                 <section className="bg-gray-50 py-2 px-4 rounded-md">
                   <h4 className="font-bold mt-4 mb-3">{t("paymentInfo")}</h4>
-                  {["credit_card", "visa" , "paypal" , "google_pay"].includes(values.payment_method) ? (
-                    <>
-                      <div className="flex items-center gap-2">
-                        <InputField
-                          name="card_cvv"
-                          placeholder={t("cvv")}
-                        />
-                        <InputField
-                          name="expiration_date"
-                          placeholder="MM/YY"
-                          type="date"
-                          onChange={(e) => {
-                            let value = e.target.value.replace(/\D/g, "");
-                            if (value.length > 2) {
-                              value =
-                                value.substring(0, 2) +
-                                "/" +
-                                value.substring(2, 4);
-                            }
-                            setFieldValue("expiration_date", value);
-                          }}
-                        />
-                      </div>
-                      <div className="flex items-center gap-2 mt-3">
-                        <InputField
-                          name="card_holder_name"
-                          placeholder={t("cardHolder")}
-                        />
-                        <InputField
-                          name="card_number"
-                          placeholder={t("cardNumber")}
-                          onChange={(e) => {
-                            const value = e.target.value.replace(/\D/g, "");
-                            setFieldValue(
-                              "card_number",
-                              value.substring(0, 16)
-                            );
-                          }}
-                        />
-                      </div>
-                    </>
-                  ) : (
-                    <p className="text-sm text-gray-500 py-4">
-                      {t("redirectToPayment", {
-                        method: values.payment_method,
-                      })}
-                    </p>
-                  )}
+                  <>
+                    <div className="flex items-center gap-2">
+                      <InputField
+                        name="card_cvv"
+                        placeholder={t("cvv")}
+                      />
+                      <InputField
+                        name="expiration_date"
+                        placeholder="MM/YY"
+                        type="date"
+                        onChange={(e) => {
+                          let value = e.target.value.replace(/\D/g, "");
+                          if (value.length > 2) {
+                            value =
+                              value.substring(0, 2) +
+                              "/" +
+                              value.substring(2, 4);
+                          }
+                          setFieldValue("expiration_date", value);
+                        }}
+                      />
+                    </div>
+                    <div className="flex items-center gap-2 mt-3">
+                      <InputField
+                        name="card_holder_name"
+                        placeholder={t("cardHolder")}
+                      />
+                      <InputField
+                        name="card_number"
+                        placeholder={t("cardNumber")}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/\D/g, "");
+                          setFieldValue(
+                            "card_number",
+                            value.substring(0, 16)
+                          );
+                        }}
+                      />
+                    </div>
+                  </>
                 </section>
               )}
 
