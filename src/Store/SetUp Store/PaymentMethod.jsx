@@ -62,7 +62,7 @@ function PaymentMethods() {
       const response = await setUpStore(formData);
       console.log("payment method", response);
       if (response) {
-        navigate("/Dashboard/Home-dashboard");
+        navigate("/Login");
       }
     } catch (error) {
       console.error("Submission failed:", error);
