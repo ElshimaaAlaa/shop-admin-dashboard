@@ -11,6 +11,7 @@ function AddNewCoupon({ isOpen, onClose }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const { t } = useTranslation();
+
   const initialValues = {
     coupon: "",
     discount_value: "",
@@ -19,6 +20,7 @@ function AddNewCoupon({ isOpen, onClose }) {
     discount_type: "",
     is_active: false,
   };
+
   const handleSubmit = async (values) => {
     setIsLoading(true);
     setError(null);
@@ -29,14 +31,15 @@ function AddNewCoupon({ isOpen, onClose }) {
     formData.append("discount_type", values.discount_type);
     formData.append("discount_value", values.discount_value);
     formData.append("is_active", values.is_active ? 1 : 0);
+
     try {
       await addCoupon(formData);
-      onClose();
+      onClose(); // This will trigger the refresh in parent component
     } catch (error) {
       setError(
-        error.response?.data?.message || "Failed to add shipping provider(s)"
+        error.response?.data?.message || "Failed to add coupon"
       );
-      console.error("Error adding shipping provider:", error);
+      console.error("Error adding coupon:", error);
     } finally {
       setIsLoading(false);
     }
@@ -65,7 +68,6 @@ function AddNewCoupon({ isOpen, onClose }) {
               <Form className="ps-3 rtl:pe-3">
                 <div className="space-y-4 mb-4">
                   <InputField name="coupon" placeholder={t("coupon")} />
-                  {/* start and end date */}
                   <InputField
                     name={"start_date"}
                     type="date"
@@ -155,4 +157,5 @@ function AddNewCoupon({ isOpen, onClose }) {
     </div>
   );
 }
+
 export default AddNewCoupon;

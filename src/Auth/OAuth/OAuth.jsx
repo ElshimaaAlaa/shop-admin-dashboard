@@ -18,7 +18,7 @@ function OAuth() {
   return (
     <div className="flex justify-center gap-2 mt-2">
       <button
-        className="text-10 md:text-11 lg:text-11 w-200 flex items-center gap-1 rtl:text-10 bg-white px-2 py-1 rounded-lg text-gray-600 font-bold border-1 border-borderColor cursor-pointer"
+        className="text-10 md:text-11 lg:text-11 w-200 flex items-center gap-1 rtl:text-10 bg-white px-2 py-2 rounded-lg text-gray-600 font-bold border-1 border-borderColor cursor-pointer"
         onClick={() => handleOnClick(facebookProvider)}
       >
         <Facebook />

@@ -55,6 +55,7 @@ import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 import enTranslation from "./Translation/en.json";
 import arTranslation from "./Translation/ar.json";
+import Notifications from "./Profile/Notificatons";
 // Initialize i18n
 i18n
   .use(initReactI18next)
@@ -144,7 +145,7 @@ function App() {
           <Route path="categories" element={<AllCategory />} />
           <Route path="addCategory" element={<AddCategory />} />
           <Route path="editCategory/:id" element={<EditCategory />} />
-
+          <Route path="Notifications" element={<Notifications />} />
           {/* Products */}
           <Route path="products" element={<AllProducts />} />
           <Route path="addProduct" element={<AddProduct />} />

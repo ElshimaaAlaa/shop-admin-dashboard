@@ -4,17 +4,19 @@ import axios from "axios";
 import { ClipLoader } from "react-spinners";
 import "./style.scss";
 import { useTranslation } from "react-i18next";
+
 function DeleteCoupons({ id, onDelete }) {
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const live_shop_domain = localStorage.getItem("live_shop_domain");
   const role = localStorage.getItem("role");
   const { t } = useTranslation();
+
   const handleDeleteCategory = async () => {
     setIsLoading(true);
     if (!id) {
       console.error("ID is missing");
-      return; // Prevent the API call if ID is missing
+      return;
     }
     try {
       const response = await axios({
@@ -26,26 +28,23 @@ function DeleteCoupons({ id, onDelete }) {
         },
       });
       if (response.status === 200) {
-        onDelete(id);
-        setIsLoading(true);
-        console.log("coupon deleted successfully");
-        setShowModal(true);
-      } else {
-        console.error("Failed to delete coupon");
+        onDelete(id); // This will trigger the refresh in parent component
         setShowModal(false);
-        setIsLoading(false);
       }
     } catch (error) {
       console.error("Failed to delete coupon", error);
       setShowModal(false);
+    } finally {
       setIsLoading(false);
     }
   };
+
   if (showModal) {
     document.body.classList.add("no-scroll");
   } else {
     document.body.classList.remove("no-scroll");
   }
+
   return (
     <div>
       <button className="mt-" onClick={() => setShowModal(true)}>
@@ -86,4 +85,5 @@ function DeleteCoupons({ id, onDelete }) {
     </div>
   );
 }
+
 export default DeleteCoupons;

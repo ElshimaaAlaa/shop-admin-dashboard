@@ -2,12 +2,31 @@ import { Helmet } from "react-helmet";
 import { FaRegEye } from "react-icons/fa";
 import { IoDownloadOutline } from "react-icons/io5";
 import { useTranslation } from "react-i18next";
+
 function StoreInformation() {
   const { t } = useTranslation();
   const storeInformation = JSON.parse(
     localStorage.getItem("storeProfileData") || "{}"
   );
-  const banner = JSON.parse(localStorage.getItem("storeThemeData") || "{}");
+  const themeData = JSON.parse(localStorage.getItem("storeThemeData") || "{}");
+
+  const handleViewBanner = (bannerBase64) => {
+    if (bannerBase64) {
+      window.open(bannerBase64, "_blank");
+    }
+  };
+
+  const handleDownloadBanner = (bannerBase64, index) => {
+    if (bannerBase64) {
+      const link = document.createElement("a");
+      link.href = bannerBase64;
+      link.download = `store-banner-${index + 1}.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
+
   return (
     <div>
       <Helmet>
@@ -44,29 +63,33 @@ function StoreInformation() {
             <div>
               <p className="text-1xl font-bold mb-3 mt-7">{t("banners")}</p>
               <div className="flex flex-wrap gap-4">
-                {banner.banners &&
-                  Array.isArray(banner.banners) &&
-                  banner.banners.map((file, index) => (
-                    <div key={index}>
+                {themeData.bannersBase64 && themeData.bannersBase64.length > 0 ? (
+                  themeData.bannersBase64.map((banner, index) => (
+                    <div key={index} className="relative">
                       <img
-                        src={URL.createObjectURL(
-                          new File([file], file.name, { type: file.type })
-                        )}
-                        alt={`Banner`}
-                        className=" object-cover rounded"
+                        src={banner}
+                        alt={`Banner ${index + 1}`}
+                        className="w-64 h-32 object-cover rounded"
                       />
+                      <div className="absolute bottom-2 right-2 flex gap-2">
+                        <div
+                          className="bg-white p-1 rounded cursor-pointer"
+                          onClick={() => handleViewBanner(banner)}
+                        >
+                          <FaRegEye color="#E0A75E" size={16} />
+                        </div>
+                        <div
+                          className="bg-white p-1 rounded cursor-pointer"
+                          onClick={() => handleDownloadBanner(banner, index)}
+                        >
+                          <IoDownloadOutline color="#E0A75E" size={16} />
+                        </div>
+                      </div>
                     </div>
-                  ))}
-              </div>
-            </div>
-            <div className="flex items-center gap-10 mb-3">
-              <div className="flex items-center gap-2">
-                <FaRegEye color="#E0A75E" size={20} />
-                <p className="text-15">{t("view")}</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <IoDownloadOutline color="#E0A75E" size={20} />
-                <p className="text-15">{t("download")}</p>
+                  ))
+                ) : (
+                  <p className="text-red-500">{t("noBanners")}</p>
+                )}
               </div>
             </div>
           </div>
@@ -75,4 +98,5 @@ function StoreInformation() {
     </div>
   );
 }
+
 export default StoreInformation;

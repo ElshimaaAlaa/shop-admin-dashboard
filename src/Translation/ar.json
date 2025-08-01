@@ -464,5 +464,7 @@
   "customDomain": "نطاق مخصص",
   "allFreeFeatures": "كل ميزات المجاني",
   "allStandardFeatures": "كل ميزات القياسي",
-  "plan": "باقة"
+  "plan": "باقة",
+  "viewAll":"عرض الكل", 
+  "notifications":"الاشعارات"
 }

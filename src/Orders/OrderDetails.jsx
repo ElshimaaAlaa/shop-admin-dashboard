@@ -220,7 +220,7 @@ function OrderDetails() {
                     <td className="px-3 py-3 w-[214px] border-t border-r text-14 text-gray-500">
                       {item.quantity || 0}
                     </td>
-                    <td className="px-5 py-3 w-[214px] border-t border-r text-14 text-gray-500">
+                    <td className="px-5 py-3 w-[214px] border-t border-r border-l text-14 text-gray-500">
                       {item.product?.colors?.map((color) => (
                         <div
                           key={color.id}

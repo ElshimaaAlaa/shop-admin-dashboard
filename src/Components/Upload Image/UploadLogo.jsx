@@ -5,14 +5,19 @@ const LogoUpload = ({ name, setFieldValue, error, logoUrl, setLogoUrl }) => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const { t } = useTranslation();
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const uploadedFile = e.target.files[0];
     if (!uploadedFile) return;
 
     setFieldValue(name, uploadedFile);
-    if (logoUrl) URL.revokeObjectURL(logoUrl);
-    const url = URL.createObjectURL(uploadedFile);
-    setLogoUrl(url);
+    
+    // تحويل إلى base64
+    const reader = new FileReader();
+    reader.readAsDataURL(uploadedFile);
+    reader.onload = () => {
+      setLogoUrl(reader.result);
+    };
+    
     simulateUpload();
   };
 
@@ -28,10 +33,7 @@ const LogoUpload = ({ name, setFieldValue, error, logoUrl, setLogoUrl }) => {
   const handleRemove = () => {
     setFieldValue(name, null);
     setUploadProgress(0);
-    if (logoUrl) {
-      URL.revokeObjectURL(logoUrl);
-      setLogoUrl(null);
-    }
+    setLogoUrl(null);
   };
 
   return (
@@ -74,7 +76,7 @@ const LogoUpload = ({ name, setFieldValue, error, logoUrl, setLogoUrl }) => {
                   style={{ width: `${uploadProgress}%` }}
                 ></div>
               </div>
-              <p className="text-xs text-gray-500 mt-1">{uploadProgress}% done</p>
+              <p className="text-xs text-gray-500 mt-1">{uploadProgress}% {t("done")}</p>
             </div>
           </div>
           <button

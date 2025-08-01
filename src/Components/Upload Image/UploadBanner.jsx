@@ -54,16 +54,22 @@ const BannerUpload = ({
     }
   };
 
-  const handleFiles = (files) => {
+  const handleFiles = async (files) => {
     const fileList = Array.from(files);
     const startIndex = banners.length;
-    const newUrls = [];
-
-    fileList.forEach((file) => {
-      newUrls.push(URL.createObjectURL(file));
-    });
-
-    setBannerUrls(prev => [...prev, ...newUrls]);
+    
+    // تحويل جميع الملفات إلى base64
+    const newBase64Urls = await Promise.all(
+      fileList.map(file => {
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => resolve(reader.result);
+        });
+      })
+    );
+    
+    setBannerUrls(prev => [...prev, ...newBase64Urls]);
     setFieldValue("banners", [...banners, ...fileList]);
     
     fileList.forEach((_, i) => {
@@ -77,7 +83,6 @@ const BannerUpload = ({
     setFieldValue("banners", updatedBanners);
 
     const updatedUrls = [...bannerUrls];
-    URL.revokeObjectURL(updatedUrls[index]);
     updatedUrls.splice(index, 1);
     setBannerUrls(updatedUrls);
 
@@ -118,7 +123,7 @@ const BannerUpload = ({
             className="w-6 mr-3 rtl:mr-0 rtl:ml-3"
           />
           <p className="text-14 text-gray-600">
-            {isDragging ? "Drop files here" : t("dropFile")}
+            {isDragging ? t("dropFilesHere") : t("dropFile")}
           </p>
           <button
             type="button"
@@ -130,7 +135,7 @@ const BannerUpload = ({
       </div>
 
       {touched?.banners && errors?.banners && (
-        <p className="text-red-500 text-xs mt-1">{t("oneBanner")}</p>
+        <p className="text-red-500 text-xs mt-1">{errors.banners}</p>
       )}
 
       {banners.length > 0 && (
@@ -145,7 +150,7 @@ const BannerUpload = ({
                   <img
                     src={bannerUrls[index]}
                     alt="Banner preview"
-                    className="w-12 h-12 object-cover rounded "
+                    className="w-12 h-12 object-cover rounded"
                   />
                   <div className="flex-1">
                     <p className="text-sm font-medium text-gray-700 truncate">
@@ -178,4 +183,5 @@ const BannerUpload = ({
     </div>
   );
 };
+
 export default BannerUpload;

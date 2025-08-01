@@ -118,7 +118,7 @@ function ShippingProviders() {
           </div>
         ) : shippingData.length === 0 ? (
           <div className="text-gray-400 text-center mt-10">
-            {searchQuery ? t("noMatchResults") : t("noMatchResults")}
+            {searchQuery ? t("noMatchResults") : t("noData")}
           </div>
         ) : (
           <>

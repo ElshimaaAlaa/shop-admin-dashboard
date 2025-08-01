@@ -12,6 +12,16 @@ import { Helmet } from "react-helmet";
 import { useTranslation } from "react-i18next";
 import { IoIosArrowDown } from "react-icons/io";
 
+// دالة مساعدة لتحويل الملف إلى base64
+const convertToBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+};
+
 function ThemeStore() {
   const navigate = useNavigate();
   const [logoUrl, setLogoUrl] = useState(null);
@@ -37,37 +47,46 @@ function ThemeStore() {
 
   const validationSchema = Yup.object({
     theme_primary_color: Yup.string()
-      .required("Primary color is required")
-      .matches(/^#[0-9A-F]{6}$/i, "Invalid hex color format"),
+      .required(t("primaryColorRequired"))
+      .matches(/^#[0-9A-F]{6}$/i, t("invalidHexFormat")),
     theme_secondary_color: Yup.string()
-      .required("Secondary color is required")
-      .matches(/^#[0-9A-F]{6}$/i, "Invalid hex color format"),
+      .required(t("secondaryColorRequired"))
+      .matches(/^#[0-9A-F]{6}$/i, t("invalidHexFormat")),
     image: Yup.mixed()
-      .required("Theme image is required")
+      .required(t("logoRequired"))
       .test(
         "fileSize",
-        "File too large (max 5MB)",
+        t("fileTooLarge"),
         (value) => value && value.size <= 5 * 1024 * 1024
       )
       .test(
         "fileType",
-        "Unsupported format (JPEG/PNG only)",
+        t("unsupportedFormat"),
         (value) => value && ["image/jpeg", "image/png"].includes(value.type)
       ),
     banners: Yup.array()
-      .min(1, "At least one banner is required")
-      .test("fileSize", "File too large (max 5MB each)", (files) =>
+      .min(1, t("atLeastOneBanner"))
+      .test("fileSize", t("fileTooLargeEach"), (files) =>
         files.every((file) => file.size <= 5 * 1024 * 1024)
       )
-      .test("fileType", "Unsupported format (JPEG/PNG only)", (files) =>
+      .test("fileType", t("unsupportedFormat"), (files) =>
         files.every((file) => ["image/jpeg", "image/png"].includes(file.type))
       ),
   });
 
   useEffect(() => {
+    const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
+    i18n.changeLanguage(savedLanguage);
+    setIsRTL(savedLanguage === "ar");
+  }, [i18n]);
+
+  useEffect(() => {
     return () => {
-      if (logoUrl) URL.revokeObjectURL(logoUrl);
-      bannerUrls.forEach((url) => URL.revokeObjectURL(url));
+      // تنظيف الـ Blob URLs إذا وجدت
+      if (logoUrl && logoUrl.startsWith('blob:')) URL.revokeObjectURL(logoUrl);
+      bannerUrls.forEach((url) => {
+        if (url.startsWith('blob:')) URL.revokeObjectURL(url);
+      });
     };
   }, [logoUrl, bannerUrls]);
 
@@ -76,50 +95,47 @@ function ThemeStore() {
     setSubmitError(null);
 
     try {
-      const formData = new FormData();
-      formData.append("theme_primary_color", values.theme_primary_color);
-      formData.append("theme_secondary_color", values.theme_secondary_color);
-      formData.append("image", values.image);
+      // تحويل الصور إلى base64
+      const logoBase64 = await convertToBase64(values.image);
+      const bannersBase64 = await Promise.all(
+        values.banners.map(banner => convertToBase64(banner))
+      );
 
-      values.banners.forEach((banner, index) => {
-        formData.append(`banners[${index}]`, banner);
-      });
-
+      // تخزين البيانات في localStorage
       localStorage.setItem(
         "storeThemeData",
         JSON.stringify({
           theme_primary_color: values.theme_primary_color,
           theme_secondary_color: values.theme_secondary_color,
-          logoUrl: logoUrl,
-          bannerUrls: bannerUrls,
+          logoBase64,
+          bannersBase64,
         })
       );
+
+      // إرسال البيانات إلى الخادم
+      const formData = new FormData();
+      formData.append("theme_primary_color", values.theme_primary_color);
+      formData.append("theme_secondary_color", values.theme_secondary_color);
+      formData.append("image", values.image);
+      values.banners.forEach((banner, index) => {
+        formData.append(`banners[${index}]`, banner);
+      });
 
       const response = await setUpStore(formData);
       if (response?.status === true || response?.code === 200) {
         navigate("/Register/StoreProfile", { replace: true });
       } else {
-        throw new Error(response?.message || "Theme setup failed");
+        throw new Error(response?.message || t("themeSetupFailed"));
       }
     } catch (error) {
       console.error("Submission error:", error);
-      setSubmitError(error.message || "Failed to save theme configuration");
+      setSubmitError(error.message || t("saveThemeError"));
     } finally {
       setIsLoading(false);
       setSubmitting(false);
     }
   };
-  useEffect(() => {
-    const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
-    i18n.changeLanguage(savedLanguage);
-    setIsRTL(savedLanguage === "ar");
-  }, [i18n]);
-  // Update RTL state and localStorage when language changes
-  useEffect(() => {
-    const currentLanguage = i18n.language;
-    setIsRTL(currentLanguage === "ar");
-    localStorage.setItem("selectedLanguage", currentLanguage);
-  }, [i18n.language]);
+
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
     setShowLanguageDropdown(false);
@@ -253,4 +269,5 @@ function ThemeStore() {
     </div>
   );
 }
+
 export default ThemeStore;

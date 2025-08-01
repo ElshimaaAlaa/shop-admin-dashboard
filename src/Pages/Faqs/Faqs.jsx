@@ -127,7 +127,7 @@ function Faqs() {
             {t("successMessage")}
           </p>
           <button
-            className="bg-primary text-white rounded-md p-2 text-14 mt-4 w-24 font-bold rtl:text-[15px]"
+            className="bg-primary text-white rounded-md px-2 py-2 text-14 mt-4 w-24 font-bold rtl:text-[15px]"
             onClick={() => setShowModal(false)}
           >
             {t("done")}

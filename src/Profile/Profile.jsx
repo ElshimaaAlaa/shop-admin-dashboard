@@ -16,7 +16,6 @@ import { GetPersonalInfo } from "../ApiServices/GetPersonalInfo";
 export default function ProfileMenu() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
-  const [notifications, setNotifications] = useState(false);
   const userImage = localStorage.getItem("User image");
   const userName = localStorage.getItem("User Name");
   const dropdownRef = useRef(null);
@@ -88,7 +87,9 @@ export default function ProfileMenu() {
             </div>
             <div className="flex flex-col gap-1">
               <span className="font-bold text-17">{userName}</span>
-              <span className="text-14 text-gray-500 rtl:text-left">Shop Admin</span>
+              <span className="text-14 text-gray-500 rtl:text-left">
+                Shop Admin
+              </span>
             </div>
             <ChevronUp className="w-5 h-5 font-bold text-black ml-auto" />
           </div>
@@ -131,21 +132,22 @@ export default function ProfileMenu() {
 
           <div className="flex items-center gap-3 p-2">
             <Bell className="w-5 h-5" />
-            <span className="flex-grow text-gray-500 text-15">
-              {t("allNotification")}
+            <span className="flex-grow text-gray-600 text-15 rtl:text-[16px]">
+              {t("allowNotify")}
             </span>
-            <button
-              onClick={() => setNotifications(!notifications)}
-              className={`w-11 h-6 rounded-full p-1 transition-colors duration-200 ease-in-out ${
-                notifications ? "bg-primary" : "bg-gray-200"
+            <div
+              className={`w-11 h-6 rounded-full p-1 ${
+                personalInfo.allow_notifications ? "bg-primary" : "bg-gray-200"
               }`}
             >
               <div
-                className={`w-4 h-4 rounded-full bg-white transition-transform duration-200 ease-in-out ${
-                  notifications ? "translate-x-5" : "translate-x-0"
+                className={`w-4 h-4 rounded-full bg-white ${
+                  personalInfo.allow_notifications
+                    ? "translate-x-5 rtl:-translate-x-0"
+                    : "translate-x-0 rtl:-translate-x-5"
                 }`}
               />
-            </button>
+            </div>
           </div>
           <button className="w-full flex justify-between items-center gap-3 p-2 hover:bg-gray-50">
             <div className="flex items-center gap-2">

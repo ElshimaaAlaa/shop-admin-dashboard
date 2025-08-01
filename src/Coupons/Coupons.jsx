@@ -21,26 +21,28 @@ function Coupons() {
   const { t, i18n } = useTranslation();
   const [isRTL, setIsRTL] = useState(false);
   const [showModal, setShowModal] = useState(false);
+
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const data = await fetchCoupons();
+      setCoupons(data);
+    } catch (error) {
+      setError(true);
+      console.error("API call failed: ", error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const getCoupons = async () => {
-      setIsLoading(true);
-      try {
-        const data = await fetchCoupons();
-        setCoupons(data);
-      } catch (error) {
-        setError(true);
-        console.error("API call failed: ", error.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    getCoupons();
+    fetchData();
   }, []);
 
-  const handleDeleteCoupons = (categoryId) => {
+  const handleDeleteCoupons = (couponId) => {
     setCoupons((prevCoupons) => {
       const updatedCoupons = prevCoupons.filter(
-        (category) => category.id !== categoryId
+        (coupon) => coupon.id !== couponId
       );
       if (
         updatedCoupons.length <= (currentPage - 1) * itemsPerPage &&
@@ -50,6 +52,7 @@ function Coupons() {
       }
       return updatedCoupons;
     });
+    fetchData(); // Refresh data after deletion
   };
 
   const filteredCoupons = useMemo(() => {
@@ -65,6 +68,7 @@ function Coupons() {
   }, [filteredCoupons, indexOfFirstItem, indexOfLastItem]);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  
   const togglePublishedStatus = async (couponId) => {
     try {
       setCoupons((prev) =>
@@ -85,14 +89,17 @@ function Coupons() {
       );
     }
   };
+
   useEffect(() => {
     setIsRTL(i18n.language === "ar");
   }, [i18n.language]);
+
   if (showModal) {
     document.body.classList.add("no-scroll");
   } else {
     document.body.classList.remove("no-scroll");
   }
+
   return (
     <div className="bg-gray-100 p-4 h-[89vh] pt-5">
       <Helmet>
@@ -121,7 +128,7 @@ function Coupons() {
           isOpen={showModal}
           onClose={() => {
             setShowModal(false);
-            // fetchData();
+            fetchData(); // Refresh data after adding
           }}
         />
         {error ? (
@@ -274,4 +281,5 @@ function Coupons() {
     </div>
   );
 }
+
 export default Coupons;
