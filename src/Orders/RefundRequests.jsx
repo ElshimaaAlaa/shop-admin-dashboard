@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Helmet } from "react-helmet";
 import { Search } from "lucide-react";
 import AcceptRefundRequests from "./Accept Refund Requests";
@@ -9,11 +9,20 @@ import { ClipLoader } from "react-spinners";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { IoCalendarNumberOutline } from "react-icons/io5";
 import { useTranslation } from "react-i18next";
+import { BsSortDown } from "react-icons/bs";
+import CustomCalendar from "../Coupons/CustomCalendar"; 
+
 function RefundRequests() {
   const [refundOrders, setRefundOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [dateFilter, setDateFilter] = useState(null);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const datePickerRef = useRef(null);
+  const { t, i18n } = useTranslation();
+  const [isRTL, setIsRTL] = useState(false);
+
   const [pagination, setPagination] = useState({
     total: 0,
     count: 0,
@@ -23,8 +32,7 @@ function RefundRequests() {
     next_page_url: null,
     prev_page_url: null,
   });
-  const { t, i18n } = useTranslation();
-  const [isRTL, setIsRTL] = useState(false);
+
   useEffect(() => {
     const fetchRefundRequest = async () => {
       setIsLoading(true);
@@ -43,14 +51,43 @@ function RefundRequests() {
       }
     };
     fetchRefundRequest();
-    setIsRTL(i18n.language==="ar")
+    setIsRTL(i18n.language === "ar");
   }, [i18n.language]);
 
-  const filteredOrders = refundOrders.filter(
-    (order) =>
+  // Close date picker when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (datePickerRef.current && !datePickerRef.current.contains(event.target)) {
+        setShowDatePicker(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const filteredOrders = refundOrders.filter((order) => {
+    const matchesSearch =
       order.order_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.refund_reason.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+      order.refund_reason.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    const matchesDate = dateFilter
+      ? new Date(order.request_refund_date).toDateString() ===
+        dateFilter.toDateString()
+      : true;
+    
+    return matchesSearch && matchesDate;
+  });
+
+  const handleDateChange = (date) => {
+    setDateFilter(date);
+    setShowDatePicker(false);
+  };
+
+  const clearDateFilter = () => {
+    setDateFilter(null);
+  };
 
   const handlePageClick = ({ selected }) => {
     setPagination((prev) => ({
@@ -113,12 +150,48 @@ function RefundRequests() {
                     </p>
                   </th>
                   <th className="px-3 py-3 text-left border-b border-l border-r rtl:text-right">
-                    {t("date")}
+                    <div className="flex items-center justify-between gap-2">
+                      <p>
+                        {t("date")}
+                      </p>
+                      <div className="flex items-center gap-2">
+                        {dateFilter && (
+                          <button
+                            onClick={clearDateFilter}
+                            className="text-primary text-13 flex items-center"
+                            aria-label="Clear date filter"
+                          >
+                           {t("clear")}
+                          </button>
+                        )}
+                        <div ref={datePickerRef}>
+                          <button
+                            className={`rounded-md p-2 ${
+                              dateFilter
+                                ? "bg-customOrange-lightOrange text-primary"
+                                : "bg-customOrange-lightOrange text-primary"
+                            }`}
+                            onClick={() => setShowDatePicker(!showDatePicker)}
+                            aria-label="Filter by date"
+                          >
+                            <BsSortDown />
+                          </button>
+                          {showDatePicker && (
+                            <div className="absolute ltr:right-40 rtl:left-[520px] mt-0.5 z-10">
+                              <CustomCalendar
+                                selectedDate={dateFilter}
+                                onChange={handleDateChange}
+                              />
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
                   </th>
                   <th className="px-3 py-3 text-left border-b border-r rtl:text-right">
                     {t("price")}
                   </th>
-                  <th className="px-3 py-3 text-left border-b border-r rtl:text-right" >
+                  <th className="px-3 py-3 text-left border-b border-r rtl:text-right">
                     {t("reason")}
                   </th>
                   <th className="px-3 py-3 text-center border-b rtl:border-r">
@@ -129,7 +202,7 @@ function RefundRequests() {
               <tbody>
                 {filteredOrders.map((order) => (
                   <tr key={order.id} className="hover:bg-gray-50">
-                    <td className="px-3 py-3 border-r">
+                    <td className="px-3 py-3 border">
                       <p className="flex items-center gap-3 text-14 text-gray-600">
                         <input
                           type="checkbox"
@@ -139,9 +212,11 @@ function RefundRequests() {
                         {order.order_number}
                       </p>
                     </td>
-                    <td className="px-3 py-3 mt-2 text-13 text-gray-600 flex items-center gap-2 rtl:border-r">
-                      <IoCalendarNumberOutline color="#69ABB5" size={17} />
-                      {order.request_refund_date}
+                    <td className="px-3 py-3 mt-2 text-13  text-gray-600 border">
+                      <p className="flex items-center gap-2">
+                        <IoCalendarNumberOutline color="#69ABB5" size={17} />
+                        {order.request_refund_date}
+                      </p>
                     </td>
                     <td className="px-3 py-3 border-t border-l text-gray-600 text-14 rtl:border-r">
                       {order.total} $
@@ -208,4 +283,5 @@ function RefundRequests() {
     </div>
   );
 }
+
 export default RefundRequests;

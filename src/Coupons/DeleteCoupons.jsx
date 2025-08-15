@@ -20,15 +20,15 @@ function DeleteCoupons({ id, onDelete }) {
     }
     try {
       const response = await axios({
-        method: "GET",
         url: `http://${live_shop_domain}/api/${role}/coupons/delete/${id}`,
+        method: "GET",
         headers: {
           "Accept-Language": "en",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
       if (response.status === 200) {
-        onDelete(id); // This will trigger the refresh in parent component
+        onDelete(id); 
         setShowModal(false);
       }
     } catch (error) {

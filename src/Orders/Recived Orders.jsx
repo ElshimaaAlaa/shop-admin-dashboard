@@ -6,6 +6,7 @@ import { OrdersSearch } from "./OrdersSearch";
 import { OrdersTable } from "./OrdersTable";
 import { OrdersPagination } from "./OrdersPagination";
 import { useTranslation } from "react-i18next";
+
 function ReceivedOrders() {
   const [orders, setOrders] = useState([]);
   const [statistics, setStatistics] = useState({});

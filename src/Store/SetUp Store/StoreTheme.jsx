@@ -11,8 +11,8 @@ import { FaArrowRightLong } from "react-icons/fa6";
 import { Helmet } from "react-helmet";
 import { useTranslation } from "react-i18next";
 import { IoIosArrowDown } from "react-icons/io";
+import { HexColorPicker } from "react-colorful";
 
-// دالة مساعدة لتحويل الملف إلى base64
 const convertToBase64 = (file) => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -31,6 +31,8 @@ function ThemeStore() {
   const { t, i18n } = useTranslation();
   const [isRTL, setIsRTL] = useState(false);
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
+  const [showPrimaryPicker, setShowPrimaryPicker] = useState(false);
+  const [showSecondaryPicker, setShowSecondaryPicker] = useState(false);
 
   const steps = [
     { number: 1, title: t("storeTheme") },
@@ -82,10 +84,9 @@ function ThemeStore() {
 
   useEffect(() => {
     return () => {
-      // تنظيف الـ Blob URLs إذا وجدت
-      if (logoUrl && logoUrl.startsWith('blob:')) URL.revokeObjectURL(logoUrl);
+      if (logoUrl && logoUrl.startsWith("blob:")) URL.revokeObjectURL(logoUrl);
       bannerUrls.forEach((url) => {
-        if (url.startsWith('blob:')) URL.revokeObjectURL(url);
+        if (url.startsWith("blob:")) URL.revokeObjectURL(url);
       });
     };
   }, [logoUrl, bannerUrls]);
@@ -95,13 +96,11 @@ function ThemeStore() {
     setSubmitError(null);
 
     try {
-      // تحويل الصور إلى base64
       const logoBase64 = await convertToBase64(values.image);
       const bannersBase64 = await Promise.all(
-        values.banners.map(banner => convertToBase64(banner))
+        values.banners.map((banner) => convertToBase64(banner))
       );
 
-      // تخزين البيانات في localStorage
       localStorage.setItem(
         "storeThemeData",
         JSON.stringify({
@@ -112,7 +111,6 @@ function ThemeStore() {
         })
       );
 
-      // إرسال البيانات إلى الخادم
       const formData = new FormData();
       formData.append("theme_primary_color", values.theme_primary_color);
       formData.append("theme_secondary_color", values.theme_secondary_color);
@@ -141,6 +139,32 @@ function ThemeStore() {
     setShowLanguageDropdown(false);
     localStorage.setItem("selectedLanguage", lng);
   };
+
+  const handleColorChange = (color, fieldName, setFieldValue) => {
+    setFieldValue(fieldName, color);
+    if (fieldName === "theme_primary_color") {
+      setShowPrimaryPicker(false);
+    } else {
+      setShowSecondaryPicker(false);
+    }
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        (showPrimaryPicker || showSecondaryPicker) &&
+        !event.target.closest(".color-picker-container")
+      ) {
+        setShowPrimaryPicker(false);
+        setShowSecondaryPicker(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showPrimaryPicker, showSecondaryPicker]);
 
   return (
     <div className="p-3 bg-gradient-to-r from-customBlue-mediumBlue via-customOrange-mediumOrange to-customOrange-mediumOrange min-h-screen flex items-center justify-center">
@@ -225,25 +249,60 @@ function ThemeStore() {
                 {t("enterColor")}
               </h3>
               <div className="flex gap-2 mb-6 px-6">
-                <Field
-                  name="theme_primary_color"
-                  placeholder={t("primColor")}
-                  className={`w-full bg-gray-50 p-3 border rounded-md outline-none transition-all duration-200 placeholder:text-14 placeholder:text-gray-500 focus:border-primary ${
-                    touched.theme_primary_color && errors.theme_primary_color
-                      ? "border-red-500"
-                      : "border-gray-200"
-                  }`}
-                />
-                <Field
-                  name="theme_secondary_color"
-                  placeholder={t("secColor")}
-                  className={`w-full bg-gray-50 p-3 border rounded-md outline-none transition-all duration-200 placeholder:text-14 placeholder:text-gray-500 focus:border-primary ${
-                    touched.theme_secondary_color &&
-                    errors.theme_secondary_color
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  }`}
-                />
+                <div className="w-full relative color-picker-container">
+                  <Field
+                    name="theme_primary_color"
+                    placeholder={t("primColor")}
+                    className={`w-full bg-gray-50 p-3 border rounded-md outline-none transition-all duration-200 placeholder:text-14 placeholder:text-gray-500 focus:border-primary ${
+                      touched.theme_primary_color && errors.theme_primary_color
+                        ? "border-red-500"
+                        : "border-gray-200"
+                    }`}
+                    onClick={() => {
+                      setShowPrimaryPicker(!showPrimaryPicker);
+                      setShowSecondaryPicker(false);
+                    }}
+                    readOnly
+                  />
+                  {showPrimaryPicker && (
+                    <div className="absolute -top-44 z-10 mt-2 bg-white p-3 rounded-md shadow-lg">
+                      <HexColorPicker
+                        color={values.theme_primary_color}
+                        onChange={(color) =>
+                          handleColorChange(color, "theme_primary_color", setFieldValue)
+                        }
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <div className="w-full relative color-picker-container">
+                  <Field
+                    name="theme_secondary_color"
+                    placeholder={t("secColor")}
+                    className={`w-full bg-gray-50 p-3 border rounded-md outline-none transition-all duration-200 placeholder:text-14 placeholder:text-gray-500 focus:border-primary ${
+                      touched.theme_secondary_color &&
+                      errors.theme_secondary_color
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    }`}
+                    onClick={() => {
+                      setShowSecondaryPicker(!showSecondaryPicker);
+                      setShowPrimaryPicker(false);
+                    }}
+                    readOnly
+                  />
+                  {showSecondaryPicker && (
+                    <div className="absolute -top-44 z-10 mt-2 bg-white p-3 rounded-md shadow-lg">
+                      <HexColorPicker
+                        color={values.theme_secondary_color}
+                        onChange={(color) =>
+                          handleColorChange(color, "theme_secondary_color", setFieldValue)
+                        }
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="flex justify-end mt-5 px-6 rtl:justify-start">

@@ -10,6 +10,7 @@ import { FaTimesCircle } from "react-icons/fa";
 import { FaCircleCheck } from "react-icons/fa6";
 import { FaUndo } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
+
 function InvoiceDetails() {
   const live_shop_domain = localStorage.getItem("live_shop_domain");
   const role = localStorage.getItem("role");
@@ -20,6 +21,7 @@ function InvoiceDetails() {
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const invoiceRef = useRef();
   const { t } = useTranslation();
+
   useEffect(() => {
     const getInvoicesDetails = async () => {
       setIsLoading(true);
@@ -45,7 +47,7 @@ function InvoiceDetails() {
       }
     };
     getInvoicesDetails();
-  }, [id]);
+  }, [id, live_shop_domain, role]);
 
   const downloadPdf = () => {
     setIsGeneratingPdf(true);
@@ -75,6 +77,39 @@ function InvoiceDetails() {
         setIsGeneratingPdf(false);
         input.classList.remove("printing-pdf");
       });
+  };
+
+  // دالة لتحويل حالة الدفع إلى نص مترجم
+  const getPaymentStatusText = (status) => {
+    switch (status) {
+      case "paid":
+        return t("paid");
+      case "unpaid":
+        return t("unpaid");
+      case "refund":
+        return t("refund");
+      default:
+        return status;
+    }
+  };
+
+  // دالة لتحويل التاريخ إلى تنسيق يوم/شهر/سنة
+  const formatDate = (dateString) => {
+    if (!dateString) return t("notProvided");
+    
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return dateString;
+
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const year = date.getFullYear();
+
+      return `${day}/${month}/${year}`;
+    } catch (error) {
+      console.error("Error formatting date:", error);
+      return dateString;
+    }
   };
 
   return (
@@ -129,11 +164,11 @@ function InvoiceDetails() {
             <div className="flex items-center justify-between mt-8 gap-14 ms-6">
               <div>
                 <p className="text-gray-500 text-15">{t("issueOn")}</p>
-                <p className="text-14 mt-1">{data.date}</p>
+                <p className="text-14 mt-1">{formatDate(data.date)}</p>
               </div>
               <div>
                 <p className="text-gray-500 text-15">{t("paymentDue")}</p>
-                <p className="mt-1 text-14">{data.payment_date}</p>
+                <p className="mt-1 text-14">{formatDate(data.payment_date)}</p>
               </div>
             </div>
           </div>
@@ -141,7 +176,7 @@ function InvoiceDetails() {
             <p className="text-gray-500 text-15 text-right">{t("invoiceNo")}</p>
             <p className="font-bold text-xl">{data.invoice_number}</p>
             <p
-              className={`px-2 py-2 flex items-center justify-center gap-1 w-20 rounded-md text-[14px] ${
+              className={`px-2 py-2 flex items-center justify-center gap-1 h-12 rounded-md text-[14px] ${
                 data.payment_status === "unpaid"
                   ? "bg-gray-400 text-white"
                   : data.payment_status === "paid"
@@ -154,10 +189,11 @@ function InvoiceDetails() {
               {data.payment_status === "paid" && <FaCircleCheck size={16} />}
               {data.payment_status === "unpaid" && <FaTimesCircle size={20} />}
               {data.payment_status === "refund" && <FaUndo size={20} />}
-              {data.payment_status}
+              {getPaymentStatusText(data.payment_status)}
             </p>
           </div>
         </div>
+
         {/* Issue From and For */}
         <div className="mt-8 flex items-center gap-32 mx-1">
           <div className="flex flex-col gap-5">
@@ -323,4 +359,5 @@ function InvoiceDetails() {
     </div>
   );
 }
+
 export default InvoiceDetails;

@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { formatDate } from "../../Components/DropDowns/dateFormatter";
 import PromotionBasicInfo from "../../Components/DropDowns/PromotionBasicInfo";
 import PromotionDetails from "../../Components/DropDowns/PromotionDetails";
-import Footer from "../../Components/Footer/Footer";
+import Footer from "../../Layout/Footer/Footer";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 import { useTranslation } from "react-i18next";
 import { addDisc } from "../../ApiServices/AddNewDisc";

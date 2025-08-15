@@ -465,6 +465,19 @@
   "allFreeFeatures": "كل ميزات المجاني",
   "allStandardFeatures": "كل ميزات القياسي",
   "plan": "باقة",
-  "viewAll":"عرض الكل", 
-  "notifications":"الاشعارات"
+  "viewAll": "عرض الكل",
+  "notifications": "الاشعارات",
+  "noBanners": "لا يوجد لافتات لعرضها",
+  "allowNotify": "السماح بالاشعارات",
+  "allNotifications": "جميع الاشعارات",
+  "noNotifications": "لا يوجد اشعارات في الوقت الحالي",
+  "clear": "مسح",
+  "paid": "مدفوع",
+  "unpaid": "غير مدفوع",
+  "pending":"قيد الأنتظار",
+  "Preparing":"جاري التجهيز",
+  "Shipped":"تم الشحن",
+  "Cancelled":"تم الالغاء",
+  "inTransit" :"في الطريق",
+  "Delivered":"تم الاستلام"
 }

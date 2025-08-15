@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 import { updateCategory } from "../../ApiServices/updateCategory";
-import Footer from "../../Components/Footer/Footer";
+import Footer from "../../Layout/Footer/Footer";
 import { ImageUpload } from "../../Components/Upload Image/UploadUpdatedImage";
 import InputField from "../../Components/InputFields/InputField";
 import "./style.scss";

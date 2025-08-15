@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import Navbar from "../../Components/NavBar/Navbar";
-import Sidebar from "../../Components/SideBar/Sidebar";
+import Navbar from "../../Layout/NavBar/Navbar";
+import Sidebar from "../../Layout/SideBar/Sidebar";
 import { Outlet } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { useTranslation } from "react-i18next";
@@ -19,7 +19,7 @@ function Home() {
     const currentLanguage = i18n.language;
     setIsRTL(currentLanguage === "ar");
     localStorage.setItem("selectedLanguage", currentLanguage);
-  }, [i18n.language]); 
+  }, [i18n.language]);
   useEffect(() => {
     const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
     if (savedLanguage !== i18n.language) {

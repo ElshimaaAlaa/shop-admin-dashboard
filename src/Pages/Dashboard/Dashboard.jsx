@@ -8,33 +8,30 @@ import CompletionRate from "./CompletionRate";
 import { HiCurrencyDollar } from "react-icons/hi2";
 import { LiaShippingFastSolid } from "react-icons/lia";
 import { HiShoppingBag } from "react-icons/hi2";
-import { IoArrowForwardSharp } from "react-icons/io5";
+// import { IoArrowBackSharp, IoArrowForwardSharp } from "react-icons/io5";
 import StatisticsCard from "./StatisticsCard";
 import { SiGoogleanalytics } from "react-icons/si";
 import { useTranslation } from "react-i18next";
 
 export default function Dashboard() {
   const [dashboardData, setDashboardData] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
   useEffect(() => {
     const fetchHomeData = async () => {
       try {
         const response = await getHome();
         setDashboardData(response);
       } catch (err) {
-        setError(err.message);
+        console.error(err);
         console.error("Failed to fetch dashboard data:", err);
-      } finally {
-        setIsLoading(false);
       }
     };
     fetchHomeData();
   }, []);
 
   return (
-    <div className="min-h-screen pt-5 mx-5 pb-5">
+    <div className="min-h-screen pt-5 mx-5">
       {/* Statistics Section */}
       <section className="bg-white p-5 rounded-md mb-3">
         <h3 className="font-bold text-17 mb-3">{t("statstic")}</h3>
@@ -93,14 +90,24 @@ export default function Dashboard() {
         />
       </div>
       {/* Low Stock Products Section */}
-      <section className="mt-5">
+      {/* <section>
         <div className="flex items-center justify-between">
           <h3 className="font-bold text-16">{t("outStock")}</h3>
           <button className="text-white bg-primary p-3 rounded-md font-bold flex justify-center items-center gap-2 text-15">
-            {t("viewDetails")} <IoArrowForwardSharp size={19} />
+            {isRTL ? (
+              <>
+                {t("viewAll")}
+                <IoArrowBackSharp size={19} />
+              </>
+            ) : (
+              <>
+                {t("viewAll")}
+                <IoArrowForwardSharp size={19} />
+              </>
+            )}
           </button>
         </div>
-      </section>
+      </section> */}
     </div>
   );
 }

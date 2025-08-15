@@ -6,11 +6,15 @@ import { useTranslation } from "react-i18next";
 import { LuCirclePlus } from "react-icons/lu";
 import { addCoupon } from "../ApiServices/AddNewCoupon";
 import InputField from "../Components/InputFields/InputField";
+import CustomCalendar from "./CustomCalendar";
+import { BsCalendar } from "react-icons/bs";
 
 function AddNewCoupon({ isOpen, onClose }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const { t } = useTranslation();
+  const [showStartDateCalendar, setShowStartDateCalendar] = useState(false);
+  const [showEndDateCalendar, setShowEndDateCalendar] = useState(false);
 
   const initialValues = {
     coupon: "",
@@ -34,7 +38,7 @@ function AddNewCoupon({ isOpen, onClose }) {
 
     try {
       await addCoupon(formData);
-      onClose(); // This will trigger the refresh in parent component
+      onClose();
     } catch (error) {
       setError(
         error.response?.data?.message || "Failed to add coupon"
@@ -68,16 +72,73 @@ function AddNewCoupon({ isOpen, onClose }) {
               <Form className="ps-3 rtl:pe-3">
                 <div className="space-y-4 mb-4">
                   <InputField name="coupon" placeholder={t("coupon")} />
-                  <InputField
-                    name={"start_date"}
-                    type="date"
-                    placeholder="Discount Expiry Date"
-                  />
-                  <InputField
-                    name={"end_date"}
-                    type="date"
-                    placeholder="Discount Expiry Date"
-                  />
+                  
+                  {/* Start Date with Calendar Picker */}
+                  <div className="relative">
+                    <div className="flex items-center gap-2 border border-gray-300 rounded-md p-2">
+                      <input
+                        type="text"
+                        name="start_date"
+                        value={values.start_date}
+                        onChange={(e) => setFieldValue("start_date", e.target.value)}
+                        placeholder={t("startDate")}
+                        className="flex-1 outline-none bg-transparent"
+                        readOnly
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowStartDateCalendar(!showStartDateCalendar)}
+                        className="text-primary"
+                      >
+                        <BsCalendar size={18} />
+                      </button>
+                    </div>
+                    {showStartDateCalendar && (
+                      <div className="absolute z-10 mt-1 bg-white shadow-lg rounded-md">
+                        <CustomCalendar
+                          selectedDate={values.start_date ? new Date(values.start_date) : null}
+                          onChange={(date) => {
+                            setFieldValue("start_date", date.toISOString().split('T')[0]);
+                            setShowStartDateCalendar(false);
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* End Date with Calendar Picker */}
+                  <div className="relative">
+                    <div className="flex items-center gap-2 border border-gray-300 rounded-md p-2">
+                      <input
+                        type="text"
+                        name="end_date"
+                        value={values.end_date}
+                        onChange={(e) => setFieldValue("end_date", e.target.value)}
+                        placeholder={t("endDate")}
+                        className="flex-1 outline-none bg-transparent"
+                        readOnly
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowEndDateCalendar(!showEndDateCalendar)}
+                        className="text-primary"
+                      >
+                        <BsCalendar size={18} />
+                      </button>
+                    </div>
+                    {showEndDateCalendar && (
+                      <div className="absolute z-10 mt-1 bg-white shadow-lg rounded-md">
+                        <CustomCalendar
+                          selectedDate={values.end_date ? new Date(values.end_date) : null}
+                          onChange={(date) => {
+                            setFieldValue("end_date", date.toISOString().split('T')[0]);
+                            setShowEndDateCalendar(false);
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+
                   <InputField name="discount_value" placeholder={t("amount")} />
                   <InputField
                     name="discount_type"

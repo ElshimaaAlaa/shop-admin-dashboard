@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { notificationService } from "../../ApiServices/Notificaitions";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { useTranslation } from "react-i18next";
@@ -10,17 +10,19 @@ function UserNotifications() {
   const [unreadCount, setUnreadCount] = useState(0);
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const currentLanguage = i18n.language; // This will be either 'en' or 'ar'
+  const currentLanguage = i18n.language;
+  const dropdownRef = useRef(null);
+  const triggerRef = useRef(null);
 
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        // Pass the current language to the service
-        const response = await notificationService({ language: currentLanguage });
+        const response = await notificationService({
+          language: currentLanguage,
+        });
         if (response) {
           const formattedNotifications = response.map((notification) => ({
             ...notification,
-            // time: formatNotificationTime(notification.created_at),
           }));
           setNotifications(formattedNotifications);
           setUnreadCount(
@@ -35,7 +37,7 @@ function UserNotifications() {
     fetchNotifications();
     const interval = setInterval(fetchNotifications, 60000);
     return () => clearInterval(interval);
-  }, [currentLanguage]); // Re-run effect when language changes
+  }, [currentLanguage]);
 
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
@@ -49,9 +51,29 @@ function UserNotifications() {
     }
   };
 
+  // Handle click outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target) &&
+        triggerRef.current &&
+        !triggerRef.current.contains(event.target)
+      ) {
+        setShowNotifications(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div className={`relative ${currentLanguage === "ar" ? "rtl" : "ltr"}`}>
       <button
+        ref={triggerRef} 
         onClick={toggleNotifications}
         className="p-2 bg-gray-50 rounded-md border relative"
         aria-label={t("notifications")}
@@ -66,7 +88,10 @@ function UserNotifications() {
 
       {showNotifications && (
         <div
-          className={`absolute p-5 ${currentLanguage === "ar" ? "left-0" : "right-0"} mt-2 w-80 bg-white rounded-md shadow-lg z-50 border border-gray-200`}
+          ref={dropdownRef} 
+          className={`absolute p-5 ${
+            currentLanguage === "ar" ? "left-0" : "right-0"
+          } mt-2 w-80 bg-white rounded-md shadow-lg z-50 border border-gray-200`}
         >
           <div className="border-gray-200 flex items-center justify-between">
             <h3 className="font-bold">{t("notifications")}</h3>
@@ -102,7 +127,9 @@ function UserNotifications() {
                   <p className="text-sm text-gray-600 mt-2">
                     {notification.body}
                   </p>
-                  <p className="text-gray-400 text-12 text-right rtl:text-left mt-3 ">{notification.time}</p>
+                  <p className="text-gray-400 text-12 text-right rtl:text-left mt-3 ">
+                    {notification.time}
+                  </p>
                 </div>
               ))
             ) : (
@@ -116,5 +143,4 @@ function UserNotifications() {
     </div>
   );
 }
-
 export default UserNotifications;

@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import ReactPaginate from "react-paginate";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +9,8 @@ import { Helmet } from "react-helmet";
 import SearchBar from "../../Components/Search Bar/SearchBar";
 import { Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { BsSortDown } from "react-icons/bs";
+
 function AllCategory() {
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -16,9 +18,26 @@ function AllCategory() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
   const [searchQuery, setSearchQuery] = useState("");
+  const [typeFilter, setTypeFilter] = useState(null);
+  const [showTypeDropdown, setShowTypeDropdown] = useState(false);
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const [isRTL, setIsRTL] = useState(false);
+  const dropdownRef = useRef(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowTypeDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   useEffect(() => {
     const getCategories = async () => {
       setIsLoading(true);
@@ -50,11 +69,24 @@ function AllCategory() {
     });
   };
 
+  const handleTypeFilterSelect = (type) => {
+    setTypeFilter(type);
+    setShowTypeDropdown(false);
+    setCurrentPage(1);
+  };
+
+  const clearTypeFilter = () => {
+    setTypeFilter(null);
+    setCurrentPage(1);
+  };
+
   const filteredCategories = useMemo(() => {
-    return categories.filter((category) =>
-      category.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }, [categories, searchQuery]);
+    return categories.filter((category) => {
+      const matchesSearch = category.name.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesType = typeFilter ? category.type_name === typeFilter : true;
+      return matchesSearch && matchesType;
+    });
+  }, [categories, searchQuery, typeFilter]);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -88,9 +120,17 @@ function AllCategory() {
     }
     return { bgColor, textColor, dotColor };
   };
+
   useEffect(() => {
     setIsRTL(i18n.language === "ar");
   }, [i18n.language]);
+
+  // Get unique category types for the dropdown
+  const uniqueTypes = useMemo(() => {
+    const types = new Set(categories.map(category => category.type_name));
+    return Array.from(types).sort();
+  }, [categories]);
+
   return (
     <div className="bg-gray-100 p-4 h-[89vh] pt-5">
       <Helmet>
@@ -125,8 +165,8 @@ function AllCategory() {
           <div className="text-gray-400 text-center mt-10">{t("noData")}</div>
         ) : (
           <>
-            <div className="border border-gray-200 rounded-lg overflow-hidden">
-              <table className="bg-white min-w-full table">
+            <div className="border border-gray-200 rounded-lg ">
+              <table className="bg-white min-w-full table relative">
                 <thead>
                   <tr>
                     <th className="px-3 py-3 border-t border-b text-left rtl:text-right w-12">
@@ -142,9 +182,49 @@ function AllCategory() {
                       </p>
                     </th>
                     <th className="px-6 py-3 text-left border w-500px">
-                      <p className="flex justify-between items-center">
-                        {t("type")}
-                      </p>
+                      <div className="flex items-center justify-between">
+                        <p>
+                          {t("type")}
+                          {typeFilter && `: ${typeFilter}`}
+                        </p>
+                        <div className="flex items-center gap-2">
+                          {typeFilter && (
+                            <button
+                              onClick={clearTypeFilter}
+                              className="text-primary text-13 flex items-center"
+                              aria-label="Clear filter"
+                            >
+                              {t("clear")}
+                            </button>
+                          )}
+                          <div ref={dropdownRef} className="">
+                            <button
+                              className={`rounded-md p-2 ${
+                                typeFilter
+                                  ? "bg-customOrange-lightOrange text-primary rounded-md"
+                                  : "bg-customOrange-lightOrange text-primary"
+                              }`}
+                              onClick={() => setShowTypeDropdown(!showTypeDropdown)}
+                              aria-label="Filter by type"
+                            >
+                              <BsSortDown />
+                            </button>
+                            {showTypeDropdown && (
+                              <div className="absolute ltr:right-48 rtl:left-36 mt-0.5 w-48 bg-white rounded-md shadow-lg z-10 border border-gray-200">
+                                {uniqueTypes.map((type) => (
+                                  <div
+                                    key={type}
+                                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer font-light text-14 rtl:text-right"
+                                    onClick={() => handleTypeFilterSelect(type)}
+                                  >
+                                    {type}
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
                     </th>
                     <th className="px-6 py-3 text-left w-5 border-t border-b">
                       {t("actions")}
@@ -219,7 +299,6 @@ function AllCategory() {
                 </tbody>
               </table>
             </div>
-            {/* Pagination */}
             <ReactPaginate
               pageCount={Math.ceil(filteredCategories.length / itemsPerPage)}
               onPageChange={({ selected }) => paginate(selected + 1)}
@@ -249,4 +328,5 @@ function AllCategory() {
     </div>
   );
 }
+
 export default AllCategory;

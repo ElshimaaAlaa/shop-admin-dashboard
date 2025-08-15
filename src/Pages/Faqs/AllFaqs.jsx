@@ -60,7 +60,7 @@ function AllFaqs({ refreshTrigger }) {
     <section className="mt-5 w-full">
       <div
         ref={containerRef}
-        className="overflow-y-auto max-h-[600px] pr-2 custom-scrollbar"
+        className=""
       >
         {faqsData.slice(0, displayCount).map((item, index) => (
           <div

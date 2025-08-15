@@ -35,15 +35,15 @@ export default function CompletionRate({ products = [], title, subtitle }) {
           <h3 className="font-bold text-16">{title}</h3>
           <div className="text-14 mt-2 text-gray-500">{subtitle}</div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center">
           <span className="text-14 font-bold">{t("stortBy")}</span>
           <select
-            className="border rounded-md px-2 py-1 text-sm"
+            className="text-gray-400 border-0 font-bold px-2 outline-none py-1 text-sm"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
           >
-            <option value="quantity">{t("quantity")}</option>
-            <option value="name">{t("name")}</option>
+            <option className="outline-none" value="quantity">{t("quantity")}</option>
+            <option className="outline-none" value="name">{t("name")}</option>
           </select>
         </div>
       </div>

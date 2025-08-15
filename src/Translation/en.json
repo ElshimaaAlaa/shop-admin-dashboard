@@ -456,5 +456,18 @@
   "plan": "Plan",
   "successAddpromo": "Successfully Add New Promotion",
   "allNotifications": "All Notifications",
-  "notifications":"Notificaitions"
+  "notifications": "Notificaitions",
+  "viewAll": "View All",
+  "noBanners": "No Banners",
+  "allowNotify": "Allow Notificaitions",
+  "noNotifications": "No Notificaitions Founded",
+  "clear": "Clear",
+  "paid": "Paid",
+  "unpaid": "Unpaid",
+  "pending": "Pending",
+  "Preparing": "Perparing",
+  "Shipped": "Shipped",
+  "Cancelled": "Cancelled",
+  "inTransit": "In Transit",
+  "Delivered": "Delivered"
 }

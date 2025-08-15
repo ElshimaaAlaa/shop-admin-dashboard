@@ -3,9 +3,13 @@ import EmailAddress from "../../Svgs/EmailAddress";
 import PhoneNum from "../../Svgs/PhoneNum";
 import { settings } from "../../ApiServices/Settings";
 import { useTranslation } from "react-i18next";
+import { FaArrowRightLong } from "react-icons/fa6";
+import { FaArrowLeftLong } from "react-icons/fa6";
 function InfoCard() {
   const [settingData, setSettingData] = useState([]);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language;
+
   const ContactCard = ({ icon, title, value, link }) => (
     <div className="flex items-center justify-between bg-gray-50 p-4 rounded-md mb-6">
       <div className="flex gap-4">
@@ -17,11 +21,11 @@ function InfoCard() {
           </a>
         </div>
       </div>
-      <img
-        src="/assets/svgs/arrow_forward.svg"
-        alt="arrow"
-        className="w-6 h-4"
-      />
+      {isRTL ? (
+        <FaArrowLeftLong size={23} color="#E0A75E" />
+      ) : (
+        <FaArrowRightLong size={23} color="#E0A75E" />
+      )}
     </div>
   );
   useEffect(() => {

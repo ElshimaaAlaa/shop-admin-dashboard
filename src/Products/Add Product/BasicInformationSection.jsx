@@ -93,7 +93,6 @@ const CategoryField = ({
   categories = [],
   handleCategoryChange,
 }) => {
-  
   const options = [
     { value: "", label: "category" },
     ...categories.map((category) => ({
@@ -120,8 +119,6 @@ const CategoryField = ({
 };
 
 const GenderField = ({ field, form }) => {
-  const { t } = useTranslation();
-  
   const options = [
     { value: "", label: "gender" },
     { value: "male", label: "male" },
@@ -241,35 +238,37 @@ const BasicInformationSection = ({
           onClick={() => setIsTagsDropdownOpen(!isTagsDropdownOpen)}
         >
           <div className="flex flex-wrap items-center gap-2">
-            {tagsIds.length === 0 ? (
-              <p className="text-14 text-gray-400">{t("selectedTags")}</p>
-            ) : (
-              selectedCategoryTags
-                .filter((_, index) => tagsIds.includes(index))
-                .map((tag, index) => (
-                  <span
-                    key={index}
-                    className="bg-customOrange-lightOrange text-primary p-2 text-15 rounded-md flex items-center"
-                  >
-                    {tag}
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleTagChange(index, setFieldValue, {
-                          ...values,
-                          tags_ids: tagsIds,
-                        });
-                      }}
-                      className="ml-2 rtl:mr-2 text-17 text-red-600"
+            <div className="flex flex-1 flex-wrap items-center gap-2">
+              {tagsIds.length === 0 ? (
+                <p className="text-14 text-gray-400">{t("selectedTags")}</p>
+              ) : (
+                selectedCategoryTags
+                  .filter((_, index) => tagsIds.includes(index))
+                  .map((tag, index) => (
+                    <span
+                      key={index}
+                      className="bg-customOrange-lightOrange text-primary p-2 text-15 rounded-md flex items-center"
                     >
-                      ×
-                    </button>
-                  </span>
-                ))
-            )}
+                      {tag}
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleTagChange(index, setFieldValue, {
+                            ...values,
+                            tags_ids: tagsIds,
+                          });
+                        }}
+                        className="ml-2 rtl:mr-2 text-17 text-red-600"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))
+              )}
+            </div>
             <svg
-              className={`w-5 h-5 transition-transform duration-200 ml-auto ${
+              className={`w-5 h-5 transition-transform duration-200 ${
                 isTagsDropdownOpen ? "transform rotate-180" : ""
               }`}
               fill="none"

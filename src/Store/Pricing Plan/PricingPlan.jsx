@@ -1,16 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { FaCheck } from "react-icons/fa6";
 import { Helmet } from "react-helmet";
-import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 function Pricing() {
-  const navigate = useNavigate();
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
 
-  // Move PLANS inside the component and use useMemo
   const PLANS = useMemo(
     () => [
       {
@@ -70,8 +67,8 @@ function Pricing() {
         setSelectedPlan({
           ...plan,
           // Translate the features when setting the selected plan
-          features: plan.features.map(feature => t(feature)),
-          description: t(plan.description)
+          features: plan.features.map((feature) => t(feature)),
+          description: t(plan.description),
         });
       }
     }
@@ -90,16 +87,8 @@ function Pricing() {
 
   if (!selectedPlan) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <p className="font-bold">{t("noPlan")}</p>
-          <button
-            onClick={() => navigate("/Register/PricingPlan")}
-            className="mt-4 bg-primary text-white px-4 py-2 rounded-md"
-          >
-            {t("selectPlan")}
-          </button>
-        </div>
+      <div className="h-[60vh] flex items-center justify-center">
+          <p className="font-bold text-center">{t("noPlan")}</p>
       </div>
     );
   }
@@ -111,15 +100,7 @@ function Pricing() {
       </Helmet>
 
       <div className="">
-        <div className="flex justify-between">
           <h1 className="text-[18px] font-bold">{t("yourPlan")}</h1>
-          <button
-            onClick={() => navigate("/Register/PricingPlan")}
-            className="bg-primary w-36 font-bold text-white p-3 rounded-md hover:bg-primary-dark transition-colors"
-          >
-            {t("changePlan")}
-          </button>
-        </div>
         <div className="border w-300 rounded-md p-5 mt-3">
           <div className="">
             <div className="flex flex-col items-center gap-3">
@@ -134,7 +115,7 @@ function Pricing() {
                 </h2>
                 <p className="text-center text-3xl my-3 font-bold">
                   ${selectedPlan.price}
-                  <span className="text-sm text-gray-400 ml-1">
+                  <span className="text-sm text-gray-400 mx-1">
                     {selectedPlan.period}
                   </span>
                 </p>
@@ -159,5 +140,4 @@ function Pricing() {
     </div>
   );
 }
-
 export default Pricing;

@@ -6,9 +6,9 @@ import axios from "axios";
 import PhoneNum from "../Svgs/PhoneNum";
 import EmailAddress from "../Svgs/EmailAddress";
 import Acc from "../Svgs/Acc";
-import { StatusDisplay } from "./StatusDisplay";
 import { FaCheckCircle } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
+
 function OrderDetails() {
   const [orderDetail, setOrderDetails] = useState({
     products: [],
@@ -34,6 +34,7 @@ function OrderDetails() {
     location.state?.status_name || null
   );
   const { t } = useTranslation();
+
   useEffect(() => {
     const fetchOrderDetails = async () => {
       try {
@@ -46,6 +47,7 @@ function OrderDetails() {
           },
         });
         if (response.status === 200) {
+          console.log("Order details response:", response.data.data); // Debug log
           setOrderDetails((prev) => ({
             ...prev,
             ...response.data.data,
@@ -92,6 +94,28 @@ function OrderDetails() {
     });
   };
 
+  const getStatusDisplayName = (statusName) => {
+    switch (statusName) {
+      case "Preparing":
+        return t("Preparing");
+      case "Refunded":
+        return t("refund");
+      case "Pending":
+        return t("pending");
+      case "Shipped":
+        return t("Shipped");
+      case "In Transit":
+      case "In-Transit":
+      case "On the way": 
+        return t("inTransit");
+      case "Delivered":
+        return t("Delivered");
+      case "Cancelled":
+        return t("Cancelled");
+      default:
+        return statusName;
+    }
+  };
   return (
     <div className="bg-gray-100 pb-10 mx-5 pt-5">
       <Helmet>
@@ -119,10 +143,6 @@ function OrderDetails() {
                 {t("orderId")}:{" "}
                 <span className="text-14 ms-2">{orderDetail.order_number}</span>
               </h2>
-              <StatusDisplay
-                status={orderStatus}
-                statusName={orderStatusName || orderDetail.status_name}
-              />
             </div>
             <div className="mb-6">
               <div className="flex justify-between text-12 text-gray-500 mt-5 mb-3">
@@ -140,21 +160,8 @@ function OrderDetails() {
             </div>
             <div className="mt-5 space-y-4">
               {orderDetail.history?.map((statusItem, index) => {
-                const statusDisplayMap = {
-                  جارالتجهيز: "Processing",
-                  "تم الشحن": "Shipped",
-                  "في الطريق": "In Transit",
-                  "تم التوصيل": "Delivered",
-                  "": "Cancelled",
-                  مسترجع: "Refunded",
-                };
-
-                const displayName =
-                  statusDisplayMap[statusItem.status_name] ||
-                  statusItem.status_name;
-
+                // console.log("Status item:", statusItem); // Debug log
                 const dateToShow = statusItem.date || t("notProvided");
-
                 return (
                   <div
                     key={index}
@@ -165,8 +172,7 @@ function OrderDetails() {
                         size={20}
                         color={statusItem.active ? "#E0A75E" : "#D1D5DB"}
                       />
-                      {displayName} ({statusItem.status_name}){" "}
-                      {/* Shows both English and Arabic */}
+                      {getStatusDisplayName(statusItem.status_name)}
                     </p>
                     <span className="text-gray-400 text-12">{dateToShow}</span>
                   </div>
@@ -175,6 +181,7 @@ function OrderDetails() {
             </div>
           </section>
 
+          {/* Rest of the component remains the same */}
           <section className="border border-gray-200 rounded-md p-4 bg-white">
             <h2 className="font-bold text-16">{t("orderDetail")}</h2>
             <div className="flex flex-wrap gap-8 md:gap-36 mt-4">
@@ -183,11 +190,22 @@ function OrderDetails() {
                 <p className="text-14 mt-3">{orderDetail.items_count || 0}</p>
               </div>
               <div>
-                <h4 className="text-gray-400 text-14 mb-3">{t("paymentStatus")}</h4>
-                <StatusDisplay
-                  statusName={orderDetail.payment_status}
-                  status={orderDetail.payment_status === "paid" ? 2 : 1}
-                />
+                <h4 className="text-gray-400 text-14 mb-3">
+                  {t("paymentStatus")}
+                </h4>
+                <span
+                  className={`${
+                    orderDetail.payment_status === "paid"
+                      ? "text-[#28A513] bg-[#E7F6E5] rounded-md p-2 rtl:py-0 "
+                      : "bg-gray-100 text-gray-400 rounded-md p-2 rtl:py-0 "
+                  }`}
+                >
+                  {orderDetail.payment_status === "paid"
+                    ? t("paid")
+                    : orderDetail.payment_status === "unpaid"
+                    ? t("unpaid")
+                    : t("notProvided")}
+                </span>
               </div>
             </div>
           </section>
@@ -359,4 +377,5 @@ function OrderDetails() {
     </div>
   );
 }
+
 export default OrderDetails;

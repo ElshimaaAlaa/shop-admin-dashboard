@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Formik, Form } from "formik";
 import { Helmet } from "react-helmet";
 import { fetchCategories } from "../../ApiServices/AllCategoriesApi";
-import Footer from "../../Components/Footer/Footer";
+import Footer from "../../Layout/Footer/Footer";
 import { useNavigate } from "react-router-dom";
 import { addProduct } from "../../ApiServices/AddNewProductApi";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";

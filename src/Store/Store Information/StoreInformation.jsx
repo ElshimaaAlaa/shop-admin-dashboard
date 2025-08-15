@@ -1,3 +1,4 @@
+import { useState, useRef, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { FaRegEye } from "react-icons/fa";
 import { IoDownloadOutline } from "react-icons/io5";
@@ -9,10 +10,30 @@ function StoreInformation() {
     localStorage.getItem("storeProfileData") || "{}"
   );
   const themeData = JSON.parse(localStorage.getItem("storeThemeData") || "{}");
+  const [showBannerPopup, setShowBannerPopup] = useState(false);
+  const [currentBanner, setCurrentBanner] = useState("");
+  const popupRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (popupRef.current && !popupRef.current.contains(event.target)) {
+        setShowBannerPopup(false);
+      }
+    };
+
+    if (showBannerPopup) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showBannerPopup]);
 
   const handleViewBanner = (bannerBase64) => {
     if (bannerBase64) {
-      window.open(bannerBase64, "_blank");
+      setCurrentBanner(bannerBase64);
+      setShowBannerPopup(true);
     }
   };
 
@@ -27,68 +48,98 @@ function StoreInformation() {
     }
   };
 
+  const closePopup = () => {
+    setShowBannerPopup(false);
+  };
+
   return (
-    <div>
+    <div className="py-4 relative">
       <Helmet>
         <title>{t("storeInformation")}</title>
         <meta name="description" content="Edit Store Information" />
-        <meta property="og:title" content="Edit Store Information" />
-        <meta property="og:description" content="Edit Store Information" />
-        <meta property="og:type" content="website" />
-        <meta
-          property="og:url"
-          content="https://vertex-dashboard.com/Store Information"
-        />
       </Helmet>
+
+      {/* Popup للبانر */}
+      {showBannerPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+          <div
+            ref={popupRef}
+            className="rounded-lg max-w-4xl max-h-[90vh] relative"
+          >
+            <img
+              src={currentBanner}
+              alt="Store Banner"
+              className="max-w-full max-h-[80vh] object-contain p-4"
+            />
+          </div>
+        </div>
+      )}
+
       <section>
         <h1 className="font-bold text-[18px] mb-3">{t("storeInformation")}</h1>
-        <div className=" border border-gray-200 rounded-md p-5 w-full">
+        <div className="border border-gray-200 rounded-md p-5 w-full">
           <div className="flex flex-col md:flex-row items-center gap-x-96">
             <div className="text-center md:text-left">
               <h2 className="text-15 rtl:text-right text-gray-400">
                 {t("name")}
               </h2>
-              <p className="mt-2 text-15">{storeInformation.store_name}</p>
+              <p className="mt-2 text-15">
+                {storeInformation.store_name || t("notProvided")}
+              </p>
             </div>
             <div className="text-center md:text-left">
               <h2 className="text-15 text-gray-400 rtl:text-right">
                 {t("location")}
               </h2>
-              <p className="mt-2 text-15">{storeInformation.address}</p>
+              <p className="mt-2 text-15">
+                {storeInformation.address || t("notProvided")}
+              </p>
             </div>
           </div>
           <h2 className="text-15 mt-5 text-gray-400">{t("bio")}</h2>
-          <p className="mt-2 text-15">{storeInformation.bio}</p>
+          <p className="mt-2 text-15">
+            {storeInformation.bio || t("notProvided")}
+          </p>
           <div className="flex flex-col lg:flex-row md:flex-row items-end gap-x-[390px]">
             <div>
               <p className="text-1xl font-bold mb-3 mt-7">{t("banners")}</p>
               <div className="flex flex-wrap gap-4">
-                {themeData.bannersBase64 && themeData.bannersBase64.length > 0 ? (
+                {themeData.bannersBase64 &&
+                themeData.bannersBase64.length > 0 ? (
                   themeData.bannersBase64.map((banner, index) => (
-                    <div key={index} className="relative">
+                    <div key={index} className="group flex gap-52 items-center">
                       <img
                         src={banner}
                         alt={`Banner ${index + 1}`}
-                        className="w-64 h-32 object-cover rounded"
+                        className="w-64 h-32 object-cover rounded hover:shadow-lg transition-shadow cursor-pointer"
+                        onClick={() => handleViewBanner(banner)}
                       />
-                      <div className="absolute bottom-2 right-2 flex gap-2">
+                      <div className="flex gap-2 group-hover:opacity-100 transition-opacity">
                         <div
-                          className="bg-white p-1 rounded cursor-pointer"
-                          onClick={() => handleViewBanner(banner)}
+                          className=" p-2 flex items-center justify-center gap-2 rounded-md text-primary cursor-pointer w-20 hover:bg-primary hover:text-white"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleViewBanner(banner);
+                          }}
                         >
-                          <FaRegEye color="#E0A75E" size={16} />
+                          <FaRegEye size={16} />
+                          <p className="text-14"> {t("view")}</p>
                         </div>
                         <div
-                          className="bg-white p-1 rounded cursor-pointer"
-                          onClick={() => handleDownloadBanner(banner, index)}
+                          className=" p-2 flex items-center justify-center gap-2 text-primary hover:text-white hover:bg-primary rounded-md cursor-pointer "
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDownloadBanner(banner, index);
+                          }}
                         >
-                          <IoDownloadOutline color="#E0A75E" size={16} />
+                          <IoDownloadOutline size={16} />
+                          <p className="text-14">{t("download")}</p>
                         </div>
                       </div>
                     </div>
                   ))
                 ) : (
-                  <p className="text-red-500">{t("noBanners")}</p>
+                  <p className="text-gray-400">{t("noBanners")}</p>
                 )}
               </div>
             </div>

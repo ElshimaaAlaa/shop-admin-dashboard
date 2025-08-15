@@ -42,7 +42,7 @@ function PersonalInformation() {
           <h1 className="font-bold text-[18px]">{t("personalInfo")}</h1>
           <button
             onClick={() => navigate("EditInfo", { state: personalInfo })}
-            className="text-white font-semibold flex items-center justify-center gap-3 bg-primary p-2 w-24 rounded-md"
+            className="text-white font-semibold flex items-center justify-center gap-3 bg-primary p-3 w-24 rounded-md"
             aria-label="Edit personal information"
           >
             <img src="/assets/svgs/edit.svg" alt="Edit icon" className="w-7" />

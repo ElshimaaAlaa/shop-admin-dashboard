@@ -11,7 +11,7 @@ function InfoSideBar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeItem, setActiveItem] = useState(null);
-  const { t ,i18n} = useTranslation();
+  const { t } = useTranslation();
   const menuItems = [
     {
       IconComponent: Profile,

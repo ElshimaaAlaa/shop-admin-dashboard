@@ -83,7 +83,9 @@ function ViewProduct() {
   return (
     <div className="bg-gray-100 min-h-screen flex flex-col mx-5">
       <Helmet>
-        <title>{t("viewProduct")} - {t("vertex")}</title>
+        <title>
+          {t("viewProduct")} - {t("vertex")}
+        </title>
         <meta name="description" content={t("viewProductDescription")} />
       </Helmet>
 
@@ -99,7 +101,10 @@ function ViewProduct() {
             <h2 className="font-bold mb-3 text-16">{t("basicInfo")}</h2>
             <div className="w-full bg-transparent border border-gray-200 rounded-md ps-2 pt-4 pb-2 block">
               <div className="flex items-center px-3 w-560px rtl:w-[510px] justify-between">
-                <InventoryItem label={t("productName")} value={productData.name} />
+                <InventoryItem
+                  label={t("productName")}
+                  value={productData.name}
+                />
                 <InventoryItem
                   label={t("categoryName")}
                   value={productData.category?.name}
@@ -160,9 +165,7 @@ function ViewProduct() {
                   />
                 </div>
               ) : (
-                <p className="text-gray-400 my-5 text-15">
-                  {t("noImage")}
-                </p>
+                <p className="text-gray-400 my-5 text-15">{t("noImage")}</p>
               )}
               {productData.images && productData.images.length > 0 && (
                 <div className="thumbnails flex gap-2 mt-3">
@@ -217,62 +220,74 @@ function ViewProduct() {
           </div>
           <div className="w-2/4 h-72"></div>
         </section>
-
-        {(hasColors || hasSizes) && (
-          <section className="w-[920px] p-4 mb-7 bg-white rounded-md">
-            <h2 className="font-bold mb-5 text-16">{t("inventory")}</h2>
-            {hasColors && (
-              <div>
-                {productData.colors.map((color, index) => (
-                  <div key={color.id || index} className="flex gap-3 mb-3">
-                    <div>
-                      <img
-                        src={color.image || productData.images?.[0]?.src || ""}
-                        alt={`${t("color")}: ${color.name}`}
-                        className="h-16 w-24 object-cover rounded-xl"
-                      />
-                    </div>
-                    <div className="flex w-full items-center justify-between border-2 border-gray-200 rounded-lg p-2">
-                      <ColorItem color={color} />
-                      <InventoryItem label={t("stock")} value={color.stock} />
-                      <InventoryItem label={t("price")} value={color.price} />
-                      <InventoryItem
-                        label={t("discount")}
-                        value={color.discount_percentage}
-                      />
-                      <InventoryItem
-                        label={t("date")}
-                        value={color.discount_expire_at}
-                      />
-                    </div>
+        <div className="flex">
+          <div className="w-full">
+            {(hasColors || hasSizes) && (
+              <section className=" w-full p-4 mb-7 bg-white rounded-md">
+                <h2 className="font-bold mb-5 text-16">{t("inventory")}</h2>
+                {hasColors && (
+                  <div>
+                    {productData.colors.map((color, index) => (
+                      <div key={color.id || index} className="flex gap-3 mb-3">
+                        <div>
+                          <img
+                            src={
+                              color.image || productData.images?.[0]?.src || ""
+                            }
+                            alt={`${t("color")}: ${color.name}`}
+                            className="h-16 w-24 object-cover rounded-xl"
+                          />
+                        </div>
+                        <div className="flex w-full items-center justify-between border-2 border-gray-200 rounded-lg p-2">
+                          <ColorItem color={color} />
+                          <InventoryItem
+                            label={t("stock")}
+                            value={color.stock}
+                          />
+                          <InventoryItem
+                            label={t("price")}
+                            value={color.price}
+                          />
+                          <InventoryItem
+                            label={t("discount")}
+                            value={color.discount_percentage}
+                          />
+                          <InventoryItem
+                            label={t("date")}
+                            value={color.discount_expire_at}
+                          />
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            )}
-            {hasSizes && (
-              <div>
-                {productData.sizes.map((size, index) => (
-                  <div
-                    key={size.id || index}
-                    className="flex items-center border-2 border-gray-200 rounded-lg mb-3 p-2 justify-between"
-                  >
-                    <SizeItem size={size} />
-                    <InventoryItem label={t("stock")} value={size.stock} />
-                    <InventoryItem label={t("price")} value={size.price} />
-                    <InventoryItem
-                      label={t("discount")}
-                      value={size.discount_percentage}
-                    />
-                    <InventoryItem
-                      label={t("date")}
-                      value={size.discount_expire_at}
-                    />
+                )}
+                {hasSizes && (
+                  <div>
+                    {productData.sizes.map((size, index) => (
+                      <div
+                        key={size.id || index}
+                        className="flex items-center border-2 border-gray-200 rounded-lg mb-3 p-2 justify-between"
+                      >
+                        <SizeItem size={size} />
+                        <InventoryItem label={t("stock")} value={size.stock} />
+                        <InventoryItem label={t("price")} value={size.price} />
+                        <InventoryItem
+                          label={t("discount")}
+                          value={size.discount_percentage}
+                        />
+                        <InventoryItem
+                          label={t("date")}
+                          value={size.discount_expire_at}
+                        />
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
+                )}
+              </section>
             )}
-          </section>
-        )}
+          </div>
+          <div className="w-2/4 h-72"></div>
+        </div>
       </div>
     </div>
   );

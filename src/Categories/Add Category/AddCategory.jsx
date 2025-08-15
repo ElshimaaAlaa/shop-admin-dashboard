@@ -6,7 +6,7 @@ import { addCategory } from "../../ApiServices/AddNewCategoryApi";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 import { Helmet } from "react-helmet";
 import "./style.scss";
-import Footer from "../../Components/Footer/Footer";
+import Footer from "../../Layout/Footer/Footer";
 import { ImageUpload } from "../../Components/Upload Image/UploadImage";
 import { TagsInput } from "../../Components/Tag Input/TagInput";
 import InputField from "../../Components/InputFields/InputField";

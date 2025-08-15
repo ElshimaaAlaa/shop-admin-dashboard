@@ -10,7 +10,6 @@ import PropTypes from "prop-types";
 import CreditCard from "../../Svgs/CreditCard";
 import Paypal from "../../Svgs/Paypal";
 import Visa from "../../Svgs/Visa";
-import GooglePay from "../../Svgs/GooglePay";
 import { useTranslation } from "react-i18next";
 import { IoIosArrowDown } from "react-icons/io";
 
@@ -27,7 +26,6 @@ function PaymentInfo({
   const [isRTL, setIsRTL] = useState(false);
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
 
-  // Safely initialize form values with default empty object if payment_info is undefined
   const initialValues = {
     name: formData?.payment_info?.name || "",
     email: formData?.payment_info?.email || "",
@@ -35,7 +33,7 @@ function PaymentInfo({
     payment_method: formData?.payment_info?.payment_method || "",
     card_holder_name: formData?.payment_info?.card_holder_name || "",
     card_number: formData?.payment_info?.card_number || "",
-    expiration_date: formData?.payment_info?.card_exp_date || "",
+    expiration_date: formData?.payment_info?.expiration_date || "",
     card_cvv: formData?.payment_info?.card_cvv || "",
   };
 
@@ -44,10 +42,28 @@ function PaymentInfo({
     email: Yup.string().email(t("validEmail")).required(t("emailRequired")),
     phone: Yup.string().required(t("phoneRequired")),
     payment_method: Yup.string().required(t("paymentMethodRequired")),
-    card_holder_name: Yup.string(),
-    card_number: Yup.string(),
-    expiration_date: Yup.string(),
-    card_cvv: Yup.string(),
+    card_holder_name: Yup.string().when("payment_method", {
+      is: (method) => ["credit_card", "visa"].includes(method),
+      then: Yup.string().required(t("cardHolderRequired")),
+    }),
+    card_number: Yup.string().when("payment_method", {
+      is: (method) => ["credit_card", "visa"].includes(method),
+      then: Yup.string()
+        .required(t("cardNumberRequired"))
+        .matches(/^\d{16}$/, t("cardNumberInvalid")),
+    }),
+    expiration_date: Yup.string().when("payment_method", {
+      is: (method) => ["credit_card", "visa"].includes(method),
+      then: Yup.string()
+        .required(t("expirationDateRequired"))
+        .matches(/^(0[1-9]|1[0-2])\/?([0-9]{2})$/, t("expirationDateInvalid")),
+    }),
+    card_cvv: Yup.string().when("payment_method", {
+      is: (method) => ["credit_card", "visa"].includes(method),
+      then: Yup.string()
+        .required(t("cvvRequired"))
+        .matches(/^\d{3,4}$/, t("cvvInvalid")),
+    }),
   });
 
   const paymentMethods = [
@@ -58,11 +74,6 @@ function PaymentInfo({
     },
     { id: "paypal", label: "PayPal", icon: <Paypal /> },
     { id: "visa", label: "Visa", icon: <Visa /> },
-    {
-      id: "google_pay",
-      label: "Google Pay",
-      icon: <GooglePay />,
-    },
   ];
 
   const handleSubmit = async (values) => {
@@ -78,10 +89,10 @@ function PaymentInfo({
         name: values.name,
         phone: values.phone,
         email: values.email,
-        payment_method: selectedMethod?.label || values.payment_method,
+        payment_method: selectedMethod?.id || values.payment_method,
         card_holder_name: values.card_holder_name,
         card_number: values.card_number,
-        card_exp_date: values.expiration_date,
+        expiration_date: values.expiration_date,
         card_cvv: values.card_cvv,
       };
 
@@ -90,17 +101,12 @@ function PaymentInfo({
 
       // Prepare complete data for submission
       const completeData = {
-        ...(formData || {}),
+        ...formData,
         payment_info: paymentInfo,
       };
 
-      // Call parent's onSubmit if provided
+      // Call parent's onSubmit with the complete data
       onSubmit(completeData);
-
-      // Navigate to next step with complete data
-      navigate("/Register/ShippingProvider", {
-        state: completeData,
-      });
     } catch (error) {
       console.error("Submission failed:", error);
       setSubmitError(
@@ -195,10 +201,10 @@ function PaymentInfo({
                 <h2 className="font-bold mb-3 mt-3">{t("contactInfo")}</h2>
                 <div className="flex gap-2">
                   <InputField name="name" placeholder={t("name")} />
-                  <InputField name="email" placeholder={t("email")} />
+                  <InputField name="email" placeholder={t("email")} type="email" />
                 </div>
                 <div className="flex gap-2 mt-3">
-                  <InputField name="phone" placeholder={t("phone")} />
+                  <InputField name="phone" placeholder={t("phone")} type="tel" />
                 </div>
               </section>
 
@@ -230,56 +236,52 @@ function PaymentInfo({
                 ))}
               </div>
 
-              {values.payment_method && (
+              {["credit_card", "visa"].includes(values.payment_method) && (
                 <section className="bg-gray-50 py-2 px-4 rounded-md">
                   <h4 className="font-bold mt-4 mb-3">{t("paymentInfo")}</h4>
-                  <>
-                    <div className="flex items-center gap-2">
-                      <InputField
-                        name="card_cvv"
-                        placeholder={t("cvv")}
-                      />
-                      <InputField
-                        name="expiration_date"
-                        placeholder="MM/YY"
-                        type="date"
-                        onChange={(e) => {
-                          let value = e.target.value.replace(/\D/g, "");
-                          if (value.length > 2) {
-                            value =
-                              value.substring(0, 2) +
-                              "/" +
-                              value.substring(2, 4);
-                          }
-                          setFieldValue("expiration_date", value);
-                        }}
-                      />
-                    </div>
-                    <div className="flex items-center gap-2 mt-3">
-                      <InputField
-                        name="card_holder_name"
-                        placeholder={t("cardHolder")}
-                      />
-                      <InputField
-                        name="card_number"
-                        placeholder={t("cardNumber")}
-                        onChange={(e) => {
-                          const value = e.target.value.replace(/\D/g, "");
-                          setFieldValue(
-                            "card_number",
-                            value.substring(0, 16)
-                          );
-                        }}
-                      />
-                    </div>
-                  </>
+                  <div className="flex items-center gap-2">
+                    <InputField 
+                      name="card_cvv" 
+                      placeholder={t("cvv")} 
+                      type="password"
+                      maxLength="4"
+                    />
+                    <InputField
+                      name="expiration_date"
+                      placeholder="MM/YY"
+                      onChange={(e) => {
+                        let value = e.target.value.replace(/\D/g, "");
+                        if (value.length > 2) {
+                          value = value.substring(0, 2) + "/" + value.substring(2, 4);
+                        }
+                        setFieldValue("expiration_date", value);
+                      }}
+                      maxLength="5"
+                    />
+                  </div>
+                  <div className="flex items-center gap-2 mt-3">
+                    <InputField
+                      name="card_holder_name"
+                      placeholder={t("cardHolder")}
+                    />
+                    <InputField
+                      name="card_number"
+                      placeholder={t("cardNumber")}
+                      type="text"
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, "");
+                        setFieldValue("card_number", value.substring(0, 16));
+                      }}
+                      maxLength="16"
+                    />
+                  </div>
                 </section>
               )}
 
               <section className="flex items-center gap-3 justify-end my-5 rtl:flex-row-reverse">
                 <button
                   type="button"
-                  onClick={() => navigate("/Register/PricingPlan")}
+                  onClick={onBack}
                   className="bg-gray-100 text-gray-400 w-36 rounded-md px-6 py-3 transition-colors"
                 >
                   {t("cancel")}

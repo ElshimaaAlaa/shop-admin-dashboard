@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { updateProduct } from "../../ApiServices/updateProduct";
 import InputField from "../../Components/InputFields/InputField";
 import UploadUpdatedProductImages from "../../Components/Upload Image/UploadUpdatedProductImages";
-import Footer from "../../Components/Footer/Footer";
+import Footer from "../../Layout/Footer/Footer";
 import { fetchCategories } from "../../ApiServices/AllCategoriesApi";
 import SuccessModal from "../../Components/Modal/Success Modal/SuccessModal";
 import SizeFieldArray from "../Add Product/SizeFieldArray";
@@ -120,7 +120,6 @@ const TagPill = ({ tag, onRemove, isExisting }) => {
       }}
     >
       {tag.name || tag}
-      {!isExisting && <span className="ml-1 text-xs">(new)</span>}
       <button
         type="button"
         onClick={() => onRemove(tag)}

@@ -61,7 +61,7 @@ export default function SalesChangeChart({ rate }) {
             rate >= 0 ? "text-green-500" : "text-black"
           }`}
         >
-          {rate >= 0 ? "+" : ""}
+          {rate >= 0 ? "" : ""}
           {rate}%
         </div>
         <div className="text-13 text-gray-500 font-extralight text-center leading-normal">
