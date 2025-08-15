@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import * as Yup from "yup";
 import { LuSend } from "react-icons/lu";
 import MainBtn from "../../Components/Main Button/MainBtn";
@@ -12,7 +12,7 @@ function SendSupport({ onSuccess }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const { t, i18n } = useTranslation();
-  const [isRTL, setIsRTL] = useState(false);
+  const isRTL = i18n.language === "ar";
   const initialValues = {
     name: "",
     email: "",
@@ -45,9 +45,6 @@ function SendSupport({ onSuccess }) {
       setIsLoading(false);
     }
   };
-  useEffect(() => {
-    setIsRTL(i18n.language);
-  }, [i18n.language]);
   return (
     <div>
       <Formik
@@ -63,7 +60,11 @@ function SendSupport({ onSuccess }) {
               placeholder={t("email")}
               dir={isRTL ? "rtl" : "ltr"}
             />
-            <InputField name="phone" placeholder={t("phone")} />
+            <InputField
+              name="phone"
+              placeholder={t("phone")}
+              dir={isRTL ? "rtl" : "ltr"}
+            />
             <Field
               as="textarea"
               placeholder={t("message")}

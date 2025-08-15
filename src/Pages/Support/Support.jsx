@@ -22,7 +22,7 @@ function Support() {
         <meta property="og:url" content="https://vertex.com/support" />
       </Helmet>
 
-      <h1 className="font-bold text-center text-17 mt-5 rtl:text[20px]">{t("send")}</h1>
+      <h1 className="font-bold text-center text-lg mt-5">{t("send")}</h1>
       <div className="flex justify-center gap-5 mx-20 rtl:flex-row-reverse">
         <InfoCard />
         <section className="bg-customOrange-mediumOrange p-5 mt-6 w-[430px] md:w-[430px] lg:w-500 rounded-md">

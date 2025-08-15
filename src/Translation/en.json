@@ -469,5 +469,8 @@
   "Shipped": "Shipped",
   "Cancelled": "Cancelled",
   "inTransit": "In Transit",
-  "Delivered": "Delivered"
+  "Delivered": "Delivered",
+  "send": "Send us your problem and we will contact you",
+  "sendProblem": "Send your problem",
+  "callUs": "Call Us"
 }

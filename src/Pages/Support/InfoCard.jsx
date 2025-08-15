@@ -8,7 +8,7 @@ import { FaArrowLeftLong } from "react-icons/fa6";
 function InfoCard() {
   const [settingData, setSettingData] = useState([]);
   const { t, i18n } = useTranslation();
-  const isRTL = i18n.language;
+  const isRTL = i18n.language === "ar";
 
   const ContactCard = ({ icon, title, value, link }) => (
     <div className="flex items-center justify-between bg-gray-50 p-4 rounded-md mb-6">
