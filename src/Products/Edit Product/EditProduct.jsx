@@ -13,6 +13,7 @@ import ColorFieldArray from "../Add Product/ColorFieldArray";
 import PricingSection from "../Add Product/PricingSection";
 import { ClipLoader } from "react-spinners";
 import { useTranslation } from "react-i18next";
+import Header from "../../Components/Header/Header";
 
 // Custom Dropdown Component
 const CustomDropdown = ({
@@ -326,11 +327,11 @@ function EditProduct() {
       (tag) => tag.id !== tagToRemove.id && tag.name !== tagToRemove.name
     );
     setFieldValue("tags_id", newTags);
-    
+
     if (tagToRemove.id) {
       setTagsToRemove((prev) => [...prev, tagToRemove.id]);
     }
-    
+
     if (tagsToAdd.includes(tagToRemove.name)) {
       setTagsToAdd((prev) => prev.filter((name) => name !== tagToRemove.name));
     }
@@ -347,8 +348,9 @@ function EditProduct() {
 
     if (
       !values.tags_id.some(
-        (t) => (t.id && t.id === newTag.id) || 
-               (t.name && t.name.toLowerCase() === newTagName.toLowerCase())
+        (t) =>
+          (t.id && t.id === newTag.id) ||
+          (t.name && t.name.toLowerCase() === newTagName.toLowerCase())
       )
     ) {
       setFieldValue("tags_id", [...values.tags_id, newTag]);
@@ -436,10 +438,8 @@ function EditProduct() {
         </title>
         <meta name="description" content="Edit product details in VERTEX" />
       </Helmet>
-      <section className="rounded-md p-5 mx-5 bg-white mt-5 mb-3">
-        <p className="text-gray-400 text-13">{t("editProductHead")}</p>
-        <h1 className="text-17 mt-3 font-bold">{t("editProduct")}</h1>
-      </section>
+
+      <Header subtitle={t("editProductHead")} title={t("editProduct")} />
       <Formik
         initialValues={initialValues}
         enableReinitialize={true}

@@ -16,7 +16,7 @@ export const OrdersStatistics = ({ statistics }) => {
         totalNumber={statistics.pending_payment?.change_rate || 0}
         percentage={`${
           statistics.pending_payment?.current || 0
-        }% vs. ${t("previousMonth")}`}
+        }% ${t("vs")} ${t("previousMonth")}`}
         duration={`${t("lastMonth")} ${statistics.pending_payment?.previous || 0}`}
       />
       <StatisticsCard
@@ -25,7 +25,7 @@ export const OrdersStatistics = ({ statistics }) => {
         totalNumber={statistics.refund_orders?.change_rate || 0}
         percentage={`${
           statistics.refund_orders?.current || 0
-        }% vs. ${t("previousMonth")}`}
+        }% ${t("vs")} ${t("previousMonth")}`}
         duration={`Last month: ${statistics.refund_orders?.previous || 0}`}
       />
       <StatisticsCard
@@ -34,7 +34,7 @@ export const OrdersStatistics = ({ statistics }) => {
         totalNumber={statistics.cancelled_orders?.change_rate || 0}
         percentage={`${
           statistics.cancelled_orders?.current || 0
-        }% vs. ${t("previousMonth")}`}
+        }% ${t("vs")} ${t("previousMonth")}`}
         duration={`${t("lastMonth")} ${statistics.cancelled_orders?.previous || 0}`}
       />
       <StatisticsCard
@@ -43,7 +43,7 @@ export const OrdersStatistics = ({ statistics }) => {
         totalNumber={statistics.ongoing_orders?.change_rate || 0}
         percentage={`${
           statistics.ongoing_orders?.current || 0
-        }% vs. ${t("previousMonth")}`}
+        }% ${t("vs")} ${t("previousMonth")}`}
         duration={`${t("lastMonth")} ${statistics.ongoing_orders?.previous || 0}`}
       />
       <StatisticsCard
@@ -52,7 +52,7 @@ export const OrdersStatistics = ({ statistics }) => {
         totalNumber={statistics.completed_orders?.change_rate || 0}
         percentage={`${
           statistics.completed_orders?.current || 0
-        }% vs. ${t("previousMonth")}`}
+        }% ${t("vs")} ${t("previousMonth")}`}
         duration={`${t("lastMonth")} ${statistics.completed_orders?.previous || 0}`}
       />
       <StatisticsCard
@@ -61,7 +61,7 @@ export const OrdersStatistics = ({ statistics }) => {
         totalNumber={statistics.payment_refund?.change_rate || 0}
         percentage={`${
           statistics.payment_refund?.current || 0
-        }% vs. ${t("previousMonth")}`}
+        }% ${t("vs")} ${t("previousMonth")}`}
         duration={`${t("lastMonth")} ${statistics.payment_refund?.previous || 0}`}
       />
     </section>

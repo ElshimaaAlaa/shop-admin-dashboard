@@ -11,6 +11,7 @@ import StatisticsCard from "../Pages/Dashboard/ReportItems";
 import Delete from "./DeleteProduct";
 import { fetchAnalyticsData } from "../ApiServices/Analytics";
 import { useTranslation } from "react-i18next";
+import Header from "../Components/Header/Header";
 function Analytics() {
   const { t } = useTranslation();
   const [analyticsData, setAnalyticsData] = useState({
@@ -95,12 +96,7 @@ function Analytics() {
           {t("reports")} | {t("vertex")}
         </title>
       </Helmet>
-
-      <section className="bg-white mb-2 p-4 rounded-md">
-        <p className="text-gray-400 text-13">{t("reportMenu")}</p>
-        <h1 className="font-bold text-17 mt-2">{t("analytics")}</h1>
-      </section>
-
+      <Header subtitle={t("reportMenu")} title={t("analytics")} className="mb-4"/>
       <div className="bg-white rounded-md p-5 mb-5">
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 mb-8">
           <StatisticsCard
@@ -139,9 +135,7 @@ function Analytics() {
           <h3 className="font-bold text-17 mb-4">{t("topProducts")}</h3>
           {analyticsData.popular_products.length === 0 ? (
             <div className="text-center py-3 border-1 border-gray-200 bg-gray-50 rounded-lg">
-              <p className="text-gray-400 mb-2 text-15">
-                {t("noData")}
-              </p>
+              <p className="text-gray-400 mb-2 text-15">{t("noData")}</p>
             </div>
           ) : (
             <div className="border border-gray-200 rounded-lg overflow-hidden">
@@ -220,7 +214,7 @@ function Analytics() {
                             }
                             className="text-indigo-600 hover:text-indigo-900"
                           >
-                        {t("edit")}
+                            {t("edit")}
                           </button>
                           <Delete
                             id={product.id}

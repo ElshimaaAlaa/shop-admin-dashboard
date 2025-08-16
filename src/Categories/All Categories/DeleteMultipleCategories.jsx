@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ClipLoader } from "react-spinners";
 import FailedModal from "../../Components/Modal/Failed Modal/FailedModal";
-
-function DeleteMultipleProviders({ isOpen, onClose, onConfirm, count }) {
+function DeleteMultipleCategories({ isOpen, onClose, onConfirm, count }) {
   const { t, i18n } = useTranslation();
   const [isRTL, setIsRTL] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -30,8 +29,8 @@ function DeleteMultipleProviders({ isOpen, onClose, onConfirm, count }) {
           className="h-14 w-14 p-1 mx-auto"
         />
       </div>
-      <p className="font-bold text-center w-72 text-15">
-        {t("deleteMultipleShops", { count })}
+      <p className="font-bold text-center w-64 text-15">
+        {t("DeleteMultipleCategories", { count })}
       </p>
       <div
         className={`flex gap-3 mt-5 mb-3 ${isRTL ? "flex-row-reverse" : ""}`}
@@ -60,4 +59,4 @@ function DeleteMultipleProviders({ isOpen, onClose, onConfirm, count }) {
   );
 }
 
-export default DeleteMultipleProviders;
+export default DeleteMultipleCategories;

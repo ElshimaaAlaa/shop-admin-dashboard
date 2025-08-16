@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ClipLoader } from "react-spinners";
-import FailedModal from "../../Components/Modal/Failed Modal/FailedModal";
-
-function DeleteMultipleProviders({ isOpen, onClose, onConfirm, count }) {
+import FailedModal from "../Components/Modal/Failed Modal/FailedModal";
+function DeleteMultipleRecivedOrders({ isOpen, onClose, onConfirm, count }) {
   const { t, i18n } = useTranslation();
   const [isRTL, setIsRTL] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -11,6 +10,7 @@ function DeleteMultipleProviders({ isOpen, onClose, onConfirm, count }) {
   useEffect(() => {
     setIsRTL(i18n.language === "ar");
   }, [i18n.language]);
+
 
   const handleConfirm = async () => {
     setIsLoading(true);
@@ -31,7 +31,7 @@ function DeleteMultipleProviders({ isOpen, onClose, onConfirm, count }) {
         />
       </div>
       <p className="font-bold text-center w-72 text-15">
-        {t("deleteMultipleShops", { count })}
+        {t("DeleteMultipleRecivedOrders", { count })}
       </p>
       <div
         className={`flex gap-3 mt-5 mb-3 ${isRTL ? "flex-row-reverse" : ""}`}
@@ -60,4 +60,4 @@ function DeleteMultipleProviders({ isOpen, onClose, onConfirm, count }) {
   );
 }
 
-export default DeleteMultipleProviders;
+export default DeleteMultipleRecivedOrders;

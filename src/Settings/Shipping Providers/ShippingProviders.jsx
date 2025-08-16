@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState, useMemo } from "react";
 import { Helmet } from "react-helmet";
 import SearchBar from "../../Components/Search Bar/SearchBar";
@@ -120,14 +121,14 @@ function ShippingProviders() {
           {t("shippingProvider")} | {t("vertex")}
         </title>
       </Helmet>
-      <Header title={t("shippingProvider")} subtitle={t("shippingMenu")} className="mx-5"/>
+      <Header title={t("shippingProvider")} subtitle={t("shippingMenu")} className="mx-5 mt-5 mb-4"/>
       <Head
         icon={FaShippingFast}
         title={t("shippingProvider")}
         value={shippingData.length}
         backgroundColor="bg-customOrange-mediumOrange"
         iconColor="#E0A75E"
-        className="mx-5"
+        className="mx-5 mb-1"
       />
       <section className="bg-white rounded-md p-5 mx-5 my-2">
         <SearchBar
@@ -179,7 +180,7 @@ function ShippingProviders() {
               </div>
             )}
 
-            <div className="border border-gray-200 rounded-lg mt-4 overflow-hidden">
+            <div className="border border-gray-200 rounded-lg  overflow-hidden">
               <table className="bg-white min-w-full table">
                 <thead>
                   <tr>

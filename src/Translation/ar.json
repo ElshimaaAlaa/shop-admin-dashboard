@@ -178,7 +178,6 @@
   "customerHead": "القائمة / العملاء",
   "customerSupport": "أسئلة دعم العملاء ",
   "allCustomers": "جميع العملاء ",
-  "payment": "المدفوعات",
   "supportRequest": "طلبات الدعم",
   "previousMonth": "الشهر السابق",
   "customer": "العميل",
@@ -484,9 +483,14 @@
   "deleteAll": "حذف الكل",
   "fromitems": "من العناصر",
   "deleteMultipleShops": "هل أنت متأكد من رغبتك في حذف مقدمي خدمات الشحن ؟",
-  "DeleteMultiplePayment": "هل أنت متأكد من رغبتك في حذف جميع وسائل الدفع ؟",
+  "DeleteMultiplePayment": "هل أنت متأكد من رغبتك في حذف جميع طرق الدفع ؟",
   "DeleteMultipleCoupon": "هل أنت متأكد من رغبتك في حذف جميع كوبونات الخصم ؟",
   "DeleteMultipleDiscounts": "هل أنت متأكد من رغبتك في حذف جميع الخصومات ؟",
   "DeleteMultipleUsers": "هل أنت متأكد من رغبتك في حذف جميع المستخدمين ؟",
-  "DeleteMultipleInvoices": "هل أنت متأكد من رغبتك في حذف جميع الفواتير ؟"
+  "DeleteMultipleInvoices": "هل أنت متأكد من رغبتك في حذف جميع الفواتير ؟",
+  "DeleteMultipleRecivedOrders": "هل أنت متأكد من رغبتك في حذف جميع الطلبات المستلمة ؟",
+  "DeleteMutipleRefundOrders": "هل أنت متأكد من رغبتك في حذف جميع الطلبات المستردة ؟",
+  "DeleteMutipleProducts": "هل أنت متأكد من رغبتك في حذف جميع المنتجات ؟",
+  "DeleteMultipleCategories": "هل أنت متأكد من رغبتك في حذف جميع الفئات ؟",
+  "vs": "مقابل"
 }

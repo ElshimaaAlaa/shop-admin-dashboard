@@ -1,6 +1,4 @@
 import { useEffect, useState, useMemo } from "react";
-import ReactPaginate from "react-paginate";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import DeleteProduct from "../Delete Product/DeleteProduct";
 import { ClipLoader } from "react-spinners";
@@ -9,6 +7,11 @@ import { Helmet } from "react-helmet";
 import SearchBar from "../../Components/Search Bar/SearchBar";
 import { Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import Pagination from "../../Components/Pagination/Pagination";
+import Header from "../../Components/Header/Header";
+import { toast } from "react-toastify";
+// import DeleteMutipleProducts from "./DeleteMultipleProducts";
+import DeleteMutipleProducts from "./DeleteMultipleProducts";
 function AllProducts() {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -16,9 +19,14 @@ function AllProducts() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [selectAll, setSelectAll] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
-  const [isRTL, setIsRtl] = useState(false);
+  const isRTL = i18n.language === "ar"
+
   useEffect(() => {
     const getProducts = async () => {
       setIsLoading(true);
@@ -41,7 +49,6 @@ function AllProducts() {
       }
     };
     getProducts();
-    setIsRtl(i18n.language === "ar");
   }, [i18n.language]);
 
   const handleDeleteProduct = (productId) => {
@@ -57,6 +64,33 @@ function AllProducts() {
       }
       return updatedProducts;
     });
+    setSelectedProducts((prev) => prev.filter((id) => id !== productId));
+  };
+
+  const handleDeleteMultiple = async () => {
+    setIsDeleting(true);
+    try {
+      // await deleteMultipleProducts(selectedProducts);
+      
+      setProducts(prevProducts =>
+        prevProducts.filter(product => !selectedProducts.includes(product.id))
+      );
+      
+      setSelectedProducts([]);
+      setSelectAll(false);
+      
+      if (currentItems.length === selectedProducts.length && currentPage > 1) {
+        setCurrentPage(currentPage - 1);
+      }
+      
+      setShowDeleteModal(false);
+      toast.success(t("productsDeletedSuccessfully"));
+    } catch (error) {
+      console.error("Failed to delete products:", error);
+      toast.error(t("deleteFailed"));
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   const filteredProducts = useMemo(() => {
@@ -77,19 +111,42 @@ function AllProducts() {
     indexOfLastItem
   );
 
+  const handleSelectAll = (e) => {
+    const isChecked = e.target.checked;
+    setSelectAll(isChecked);
+    if (isChecked) {
+      const allProductIds = currentItems.map((product) => product.id);
+      setSelectedProducts(allProductIds);
+    } else {
+      setSelectedProducts([]);
+    }
+  };
+
+  const handleSelectProduct = (productId, isChecked) => {
+    if (isChecked) {
+      setSelectedProducts((prev) => [...prev, productId]);
+    } else {
+      setSelectedProducts((prev) => prev.filter((id) => id !== productId));
+      setSelectAll(false);
+    }
+  };
+
+  const handleDeleteSelected = () => {
+    setShowDeleteModal(true);
+  };
+
   return (
-    <div className="bg-gray-100 h-[89vh] mx-5 pt-5">
+    <div className="bg-gray-100 min-h-[89vh] mx-5 pt-5">
       <Helmet>
         <title>
           {t("products")} | {t("vertex")}
         </title>
       </Helmet>
-
-      <div className="bg-white mb-3 p-4 rounded-md">
-        <p className="text-gray-400 text-13">{t("productHead")}</p>
-        <h1 className="font-bold text-17 mt-2">{t("products")}</h1>
-      </div>
-
+      <Header
+        subtitle={t("productHead")}
+        title={t("products")}
+        className="mb-3"
+      />
       <div className="bg-white p-5 rounded-md">
         <SearchBar
           onclick={() => navigate("/Dashboard/addProduct")}
@@ -104,6 +161,25 @@ function AllProducts() {
           }
         />
 
+        {selectedProducts.length > 0 && (
+          <div className="mt-3 flex justify-between items-center bg-gray-50 p-3 rounded">
+            <span className="text-gray-600">
+              {t("selecting")} {selectedProducts.length} {t("items")}
+            </span>
+            <button
+              onClick={handleDeleteSelected}
+              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+              disabled={isDeleting}
+            >
+              {isDeleting ? (
+                <ClipLoader color="#ffffff" size={20} />
+              ) : (
+                t("deleteAll")
+              )}
+            </button>
+          </div>
+        )}
+
         {error ? (
           <div className="text-red-500 text-center mt-10">{t("error")}</div>
         ) : isLoading ? (
@@ -112,7 +188,7 @@ function AllProducts() {
           </div>
         ) : filteredProducts.length === 0 ? (
           <div className="text-gray-400 text-center mt-10">
-            {searchQuery ? t("noMatchResults") : t("noMatchResults")}
+            {searchQuery ? t("noMatchResults") : t("noProductsAvailable")}
           </div>
         ) : (
           <>
@@ -120,25 +196,47 @@ function AllProducts() {
               <table className="min-w-full divide-y divide-gray-200">
                 <thead>
                   <tr>
-                    <th className="px-3 py-3 border-b border-r ">
-                      <p className="flex items-center gap-3">
-                        <input
-                          type="checkbox"
-                          className="form-checkbox h-4 w-4 rounded text-primary focus:ring-primary border-gray-300"
-                        />
+                    <th className="px-3 py-3 border-b border-r">
+                      <div className="flex items-center gap-3">
+                        <label className="inline-flex items-center cursor-pointer">
+                          <input
+                            type="checkbox"
+                            className="hidden peer"
+                            checked={selectAll}
+                            onChange={handleSelectAll}
+                            aria-label="Select all products"
+                          />
+                          <span
+                            className={`w-4 h-4 border-2 rounded flex items-center justify-center transition-all duration-200 ${
+                              selectAll
+                                ? "border-primary bg-primary"
+                                : "border-gray-300"
+                            }`}
+                          >
+                            {selectAll && (
+                              <svg
+                                className="w-3 h-3 text-white"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                              >
+                                <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
+                              </svg>
+                            )}
+                          </span>
+                        </label>
                         {t("product")}
-                      </p>
+                      </div>
                     </th>
-                    <th className="px-3 py-3 border-b border-r text-left rtl:text-right ">
+                    <th className="px-3 py-3 border-b border-r text-left rtl:text-right">
                       {t("category")}
                     </th>
-                    <th className="px-3 py-3 border-r border-b text-left rtl:text-right ">
+                    <th className="px-3 py-3 border-r border-b text-left rtl:text-right">
                       {t("price")}
                     </th>
-                    <th className="px-3 py-3 border-r border-b text-left rtl:text-right ">
+                    <th className="px-3 py-3 border-r border-b text-left rtl:text-right">
                       {t("stock")}
                     </th>
-                    <th className="px-3 py-3 border-r text-left border-b rtl:text-right ">
+                    <th className="px-3 py-3 border-r text-left border-b rtl:text-right">
                       {t("color")}
                     </th>
                     <th className="px-3 py-3 border-b rtl:border-r text-center">
@@ -156,10 +254,39 @@ function AllProducts() {
                         }
                       >
                         <div className="flex items-center gap-3">
-                          <input
-                            type="checkbox"
-                            className="form-checkbox h-4 w-4 rounded text-primary focus:ring-primary border-gray-300"
-                          />
+                          <label className="inline-flex items-center cursor-pointer">
+                            <input
+                              type="checkbox"
+                              className="hidden peer"
+                              checked={selectedProducts.includes(product.id)}
+                              onChange={(e) => {
+                                handleSelectProduct(
+                                  product.id,
+                                  e.target.checked
+                                );
+                                e.stopPropagation();
+                              }}
+                              onClick={(e) => e.stopPropagation()}
+                              aria-label={`Select product ${product.name}`}
+                            />
+                            <span
+                              className={`w-4 h-4 border-2 rounded flex items-center justify-center transition-all duration-200 ${
+                                selectedProducts.includes(product.id)
+                                  ? "border-primary bg-primary"
+                                  : "border-gray-300"
+                              }`}
+                            >
+                              {selectedProducts.includes(product.id) && (
+                                <svg
+                                  className="w-3 h-3 text-white"
+                                  viewBox="0 0 20 20"
+                                  fill="currentColor"
+                                >
+                                  <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
+                                </svg>
+                              )}
+                            </span>
+                          </label>
                           <img
                             className="h-7 w-7 rounded-full object-cover"
                             src={
@@ -171,7 +298,7 @@ function AllProducts() {
                           {product.name}
                         </div>
                       </td>
-                      <td className="px-3 py-3 border-t border-l text-gray-600 text-15  rtl:border-r">
+                      <td className="px-3 py-3 border-t border-l text-gray-600 text-15 rtl:border-r">
                         <div className="flex items-center gap-3">
                           <img
                             className="h-7 w-7 rounded-full object-cover"
@@ -235,44 +362,25 @@ function AllProducts() {
                 </tbody>
               </table>
             </div>
-            <div className="flex items-center justify-end  bg-white sm:px-6">
-              <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-end">
-                <ReactPaginate
-                  pageCount={Math.ceil(filteredProducts.length / itemsPerPage)}
-                  onPageChange={({ selected }) => setCurrentPage(selected + 1)}
-                  forcePage={currentPage - 1}
-                  containerClassName="flex items-center justify-end mt-5 text-gray-400 text-14"
-                  pageClassName="mx-1 px-3 py-1 rounded"
-                  pageLinkClassName="page-link"
-                  activeClassName="bg-customOrange-lightOrange text-primary"
-                  activeLinkClassName="active-link"
-                  previousClassName=" px-1 py-1 font-bold text-primary text-[20px] "
-                  nextClassName="py-1 px-1 font-bold text-primary text-[20px]"
-                  previousLabel={
-                    isRTL ? (
-                      <ChevronRight className="w-5 h-5 text-primary" />
-                    ) : (
-                      <ChevronLeft className="w-5 h-5 text-center text-primary" />
-                    )
-                  }
-                  nextLabel={
-                    isRTL ? (
-                      <ChevronLeft className="w-5 h-5 text-center text-primary" />
-                    ) : (
-                      <ChevronRight className="w-5 h-5 text-primary" />
-                    )
-                  }
-                  breakLabel="..."
-                  breakClassName=" py-1 text-gray-700"
-                  marginPagesDisplayed={1}
-                  pageRangeDisplayed={3}
-                />
-              </div>
-            </div>
+            <Pagination
+              pageCount={Math.ceil(filteredProducts.length / itemsPerPage)}
+              onPageChange={({ selected }) => setCurrentPage(selected + 1)}
+              currentPage={currentPage}
+              isRTL={isRTL}
+              marginPagesDisplayed={2}
+              pageRangeDisplayed={5}
+            />
           </>
         )}
+        <DeleteMutipleProducts
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          onConfirm={handleDeleteMultiple}
+          count={selectedProducts.length}
+        />
       </div>
     </div>
   );
 }
+
 export default AllProducts;

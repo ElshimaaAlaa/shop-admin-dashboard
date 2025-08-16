@@ -481,5 +481,11 @@
   "DeleteMultipleCoupon": "Are You Sure You Want To Delete All Coupons ?",
   "DeleteMultipleDiscounts": "Are You Sure You Want To Delete All Discounts ?",
   "DeleteMultipleUsers": "Are You Sure You Want To Delete All Users ?",
-  "DeleteMultipleInvoices": "Are You Sure You Want To Delete All Invoices ?"
+  "DeleteMultipleInvoices": "Are You Sure You Want To Delete All Invoices ?",
+  "DeleteMultipleRecivedOrders": "Are You Sure You Want To Delete All Received Orders ?",
+  "DeleteMutipleRefundOrders": "Are You Sure You Want To Delete All Refund Orders ?",
+  "DeleteMutipleProducts": "Are You Sure You Want To Delete All Products ?",
+  "DeleteMultipleCategories": "Are You Sure You Want To Delete All Products ?",
+  "contactInfo":"Contact Information",
+  "vs":"vs"
 }

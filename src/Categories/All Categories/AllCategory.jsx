@@ -1,6 +1,4 @@
 import { useEffect, useState, useMemo, useRef } from "react";
-import ReactPaginate from "react-paginate";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import DeleteCategory from "../Delete Category/DeleteCategory";
 import { ClipLoader } from "react-spinners";
@@ -10,6 +8,9 @@ import SearchBar from "../../Components/Search Bar/SearchBar";
 import { Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { BsSortDown } from "react-icons/bs";
+import Pagination from "../../Components/Pagination/Pagination";
+import DeleteMultipleCategories from "./DeleteMultipleCategories";
+import { toast } from "react-toastify";
 
 function AllCategory() {
   const [categories, setCategories] = useState([]);
@@ -20,6 +21,10 @@ function AllCategory() {
   const [searchQuery, setSearchQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState(null);
   const [showTypeDropdown, setShowTypeDropdown] = useState(false);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectAll, setSelectAll] = useState(false);
+  const [showDeleteAllModal, setShowDeleteAllModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const [isRTL, setIsRTL] = useState(false);
@@ -67,6 +72,33 @@ function AllCategory() {
       }
       return updatedCategories;
     });
+    setSelectedCategories((prev) => prev.filter((id) => id !== categoryId));
+  };
+
+  const handleDeleteMultiple = async () => {
+    setIsDeleting(true);
+    try {
+      // await deleteMultipleCategories(selectedCategories);
+      
+      setCategories(prevCategories =>
+        prevCategories.filter(category => !selectedCategories.includes(category.id))
+      );
+      
+      setSelectedCategories([]);
+      setSelectAll(false);
+      setShowDeleteAllModal(false);
+      
+      if (currentItems.length === selectedCategories.length && currentPage > 1) {
+        setCurrentPage(currentPage - 1);
+      }
+      
+      toast.success(t("categoriesDeletedSuccessfully"));
+    } catch (error) {
+      console.error("Failed to delete categories:", error);
+      toast.error(t("deleteFailed"));
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   const handleTypeFilterSelect = (type) => {
@@ -82,7 +114,9 @@ function AllCategory() {
 
   const filteredCategories = useMemo(() => {
     return categories.filter((category) => {
-      const matchesSearch = category.name.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSearch = category.name
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
       const matchesType = typeFilter ? category.type_name === typeFilter : true;
       return matchesSearch && matchesType;
     });
@@ -127,12 +161,39 @@ function AllCategory() {
 
   // Get unique category types for the dropdown
   const uniqueTypes = useMemo(() => {
-    const types = new Set(categories.map(category => category.type_name));
+    const types = new Set(categories.map((category) => category.type_name));
     return Array.from(types).sort();
   }, [categories]);
 
+  // Handle select all categories
+  const handleSelectAll = (e) => {
+    const isChecked = e.target.checked;
+    setSelectAll(isChecked);
+    if (isChecked) {
+      const allCategoryIds = currentItems.map((category) => category.id);
+      setSelectedCategories(allCategoryIds);
+    } else {
+      setSelectedCategories([]);
+    }
+  };
+
+  // Handle select individual category
+  const handleSelectCategory = (categoryId, isChecked) => {
+    if (isChecked) {
+      setSelectedCategories((prev) => [...prev, categoryId]);
+    } else {
+      setSelectedCategories((prev) => prev.filter((id) => id !== categoryId));
+      setSelectAll(false);
+    }
+  };
+
+  // Handle delete selected categories
+  const handleDeleteSelected = () => {
+    setShowDeleteAllModal(true);
+  };
+
   return (
-    <div className="bg-gray-100 p-4 h-[89vh] pt-5">
+    <div className="bg-gray-100 min-h-[89vh] p-4 pt-5">
       <Helmet>
         <title>
           {t("cats")} | {t("vertex")}
@@ -155,6 +216,26 @@ function AllCategory() {
             />
           }
         />
+
+        {selectedCategories.length > 0 && (
+          <div className="mt-3 flex justify-between items-center bg-gray-50 p-3 rounded">
+            <span className="text-gray-600">
+              {t("selecting")} {selectedCategories.length} {t("items")}
+            </span>
+            <button
+              onClick={handleDeleteSelected}
+              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+              disabled={isDeleting}
+            >
+              {isDeleting ? (
+                <ClipLoader color="#ffffff" size={20} />
+              ) : (
+                t("deleteAll")
+              )}
+            </button>
+          </div>
+        )}
+
         {error ? (
           <div className="text-red-500 text-center mt-10">{t("error")}</div>
         ) : isLoading ? (
@@ -170,11 +251,32 @@ function AllCategory() {
                 <thead>
                   <tr>
                     <th className="px-3 py-3 border-t border-b text-left rtl:text-right w-12">
-                      <input
-                        type="checkbox"
-                        className="form-checkbox h-4 w-4"
-                        aria-label="Select all categories"
-                      />
+                      <label className="inline-flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          className="hidden peer"
+                          checked={selectAll}
+                          onChange={handleSelectAll}
+                          aria-label="Select all categories"
+                        />
+                        <span
+                          className={`w-4 h-4 border-2 rounded flex items-center justify-center transition-all duration-200 ${
+                            selectAll
+                              ? "border-primary bg-primary"
+                              : "border-gray-300"
+                          }`}
+                        >
+                          {selectAll && (
+                            <svg
+                              className="w-3 h-3 text-white"
+                              viewBox="0 0 20 20"
+                              fill="currentColor"
+                            >
+                              <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
+                            </svg>
+                          )}
+                        </span>
+                      </label>
                     </th>
                     <th className="px-6 py-3 text-left border w-500px">
                       <p className="flex justify-between items-center">
@@ -204,7 +306,9 @@ function AllCategory() {
                                   ? "bg-customOrange-lightOrange text-primary rounded-md"
                                   : "bg-customOrange-lightOrange text-primary"
                               }`}
-                              onClick={() => setShowTypeDropdown(!showTypeDropdown)}
+                              onClick={() =>
+                                setShowTypeDropdown(!showTypeDropdown)
+                              }
                               aria-label="Filter by type"
                             >
                               <BsSortDown />
@@ -239,11 +343,37 @@ function AllCategory() {
                     return (
                       <tr key={category.id}>
                         <td className="px-3 py-3 border">
-                          <input
-                            type="checkbox"
-                            className="form-checkbox h-4 w-4"
-                            aria-label={`Select ${category.name}`}
-                          />
+                          <label className="inline-flex items-center cursor-pointer">
+                            <input
+                              type="checkbox"
+                              className="hidden peer"
+                              checked={selectedCategories.includes(category.id)}
+                              onChange={(e) =>
+                                handleSelectCategory(
+                                  category.id,
+                                  e.target.checked
+                                )
+                              }
+                              aria-label={`Select ${category.name}`}
+                            />
+                            <span
+                              className={`w-4 h-4 border-2 rounded flex items-center justify-center transition-all duration-200 ${
+                                selectedCategories.includes(category.id)
+                                  ? "border-primary bg-primary"
+                                  : "border-gray-300"
+                              }`}
+                            >
+                              {selectedCategories.includes(category.id) && (
+                                <svg
+                                  className="w-3 h-3 text-white"
+                                  viewBox="0 0 20 20"
+                                  fill="currentColor"
+                                >
+                                  <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
+                                </svg>
+                              )}
+                            </span>
+                          </label>
                         </td>
                         <td className="flex gap-3 px-6 py-3 border-t text-gray-600">
                           <img
@@ -299,31 +429,22 @@ function AllCategory() {
                 </tbody>
               </table>
             </div>
-            <ReactPaginate
+            <Pagination
               pageCount={Math.ceil(filteredCategories.length / itemsPerPage)}
               onPageChange={({ selected }) => paginate(selected + 1)}
-              containerClassName="flex items-center justify-end mt-5 text-gray-400 text-14"
-              pageClassName="mx-1 px-3 py-1 rounded"
-              activeClassName="bg-customOrange-lightOrange text-primary"
-              previousLabel={
-                isRTL ? (
-                  <ChevronRight className="w-5 h-5 text-primary" />
-                ) : (
-                  <ChevronLeft className="w-5 h-5 text-center text-primary" />
-                )
-              }
-              nextLabel={
-                isRTL ? (
-                  <ChevronLeft className="w-5 h-5 text-center text-primary" />
-                ) : (
-                  <ChevronRight className="w-5 h-5 text-primary" />
-                )
-              }
-              previousClassName="mx-1 px-1 py-1 font-bold text-primary text-18 "
-              nextClassName="mx-1 px-1 py-1 font-bold text-primary text-18"
+              currentPage={currentPage}
+              isRTL={isRTL}
+              marginPagesDisplayed={2}
+              pageRangeDisplayed={5}
             />
           </>
         )}
+        <DeleteMultipleCategories
+          isOpen={showDeleteAllModal}
+          onClose={() => setShowDeleteAllModal(false)}
+          onConfirm={handleDeleteMultiple}
+          count={selectedCategories.length}
+        />
       </section>
     </div>
   );

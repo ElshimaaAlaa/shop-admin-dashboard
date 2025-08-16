@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState, useMemo, useRef } from "react";
 import { FaSackDollar } from "react-icons/fa6";
 import { BiSupport } from "react-icons/bi";
@@ -40,9 +41,7 @@ function AllCustomers() {
 
   // Date filter states
   const [showStartDateFilter, setShowStartDateFilter] = useState(false);
-  const [showEndDateFilter, setShowEndDateFilter] = useState(false);
   const [selectedStartDate, setSelectedStartDate] = useState(null);
-  const [selectedEndDate, setSelectedEndDate] = useState(null);
 
   const startDateFilterRef = useRef(null);
   const endDateFilterRef = useRef(null);
@@ -89,7 +88,6 @@ function AllCustomers() {
         !endDateFilterRef.current.contains(event.target) &&
         !event.target.closest(".end-date-filter-button")
       ) {
-        setShowEndDateFilter(false);
       }
     };
 
@@ -159,18 +157,8 @@ function AllCustomers() {
       });
     }
 
-    // Apply end date filter if selected
-    if (selectedEndDate) {
-      const endDate = new Date(selectedEndDate);
-      result = result.filter((customer) => {
-        if (!customer.joining_date) return false;
-        const customerDate = new Date(customer.joining_date);
-        return customerDate <= endDate;
-      });
-    }
-
     return result;
-  }, [customers, searchQuery, selectedStartDate, selectedEndDate]);
+  }, [customers, searchQuery, selectedStartDate]);
 
   const indexOfLastItem = (currentPage + 1) * itemsPerPage;
   const indexOfFirstItem = currentPage * itemsPerPage;
@@ -181,7 +169,7 @@ function AllCustomers() {
 
   // New variables to handle different empty states
   const hasSearchResults = searchQuery && filteredCustomers.length === 0;
-  const hasDateFilter = selectedStartDate || selectedEndDate;
+  const hasDateFilter = selectedStartDate;
   const hasFilterResults = hasDateFilter && filteredCustomers.length === 0;
   const noData =
     filteredCustomers.length === 0 && !hasDateFilter && !searchQuery;
@@ -223,18 +211,8 @@ function AllCustomers() {
     setSelectedStartDate(null);
   };
 
-  const clearEndDateFilter = () => {
-    setSelectedEndDate(null);
-  };
-
   const toggleStartDateFilter = () => {
     setShowStartDateFilter(!showStartDateFilter);
-    setShowEndDateFilter(false);
-  };
-
-  const toggleEndDateFilter = () => {
-    setShowEndDateFilter(!showEndDateFilter);
-    setShowStartDateFilter(false);
   };
 
   return (
@@ -264,9 +242,9 @@ function AllCustomers() {
           icon={RiUser3Fill}
           title={t("allCustomers")}
           totalNumber={statistics.customers?.change_rate || 0}
-          percentage={`${
-            statistics.customers?.current_month_count || 0
-          }% vs. ${t("previousMonth")}`}
+          percentage={`${statistics.customers?.current_month_count || 0}% ${t(
+            "vs"
+          )} ${t("previousMonth")}`}
           duration={`${t("lastMonth")} ${
             statistics.customers?.previous_month_count || 0
           }`}
@@ -275,9 +253,9 @@ function AllCustomers() {
           icon={BiSupport}
           title={t("supportRequest")}
           totalNumber={statistics.contacts?.change_rate || 0}
-          percentage={`${
-            statistics.contacts?.current_month_count || 0
-          }% vs. ${t("previousMonth")}`}
+          percentage={`${statistics.contacts?.current_month_count || 0}% ${t(
+            "vs"
+          )} ${t("previousMonth")}`}
           duration={`${t("lastMonth")} ${
             statistics.contacts?.previous_month_count || 0
           }`}
@@ -286,9 +264,9 @@ function AllCustomers() {
           icon={FaSackDollar}
           title={t("payment")}
           totalNumber={statistics.payments?.change_rate || 0}
-          percentage={`${
-            statistics.payments?.current_month_count || 0
-          }% vs. ${t("previousMonth")}`}
+          percentage={`${statistics.payments?.current_month_count || 0}% ${t(
+            "vs"
+          )} ${t("previousMonth")}`}
           duration={`${t("lastMonth")} ${
             statistics.payments?.previous_month_count || 0
           }`}
@@ -334,7 +312,7 @@ function AllCustomers() {
             <ClipLoader color="#E0A75E" />
           </div>
         ) : hasSearchResults ? (
-          <div className="text-gray-400 text-center text-14 mt-10">
+          <div className="text-gray-400 text-center text-15 mt-5">
             {t("noMatchResults")}
           </div>
         ) : (
@@ -416,44 +394,8 @@ function AllCustomers() {
                         </div>
                       )}
                     </th>
-                    <th className="px-6 py-3 text-left border text-15">
-                      <div className="flex justify-between items-center">
-                        <p>{t("endDate")}</p>
-                        <div className="flex items-center gap-2">
-                          {selectedEndDate && (
-                            <span
-                              className="text-xs text-primary cursor-pointer"
-                              onClick={clearEndDateFilter}
-                            >
-                              {t("clear")}
-                            </span>
-                          )}
-                          <button
-                            onClick={toggleEndDateFilter}
-                            className={`p-1 rounded end-date-filter-button ${
-                              selectedEndDate
-                                ? "bg-primary text-white"
-                                : "bg-customOrange-lightOrange text-primary"
-                            }`}
-                          >
-                            <BsSortDown size={16} />
-                          </button>
-                        </div>
-                      </div>
-                      {showEndDateFilter && (
-                        <div
-                          ref={endDateFilterRef}
-                          className="absolute ltr:right-40 rtl:left-36 mt-1 z-10"
-                        >
-                          <CustomCalendar
-                            selectedDate={selectedEndDate}
-                            onChange={(date) => {
-                              setSelectedEndDate(date);
-                              setShowEndDateFilter(false);
-                            }}
-                          />
-                        </div>
-                      )}
+                    <th className="px-6 py-3 text-left rtl:text-right border text-15">
+                      {t("spent")}
                     </th>
                     <th className="px-3 py-3 border text-center w-20">
                       {t("actions")}
@@ -534,7 +476,7 @@ function AllCustomers() {
                         </td>
                         <td className="px-3 py-3 border-t text-gray-600 border-r text-14 w-180">
                           <div className="flex items-center gap-2">
-                            {customer.phone || "N/A"}
+                            {customer.phone || t("notProvided")}
                             {customer.phone && (
                               <button
                                 onClick={(e) => {
@@ -555,7 +497,7 @@ function AllCustomers() {
                               color="#69ABB5"
                               size={17}
                             />
-                            {customer.joining_date || "N/A"}
+                            {customer.joining_date || t("notProvided")}
                           </p>
                         </td>
                         <td className="px-3 py-3 border-t text-gray-600 border-r text-15 w-36">
@@ -574,7 +516,7 @@ function AllCustomers() {
               </table>
             </div>
             <Pagination
-                pageCount={Math.ceil(filteredCustomers.length / itemsPerPage)}
+              pageCount={Math.ceil(filteredCustomers.length / itemsPerPage)}
               onPageChange={handlePageClick}
               currentPage={currentPage}
               isRTL={isRTL}

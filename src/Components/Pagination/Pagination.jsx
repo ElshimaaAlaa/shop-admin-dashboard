@@ -7,11 +7,11 @@ const Pagination = ({
   onPageChange,
   currentPage,
   isRTL,
-  containerClassName = "flex items-center justify-end mt-5 text-gray-400 text-14",
-  pageClassName = "mx-1 px-3 py-1 rounded",
-  activeClassName = "bg-customOrange-lightOrange text-primary",
-  previousClassName = "mx-1 px-3 py-1 font-bold text-primary text-18",
-  nextClassName = "mx-1 px-3 py-1 font-bold text-primary text-18",
+  containerClassName = "flex items-center justify-end mt-5 text-gray-400 text-15",
+  pageClassName = "mx-1 px- py-1 rounded",
+  activeClassName = "bg-customOrange-lightOrange text-primary px-3",
+  previousClassName = "mx-1 px-1 py-1 font-bold text-primary ",
+  nextClassName = "mx-1 px-1 py-1 font-bold text-primary ",
 }) => {
   const { t } = useTranslation();
 

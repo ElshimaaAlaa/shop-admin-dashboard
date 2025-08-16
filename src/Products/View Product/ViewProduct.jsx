@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import Header from "../../Components/Header/Header";
 
 const FALLBACK_TEXT = "__";
 
@@ -88,12 +89,7 @@ function ViewProduct() {
         </title>
         <meta name="description" content={t("viewProductDescription")} />
       </Helmet>
-
-      <section className="bg-white p-4 rounded-md mt-5 mb-3">
-        <p className="text-gray-400 text-12">{t("viewProductHead")}</p>
-        <h1 className="text-17 mt-3 font-bold">{t("viewProduct")}</h1>
-      </section>
-
+      <Header subtitle={t("viewProductHead")} title={t("viewProduct")} className="my-3"/>
       <div className="flex flex-col">
         <div className="flex gap-5">
           {/* Product Basic Information */}

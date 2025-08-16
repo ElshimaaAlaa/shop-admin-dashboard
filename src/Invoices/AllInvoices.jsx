@@ -9,6 +9,7 @@ import { InvoicePagination } from "./InvoicePagination";
 import { useTranslation } from "react-i18next";
 import Header from "../Components/Header/Header";
 
+
 function AllInvoices() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -97,7 +98,7 @@ function AllInvoices() {
   };
 
   return (
-    <div className="bg-gray-100 pb-10 flex flex-col min-h-[89vh] mx-5">
+    <div className="bg-gray-100 pb-10 flex flex-col min-h-[89vh] mx-5 pt-5">
       <Helmet>
         <title>
           {t("invoices")} | {t("vertex")}
@@ -128,7 +129,6 @@ function AllInvoices() {
                 navigate={navigate}
                 searchQuery={searchQuery}
               />
-
               {filteredInvoices.length > 0 && (
                 <InvoicePagination
                   pageCount={pageCount}
@@ -143,5 +143,4 @@ function AllInvoices() {
     </div>
   );
 }
-
 export default AllInvoices;

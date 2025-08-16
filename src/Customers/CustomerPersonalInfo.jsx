@@ -1,9 +1,43 @@
 import { IoCopyOutline } from "react-icons/io5";
 import { useTranslation } from "react-i18next";
-export const CustomerPersonalInfo = ({ customerData, copyPhoneNumber }) => {
-  const { t } = useTranslation();
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+export const CustomerPersonalInfo = ({ customerData }) => {
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
+  const copyPhoneNumber = (phoneNumber) => {
+    if (phoneNumber) {
+      navigator.clipboard
+        .writeText(phoneNumber)
+        .then(() => {
+          toast.success(t("successCopy"), {
+            position: isRTL ? "top-left" : "top-right",
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        })
+        .catch((err) => {
+          toast.error(t("copyFailed"), {
+            position: isRTL ? "top-left" : "top-right",
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        });
+    }
+  };
+
   return (
     <div className="w-450">
+      <ToastContainer rtl={isRTL} />
+
       <section className="rounded-md bg-white p-3 border border-gray-200">
         <h3 className="font-bold text-17">{t("personalInfo")}</h3>
         <img
@@ -20,7 +54,21 @@ export const CustomerPersonalInfo = ({ customerData, copyPhoneNumber }) => {
           <p className="text-14">{customerData.personal_info?.email}</p>
         </div>
         <div className="mt-4">
-          <h4 className="text-gray-400 text-14">{t("phone")}</h4>
+          <h4 className="text-gray-400 text-14">
+            {t("phone")}
+            {customerData.phone && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  copyPhoneNumber(customerData.phone);
+                }}
+                className="text-blue-500 hover:text-blue-700 text-sm flex items-center gap-1"
+                title={t("copyPhone")}
+              >
+                <IoCopyOutline color="#E0A75E" size={15} />
+              </button>
+            )}
+          </h4>
           <p className="text-14 flex items-center gap-2">
             {customerData.personal_info?.phone || "Not provided"}
             {customerData.personal_info?.phone && (

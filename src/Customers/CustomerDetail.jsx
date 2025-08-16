@@ -7,6 +7,11 @@ import { CustomerPersonalInfo } from "./CustomerPersonalInfo";
 import { CustomerStatistics } from "./CustomerStatistics";
 import { CustomerTransactions } from "./CustomerTransactions";
 import { useTranslation } from "react-i18next";
+import Header from "../Components/Header/Header";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { IoCopyOutline } from "react-icons/io5";
+
 function CustomerDetail() {
   const [customerData, setCustomerData] = useState([]);
   const [statistics, setStatistics] = useState([]);
@@ -16,7 +21,9 @@ function CustomerDetail() {
   const { customerId } = useParams();
   const live_shop_domain = localStorage.getItem("live_shop_domain");
   const role = localStorage.getItem("role");
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
+
   useEffect(() => {
     const CustomerDetails = async () => {
       setIsLoading(true);
@@ -44,16 +51,31 @@ function CustomerDetail() {
     CustomerDetails();
   }, [customerId, live_shop_domain, role]);
 
-  const copyPhoneNumber = () => {
-    if (customerData.personal_info?.phone) {
+  const copyPhoneNumber = (phoneNumber) => {
+    if (phoneNumber) {
       navigator.clipboard
-        .writeText(customerData.personal_info?.phone)
+        .writeText(phoneNumber)
         .then(() => {
-          alert(t("successCopy"));
+          toast.success(t("successCopy"), {
+            position: isRTL ? "top-left" : "top-right",
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
         })
         .catch((err) => {
-          console.error("Failed to copy phone number: ", err);
-          alert(t("faildCopy"));
+          toast.error(t("copyFailed"), {
+            position: isRTL ? "top-left" : "top-right",
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
         });
     }
   };
@@ -65,15 +87,17 @@ function CustomerDetail() {
           {t("customerDetails")} | {t("vertex")}
         </title>
       </Helmet>
-      <section className="bg-white mb-3 p-5 rounded-md w-full">
-        <p className="text-gray-400 text-13">{t("customerDetailsHead")}</p>
-        <h1 className="font-bold text-17 mt-2">{t("customerDetails")}</h1>
-      </section>
+      <ToastContainer rtl={isRTL} />
+      <Header
+        subtitle={t("customerDetailsHead")}
+        title={t("customerDetails")}
+      />
       <CustomerBalance balance={customerData.personal_info?.balance} />
       <div className="mt-3 flex gap-3">
         <CustomerPersonalInfo
           customerData={customerData}
           copyPhoneNumber={copyPhoneNumber}
+          CopyIcon={IoCopyOutline}
         />
         <div className="w-full">
           <CustomerStatistics statistics={statistics} />
@@ -87,4 +111,5 @@ function CustomerDetail() {
     </div>
   );
 }
+
 export default CustomerDetail;

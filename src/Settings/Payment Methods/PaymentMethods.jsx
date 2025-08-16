@@ -1,10 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState, useMemo } from "react";
 import { Helmet } from "react-helmet";
 import SearchBar from "../../Components/Search Bar/SearchBar";
 import { Plus } from "lucide-react";
 import { ClipLoader } from "react-spinners";
-import ReactPaginate from "react-paginate";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { fetchPaymentMethods } from "../../ApiServices/PaymentMethods";
 import { MdPayment } from "react-icons/md";
 import DeletePayment from "./DletePayment";
@@ -13,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import Header from "../../Components/Header/Header";
 import Head from "../../Components/Head/Head";
 import DeleteMultiplePayments from "./DeleteMultiplePayment";
+import Pagination from "../../Components/Pagination/Pagination";
 
 function PaymentMethods() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -61,14 +61,10 @@ function PaymentMethods() {
 
   const pageCount = Math.ceil(filteredPaymentData.length / itemsPerPage);
 
-  const handlePageClick = ({ selected }) => {
-    setCurrentPage(selected);
-  };
-
   const handleDeleteSuccess = (deletedId) => {
     const updatedData = paymentData.filter((item) => item.id !== deletedId);
     setPaymentData(updatedData);
-    setSelectedPayments(prev => prev.filter(id => id !== deletedId));
+    setSelectedPayments((prev) => prev.filter((id) => id !== deletedId));
     if (currentItems.length === 1 && currentPage > 0) {
       setCurrentPage(currentPage - 1);
     }
@@ -122,7 +118,11 @@ function PaymentMethods() {
           {t("paymentMethod")} | {t("vertex")}
         </title>
       </Helmet>
-      <Header title={t("paymentMethod")} subtitle={t("paymentMethodMenu")} className="mx-5"/>
+      <Header
+        title={t("paymentMethod")}
+        subtitle={t("paymentMethodMenu")}
+        className="mx-5 mt-5 mb-4"
+      />
       <Head
         icon={MdPayment}
         title={t("shippingProvider")}
@@ -180,7 +180,7 @@ function PaymentMethods() {
               </div>
             )}
 
-            <div className="border border-gray-200 rounded-lg mt-4 overflow-hidden">
+            <div className="border border-gray-200 rounded-lg overflow-hidden">
               <table className="bg-white min-w-full table">
                 <thead>
                   <tr>
@@ -269,29 +269,13 @@ function PaymentMethods() {
                 </tbody>
               </table>
             </div>
-            <ReactPaginate
+            <Pagination
               pageCount={pageCount}
-              onPageChange={handlePageClick}
-              forcePage={currentPage}
-              containerClassName="flex items-center justify-end mt-5 text-gray-400 text-14"
-              pageClassName="mx-1 px-3 py-1 rounded"
-              activeClassName="bg-customOrange-lightOrange text-primary"
-              previousLabel={
-                isRTL ? (
-                  <ChevronRight className="w-5 h-5 text-primary" />
-                ) : (
-                  <ChevronLeft className="w-5 h-5 text-center text-primary" />
-                )
-              }
-              nextLabel={
-                isRTL ? (
-                  <ChevronLeft className="w-5 h-5 text-center text-primary" />
-                ) : (
-                  <ChevronRight className="w-5 h-5 text-primary" />
-                )
-              }
-              previousClassName="mx-1 px-3 py-1 font-bold text-primary text-18"
-              nextClassName="mx-1 px-3 py-1 font-bold text-primary text-18"
+              onPageChange={({ selected }) => setCurrentPage(selected + 1)}
+              currentPage={currentPage}
+              isRTL={isRTL}
+              marginPagesDisplayed={2}
+              pageRangeDisplayed={5}
             />
           </>
         )}
