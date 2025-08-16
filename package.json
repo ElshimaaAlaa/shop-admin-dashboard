@@ -33,11 +33,13 @@
     "react-scripts": "^5.0.1",
     "react-select": "^5.10.1",
     "react-simple-star-rating": "^5.1.7",
+    "react-slick": "^0.31.0",
     "react-spinners": "^0.15.0",
     "react-to-pdf": "^2.0.1",
     "react-toastify": "^11.0.5",
     "recharts": "^2.15.3",
     "sass": "^1.83.4",
+    "slick-carousel": "^1.8.1",
     "web-vitals": "^4.2.4",
     "yub": "^0.11.1",
     "yup": "^1.6.1"

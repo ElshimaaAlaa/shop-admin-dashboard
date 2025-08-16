@@ -10,6 +10,10 @@ import { MdPayment } from "react-icons/md";
 import DeletePayment from "./DletePayment";
 import AddShippingProvider from "./AddPaymentMethods";
 import { useTranslation } from "react-i18next";
+import Header from "../../Components/Header/Header";
+import Head from "../../Components/Head/Head";
+import DeleteMultiplePayments from "./DeleteMultiplePayment";
+
 function PaymentMethods() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -20,6 +24,10 @@ function PaymentMethods() {
   const [itemsPerPage] = useState(10);
   const { t, i18n } = useTranslation();
   const [isRTL, setIsRTL] = useState(false);
+  const [selectedPayments, setSelectedPayments] = useState([]);
+  const [selectAll, setSelectAll] = useState(false);
+  const [showDeleteAllModal, setShowDeleteAllModal] = useState(false);
+
   const fetchData = async () => {
     setIsLoading(true);
     try {
@@ -36,8 +44,8 @@ function PaymentMethods() {
 
   useEffect(() => {
     fetchData();
-    setIsRTL(i18n.language==="ar")
-  }, [searchQuery,i18n.language]);
+    setIsRTL(i18n.language === "ar");
+  }, [searchQuery, i18n.language]);
 
   const filteredPaymentData = useMemo(() => {
     return paymentData.filter((payment) =>
@@ -60,8 +68,42 @@ function PaymentMethods() {
   const handleDeleteSuccess = (deletedId) => {
     const updatedData = paymentData.filter((item) => item.id !== deletedId);
     setPaymentData(updatedData);
-
+    setSelectedPayments(prev => prev.filter(id => id !== deletedId));
     if (currentItems.length === 1 && currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+    }
+    fetchData();
+  };
+
+  const handleSelectAll = (e) => {
+    const isChecked = e.target.checked;
+    setSelectAll(isChecked);
+    if (isChecked) {
+      const allPaymentIds = currentItems.map((payment) => payment.id);
+      setSelectedPayments(allPaymentIds);
+    } else {
+      setSelectedPayments([]);
+    }
+  };
+
+  const handleSelectPayment = (paymentId, isChecked) => {
+    if (isChecked) {
+      setSelectedPayments((prev) => [...prev, paymentId]);
+    } else {
+      setSelectedPayments((prev) => prev.filter((id) => id !== paymentId));
+      setSelectAll(false);
+    }
+  };
+
+  const handleDeleteMultiple = () => {
+    setPaymentData((prevPayments) =>
+      prevPayments.filter((payment) => !selectedPayments.includes(payment.id))
+    );
+    setSelectedPayments([]);
+    setSelectAll(false);
+    setShowDeleteAllModal(false);
+
+    if (selectedPayments.length === currentItems.length && currentPage > 0) {
       setCurrentPage(currentPage - 1);
     }
     fetchData();
@@ -80,17 +122,14 @@ function PaymentMethods() {
           {t("paymentMethod")} | {t("vertex")}
         </title>
       </Helmet>
-      <div className="rounded-md p-5 mx-5 bg-white mt-5">
-        <p className="text-13 text-gray-400">{t("paymentMethodMenu")}</p>
-        <h1 className="mt-2 text-17 font-bold">{t("paymentMethod")}</h1>
-      </div>
-      <div className="rounded-md bg-customOrange-mediumOrange border mt-3 border-primary p-4 mx-5 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <MdPayment color="#E0A75E" size={24} />
-          <p className="text-gray-500 text-15">{t("paymentMethod")}</p>
-        </div>
-        <p className="font-bold text-16">{filteredPaymentData.length}</p>
-      </div>
+      <Header title={t("paymentMethod")} subtitle={t("paymentMethodMenu")} />
+      <Head
+        icon={MdPayment}
+        title={t("shippingProvider")}
+        value={filteredPaymentData.length}
+        backgroundColor="bg-customOrange-mediumOrange"
+        iconColor="#E0A75E"
+      />
       <div className="bg-white rounded-md p-5 mx-5 my-3">
         <SearchBar
           icon={
@@ -126,19 +165,54 @@ function PaymentMethods() {
           </div>
         ) : (
           <>
+            {selectedPayments.length > 0 && (
+              <div className="mt-3 flex justify-between items-center bg-gray-50 p-3 rounded">
+                <span className="text-gray-600">
+                  {t("selecting")} {selectedPayments.length} {t("fromitems")}
+                </span>
+                <button
+                  onClick={() => setShowDeleteAllModal(true)}
+                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                >
+                  {t("deleteAll")}
+                </button>
+              </div>
+            )}
+
             <div className="border border-gray-200 rounded-lg mt-4 overflow-hidden">
               <table className="bg-white min-w-full table">
                 <thead>
                   <tr>
                     <th className="px-3 py-3 border-t border-b text-left cursor-pointer">
-                      <p className="flex items-center gap-3">
-                        <input
-                          type="checkbox"
-                          className="form-checkbox h-4 w-4"
-                          aria-label="Select all categories"
-                        />
+                      <div className="flex items-center gap-3">
+                        <label className="inline-flex items-center cursor-pointer">
+                          <input
+                            type="checkbox"
+                            className="hidden peer"
+                            checked={selectAll}
+                            onChange={handleSelectAll}
+                            aria-label="Select all payment methods"
+                          />
+                          <span
+                            className={`w-4 h-4 border-2 rounded flex items-center justify-center transition-all duration-200 ${
+                              selectAll
+                                ? "border-primary bg-primary"
+                                : "border-gray-300"
+                            }`}
+                          >
+                            {selectAll && (
+                              <svg
+                                className="w-3 h-3 text-white"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                              >
+                                <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
+                              </svg>
+                            )}
+                          </span>
+                        </label>
                         {t("paymentMethod")}
-                      </p>
+                      </div>
                     </th>
                     <th className="px-6 py-3 border text-center w-12">
                       {t("actions")}
@@ -149,14 +223,37 @@ function PaymentMethods() {
                   {currentItems.map((item) => (
                     <tr key={item.id} className="border-t hover:bg-gray-50">
                       <td className="px-3 py-3 border-t text-14 border-r cursor-pointer">
-                        <p className="flex items-center gap-3">
-                          <input
-                            type="checkbox"
-                            className="form-checkbox h-4 w-4"
-                            aria-label="Select all categories"
-                          />
+                        <div className="flex items-center gap-3">
+                          <label className="inline-flex items-center cursor-pointer">
+                            <input
+                              type="checkbox"
+                              className="hidden peer"
+                              checked={selectedPayments.includes(item.id)}
+                              onChange={(e) =>
+                                handleSelectPayment(item.id, e.target.checked)
+                              }
+                              aria-label="Select payment method"
+                            />
+                            <span
+                              className={`w-4 h-4 border-2 rounded flex items-center justify-center transition-all duration-200 ${
+                                selectedPayments.includes(item.id)
+                                  ? "border-primary bg-primary"
+                                  : "border-gray-300"
+                              }`}
+                            >
+                              {selectedPayments.includes(item.id) && (
+                                <svg
+                                  className="w-3 h-3 text-white"
+                                  viewBox="0 0 20 20"
+                                  fill="currentColor"
+                                >
+                                  <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
+                                </svg>
+                              )}
+                            </span>
+                          </label>
                           {item.name}
-                        </p>
+                        </div>
                       </td>
                       <td className="text-center px-3 py-3 bordr-l border-r">
                         <div className="flex justify-center items-center">
@@ -198,6 +295,12 @@ function PaymentMethods() {
           </>
         )}
       </div>
+      <DeleteMultiplePayments
+        isOpen={showDeleteAllModal}
+        onClose={() => setShowDeleteAllModal(false)}
+        onConfirm={handleDeleteMultiple}
+        count={selectedPayments.length}
+      />
     </div>
   );
 }

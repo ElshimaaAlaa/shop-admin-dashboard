@@ -472,5 +472,10 @@
   "Delivered": "Delivered",
   "send": "Send us your problem and we will contact you",
   "sendProblem": "Send your problem",
-  "callUs": "Call Us"
+  "callUs": "Call Us",
+  "selecting":"Selected",
+  "deleteAll":"Delete All",
+  "fromitems":"Items",
+  "deleteMultipleShops":"Are You Sure You Want To Delete These Shipping Providers?",
+  "DeleteMultiplePayment":"Are You Sure You Want To Delete All Payment Methods?"
 }

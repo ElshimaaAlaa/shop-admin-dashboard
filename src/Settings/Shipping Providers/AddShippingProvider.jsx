@@ -12,7 +12,7 @@ function AddShippingProvider({ isOpen, onClose }) {
   const [error, setError] = useState(null);
   const { t } = useTranslation();
   const providers = [
-    //fetched from end point when back end complete it
+    //fetched from end point when back end complete it (integration)
     { id: 1, name_ar: "أرامكس", name_en: "Aramex", code: "aramex" },
     { id: 2, name_ar: "دي إتش إل", name_en: "DHL", code: "dhl" },
     { id: 3, name_ar: "فيديكس", name_en: "FedEx", code: "fedex" },

@@ -474,10 +474,15 @@
   "clear": "مسح",
   "paid": "مدفوع",
   "unpaid": "غير مدفوع",
-  "pending":"قيد الأنتظار",
-  "Preparing":"جاري التجهيز",
-  "Shipped":"تم الشحن",
-  "Cancelled":"تم الالغاء",
-  "inTransit" :"في الطريق",
-  "Delivered":"تم الاستلام"
+  "pending": "قيد الأنتظار",
+  "Preparing": "جاري التجهيز",
+  "Shipped": "تم الشحن",
+  "Cancelled": "تم الالغاء",
+  "inTransit": "في الطريق",
+  "Delivered": "تم الاستلام",
+  "selecting": "تم تحديد",
+  "deleteAll": "حذف الكل",
+  "fromitems": "من العناصر",
+  "deleteMultipleShops": "هل أنت متأكد من رغبتك في حذف مقدمي الشحن ؟",
+  "DeleteMultiplePayment": "هل أنت متأكد من رغبتك في حذف جميع وسائل الدفع ؟"
 }
