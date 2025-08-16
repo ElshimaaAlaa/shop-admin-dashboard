@@ -473,9 +473,13 @@
   "send": "Send us your problem and we will contact you",
   "sendProblem": "Send your problem",
   "callUs": "Call Us",
-  "selecting":"Selected",
-  "deleteAll":"Delete All",
-  "fromitems":"Items",
-  "deleteMultipleShops":"Are You Sure You Want To Delete These Shipping Providers?",
-  "DeleteMultiplePayment":"Are You Sure You Want To Delete All Payment Methods?"
+  "selecting": "Selected",
+  "deleteAll": "Delete All",
+  "fromitems": "Items",
+  "deleteMultipleShops": "Are You Sure You Want To Delete These Shipping Providers?",
+  "DeleteMultiplePayment": "Are You Sure You Want To Delete All Payment Methods?",
+  "DeleteMultipleCoupon": "Are You Sure You Want To Delete All Coupons ?",
+  "DeleteMultipleDiscounts": "Are You Sure You Want To Delete All Discounts ?",
+  "DeleteMultipleUsers": "Are You Sure You Want To Delete All Users ?",
+  "DeleteMultipleInvoices": "Are You Sure You Want To Delete All Invoices ?"
 }

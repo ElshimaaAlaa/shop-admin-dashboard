@@ -12,7 +12,7 @@ const Header = ({
 }) => {
   return (
     <section
-      className={`rounded-md p-5 mx-5 ${bgColor} ${spacing} ${className}`}
+      className={`rounded-md p-5 ${bgColor} ${spacing} ${className}`}
     >
       <p className={`${subtitleSize} ${subtitleColor}`}>{t(subtitle)}</p>
       <h1 className={`${titleSize} font-bold mt-2 ${titleColor}`}>
@@ -21,5 +21,4 @@ const Header = ({
     </section>
   );
 };
-
 export default Header;

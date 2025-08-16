@@ -11,7 +11,7 @@ const Head = ({
 }) => {
   return (
     <section 
-      className={`rounded-md border mt-3 p-4 mx-5 flex items-center justify-between ${backgroundColor} ${borderColor} ${className}`}
+      className={`rounded-md border mt-3 p-4 flex items-center justify-between ${backgroundColor} ${borderColor} ${className}`}
     >
       <div className="flex items-center gap-2">
         <Icon color={iconColor} size={22} />

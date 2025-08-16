@@ -7,6 +7,8 @@ import { InvoiceTable } from "./InvoiceTable";
 import { InvoiceSearch } from "./InvoiceSearch";
 import { InvoicePagination } from "./InvoicePagination";
 import { useTranslation } from "react-i18next";
+import Header from "../Components/Header/Header";
+
 function AllInvoices() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -95,14 +97,13 @@ function AllInvoices() {
   };
 
   return (
-    <div className="bg-gray-100 pb-10 pt-5 flex flex-col min-h-[89vh] mx-5">
+    <div className="bg-gray-100 pb-10 flex flex-col min-h-[89vh] mx-5">
       <Helmet>
-        <title>{t("invoices")} | {t("vertex")}</title>
+        <title>
+          {t("invoices")} | {t("vertex")}
+        </title>
       </Helmet>
-      <div className="rounded-md p-5 bg-white">
-        <p className="text-gray-400 text-13">{t("invoiceHead")}</p>
-        <h1 className="mt-2 text-17 font-bold">{t("invoices")}</h1>
-      </div>
+      <Header subtitle={t("invoiceHead")} title={t("invoices")} />
       <div className="bg-white rounded-md p-4 mt-3">
         <InvoiceStatistics statistics={statistics} />
 
@@ -114,24 +115,33 @@ function AllInvoices() {
             setCurrentPage={setCurrentPage}
           />
 
-          <InvoiceTable
-            isLoading={isLoading}
-            error={error}
-            currentItems={currentItems}
-            navigate={navigate}
-            searchQuery={searchQuery}
-          />
+          {filteredInvoices.length === 0 && searchQuery ? (
+            <div className="text-center py-10 text-gray-400">
+              {t("noMatchResults")}
+            </div>
+          ) : (
+            <>
+              <InvoiceTable
+                isLoading={isLoading}
+                error={error}
+                currentItems={currentItems}
+                navigate={navigate}
+                searchQuery={searchQuery}
+              />
 
-          {filteredInvoices.length > 0 && (
-            <InvoicePagination
-              pageCount={pageCount}
-              handlePageClick={handlePageClick}
-              currentPage={currentPage}
-            />
+              {filteredInvoices.length > 0 && (
+                <InvoicePagination
+                  pageCount={pageCount}
+                  handlePageClick={handlePageClick}
+                  currentPage={currentPage}
+                />
+              )}
+            </>
           )}
         </section>
       </div>
     </div>
   );
 }
+
 export default AllInvoices;

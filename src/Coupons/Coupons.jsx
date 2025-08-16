@@ -1,6 +1,4 @@
 import { useEffect, useState, useMemo, useRef } from "react";
-import ReactPaginate from "react-paginate";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import DeleteCoupons from "./DeleteCoupons";
 import { ClipLoader } from "react-spinners";
 import { fetchCoupons } from "../ApiServices/Coupons";
@@ -12,6 +10,9 @@ import { IoCalendarNumberOutline } from "react-icons/io5";
 import AddNewCoupon from "./AddNewCoupons";
 import { BsSortDown } from "react-icons/bs";
 import CustomCalendar from "./CustomCalendar";
+import DeleteMultipleCoupons from "./DeleteMultipleCoupons";
+import Header from "../Components/Header/Header";
+import Pagination from "../Components/Pagination/Pagination";
 
 function Coupons() {
   const [coupons, setCoupons] = useState([]);
@@ -21,12 +22,15 @@ function Coupons() {
   const [itemsPerPage] = useState(5);
   const [searchQuery, setSearchQuery] = useState("");
   const { t, i18n } = useTranslation();
-  const [isRTL, setIsRTL] = useState(false);
+  const isRTL = i18n.language === "ar";
   const [showModal, setShowModal] = useState(false);
   const [showStartDateFilter, setShowStartDateFilter] = useState(false);
   const [showEndDateFilter, setShowEndDateFilter] = useState(false);
   const [selectedStartDate, setSelectedStartDate] = useState(null);
   const [selectedEndDate, setSelectedEndDate] = useState(null);
+  const [selectedCoupons, setSelectedCoupons] = useState([]);
+  const [selectAll, setSelectAll] = useState(false);
+  const [showDeleteAllModal, setShowDeleteAllModal] = useState(false);
 
   const startDateFilterRef = useRef(null);
   const endDateFilterRef = useRef(null);
@@ -53,15 +57,15 @@ function Coupons() {
       if (
         startDateFilterRef.current &&
         !startDateFilterRef.current.contains(event.target) &&
-        !event.target.closest('.start-date-filter-button')
+        !event.target.closest(".start-date-filter-button")
       ) {
         setShowStartDateFilter(false);
       }
-      
+
       if (
         endDateFilterRef.current &&
         !endDateFilterRef.current.contains(event.target) &&
-        !event.target.closest('.end-date-filter-button')
+        !event.target.closest(".end-date-filter-button")
       ) {
         setShowEndDateFilter(false);
       }
@@ -86,7 +90,15 @@ function Coupons() {
       }
       return updatedCoupons;
     });
+    setSelectedCoupons((prev) => prev.filter((id) => id !== couponId));
     fetchData();
+  };
+
+  const normalizeDate = (dateString) => {
+    if (!dateString) return null;
+    const date = new Date(dateString);
+    date.setHours(0, 0, 0, 0);
+    return date;
   };
 
   const filteredCoupons = useMemo(() => {
@@ -95,18 +107,18 @@ function Coupons() {
     );
 
     if (selectedStartDate) {
-      const startDate = new Date(selectedStartDate);
+      const startDate = normalizeDate(selectedStartDate);
       result = result.filter((coupon) => {
-        const couponStartDate = new Date(coupon.start_date);
-        return couponStartDate >= startDate;
+        const couponStartDate = normalizeDate(coupon.start_date);
+        return couponStartDate && couponStartDate >= startDate;
       });
     }
 
     if (selectedEndDate) {
-      const endDate = new Date(selectedEndDate);
+      const endDate = normalizeDate(selectedEndDate);
       result = result.filter((coupon) => {
-        const couponEndDate = new Date(coupon.end_date);
-        return couponEndDate <= endDate;
+        const couponEndDate = normalizeDate(coupon.end_date);
+        return couponEndDate && couponEndDate <= endDate;
       });
     }
 
@@ -142,9 +154,39 @@ function Coupons() {
     }
   };
 
-  useEffect(() => {
-    setIsRTL(i18n.language === "ar");
-  }, [i18n.language]);
+  const handleSelectAll = (e) => {
+    const isChecked = e.target.checked;
+    setSelectAll(isChecked);
+    if (isChecked) {
+      const allCouponIds = currentItems.map((coupon) => coupon.id);
+      setSelectedCoupons(allCouponIds);
+    } else {
+      setSelectedCoupons([]);
+    }
+  };
+
+  const handleSelectCoupon = (couponId, isChecked) => {
+    if (isChecked) {
+      setSelectedCoupons((prev) => [...prev, couponId]);
+    } else {
+      setSelectedCoupons((prev) => prev.filter((id) => id !== couponId));
+      setSelectAll(false);
+    }
+  };
+
+  const handleDeleteMultiple = () => {
+    setCoupons((prevCoupons) =>
+      prevCoupons.filter((coupon) => !selectedCoupons.includes(coupon.id))
+    );
+    setSelectedCoupons([]);
+    setSelectAll(false);
+    setShowDeleteAllModal(false);
+
+    if (selectedCoupons.length === currentItems.length && currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+    }
+    fetchData();
+  };
 
   if (showModal) {
     document.body.classList.add("no-scroll");
@@ -170,28 +212,31 @@ function Coupons() {
     setSelectedEndDate(null);
   };
 
-  // New variables to handle different empty states
   const hasSearchResults = searchQuery && filteredCoupons.length === 0;
   const hasDateFilter = selectedStartDate || selectedEndDate;
   const hasFilterResults = hasDateFilter && filteredCoupons.length === 0;
   const noData = filteredCoupons.length === 0 && !hasDateFilter && !searchQuery;
 
   return (
-    <div className="bg-gray-100 p-4 h-[89vh] pt-5">
+    <div className="bg-gray-100 p-4 h-[89vh]">
       <Helmet>
         <title>
           {t("coupons")} | {t("vertex")}
         </title>
       </Helmet>
-      <section className="bg-white p-5 rounded-md mb-3">
-        <p className="text-gray-400 text-13">{t("couponsHead")}</p>
-        <h1 className="font-bold text-17 mt-2">{t("coupons")}</h1>
-      </section>
+      <Header
+        subtitle={t("couponsHead")}
+        title={t("coupons")}
+        className="mb-3"
+      />
       <section className="bg-white p-5 rounded-md">
         <SearchBar
           value={searchQuery}
           onclick={() => setShowModal(true)}
-          onchange={(e) => setSearchQuery(e.target.value)}
+          onchange={(e) => {
+            setSearchQuery(e.target.value);
+            setCurrentPage(1);
+          }}
           text={t("addNewCoupon")}
           icon={
             <Plus
@@ -207,6 +252,21 @@ function Coupons() {
             fetchData();
           }}
         />
+
+        {selectedCoupons.length > 0 && (
+          <div className="mt-3 flex justify-between items-center bg-gray-50 p-3 rounded">
+            <span className="text-gray-600">
+              {t("selecting")} {selectedCoupons.length} {t("items")}
+            </span>
+            <button
+              onClick={() => setShowDeleteAllModal(true)}
+              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+            >
+              {t("deleteAll")}
+            </button>
+          </div>
+        )}
+
         {error ? (
           <div className="text-red-500 text-center mt-10">{t("error")}</div>
         ) : isLoading ? (
@@ -214,22 +274,45 @@ function Coupons() {
             <ClipLoader color="#E0A75E" />
           </div>
         ) : hasSearchResults ? (
-          <div className="text-gray-400 text-center mt-10">{t("noData")}</div>
+          <div className="text-gray-400 text-center mt-10">
+            {t("noMatchResults")}
+          </div>
         ) : (
           <>
-            <div className="border border-gray-200 rounded-lg">
+            <div className="border border-gray-200 rounded-lg mt-4">
               <table className="bg-white min-w-full table relative">
                 <thead>
                   <tr>
                     <th className="px-3 py-3 border-t border-b text-left rtl:text-right w-12">
-                      <p className="flex gap-2 items-center">
-                        <input
-                          type="checkbox"
-                          className="form-checkbox h-4 w-4"
-                          aria-label="Select all categories"
-                        />
+                      <div className="flex items-center gap-3">
+                        <label className="inline-flex items-center cursor-pointer">
+                          <input
+                            type="checkbox"
+                            className="hidden peer"
+                            checked={selectAll}
+                            onChange={handleSelectAll}
+                            aria-label="Select all coupons"
+                          />
+                          <span
+                            className={`w-4 h-4 border-2 rounded flex items-center justify-center transition-all duration-200 ${
+                              selectAll
+                                ? "border-primary bg-primary"
+                                : "border-gray-300"
+                            }`}
+                          >
+                            {selectAll && (
+                              <svg
+                                className="w-3 h-3 text-white"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                              >
+                                <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
+                              </svg>
+                            )}
+                          </span>
+                        </label>
                         {t("codes")}
-                      </p>
+                      </div>
                     </th>
                     {coupons.length > 0 && (
                       <>
@@ -258,7 +341,7 @@ function Coupons() {
                             </div>
                           </div>
                           {showStartDateFilter && (
-                            <div 
+                            <div
                               ref={startDateFilterRef}
                               className="absolute ltr:left-80 rtl:right-80 mt-0.5 z-10"
                             >
@@ -297,7 +380,7 @@ function Coupons() {
                             </div>
                           </div>
                           {showEndDateFilter && (
-                            <div 
+                            <div
                               ref={endDateFilterRef}
                               className="absolute rtl:left-96 mt-1 z-10"
                             >
@@ -331,13 +414,19 @@ function Coupons() {
                 <tbody>
                   {hasFilterResults ? (
                     <tr>
-                      <td colSpan="6" className="text-center py-4 text-gray-400">
+                      <td
+                        colSpan="6"
+                        className="text-center py-4 text-gray-400"
+                      >
                         {t("noData")}
                       </td>
                     </tr>
                   ) : noData ? (
                     <tr>
-                      <td colSpan="6" className="text-center py-4 text-gray-400">
+                      <td
+                        colSpan="6"
+                        className="text-center py-4 text-gray-400"
+                      >
                         {t("noData")}
                       </td>
                     </tr>
@@ -345,14 +434,40 @@ function Coupons() {
                     currentItems.map((coupon) => (
                       <tr key={coupon.id}>
                         <td className="px-3 py-3 border w-350 text-gray-600 text-14">
-                          <p className="flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              className="form-checkbox h-4 w-4"
-                              aria-label={`Select ${coupon.coupon}`}
-                            />
+                          <div className="flex items-center gap-3">
+                            <label className="inline-flex items-center cursor-pointer">
+                              <input
+                                type="checkbox"
+                                className="hidden peer"
+                                checked={selectedCoupons.includes(coupon.id)}
+                                onChange={(e) =>
+                                  handleSelectCoupon(
+                                    coupon.id,
+                                    e.target.checked
+                                  )
+                                }
+                                aria-label={`Select ${coupon.coupon}`}
+                              />
+                              <span
+                                className={`w-4 h-4 border-2 rounded flex items-center justify-center transition-all duration-200 ${
+                                  selectedCoupons.includes(coupon.id)
+                                    ? "border-primary bg-primary"
+                                    : "border-gray-300"
+                                }`}
+                              >
+                                {selectedCoupons.includes(coupon.id) && (
+                                  <svg
+                                    className="w-3 h-3 text-white"
+                                    viewBox="0 0 20 20"
+                                    fill="currentColor"
+                                  >
+                                    <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
+                                  </svg>
+                                )}
+                              </span>
+                            </label>
                             {coupon.coupon}
-                          </p>
+                          </div>
                         </td>
                         <td className="flex gap-3 px-6 py-3 border-t text-gray-600 text-14">
                           <p className="flex items-center gap-2">
@@ -388,8 +503,8 @@ function Coupons() {
                             <div
                               className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-200 ${
                                 coupon.is_active
-                                  ? "translate-x-6 rtl:-translate-x-0"
-                                  : "translate-x-0 rtl:-translate-x-6"
+                                  ? "translate-x-6 rtl:-translate-x-6"
+                                  : "translate-x-0 rtl:-translate-x-0"
                               }`}
                             />
                           </button>
@@ -409,36 +524,24 @@ function Coupons() {
                 </tbody>
               </table>
             </div>
-            {!hasFilterResults && filteredCoupons.length > 0 && (
-              <ReactPaginate
-                pageCount={Math.ceil(filteredCoupons.length / itemsPerPage)}
-                onPageChange={({ selected }) => paginate(selected + 1)}
-                containerClassName="flex items-center justify-end mt-5 text-gray-400 text-14"
-                pageClassName="mx-1 px-3 py-1 rounded"
-                activeClassName="bg-customOrange-lightOrange text-primary"
-                previousLabel={
-                  isRTL ? (
-                    <ChevronRight className="w-5 h-5 text-primary" />
-                  ) : (
-                    <ChevronLeft className="w-5 h-5 text-center text-primary" />
-                  )
-                }
-                nextLabel={
-                  isRTL ? (
-                    <ChevronLeft className="w-5 h-5 text-center text-primary" />
-                  ) : (
-                    <ChevronRight className="w-5 h-5 text-primary" />
-                  )
-                }
-                previousClassName="mx-1 px-1 py-1 font-bold text-primary text-18"
-                nextClassName="mx-1 px-1 py-1 font-bold text-primary text-18"
-              />
-            )}
+            <Pagination
+              pageCount={Math.ceil(filteredCoupons.length / itemsPerPage)}
+              onPageChange={({ selected }) => paginate(selected + 1)}
+              currentPage={currentPage}
+              isRTL={isRTL}
+              marginPagesDisplayed={2}
+              pageRangeDisplayed={5}
+            />
           </>
         )}
       </section>
+      <DeleteMultipleCoupons
+        isOpen={showDeleteAllModal}
+        onClose={() => setShowDeleteAllModal(false)}
+        onConfirm={handleDeleteMultiple}
+        count={selectedCoupons.length}
+      />
     </div>
   );
 }
-
 export default Coupons;

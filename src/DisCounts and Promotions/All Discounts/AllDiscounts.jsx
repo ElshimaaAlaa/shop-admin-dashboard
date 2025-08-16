@@ -6,13 +6,14 @@ import { IoCalendarNumberOutline } from "react-icons/io5";
 import { fetchPromotions } from "../../ApiServices/Promotions";
 import DeleteDiscount from "./DeleteDiscount";
 import { HiOutlineShoppingCart } from "react-icons/hi2";
-import ReactPaginate from "react-paginate";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import SearchBar from "../../Components/Search Bar/SearchBar";
 import { Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { BsSortDown } from "react-icons/bs";
 import CustomCalendar from "../../Coupons/CustomCalendar";
+import DeleteMultipleDiscounts from "./DeleteMultipleDiscounts";
+import Pagination from "../../Components/Pagination/Pagination";
+import Header from "../../Components/Header/Header";
 
 function AllDiscounts() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -21,16 +22,19 @@ function AllDiscounts() {
   const [error, setError] = useState(false);
   const [discounts, setDiscounts] = useState([]);
   const { t, i18n } = useTranslation();
-  const [isRTL, setIsRTL] = useState(false);
+  const isRTL = i18n.language === "ar"
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
+  const [selectedDiscounts, setSelectedDiscounts] = useState([]);
+  const [selectAll, setSelectAll] = useState(false);
+  const [showDeleteAllModal, setShowDeleteAllModal] = useState(false);
 
   // Date filter states
   const [showStartDateFilter, setShowStartDateFilter] = useState(false);
   const [showEndDateFilter, setShowEndDateFilter] = useState(false);
   const [selectedStartDate, setSelectedStartDate] = useState(null);
   const [selectedEndDate, setSelectedEndDate] = useState(null);
-  
+
   const startDateFilterRef = useRef(null);
   const endDateFilterRef = useRef(null);
 
@@ -50,7 +54,6 @@ function AllDiscounts() {
 
   useEffect(() => {
     fetchData();
-    setIsRTL(i18n.language === "ar");
   }, [i18n.language]);
 
   // Close date pickers when clicking outside
@@ -59,15 +62,15 @@ function AllDiscounts() {
       if (
         startDateFilterRef.current &&
         !startDateFilterRef.current.contains(event.target) &&
-        !event.target.closest('.start-date-filter-button')
+        !event.target.closest(".start-date-filter-button")
       ) {
         setShowStartDateFilter(false);
       }
-      
+
       if (
         endDateFilterRef.current &&
         !endDateFilterRef.current.contains(event.target) &&
-        !event.target.closest('.end-date-filter-button')
+        !event.target.closest(".end-date-filter-button")
       ) {
         setShowEndDateFilter(false);
       }
@@ -79,8 +82,42 @@ function AllDiscounts() {
     };
   }, []);
 
-  const handleDeleteSuccess = () => {
+  const handleDeleteSuccess = (deletedId) => {
+    setDiscounts((prev) =>
+      prev.filter((discount) => discount.id !== deletedId)
+    );
+    setSelectedDiscounts((prev) => prev.filter((id) => id !== deletedId));
     fetchData();
+  };
+
+  const handleDeleteMultiple = () => {
+    setDiscounts((prev) =>
+      prev.filter((discount) => !selectedDiscounts.includes(discount.id))
+    );
+    setSelectedDiscounts([]);
+    setSelectAll(false);
+    setShowDeleteAllModal(false);
+    fetchData();
+  };
+
+  const handleSelectAll = (e) => {
+    const isChecked = e.target.checked;
+    setSelectAll(isChecked);
+    if (isChecked) {
+      const allDiscountIds = currentItems.map((discount) => discount.id);
+      setSelectedDiscounts(allDiscountIds);
+    } else {
+      setSelectedDiscounts([]);
+    }
+  };
+
+  const handleSelectDiscount = (discountId, isChecked) => {
+    if (isChecked) {
+      setSelectedDiscounts((prev) => [...prev, discountId]);
+    } else {
+      setSelectedDiscounts((prev) => prev.filter((id) => id !== discountId));
+      setSelectAll(false);
+    }
   };
 
   // Filter discounts based on search and date filters
@@ -114,13 +151,17 @@ function AllDiscounts() {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredDiscounts.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredDiscounts.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
 
   // New variables to handle different empty states
   const hasSearchResults = searchQuery && filteredDiscounts.length === 0;
   const hasDateFilter = selectedStartDate || selectedEndDate;
   const hasFilterResults = hasDateFilter && filteredDiscounts.length === 0;
-  const noData = filteredDiscounts.length === 0 && !hasDateFilter && !searchQuery;
+  const noData =
+    filteredDiscounts.length === 0 && !hasDateFilter && !searchQuery;
 
   const toggleStartDateFilter = () => {
     setShowStartDateFilter(!showStartDateFilter);
@@ -147,10 +188,7 @@ function AllDiscounts() {
           {t("promo")} | {t("vertex")}
         </title>
       </Helmet>
-      <section className="rounded-md p-5 bg-white mt-5">
-        <p className="text-gray-400 text-13">{t("promoMenu")}</p>
-        <h1 className="mt-2 text-17 font-bold">{t("promo")}</h1>
-      </section>
+      <Header subtitle={t("promoMenu")} title={t("promo")} />
       <div className="bg-white rounded-md p-5 my-2">
         <SearchBar
           icon={
@@ -167,7 +205,21 @@ function AllDiscounts() {
             setCurrentPage(1);
           }}
         />
-        
+
+        {selectedDiscounts.length > 0 && (
+          <div className="mt-3 flex justify-between items-center bg-gray-50 p-3 rounded">
+            <span className="text-gray-600">
+              {t("selecting")} {selectedDiscounts.length} {t("items")}
+            </span>
+            <button
+              onClick={() => setShowDeleteAllModal(true)}
+              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+            >
+              {t("deleteAll")}
+            </button>
+          </div>
+        )}
+
         {error ? (
           <div className="text-red-500 text-center mt-10">{t("error")}</div>
         ) : isLoading ? (
@@ -175,8 +227,9 @@ function AllDiscounts() {
             <ClipLoader color="#E0A75E" />
           </div>
         ) : hasSearchResults ? (
-          // Search with no results - hide table completely
-          <div className="text-gray-400 text-center mt-10">{t("noMatchResults")}</div>
+          <div className="text-gray-400 text-center mt-10">
+            {t("noMatchResults")}
+          </div>
         ) : (
           <>
             <div className="border border-gray-200 rounded-lg mt-4">
@@ -184,14 +237,35 @@ function AllDiscounts() {
                 <thead>
                   <tr>
                     <th className="px-3 py-3 border-t border-b text-15 text-left w-200">
-                      <p className="flex items-center gap-3">
-                        <input
-                          type="checkbox"
-                          className="form-checkbox h-4 w-4"
-                          aria-label="Select all categories"
-                        />
+                      <div className="flex items-center gap-3">
+                        <label className="inline-flex items-center cursor-pointer">
+                          <input
+                            type="checkbox"
+                            className="hidden peer"
+                            checked={selectAll}
+                            onChange={handleSelectAll}
+                            aria-label="Select all discounts"
+                          />
+                          <span
+                            className={`w-4 h-4 border-2 rounded flex items-center justify-center transition-all duration-200 ${
+                              selectAll
+                                ? "border-primary bg-primary"
+                                : "border-gray-300"
+                            }`}
+                          >
+                            {selectAll && (
+                              <svg
+                                className="w-3 h-3 text-white"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                              >
+                                <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
+                              </svg>
+                            )}
+                          </span>
+                        </label>
                         {t("promo")}
-                      </p>
+                      </div>
                     </th>
                     <th className="px-3 py-3 text-left text-15 border w-200 rtl:text-right">
                       {t("productNum")}
@@ -221,7 +295,7 @@ function AllDiscounts() {
                         </div>
                       </div>
                       {showStartDateFilter && (
-                        <div 
+                        <div
                           ref={startDateFilterRef}
                           className="absolute ltr:right-96 rtl:left-96 mt-1 z-10"
                         >
@@ -260,7 +334,7 @@ function AllDiscounts() {
                         </div>
                       </div>
                       {showEndDateFilter && (
-                        <div 
+                        <div
                           ref={endDateFilterRef}
                           className="absolute ltr:right-40 rtl:left-36 mt-1 z-10"
                         >
@@ -281,32 +355,66 @@ function AllDiscounts() {
                 </thead>
                 <tbody>
                   {hasFilterResults ? (
-                    // Date filter with no results - show header but empty body
                     <tr>
-                      <td colSpan="5" className="text-center py-4 text-gray-400">
+                      <td
+                        colSpan="5"
+                        className="text-center py-4 text-gray-400"
+                      >
                         {t("noData")}
                       </td>
                     </tr>
                   ) : noData ? (
-                    // No data at all (initial state)
                     <tr>
-                      <td colSpan="5" className="text-center py-4 text-gray-400">
+                      <td
+                        colSpan="5"
+                        className="text-center py-4 text-gray-400"
+                      >
                         {t("noData")}
                       </td>
                     </tr>
                   ) : (
-                    // Normal data display
                     currentItems.map((discount) => (
-                      <tr key={discount.id} className="border-t hover:bg-gray-50">
+                      <tr
+                        key={discount.id}
+                        className="border-t hover:bg-gray-50"
+                      >
                         <td className="px-3 py-3 border-t text-gray-600 text-15 border-r w-250">
-                          <p className="flex items-center gap-3">
-                            <input
-                              type="checkbox"
-                              className="form-checkbox h-4 w-4"
-                              aria-label="Select all categories"
-                            />
+                          <div className="flex items-center gap-3">
+                            <label className="inline-flex items-center cursor-pointer">
+                              <input
+                                type="checkbox"
+                                className="hidden peer"
+                                checked={selectedDiscounts.includes(
+                                  discount.id
+                                )}
+                                onChange={(e) =>
+                                  handleSelectDiscount(
+                                    discount.id,
+                                    e.target.checked
+                                  )
+                                }
+                                aria-label={`Select ${discount.name}`}
+                              />
+                              <span
+                                className={`w-4 h-4 border-2 rounded flex items-center justify-center transition-all duration-200 ${
+                                  selectedDiscounts.includes(discount.id)
+                                    ? "border-primary bg-primary"
+                                    : "border-gray-300"
+                                }`}
+                              >
+                                {selectedDiscounts.includes(discount.id) && (
+                                  <svg
+                                    className="w-3 h-3 text-white"
+                                    viewBox="0 0 20 20"
+                                    fill="currentColor"
+                                  >
+                                    <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
+                                  </svg>
+                                )}
+                              </span>
+                            </label>
                             {discount.name}
-                          </p>
+                          </div>
                         </td>
                         <td className="px-3 py-2 border-t text-gray-600 border-r text-14 w-250">
                           <p className="flex items-center justify-between bg-customOrange-mediumOrange rounded-md p-2 w-20">
@@ -316,13 +424,19 @@ function AllDiscounts() {
                         </td>
                         <td className="px-3 py-3 border-t text-gray-600 border-r text-13 w-250">
                           <p className="flex items-center gap-2">
-                            <IoCalendarNumberOutline color="#69ABB5" size={16} />
+                            <IoCalendarNumberOutline
+                              color="#69ABB5"
+                              size={16}
+                            />
                             {discount.start_date || "N/A"}
                           </p>
                         </td>
                         <td className="px-3 py-3 border-t text-gray-600 border-r text-13 w-250">
                           <p className="flex items-center gap-2">
-                            <IoCalendarNumberOutline color="#69ABB5" size={16} />
+                            <IoCalendarNumberOutline
+                              color="#69ABB5"
+                              size={16}
+                            />
                             {discount.end_date || "N/A"}
                           </p>
                         </td>
@@ -340,48 +454,24 @@ function AllDiscounts() {
                 </tbody>
               </table>
             </div>
-            
-            {/* Pagination - only show if we have results and not in filter empty state */}
-            {!hasFilterResults && filteredDiscounts.length > 0 && (
-              <ReactPaginate
-                pageCount={Math.ceil(filteredDiscounts.length / itemsPerPage)}
-                onPageChange={({ selected }) => setCurrentPage(selected + 1)}
-                forcePage={currentPage - 1}
-                containerClassName="flex items-center justify-end mt-5 text-gray-400 text-14"
-                pageClassName="px-3 py-1 rounded"
-                activeClassName="bg-customOrange-lightOrange text-primary"
-                previousLabel={
-                  isRTL ? (
-                    <ChevronRight className="w-5 h-5 text-primary" />
-                  ) : (
-                    <ChevronLeft className="w-5 h-5 text-center text-primary" />
-                  )
-                }
-                nextLabel={
-                  isRTL ? (
-                    <ChevronLeft className="w-5 h-5 text-center text-primary" />
-                  ) : (
-                    <ChevronRight className="w-5 h-5 text-primary" />
-                  )
-                }
-                previousClassName={`px-3 py-1 rounded ${
-                  currentPage === 1
-                    ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-gray-200"
-                }`}
-                nextClassName={`px-3 py-1 rounded ${
-                  currentPage === Math.ceil(filteredDiscounts.length / itemsPerPage)
-                    ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-gray-200"
-                }`}
-                disabledClassName="opacity-50 cursor-not-allowed"
-              />
-            )}
+            <Pagination
+              pageCount={Math.ceil(filteredDiscounts.length / itemsPerPage)}
+              onPageChange={({ selected }) => setCurrentPage(selected + 1)}
+              currentPage={currentPage}
+              isRTL={isRTL}
+              marginPagesDisplayed={2}
+              pageRangeDisplayed={5}
+            />
           </>
         )}
       </div>
+      <DeleteMultipleDiscounts
+        isOpen={showDeleteAllModal}
+        onClose={() => setShowDeleteAllModal(false)}
+        onConfirm={handleDeleteMultiple}
+        count={selectedDiscounts.length}
+      />
     </div>
   );
 }
-
 export default AllDiscounts;

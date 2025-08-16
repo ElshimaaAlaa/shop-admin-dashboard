@@ -9,14 +9,13 @@
   flex-direction: column;
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-
+  overflow-y: hidden;
   &.expanded {
-    width: 250px;
+    width: 270px;
   }
 
   &.pinned {
-    width: 250px;
+    width: 270px;
   }
 
   // RTL specific styles

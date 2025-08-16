@@ -120,13 +120,14 @@ function ShippingProviders() {
           {t("shippingProvider")} | {t("vertex")}
         </title>
       </Helmet>
-      <Header title={t("shippingProvider")} subtitle={t("shippingMenu")} />
+      <Header title={t("shippingProvider")} subtitle={t("shippingMenu")} className="mx-5"/>
       <Head
         icon={FaShippingFast}
         title={t("shippingProvider")}
         value={shippingData.length}
         backgroundColor="bg-customOrange-mediumOrange"
         iconColor="#E0A75E"
+        className="mx-5"
       />
       <section className="bg-white rounded-md p-5 mx-5 my-2">
         <SearchBar
@@ -267,7 +268,6 @@ function ShippingProviders() {
                 </tbody>
               </table>
             </div>
-
             <Pagination
               pageCount={pageCount}
               onPageChange={handlePageClick}
@@ -288,5 +288,4 @@ function ShippingProviders() {
     </div>
   );
 }
-
 export default ShippingProviders;

@@ -483,6 +483,10 @@
   "selecting": "تم تحديد",
   "deleteAll": "حذف الكل",
   "fromitems": "من العناصر",
-  "deleteMultipleShops": "هل أنت متأكد من رغبتك في حذف مقدمي الشحن ؟",
-  "DeleteMultiplePayment": "هل أنت متأكد من رغبتك في حذف جميع وسائل الدفع ؟"
+  "deleteMultipleShops": "هل أنت متأكد من رغبتك في حذف مقدمي خدمات الشحن ؟",
+  "DeleteMultiplePayment": "هل أنت متأكد من رغبتك في حذف جميع وسائل الدفع ؟",
+  "DeleteMultipleCoupon": "هل أنت متأكد من رغبتك في حذف جميع كوبونات الخصم ؟",
+  "DeleteMultipleDiscounts": "هل أنت متأكد من رغبتك في حذف جميع الخصومات ؟",
+  "DeleteMultipleUsers": "هل أنت متأكد من رغبتك في حذف جميع المستخدمين ؟",
+  "DeleteMultipleInvoices": "هل أنت متأكد من رغبتك في حذف جميع الفواتير ؟"
 }

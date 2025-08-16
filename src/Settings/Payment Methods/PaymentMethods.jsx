@@ -122,13 +122,14 @@ function PaymentMethods() {
           {t("paymentMethod")} | {t("vertex")}
         </title>
       </Helmet>
-      <Header title={t("paymentMethod")} subtitle={t("paymentMethodMenu")} />
+      <Header title={t("paymentMethod")} subtitle={t("paymentMethodMenu")} className="mx-5"/>
       <Head
         icon={MdPayment}
         title={t("shippingProvider")}
         value={filteredPaymentData.length}
         backgroundColor="bg-customOrange-mediumOrange"
         iconColor="#E0A75E"
+        className="mx-5"
       />
       <div className="bg-white rounded-md p-5 mx-5 my-3">
         <SearchBar
