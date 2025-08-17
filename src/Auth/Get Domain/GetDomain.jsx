@@ -17,41 +17,48 @@ function GetDomain() {
   const { t, i18n } = useTranslation();
   const [isRTL, setIsRTL] = useState(false);
   const navigate = useNavigate();
+  
   const intialValues = {
     email: "",
   };
+
   const validationSchema = Yup.object({
     email: Yup.string().email().required(t("emailRequired")),
   });
+
   const handleSubmit = async (values) => {
     setIsLoading(true);
     try {
       await getDomain(values.email);
       setIsLoading(false);
       setTimeout(() => {
-        navigate("/Login");
+        // Navigate to Login with email as query parameter
+        navigate(`/Login?email=${encodeURIComponent(values.email)}`);
       }, 1500);
     } catch (error) {
       console.error(error);
       setIsLoading(false);
     }
   };
+
   useEffect(() => {
     const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
     i18n.changeLanguage(savedLanguage);
     setIsRTL(savedLanguage === "ar");
   }, [i18n]);
-  // Update RTL state and localStorage when language changes
+
   useEffect(() => {
     const currentLanguage = i18n.language;
     setIsRTL(currentLanguage === "ar");
     localStorage.setItem("selectedLanguage", currentLanguage);
   }, [i18n.language]);
+
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
     setShowLanguageDropdown(false);
     localStorage.setItem("selectedLanguage", lng);
   };
+
   return (
     <div className="main-container">
       <Helmet>
@@ -117,8 +124,18 @@ function GetDomain() {
             </div>
           </Form>
         </Formik>
+        <p className="text-center mt-4 text-gray-600">
+          {t("alreadyHaveAccount")}{" "}
+          <span 
+            className="text-primary font-medium cursor-pointer"
+            onClick={() => navigate("/Login")}
+          >
+            {t("login")}
+          </span>
+        </p>
       </div>
     </div>
   );
 }
+
 export default GetDomain;

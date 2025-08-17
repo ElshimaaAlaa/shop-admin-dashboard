@@ -222,7 +222,7 @@ function AllCustomers() {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen pb-10 mx-5 pt-5">
+    <div className="bg-gray-100 min-h-screen pb-10 px-5 pt-5">
       <Helmet>
         <title>
           {t("customers")} | {t("vertex")}

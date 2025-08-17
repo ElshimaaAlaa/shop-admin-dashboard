@@ -9,17 +9,19 @@ function Home() {
   const [isPinned, setIsPinned] = useState(false);
   const { t, i18n } = useTranslation();
   const [isRTL, setIsRTL] = useState(false);
+
   useEffect(() => {
     const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
     i18n.changeLanguage(savedLanguage);
     setIsRTL(savedLanguage === "ar");
   }, [i18n]);
-  // Update RTL state and localStorage when language changes
+
   useEffect(() => {
     const currentLanguage = i18n.language;
     setIsRTL(currentLanguage === "ar");
     localStorage.setItem("selectedLanguage", currentLanguage);
   }, [i18n.language]);
+
   useEffect(() => {
     const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
     if (savedLanguage !== i18n.language) {
@@ -40,11 +42,11 @@ function Home() {
         <title>{t("homePage")}</title>
         <html dir={isRTL ? "rtl" : "ltr"} lang={i18n.language} />
       </Helmet>
-      <div className="flex">
+      <div className="flex h-screen">
         <Sidebar isPinned={isPinned} onPinToggle={handlePinToggle} />
-        <div className="flex-1 ml-0">
+        <div className="flex flex-col flex-1 min-h-0">
           <Navbar />
-          <div className="mt-0 bg-gray-100">
+          <div className="flex- overflow-auto bg-gra">
             <Outlet />
           </div>
         </div>
@@ -52,4 +54,5 @@ function Home() {
     </>
   );
 }
+
 export default Home;

@@ -46,18 +46,15 @@ function StoreInformation() {
     }
   };
 
-  const closePopup = () => {
-    setShowBannerPopup(false);
-  };
 
   const goToPrev = () => {
-    setCurrentBannerIndex(prev => 
+    setCurrentBannerIndex((prev) =>
       prev === 0 ? themeData.bannersBase64.length - 1 : prev - 1
     );
   };
 
   const goToNext = () => {
-    setCurrentBannerIndex(prev => 
+    setCurrentBannerIndex((prev) =>
       prev === themeData.bannersBase64.length - 1 ? 0 : prev + 1
     );
   };
@@ -82,13 +79,13 @@ function StoreInformation() {
             >
               <FaChevronLeft size={24} />
             </button>
-            
+
             <img
               src={themeData.bannersBase64[currentBannerIndex]}
               alt={`Banner ${currentBannerIndex + 1}`}
               className="max-w-full max-h-[80vh] object-contain p-4"
             />
-            
+
             <button
               onClick={goToNext}
               className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full z-10"
@@ -101,7 +98,9 @@ function StoreInformation() {
                 <button
                   key={index}
                   onClick={() => setCurrentBannerIndex(index)}
-                  className={`w-3 h-3 rounded-full ${currentBannerIndex === index ? 'bg-white' : 'bg-gray-500'}`}
+                  className={`w-3 h-3 rounded-full ${
+                    currentBannerIndex === index ? "bg-white" : "bg-gray-500"
+                  }`}
                 />
               ))}
             </div>
@@ -138,7 +137,8 @@ function StoreInformation() {
             <div>
               <p className="text-1xl font-bold mb-3 mt-7">{t("banners")}</p>
               <div className="flex flex-col gap-4">
-                {themeData.bannersBase64 && themeData.bannersBase64.length > 0 ? (
+                {themeData.bannersBase64 &&
+                themeData.bannersBase64.length > 0 ? (
                   <>
                     {/* Display only the first banner by default */}
                     <div className="group relative">
@@ -171,34 +171,6 @@ function StoreInformation() {
                         </div>
                       </div>
                     </div>
-
-                    {/* Gallery thumbnails for other banners */}
-                    {/* {themeData.bannersBase64.length > 1 && (
-                      <div className="mt-4">
-                        <h3 className="text-gray-500 mb-2">{t("moreBanners")}</h3>
-                        <div className="flex flex-wrap gap-2">
-                          {themeData.bannersBase64.slice(1).map((banner, index) => (
-                            <div key={index + 1} className="group relative">
-                              <img
-                                src={banner}
-                                alt={`Banner ${index + 2}`}
-                                className="w-20 h-20 object-cover rounded hover:shadow-lg transition-shadow cursor-pointer"
-                                onClick={() => handleViewBanner(index + 1)}
-                              />
-                              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black bg-opacity-30 transition-opacity">
-                                <FaRegEye 
-                                  className="text-white cursor-pointer" 
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleViewBanner(index + 1);
-                                  }}
-                                />
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )} */}
                   </>
                 ) : (
                   <p className="text-gray-400">{t("noBanners")}</p>
@@ -211,5 +183,4 @@ function StoreInformation() {
     </div>
   );
 }
-
 export default StoreInformation;

@@ -55,13 +55,13 @@ function Faqs() {
   }, []);
 
   return (
-    <div className="bg-white pb-5">
+    <div className="">
       <Helmet>
         <title>
           {t("faq")} | {t("vertex")}
         </title>
       </Helmet>
-      <h2 className="font-bold text-center text-17 mt-8 rtl:text-[20px]">
+      <h2 className="font-bold text-center text-17 mt-4 rtl:text-[20px]">
         {t("faq")}
       </h2>
       <p className="text-gray-400 text-center mt-2 text-15 w-500px m-auto rtl:w-390 rtl:text-[17px]">

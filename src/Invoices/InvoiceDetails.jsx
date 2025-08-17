@@ -113,7 +113,7 @@ function InvoiceDetails() {
   };
 
   return (
-    <div className="bg-gray-100 py-5 flex flex-col min-h-[89vh] mx-10">
+    <div className="bg-gray-100 py-5 flex flex-col min-h-[89vh] px-10">
       <Helmet>
         <title>
           {t("invoiceDetails")} | {t("vertex")}

@@ -187,7 +187,7 @@ function RefundRequests() {
   };
 
   return (
-    <div className="bg-gray-100 min-h-[89vh] mx-5 pt-5">
+    <div className="bg-gray-100 min-h-[89vh] px-5 pt-5">
       <Helmet>
         <title>
           {t("refundrequests")} | {t("vertex")}

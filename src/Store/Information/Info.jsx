@@ -96,10 +96,10 @@ function Info() {
         </h4>
         <div className="p-1 bg-gray-50 rounded-lg flex items-center gap-2 w-40">
           {renderPaymentMethodIcon()}
-          <p className="text-14">{formatPaymentMethodText()}</p>
+          <p className="text-14">{formatPaymentMethodText() || t("notProvided")}</p>
         </div>
         <h4 className="font-semibold text-16 my-4">{t("paymentInfo")}</h4>
-        <div className="flex flex-col md:flex-row  gap-x-[300px] mb-4">
+        <div className="flex flex-col md:flex-row gap-[337px] rtl:gap-x-[300px] mb-4">
           <div>
             <h3 className="text-gray-400 text-15">{t("cardHolder")}</h3>
             <p className="font-medium text-15 mt-1">

@@ -81,7 +81,7 @@ function CustomerDetail() {
   };
 
   return (
-    <div className="bg-gray-100 mx-5 py-5">
+    <div className="bg-gray-100 px-5 py-5">
       <Helmet>
         <title>
           {t("customerDetails")} | {t("vertex")}
@@ -91,6 +91,7 @@ function CustomerDetail() {
       <Header
         subtitle={t("customerDetailsHead")}
         title={t("customerDetails")}
+        className="mb-3"
       />
       <CustomerBalance balance={customerData.personal_info?.balance} />
       <div className="mt-3 flex gap-3">
@@ -111,5 +112,4 @@ function CustomerDetail() {
     </div>
   );
 }
-
 export default CustomerDetail;

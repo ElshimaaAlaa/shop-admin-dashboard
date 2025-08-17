@@ -82,14 +82,14 @@ function ViewProduct() {
   const hasSizes = productData.sizes && productData.sizes.length > 0;
 
   return (
-    <div className="bg-gray-100 min-h-screen flex flex-col mx-5">
+    <div className="bg-gray-100 min-h-screen flex flex-col px-5">
       <Helmet>
         <title>
           {t("viewProduct")} - {t("vertex")}
         </title>
         <meta name="description" content={t("viewProductDescription")} />
       </Helmet>
-      <Header subtitle={t("viewProductHead")} title={t("viewProduct")} className="my-3"/>
+      <Header subtitle={t("viewProductHead")} title={t("viewProduct")} className="mb-3 mt-5"/>
       <div className="flex flex-col">
         <div className="flex gap-5">
           {/* Product Basic Information */}

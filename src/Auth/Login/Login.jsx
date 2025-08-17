@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { ClipLoader } from "react-spinners";
 import "./login.scss";
@@ -12,7 +12,9 @@ import AuthInputField from "../../Components/AuthInput Field/AuthInputField";
 import PasswordInput from "../../Components/Password Input/PasswordInput";
 import { useTranslation } from "react-i18next";
 import { IoIosArrowDown } from "react-icons/io";
+
 function Login() {
+  const location = useLocation();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
@@ -21,6 +23,11 @@ function Login() {
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
   const { t, i18n } = useTranslation();
   const [isRTL, setIsRTL] = useState(false);
+
+  // Get email from URL query parameters
+  const queryParams = new URLSearchParams(location.search);
+  const emailFromUrl = queryParams.get('email');
+
   const [initialValues, setInitialValues] = useState({
     email: "",
     password: "",
@@ -29,11 +36,18 @@ function Login() {
   useEffect(() => {
     const savedEmail = localStorage.getItem("shop admin email");
     const savedPassword = localStorage.getItem("password");
-    if (savedEmail && savedPassword) {
-      setInitialValues({ email: savedEmail, password: savedPassword });
-      setRememberMe(true);
+    
+    // Set initial values with priority: URL email > saved email > empty
+    setInitialValues({
+      email: emailFromUrl || savedEmail || "",
+      password: savedPassword || ""
+    });
+    
+    // Save email from URL to localStorage if it exists
+    if (emailFromUrl) {
+      localStorage.setItem("shop admin email", emailFromUrl);
     }
-  }, []);
+  }, [emailFromUrl]);
 
   const validationSchema = Yup.object({
     email: Yup.string()
@@ -69,22 +83,25 @@ function Login() {
   const togglePasswordVisibility = useCallback(() => {
     setShowPassword((prev) => !prev);
   }, []);
+
   useEffect(() => {
     const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
     i18n.changeLanguage(savedLanguage);
     setIsRTL(savedLanguage === "ar");
   }, [i18n]);
-  // Update RTL state and localStorage when language changes
+
   useEffect(() => {
     const currentLanguage = i18n.language;
     setIsRTL(currentLanguage === "ar");
     localStorage.setItem("selectedLanguage", currentLanguage);
   }, [i18n.language]);
+
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
     setShowLanguageDropdown(false);
     localStorage.setItem("selectedLanguage", lng);
   };
+
   return (
     <div className="main-container">
       <Helmet>
@@ -141,6 +158,7 @@ function Login() {
           initialValues={initialValues}
           onSubmit={handleSubmit}
           validationSchema={validationSchema}
+          enableReinitialize
         >
           {({ errors, touched }) => (
             <Form className="loginForm mt-3">
@@ -228,4 +246,5 @@ function Login() {
     </div>
   );
 }
+
 export default Login;

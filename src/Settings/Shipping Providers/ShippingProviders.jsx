@@ -131,7 +131,7 @@ function ShippingProviders() {
   }
 
   return (
-    <div className="bg-gray-100 pb-10 flex flex-col h-[89vh] ">
+    <div className="bg-gray- pb-10 flex flex-col min-h-[90vh] bg-gray-100 ">
       <Helmet>
         <title>
           {t("shippingProvider")} | {t("vertex")}

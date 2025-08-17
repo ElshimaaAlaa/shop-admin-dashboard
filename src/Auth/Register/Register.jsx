@@ -9,10 +9,12 @@ import AuthInputField from "../../Components/AuthInput Field/AuthInputField";
 import PasswordInput from "../../Components/Password Input/PasswordInput";
 import MainBtn from "../../Components/Main Button/MainBtn";
 import { register } from "../../ApiServices/RegisterApi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { IoIosArrowDown } from "react-icons/io";
+
 function Register() {
+  const location = useLocation();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
@@ -22,14 +24,30 @@ function Register() {
     useState(false);
   const navigate = useNavigate();
   const [error, setError] = useState(null);
-  const initialValues = {
+
+  // Get email from URL query parameters
+  const queryParams = new URLSearchParams(location.search);
+  const emailFromUrl = queryParams.get('email');
+
+  const [initialValues, setInitialValues] = useState({
     name: "",
     email: "",
     password: "",
     password_confirmation: "",
     agreeToTerms: false,
     domain: "",
-  };
+  });
+
+  useEffect(() => {
+    if (emailFromUrl) {
+      setInitialValues(prev => ({
+        ...prev,
+        email: emailFromUrl
+      }));
+      localStorage.setItem("shop admin email", emailFromUrl);
+    }
+  }, [emailFromUrl]);
+
   const validationSchema = Yup.object({
     name: Yup.string().required(t("nameRequired")),
     email: Yup.string()
@@ -46,6 +64,7 @@ function Register() {
       .required(t("confirm")),
     domain: Yup.string().required(t("domainRequired")),
   });
+
   const handleSubmit = async (values) => {
     setLoading(true);
     setError(null);
@@ -66,22 +85,25 @@ function Register() {
       setError(t("failedRegister"));
     }
   };
+
   useEffect(() => {
     const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
     i18n.changeLanguage(savedLanguage);
     setIsRTL(savedLanguage === "ar");
   }, [i18n]);
-  // Update RTL state and localStorage when language changes
+
   useEffect(() => {
     const currentLanguage = i18n.language;
     setIsRTL(currentLanguage === "ar");
     localStorage.setItem("selectedLanguage", currentLanguage);
   }, [i18n.language]);
+
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
     setShowLanguageDropdown(false);
     localStorage.setItem("selectedLanguage", lng);
   };
+
   return (
     <div className="maincontainer">
       <Helmet>
@@ -131,6 +153,7 @@ function Register() {
           initialValues={initialValues}
           onSubmit={handleSubmit}
           validationSchema={validationSchema}
+          enableReinitialize
         >
           {({ values }) => (
             <Form className="flex flex-col">
@@ -217,7 +240,7 @@ function Register() {
               <p className="text-center text-gray-400 mt-3 text-15">
                 {t("haveAcc")}
                 <span
-                  onClick={() => navigate("/Login")}
+                  onClick={() => navigate(`/Login?email=${encodeURIComponent(values.email)}`)}
                   className="ms-2 text-primary font-bold text-16 cursor-pointer"
                 >
                   {t("login")}
@@ -230,4 +253,5 @@ function Register() {
     </div>
   );
 }
+
 export default Register;

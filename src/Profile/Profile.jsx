@@ -21,7 +21,7 @@ export default function ProfileMenu() {
   const triggerRef = useRef(null);
   const [personalInfo, setPersonalInfo] = useState({});
   const { t, i18n } = useTranslation();
-  const isRTL = i18n.language;
+  const isRTL = i18n.language === "ar";
   useEffect(() => {
     const getInfo = async () => {
       try {

@@ -150,7 +150,7 @@ function AllProducts() {
     }
   }, [showDeleteModal]);
   return (
-    <div className="bg-gray-100 min-h-screen mx-5 pt-5">
+    <div className="bg-gray-100 min-h-[90vh] px-5 pt-5 pb-5">
       <Helmet>
         <title>
           {t("products")} | {t("vertex")}

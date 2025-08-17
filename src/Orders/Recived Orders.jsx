@@ -109,7 +109,7 @@ function ReceivedOrders() {
   };
 
   return (
-    <div className="bg-gray-100 py-5 mx-5">
+    <div className="bg-gray-100 py-5 px-5">
       <Helmet>
         <title>
           {t("orders")} | {t("vertex")}

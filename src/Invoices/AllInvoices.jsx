@@ -98,7 +98,7 @@ function AllInvoices() {
   };
 
   return (
-    <div className="bg-gray-100 pb-10 flex flex-col min-h-[89vh] mx-5 pt-5">
+    <div className="bg-gray-100 pb-10 flex flex-col min-h-[89vh] px-5 pt-5">
       <Helmet>
         <title>
           {t("invoices")} | {t("vertex")}

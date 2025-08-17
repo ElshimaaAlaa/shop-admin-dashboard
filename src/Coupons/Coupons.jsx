@@ -218,7 +218,7 @@ function Coupons() {
   const noData = filteredCoupons.length === 0 && !hasDateFilter && !searchQuery;
 
   return (
-    <div className="bg-gray-100 p-4 h-[89vh]">
+    <div className="bg-gray-100 p-4 min-h-[90vh]">
       <Helmet>
         <title>
           {t("coupons")} | {t("vertex")}
@@ -227,7 +227,7 @@ function Coupons() {
       <Header
         subtitle={t("couponsHead")}
         title={t("coupons")}
-        className="mb-3"
+        className="mb-3 mt-5"
       />
       <section className="bg-white p-5 rounded-md">
         <SearchBar

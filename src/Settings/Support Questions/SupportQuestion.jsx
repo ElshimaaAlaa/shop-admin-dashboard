@@ -62,7 +62,7 @@ function SupportQuestion() {
     document.body.classList.remove("no-scroll");
   }
   return (
-    <div className="bg-gray-100 flex flex-col h-[89vh]">
+    <div className="bg-gray-100 flex flex-col h-[90vh]">
       <Helmet>
         <title>
           {t("supportQ")} | {t("vertex")}

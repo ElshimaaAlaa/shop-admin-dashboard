@@ -188,13 +188,13 @@ function AllDiscounts() {
     }
   }, [showDeleteAllModal]);
   return (
-    <div className="bg-gray-100 flex flex-col h-[89vh] mx-5">
+    <div className="bg-gray-100 flex flex-col h-[89vh] px-5">
       <Helmet>
         <title>
           {t("promo")} | {t("vertex")}
         </title>
       </Helmet>
-      <Header subtitle={t("promoMenu")} title={t("promo")} />
+      <Header subtitle={t("promoMenu")} title={t("promo")} className="mt-5" />
       <div className="bg-white rounded-md p-5 my-2">
         <SearchBar
           icon={

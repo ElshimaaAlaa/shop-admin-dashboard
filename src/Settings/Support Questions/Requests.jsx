@@ -48,7 +48,7 @@ function Requests() {
   };
 
   return (
-    <div className="bg-gray-100 flex flex-col h-[89vh]">
+    <div className="bg-gray-100 flex flex-col min-h-[90vh]">
       <Helmet>
         <title>
           {t("requests")} | {t("vertex")}

@@ -91,7 +91,7 @@ function Analytics() {
   }
 
   return (
-    <div className="bg-gray-100 min-h-[89vh] mx-5 pt-5 pb-10">
+    <div className="bg-gray-100 min-h-[89vh] px-5 pt-5 pb-10">
       <Helmet>
         <title>
           {t("reports")} | {t("vertex")}
