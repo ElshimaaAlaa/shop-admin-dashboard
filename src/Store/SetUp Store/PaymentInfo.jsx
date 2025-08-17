@@ -12,6 +12,7 @@ import Paypal from "../../Svgs/Paypal";
 import Visa from "../../Svgs/Visa";
 import { useTranslation } from "react-i18next";
 import { IoIosArrowDown } from "react-icons/io";
+import { setUpStore } from "../../ApiServices/setUpStore";
 
 function PaymentInfo({
   onSubmit = () => {},
@@ -42,28 +43,10 @@ function PaymentInfo({
     email: Yup.string().email(t("validEmail")).required(t("emailRequired")),
     phone: Yup.string().required(t("phoneRequired")),
     payment_method: Yup.string().required(t("paymentMethodRequired")),
-    card_holder_name: Yup.string().when("payment_method", {
-      is: (method) => ["credit_card", "visa"].includes(method),
-      then: Yup.string().required(t("cardHolderRequired")),
-    }),
-    card_number: Yup.string().when("payment_method", {
-      is: (method) => ["credit_card", "visa"].includes(method),
-      then: Yup.string()
-        .required(t("cardNumberRequired"))
-        .matches(/^\d{16}$/, t("cardNumberInvalid")),
-    }),
-    expiration_date: Yup.string().when("payment_method", {
-      is: (method) => ["credit_card", "visa"].includes(method),
-      then: Yup.string()
-        .required(t("expirationDateRequired"))
-        .matches(/^(0[1-9]|1[0-2])\/?([0-9]{2})$/, t("expirationDateInvalid")),
-    }),
-    card_cvv: Yup.string().when("payment_method", {
-      is: (method) => ["credit_card", "visa"].includes(method),
-      then: Yup.string()
-        .required(t("cvvRequired"))
-        .matches(/^\d{3,4}$/, t("cvvInvalid")),
-    }),
+    card_holder_name: Yup.string().required(t("cardHolderRequired")),
+    card_number: Yup.string().required(t("cardNumberRequired")),
+    expiration_date: Yup.string().required(t("expirationDateRequired")),
+    card_cvv: Yup.string().required(t("cvvRequired")),
   });
 
   const paymentMethods = [
@@ -105,8 +88,42 @@ function PaymentInfo({
         payment_info: paymentInfo,
       };
 
-      // Call parent's onSubmit with the complete data
-      onSubmit(completeData);
+      // Create FormData object
+      const formDataToSend = new FormData();
+      
+      // Add store profile data
+      if (formData.store_name) {
+        formDataToSend.append('store_name', formData.store_name);
+      }
+      if (formData.address) {
+        formDataToSend.append('address', formData.address);
+      }
+      if (formData.bio) {
+        formDataToSend.append('bio', formData.bio);
+      }
+      
+      // Add theme data
+      if (formData.theme_primary_color) {
+        formDataToSend.append('theme_primary_color', formData.theme_primary_color);
+      }
+      if (formData.theme_secondary_color) {
+        formDataToSend.append('theme_secondary_color', formData.theme_secondary_color);
+      }
+      
+      // Add payment info
+      Object.entries(paymentInfo).forEach(([key, value]) => {
+        formDataToSend.append(`payment_info[${key}]`, value);
+      });
+
+      // Call API
+      const response = await setUpStore(formDataToSend);
+      
+      if (response.status === true || response.code === 200) {
+        onSubmit(completeData);
+        navigate('/Register/ShippingProvider');
+      } else {
+        throw new Error(response.message || 'Payment processing failed');
+      }
     } catch (error) {
       console.error("Submission failed:", error);
       setSubmitError(
@@ -201,10 +218,18 @@ function PaymentInfo({
                 <h2 className="font-bold mb-3 mt-3">{t("contactInfo")}</h2>
                 <div className="flex gap-2">
                   <InputField name="name" placeholder={t("name")} />
-                  <InputField name="email" placeholder={t("email")} type="email" />
+                  <InputField
+                    name="email"
+                    placeholder={t("email")}
+                    type="email"
+                  />
                 </div>
                 <div className="flex gap-2 mt-3">
-                  <InputField name="phone" placeholder={t("phone")} type="tel" />
+                  <InputField
+                    name="phone"
+                    placeholder={t("phone")}
+                    // type="tel"
+                  />
                 </div>
               </section>
 
@@ -236,27 +261,26 @@ function PaymentInfo({
                 ))}
               </div>
 
-              {["credit_card", "visa"].includes(values.payment_method) && (
+              {values.payment_method && (
                 <section className="bg-gray-50 py-2 px-4 rounded-md">
                   <h4 className="font-bold mt-4 mb-3">{t("paymentInfo")}</h4>
                   <div className="flex items-center gap-2">
-                    <InputField 
-                      name="card_cvv" 
-                      placeholder={t("cvv")} 
-                      type="password"
-                      maxLength="4"
+                    <InputField
+                      name="card_cvv"
+                      placeholder={t("cvv")}
                     />
                     <InputField
                       name="expiration_date"
                       placeholder="MM/YY"
                       onChange={(e) => {
                         let value = e.target.value.replace(/\D/g, "");
-                        if (value.length > 2) {
-                          value = value.substring(0, 2) + "/" + value.substring(2, 4);
-                        }
+                        // if (value.length > 2) {
+                        //   value =
+                        //     value.substring(0, 2) + "/" + value.substring(2, 4);
+                        // }
                         setFieldValue("expiration_date", value);
                       }}
-                      maxLength="5"
+                      // maxLength="5"
                     />
                   </div>
                   <div className="flex items-center gap-2 mt-3">
@@ -272,7 +296,6 @@ function PaymentInfo({
                         const value = e.target.value.replace(/\D/g, "");
                         setFieldValue("card_number", value.substring(0, 16));
                       }}
-                      maxLength="16"
                     />
                   </div>
                 </section>

@@ -111,6 +111,9 @@ const StoreSetupWizard = () => {
           address: values.address,
           bio: values.bio,
           banners: values.banners,
+          name: values.name,
+          email: values.email,
+          phone: values.phone,
         });
       } else if (step === 3) {
         updateFormData("pricing", {
@@ -128,7 +131,7 @@ const StoreSetupWizard = () => {
     try {
       const formDataToSend = new FormData();
 
-      // Prepare complete data including payment info
+      // Prepare complete data
       const completeData = {
         ...formData,
         payment_info: {
@@ -143,10 +146,12 @@ const StoreSetupWizard = () => {
         },
       };
 
-      // Convert to FormData properly
-      Object.entries(completeData).forEach(([section, data]) => {
-        if (data && typeof data === "object") {
-          Object.entries(data).forEach(([key, value]) => {
+      // Append all data to FormData
+      for (const section in completeData) {
+        if (completeData[section] && typeof completeData[section] === 'object') {
+          for (const key in completeData[section]) {
+            const value = completeData[section][key];
+            
             if (Array.isArray(value)) {
               value.forEach((item, index) => {
                 if (item instanceof File) {
@@ -157,21 +162,25 @@ const StoreSetupWizard = () => {
               });
             } else if (value instanceof File) {
               formDataToSend.append(`${section}_${key}`, value);
-            } else {
+            } else if (value !== null && value !== undefined) {
               formDataToSend.append(`${section}[${key}]`, value);
             }
-          });
+          }
         }
-      });
+      }
 
       const response = await setUpStore(formDataToSend);
       console.log("API response:", response);
 
-      setSubmitSuccess(true);
-      resetForm();
-      setPreviewImage(null);
-      setBannerPreviews([]);
-      setFormData({});
+      if (response.status) {
+        setSubmitSuccess(true);
+        resetForm();
+        setPreviewImage(null);
+        setBannerPreviews([]);
+        setFormData({});
+      } else {
+        setSubmitError(response.message || "Failed to complete store setup");
+      }
     } catch (error) {
       console.error("Submission error:", error);
       setSubmitError(
@@ -209,14 +218,18 @@ const StoreSetupWizard = () => {
         validationSchema={step <= 2 ? validationSchema : Yup.object()}
         onSubmit={handleSubmit}
       >
-        {({ values, setFieldValue }) => (
+        {({ values, setFieldValue, isValid, dirty }) => (
           <Form className="setup-form">
             {step === 1 && (
-              <div className="form-step">{/* Theme step form fields */}</div>
+              <div className="form-step">
+                {/* Theme step form fields */}
+              </div>
             )}
 
             {step === 2 && (
-              <div className="form-step">{/* Profile step form fields */}</div>
+              <div className="form-step">
+                {/* Profile step form fields */}
+              </div>
             )}
 
             {step === 3 && (
@@ -232,7 +245,7 @@ const StoreSetupWizard = () => {
               <PaymentInfo
                 formData={formData}
                 updateFormData={updateFormData}
-                onSubmit={(values) => handleSubmit(values, {})}
+                onSubmit={handleSubmit}
                 onBack={() => setStep(3)}
               />
             )}
