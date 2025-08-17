@@ -141,14 +141,14 @@ function StoreInformation() {
                 themeData.bannersBase64.length > 0 ? (
                   <>
                     {/* Display only the first banner by default */}
-                    <div className="group relative">
+                    <div className="group flex items-center gap-44">
                       <img
                         src={themeData.bannersBase64[0]}
                         alt="Main Banner"
-                        className="w-full h-64 object-cover rounded hover:shadow-lg transition-shadow cursor-pointer"
+                        className="w-72 h-44 object-cover rounded hover:shadow-lg transition-shadow cursor-pointer"
                         onClick={() => handleViewBanner(0)}
                       />
-                      <div className="absolute bottom-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className=" bottom-2 right-2 flex gap-2  transition-opacity">
                         <div
                           className="bg-white p-2 flex items-center justify-center gap-2 rounded-md text-primary cursor-pointer hover:bg-primary hover:text-white"
                           onClick={(e) => {
@@ -160,7 +160,7 @@ function StoreInformation() {
                           <p className="text-14">{t("view")}</p>
                         </div>
                         <div
-                          className="bg-white p-2 flex items-center justify-center gap-2 text-primary hover:text-white hover:bg-primary rounded-md cursor-pointer"
+                          className=" p-2 flex items-center justify-center gap-2 text-primary hover:text-white hover:bg-primary rounded-md cursor-pointer"
                           onClick={(e) => {
                             e.stopPropagation();
                             handleDownloadBanner(themeData.bannersBase64[0], 0);
