@@ -124,15 +124,6 @@ function GetDomain() {
             </div>
           </Form>
         </Formik>
-        <p className="text-center mt-4 text-gray-600">
-          {t("alreadyHaveAccount")}{" "}
-          <span 
-            className="text-primary font-medium cursor-pointer"
-            onClick={() => navigate("/Login")}
-          >
-            {t("login")}
-          </span>
-        </p>
       </div>
     </div>
   );
