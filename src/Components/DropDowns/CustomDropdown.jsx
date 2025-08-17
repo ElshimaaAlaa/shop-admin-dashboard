@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { useTranslation } from "react-i18next";
 
 const CustomDropdown = ({
   options,
   value,
   onChange,
-  placeholder = "Select an option",
+  placeholder,
   name,
   error,
   touched,
   className = "",
 }) => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = React.useRef(null);
+
+  const translatedPlaceholder =  t("selectOption");
 
   const selectedOption = options.find((opt) => opt.value === value);
 
@@ -29,6 +33,11 @@ const CustomDropdown = ({
     };
   }, []);
 
+  const translatedOptions = options.map(option => ({
+    ...option,
+    label: t(option.label) 
+  }));
+
   return (
     <div className={`relative w-full ${className}`} ref={dropdownRef}>
       <div
@@ -38,7 +47,7 @@ const CustomDropdown = ({
         onClick={() => setIsOpen(!isOpen)}
       >
         <span className={value ? "text-black" : "text-gray-400"}>
-          {selectedOption ? selectedOption.label : placeholder}
+          {selectedOption ? t(selectedOption.label) : translatedPlaceholder}
         </span>
         <svg
           className={`w-5 h-5 transition-transform duration-200 ${
@@ -60,7 +69,7 @@ const CustomDropdown = ({
 
       {isOpen && (
         <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-auto">
-          {options.map((option) => (
+          {translatedOptions.map((option) => (
             <div
               key={option.value}
               className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${
@@ -78,7 +87,7 @@ const CustomDropdown = ({
       )}
 
       {error && touched && (
-        <div className="text-red-500 text-xs mt-1">{error}</div>
+        <div className="text-red-500 text-xs mt-1">{t(error)}</div>
       )}
     </div>
   );
@@ -99,4 +108,9 @@ CustomDropdown.propTypes = {
   touched: PropTypes.bool,
   className: PropTypes.string,
 };
+
+CustomDropdown.defaultProps = {
+  placeholder: "", 
+};
+
 export default CustomDropdown;

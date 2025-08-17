@@ -487,5 +487,14 @@
   "DeleteMutipleProducts": "Are You Sure You Want To Delete All Products ?",
   "DeleteMultipleCategories": "Are You Sure You Want To Delete All Products ?",
   "contactInfo":"Contact Information",
-  "vs":"vs"
+  "vs":"vs",
+  "colorOnly":"Color Only",
+  "sizeOnly":"Size Only",
+  "colorSize":"Color & Size",
+  "selectOption":"Select an option",
+  "male":"Male",
+  "female":"Female",
+  "children":"Children",
+  "selectGender":"Select Gender",
+  "productImage":"Product Icons / Images"
 }

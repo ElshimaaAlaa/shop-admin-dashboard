@@ -67,7 +67,7 @@ function ShippingProviders() {
   const handleDeleteSuccess = (deletedId) => {
     const updatedData = shippingData.filter((item) => item.id !== deletedId);
     setShippingData(updatedData);
-    setSelectedShippings(prev => prev.filter(id => id !== deletedId));
+    setSelectedShippings((prev) => prev.filter((id) => id !== deletedId));
     if (currentItems.length === 1 && currentPage > 0) {
       setCurrentPage(currentPage - 1);
     }
@@ -96,7 +96,9 @@ function ShippingProviders() {
 
   const handleDeleteMultiple = () => {
     setShippingData((prevShippings) =>
-      prevShippings.filter((shipping) => !selectedShippings.includes(shipping.id))
+      prevShippings.filter(
+        (shipping) => !selectedShippings.includes(shipping.id)
+      )
     );
     setSelectedShippings([]);
     setSelectAll(false);
@@ -108,7 +110,21 @@ function ShippingProviders() {
     fetchData();
   };
 
-  if (showModal) {
+  useEffect(() => {
+    if (showDeleteAllModal) {
+      document.body.classList.add("no-scroll");
+    } else {
+      document.body.classList.remove("no-scroll");
+    }
+  }, [showDeleteAllModal]);
+  useEffect(() => {
+    if (showModal) {
+      document.body.classList.add("no-scroll");
+    } else {
+      document.body.classList.remove("no-scroll");
+    }
+  }, [showModal]);
+  if (showModal && showDeleteAllModal) {
     document.body.classList.add("no-scroll");
   } else {
     document.body.classList.remove("no-scroll");
@@ -121,7 +137,11 @@ function ShippingProviders() {
           {t("shippingProvider")} | {t("vertex")}
         </title>
       </Helmet>
-      <Header title={t("shippingProvider")} subtitle={t("shippingMenu")} className="mx-5 mt-5 mb-4"/>
+      <Header
+        title={t("shippingProvider")}
+        subtitle={t("shippingMenu")}
+        className="mx-5 mt-5 mb-4"
+      />
       <Head
         icon={FaShippingFast}
         title={t("shippingProvider")}
@@ -153,7 +173,7 @@ function ShippingProviders() {
             fetchData();
           }}
         />
-        
+
         {error ? (
           <div className="text-red-500 text-center mt-10">{t("error")}</div>
         ) : isLoading ? (
@@ -169,7 +189,11 @@ function ShippingProviders() {
             {selectedShippings.length > 0 && (
               <div className="mt-3 flex justify-between items-center bg-gray-50 p-3 rounded">
                 <span>
-                  {t("selecting")} <span className="font-bold text-primary">{selectedShippings.length}</span> {t("fromitems")}
+                  {t("selecting")}{" "}
+                  <span className="font-bold text-primary">
+                    {selectedShippings.length}
+                  </span>{" "}
+                  {t("fromitems")}
                 </span>
                 <button
                   onClick={() => setShowDeleteAllModal(true)}

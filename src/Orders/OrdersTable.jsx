@@ -58,7 +58,13 @@ export const OrdersTable = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
+  useEffect(() => {
+    if (showDeleteModal) {
+      document.body.classList.add("no-scroll");
+    } else {
+      document.body.classList.remove("no-scroll");
+    }
+  }, [showDeleteModal]);
   // Get unique payment and status values for dropdowns
   const uniquePaymentStatuses = useMemo(() => {
     const payments = new Set(
@@ -164,7 +170,11 @@ export const OrdersTable = ({
       {selectedOrders.length > 0 && (
         <div className="mt-3 flex justify-between items-center bg-gray-50 p-3 rounded">
           <span>
-            {t("selecting")} <span className="font-bold text-primary">{selectedOrders.length} </span> {t("items")}
+            {t("selecting")}{" "}
+            <span className="font-bold text-primary">
+              {selectedOrders.length}{" "}
+            </span>{" "}
+            {t("items")}
           </span>
           <button
             onClick={() => setShowDeleteModal(true)}

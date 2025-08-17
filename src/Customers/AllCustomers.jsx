@@ -126,7 +126,13 @@ function AllCustomers() {
     setShowDeleteAllModal(false);
     fetchCustomers();
   };
-
+  useEffect(() => {
+    if (showDeleteAllModal) {
+      document.body.classList.add("no-scroll");
+    } else {
+      document.body.classList.remove("no-scroll");
+    }
+  }, [showDeleteAllModal]);
   const handleDeleteSuccess = (deletedId) => {
     setCustomers((prev) =>
       prev.filter((customer) => customer.id !== deletedId)
@@ -294,7 +300,11 @@ function AllCustomers() {
         {selectedCustomers.length > 0 && (
           <div className="mt-3 flex justify-between items-center bg-gray-50 p-3 rounded">
             <span>
-              {t("selecting")} <span className="font-bold text-primary">{selectedCustomers.length}</span> {t("items")}
+              {t("selecting")}{" "}
+              <span className="font-bold text-primary">
+                {selectedCustomers.length}
+              </span>{" "}
+              {t("items")}
             </span>
             <button
               onClick={() => setShowDeleteAllModal(true)}

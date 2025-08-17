@@ -424,12 +424,18 @@ function EditProduct() {
   };
 
   const genderOptions = [
-    { value: "", label: "Select Gender" },
-    { value: "male", label: "Male" },
-    { value: "female", label: "Female" },
-    { value: "children", label: "Children" },
+    { value: "", label: t("selectGender") },
+    { value: "male", label: t("male") },
+    { value: "female", label: t("female") },
+    { value: "children", label: t("children") },
   ];
-
+  useEffect(()=>{
+    if(showModal){
+      document.body.classList.add("no-scroll")
+    }else{
+      document.body.classList.remove("no-scroll")
+    }
+  },[showModal])
   return (
     <div className={`bg-gray-100 flex flex-col min-h-screen pb-32 relative`}>
       <Helmet>
@@ -439,7 +445,7 @@ function EditProduct() {
         <meta name="description" content="Edit product details in VERTEX" />
       </Helmet>
 
-      <Header subtitle={t("editProductHead")} title={t("editProduct")} />
+      <Header subtitle={t("editProductHead")} title={t("editProduct")} className="mx-5 mt-5 mb-3" />
       <Formik
         initialValues={initialValues}
         enableReinitialize={true}

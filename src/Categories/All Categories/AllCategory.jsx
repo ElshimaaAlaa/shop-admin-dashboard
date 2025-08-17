@@ -10,8 +10,7 @@ import { useTranslation } from "react-i18next";
 import { BsSortDown } from "react-icons/bs";
 import Pagination from "../../Components/Pagination/Pagination";
 import DeleteMultipleCategories from "./DeleteMultipleCategories";
-import { toast } from "react-toastify";
-
+import Header from "../../Components/Header/Header";
 function AllCategory() {
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -74,33 +73,6 @@ function AllCategory() {
     });
     setSelectedCategories((prev) => prev.filter((id) => id !== categoryId));
   };
-
-  const handleDeleteMultiple = async () => {
-    setIsDeleting(true);
-    try {
-      // await deleteMultipleCategories(selectedCategories);
-      
-      setCategories(prevCategories =>
-        prevCategories.filter(category => !selectedCategories.includes(category.id))
-      );
-      
-      setSelectedCategories([]);
-      setSelectAll(false);
-      setShowDeleteAllModal(false);
-      
-      if (currentItems.length === selectedCategories.length && currentPage > 1) {
-        setCurrentPage(currentPage - 1);
-      }
-      
-      toast.success(t("categoriesDeletedSuccessfully"));
-    } catch (error) {
-      console.error("Failed to delete categories:", error);
-      toast.error(t("deleteFailed"));
-    } finally {
-      setIsDeleting(false);
-    }
-  };
-
   const handleTypeFilterSelect = (type) => {
     setTypeFilter(type);
     setShowTypeDropdown(false);
@@ -191,18 +163,21 @@ function AllCategory() {
   const handleDeleteSelected = () => {
     setShowDeleteAllModal(true);
   };
-
+  useEffect(() => {
+    if (showDeleteAllModal) {
+      document.body.classList.add("no-scroll");
+    } else {
+      document.body.classList.remove("no-scroll");
+    }
+  }, [showDeleteAllModal]);
   return (
-    <div className="bg-gray-100 min-h-[89vh] p-4 pt-5">
+    <div className="bg-gray-100 min-h-screen p-4 pt-5">
       <Helmet>
         <title>
           {t("cats")} | {t("vertex")}
         </title>
       </Helmet>
-      <section className="bg-white p-5 rounded-md mb-3">
-        <p className="text-gray-400 text-13">{t("catHead")}</p>
-        <h1 className="font-bold text-17 mt-2">{t("cats")}</h1>
-      </section>
+      <Header subtitle={t("catHead")} title={t("cats")} className="mb-3" />
       <section className="bg-white p-5 rounded-md">
         <SearchBar
           onclick={() => navigate("/Dashboard/addCategory")}
@@ -218,9 +193,13 @@ function AllCategory() {
         />
 
         {selectedCategories.length > 0 && (
-          <div className="mt-3 flex justify-between items-center bg-gray-50 p-3 rounded">
+          <div className="flex justify-between items-center bg-gray-50 p-3 mb-3 rounded">
             <span>
-              {t("selecting")} <span className="font-bold text-primary">{selectedCategories.length}</span> {t("items")}
+              {t("selecting")}{" "}
+              <span className="font-bold text-primary">
+                {selectedCategories.length}
+              </span>{" "}
+              {t("items")}
             </span>
             <button
               onClick={handleDeleteSelected}
@@ -242,10 +221,14 @@ function AllCategory() {
           <div className="text-gray-400 text-center mt-10">
             <ClipLoader color="#E0A75E" />
           </div>
-        ) :categories.length === 0 ? (
-          <p className="text-gray-400 text-16 text-center mt-10">{t("noData")}</p>
-        ): filteredCategories.length === 0 ? (
-          <div className="text-gray-400 text-center mt-10">{t("noMatchResults")}</div>
+        ) : categories.length === 0 ? (
+          <p className="text-gray-400 text-16 text-center mt-10">
+            {t("noData")}
+          </p>
+        ) : filteredCategories.length === 0 ? (
+          <div className="text-gray-400 text-center mt-10">
+            {t("noMatchResults")}
+          </div>
         ) : (
           <>
             <div className="border border-gray-200 rounded-lg ">
@@ -287,10 +270,7 @@ function AllCategory() {
                     </th>
                     <th className="px-6 py-3 text-left border w-500px">
                       <div className="flex items-center justify-between">
-                        <p>
-                          {t("type")}
-                          {typeFilter && `: ${typeFilter}`}
-                        </p>
+                        <p>{t("type")}</p>
                         <div className="flex items-center gap-2">
                           {typeFilter && (
                             <button
@@ -444,7 +424,6 @@ function AllCategory() {
         <DeleteMultipleCategories
           isOpen={showDeleteAllModal}
           onClose={() => setShowDeleteAllModal(false)}
-          onConfirm={handleDeleteMultiple}
           count={selectedCategories.length}
         />
       </section>

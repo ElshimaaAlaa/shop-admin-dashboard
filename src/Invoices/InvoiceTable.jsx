@@ -19,7 +19,8 @@ export const InvoiceTable = ({
   const [paymentMethodFilter, setPaymentMethodFilter] = useState(null);
   const [statusFilter, setStatusFilter] = useState(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [showPaymentMethodDropdown, setShowPaymentMethodDropdown] = useState(false);
+  const [showPaymentMethodDropdown, setShowPaymentMethodDropdown] =
+    useState(false);
   const [showStatusDropdown, setShowStatusDropdown] = useState(false);
   const [selectedInvoices, setSelectedInvoices] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
@@ -31,13 +32,22 @@ export const InvoiceTable = ({
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (datePickerRef.current && !datePickerRef.current.contains(event.target)) {
+      if (
+        datePickerRef.current &&
+        !datePickerRef.current.contains(event.target)
+      ) {
         setShowDatePicker(false);
       }
-      if (paymentMethodDropdownRef.current && !paymentMethodDropdownRef.current.contains(event.target)) {
+      if (
+        paymentMethodDropdownRef.current &&
+        !paymentMethodDropdownRef.current.contains(event.target)
+      ) {
         setShowPaymentMethodDropdown(false);
       }
-      if (statusDropdownRef.current && !statusDropdownRef.current.contains(event.target)) {
+      if (
+        statusDropdownRef.current &&
+        !statusDropdownRef.current.contains(event.target)
+      ) {
         setShowStatusDropdown(false);
       }
     };
@@ -47,7 +57,12 @@ export const InvoiceTable = ({
     };
   }, []);
 
-  const uniquePaymentMethods = ["Cash", "Credit Card", "Bank Transfer", "PayPal"];
+  const uniquePaymentMethods = [
+    "Cash",
+    "Credit Card",
+    "Bank Transfer",
+    "PayPal",
+  ];
   const uniqueStatuses = ["paid", "unpaid"];
 
   const filteredInvoices = currentItems.filter((invoice) => {
@@ -74,7 +89,7 @@ export const InvoiceTable = ({
     const isChecked = e.target.checked;
     setSelectAll(isChecked);
     if (isChecked) {
-      const allInvoiceIds = filteredInvoices.map(invoice => invoice.id);
+      const allInvoiceIds = filteredInvoices.map((invoice) => invoice.id);
       setSelectedInvoices(allInvoiceIds);
     } else {
       setSelectedInvoices([]);
@@ -83,9 +98,9 @@ export const InvoiceTable = ({
 
   const handleSelectInvoice = (invoiceId, isChecked) => {
     if (isChecked) {
-      setSelectedInvoices(prev => [...prev, invoiceId]);
+      setSelectedInvoices((prev) => [...prev, invoiceId]);
     } else {
-      setSelectedInvoices(prev => prev.filter(id => id !== invoiceId));
+      setSelectedInvoices((prev) => prev.filter((id) => id !== invoiceId));
       setSelectAll(false);
     }
   };
@@ -96,7 +111,13 @@ export const InvoiceTable = ({
     setSelectAll(false);
     setShowDeleteAllModal(false);
   };
-
+  useEffect(() => {
+    if (showDeleteAllModal) {
+      document.body.classList.add("no-scroll");
+    } else {
+      document.body.classList.remove("no-scroll");
+    }
+  }, [showDeleteAllModal]);
   if (error) {
     return <div className="text-red-500 text-center mt-10">{t("error")}</div>;
   }
@@ -114,7 +135,11 @@ export const InvoiceTable = ({
       {selectedInvoices.length > 0 && (
         <div className="mt-3 flex justify-between items-center bg-gray-50 p-3 rounded">
           <span>
-            {t("selecting")} <span className="font-bold text-primary">{selectedInvoices.length}</span> {t("items")}
+            {t("selecting")}{" "}
+            <span className="font-bold text-primary">
+              {selectedInvoices.length}
+            </span>{" "}
+            {t("items")}
           </span>
           <button
             onClick={() => setShowDeleteAllModal(true)}
@@ -230,7 +255,9 @@ export const InvoiceTable = ({
                             : "bg-customOrange-lightOrange text-primary"
                         }`}
                         onClick={() =>
-                          setShowPaymentMethodDropdown(!showPaymentMethodDropdown)
+                          setShowPaymentMethodDropdown(
+                            !showPaymentMethodDropdown
+                          )
                         }
                         aria-label="Filter by payment method"
                       >
@@ -279,7 +306,9 @@ export const InvoiceTable = ({
                             ? "bg-customOrange-lightOrange text-primary"
                             : "bg-customOrange-lightOrange text-primary"
                         }`}
-                        onClick={() => setShowStatusDropdown(!showStatusDropdown)}
+                        onClick={() =>
+                          setShowStatusDropdown(!showStatusDropdown)
+                        }
                         aria-label="Filter by status"
                       >
                         <BsSortDown />
@@ -322,7 +351,9 @@ export const InvoiceTable = ({
                 <tr key={invoice.id} className="border-t hover:bg-gray-50">
                   <td
                     className="px-3 py-3 border-t text-14 text-gray-600 border-r w-250 cursor-pointer"
-                    onClick={() => navigate(`/Dashboard/AllInvoices/${invoice.id}`)}
+                    onClick={() =>
+                      navigate(`/Dashboard/AllInvoices/${invoice.id}`)
+                    }
                   >
                     <div className="flex items-center gap-3">
                       <label className="inline-flex items-center cursor-pointer">

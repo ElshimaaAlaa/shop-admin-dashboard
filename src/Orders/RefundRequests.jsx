@@ -160,6 +160,13 @@ function RefundRequests() {
       console.error("Failed to delete orders:", error);
     }
   };
+  useEffect(() => {
+    if (showDeleteAllModal) {
+      document.body.classList.add("no-scroll");
+    } else {
+      document.body.classList.remove("no-scroll");
+    }
+  }, [showDeleteAllModal]);
 
   const RefundSearch = ({ searchQuery, setSearchQuery }) => {
     return (
@@ -202,7 +209,11 @@ function RefundRequests() {
         {selectedOrders.length > 0 && (
           <div className="mt-3 flex justify-between items-center bg-gray-50 p-3 rounded">
             <span>
-              {t("selecting")} <span className="text-primary font-bold">{selectedOrders.length}</span> {t("items")}
+              {t("selecting")}{" "}
+              <span className="text-primary font-bold">
+                {selectedOrders.length}
+              </span>{" "}
+              {t("items")}
             </span>
             <button
               className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"

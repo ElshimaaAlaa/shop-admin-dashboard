@@ -119,11 +119,12 @@ const CategoryField = ({
 };
 
 const GenderField = ({ field, form }) => {
+  const {t} = useTranslation()
   const options = [
     { value: "", label: "gender" },
-    { value: "male", label: "male" },
-    { value: "female", label: "female" },
-    { value: "children", label: "children" },
+    { value: "male", label: t("male") },
+    { value: "female", label: t("female") },
+    { value: "children", label: t("children") },
   ];
 
   return (

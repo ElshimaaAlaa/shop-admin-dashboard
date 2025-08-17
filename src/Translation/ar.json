@@ -492,5 +492,13 @@
   "DeleteMutipleRefundOrders": "هل أنت متأكد من رغبتك في حذف جميع الطلبات المستردة ؟",
   "DeleteMutipleProducts": "هل أنت متأكد من رغبتك في حذف جميع المنتجات ؟",
   "DeleteMultipleCategories": "هل أنت متأكد من رغبتك في حذف جميع الفئات ؟",
-  "vs": "مقابل"
+  "vs": "مقابل",
+  "colorOnly":"لون فقط",
+  "sizeOnly":"حجم فقط",
+  "colorSize":"لون و حجم ",
+  "selectOption":"اختر أحد الخيارات",
+  "male":"ذكر",
+  "female":"أنثي",
+  "children":"طفل",
+  "selectGender":"أختر نوع"
 }

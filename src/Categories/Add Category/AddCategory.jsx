@@ -97,10 +97,10 @@ const CustomDropdown = ({
 const TypeField = ({ field, form, ...props }) => {
   const { t } = useTranslation();
   const options = [
-    { value: "1", label: "Standard" },
-    { value: "2", label: "Color-Only" },
-    { value: "3", label: "Size-Only" },
-    { value: "4", label: "Color & Size" },
+    { value: "1", label: t("standard") },
+    { value: "2", label: t("colorOnly") },
+    { value: "3", label: t("sizeOnly") },
+    { value: "4", label: t("colorSize") },
   ];
 
   return (
@@ -263,7 +263,7 @@ function AddCategory() {
           />
           <p className="font-bold mt-5">{t("successAddCat")}</p>
           <button
-            className="bg-primary text-white rounded-md p-2 text-14  mt-4"
+            className="bg-primary text-white rounded-md p-2 w-40 text-14  mt-4"
             onClick={() => navigate("/Dashboard/categories")}
           >
             {t("backToCat")}

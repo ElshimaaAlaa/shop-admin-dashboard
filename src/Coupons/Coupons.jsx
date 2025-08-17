@@ -13,7 +13,7 @@ import CustomCalendar from "./CustomCalendar";
 import DeleteMultipleCoupons from "./DeleteMultipleCoupons";
 import Header from "../Components/Header/Header";
 import Pagination from "../Components/Pagination/Pagination";
-
+import "./style.scss";
 function Coupons() {
   const [coupons, setCoupons] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -187,13 +187,13 @@ function Coupons() {
     }
     fetchData();
   };
-
-  if (showModal) {
-    document.body.classList.add("no-scroll");
-  } else {
-    document.body.classList.remove("no-scroll");
-  }
-
+  useEffect(() => {
+    if (showDeleteAllModal) {
+      document.body.classList.add("no-scroll");
+    } else {
+      document.body.classList.remove("no-scroll");
+    }
+  }, [showDeleteAllModal]);
   const toggleStartDateFilter = () => {
     setShowStartDateFilter(!showStartDateFilter);
     setShowEndDateFilter(false);
@@ -256,7 +256,11 @@ function Coupons() {
         {selectedCoupons.length > 0 && (
           <div className="mt-3 flex justify-between items-center bg-gray-50 p-3 rounded">
             <span>
-              {t("selecting")} <span className="font-bold text-primary">{selectedCoupons.length}</span> {t("items")}
+              {t("selecting")}{" "}
+              <span className="font-bold text-primary">
+                {selectedCoupons.length}
+              </span>{" "}
+              {t("items")}
             </span>
             <button
               onClick={() => setShowDeleteAllModal(true)}
@@ -273,6 +277,10 @@ function Coupons() {
           <div className="text-gray-400 text-center mt-10">
             <ClipLoader color="#E0A75E" />
           </div>
+        ) : coupons.length === 0 ? (
+          <p className="text-center mt-10 text-gray-400 text-15">
+            {t("noData")}
+          </p>
         ) : hasSearchResults ? (
           <div className="text-gray-400 text-center mt-10">
             {t("noMatchResults")}
@@ -418,7 +426,7 @@ function Coupons() {
                         colSpan="6"
                         className="text-center py-4 text-gray-400"
                       >
-                        {t("noData")}
+                        {t("noMatchResults")}
                       </td>
                     </tr>
                   ) : noData ? (
@@ -427,7 +435,7 @@ function Coupons() {
                         colSpan="6"
                         className="text-center py-4 text-gray-400"
                       >
-                        {t("noData")}
+                        {t("noMatchResults")}
                       </td>
                     </tr>
                   ) : (

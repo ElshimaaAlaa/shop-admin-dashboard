@@ -14,7 +14,7 @@ import CustomCalendar from "../../Coupons/CustomCalendar";
 import DeleteMultipleDiscounts from "./DeleteMultipleDiscounts";
 import Pagination from "../../Components/Pagination/Pagination";
 import Header from "../../Components/Header/Header";
-
+import "./DiscountStyle.scss";
 function AllDiscounts() {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ function AllDiscounts() {
   const [error, setError] = useState(false);
   const [discounts, setDiscounts] = useState([]);
   const { t, i18n } = useTranslation();
-  const isRTL = i18n.language === "ar"
+  const isRTL = i18n.language === "ar";
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
   const [selectedDiscounts, setSelectedDiscounts] = useState([]);
@@ -180,7 +180,13 @@ function AllDiscounts() {
   const clearEndDateFilter = () => {
     setSelectedEndDate(null);
   };
-
+  useEffect(() => {
+    if (showDeleteAllModal) {
+      document.body.classList.add("no-scroll");
+    } else {
+      document.body.classList.remove("no-scroll");
+    }
+  }, [showDeleteAllModal]);
   return (
     <div className="bg-gray-100 flex flex-col h-[89vh] mx-5">
       <Helmet>
@@ -209,7 +215,11 @@ function AllDiscounts() {
         {selectedDiscounts.length > 0 && (
           <div className="mt-3 flex justify-between items-center bg-gray-50 p-3 rounded">
             <span>
-              {t("selecting")} <span className="font-bold text-primary">{selectedDiscounts.length}</span> {t("items")}
+              {t("selecting")}{" "}
+              <span className="font-bold text-primary">
+                {selectedDiscounts.length}
+              </span>{" "}
+              {t("items")}
             </span>
             <button
               onClick={() => setShowDeleteAllModal(true)}

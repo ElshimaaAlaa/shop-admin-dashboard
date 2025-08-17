@@ -9,6 +9,7 @@ import { ClipLoader } from "react-spinners";
 import DeleteQuestion from "./DeleteQuestion";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import "./Style.scss";
 function SupportQuestion() {
   const [faqsData, setFaqsData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -55,17 +56,21 @@ function SupportQuestion() {
     setFaqsData((prev) => [...prev, newQuestion]);
     fetchSupportQuestions();
   };
-
+  if (showAddQuestionModal) {
+    document.body.classList.add("no-scroll");
+  } else {
+    document.body.classList.remove("no-scroll");
+  }
   return (
     <div className="bg-gray-100 flex flex-col h-[89vh]">
       <Helmet>
-        <title>{t("supportQ")} | {t("vertex")}</title>
+        <title>
+          {t("supportQ")} | {t("vertex")}
+        </title>
       </Helmet>
       <section className="rounded-md p-5 mx-5 bg-white mt-5 flex items-center justify-between">
         <div>
-          <p className="text-gray-400 text-13">
-            {t("supportMenu")}
-          </p>
+          <p className="text-gray-400 text-13">{t("supportMenu")}</p>
           <h1 className="text-17 font-bold mt-2">{t("supportQ")}</h1>
         </div>
         <div className="flex items-center gap-2">

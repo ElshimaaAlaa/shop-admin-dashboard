@@ -5,7 +5,7 @@ import { notificationService } from "../ApiServices/Notificaitions";
 function Notifications() {
   const { t, i18n } = useTranslation();
   const [notifications, setNotifications] = useState([]);
-
+  const isRTL = i18n.language === "ar";
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
@@ -13,7 +13,6 @@ function Notifications() {
           language: i18n.language,
         });
         setNotifications(notificationsData);
-        console.log("success get all notifications", notificationsData);
       } catch (error) {
         console.error("Error fetching notifications:", error);
       }
@@ -22,14 +21,14 @@ function Notifications() {
   }, [i18n.language]);
 
   return (
-    <div className="h-[89vh] py-5 px-20 bg-gray-50">
-      <h1 className="font-bold text-xl">{t("allNotifications")}</h1>
+    <div className={`h-[89vh] py-5 px-20 bg-gray-50 ${isRTL ? "rtl" : "ltr"}`}>
+      <h1 className="font-bold text-lg">{t("allNotifications")}</h1>
       {notifications.length === 0 ? (
         <p className="text-center text-gray-500 mt-10 text-17">
           {t("noNotifications")}
         </p>
       ) : (
-        <ul className="flex flex-col gap-3 mt-5">
+        <ul className={`flex flex-col gap-3 mt-5 ${isRTL ? "rtl" : "ltr"}`}>
           {notifications.map((item) => (
             <li
               key={item.id}

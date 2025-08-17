@@ -9,7 +9,6 @@ import { Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import Pagination from "../../Components/Pagination/Pagination";
 import Header from "../../Components/Header/Header";
-import { toast } from "react-toastify";
 import DeleteMutipleProducts from "./DeleteMultipleProducts";
 
 function AllProducts() {
@@ -22,7 +21,6 @@ function AllProducts() {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === "ar";
@@ -67,13 +65,16 @@ function AllProducts() {
     const totalPages = Math.ceil(totalItems / itemsPerPage);
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = filteredProducts.slice(indexOfFirstItem, indexOfLastItem);
+    const currentItems = filteredProducts.slice(
+      indexOfFirstItem,
+      indexOfLastItem
+    );
 
     return {
       totalItems,
       totalPages,
       currentItems,
-      hasItems: totalItems > 0
+      hasItems: totalItems > 0,
     };
   }, [filteredProducts, currentPage, itemsPerPage]);
 
@@ -85,8 +86,10 @@ function AllProducts() {
 
   useEffect(() => {
     if (!selectAll) return;
-    const allCurrentIds = paginationData.currentItems.map(item => item.id);
-    const allSelected = allCurrentIds.every(id => selectedProducts.includes(id));
+    const allCurrentIds = paginationData.currentItems.map((item) => item.id);
+    const allSelected = allCurrentIds.every((id) =>
+      selectedProducts.includes(id)
+    );
     if (!allSelected) {
       setSelectAll(false);
     }
@@ -97,7 +100,10 @@ function AllProducts() {
       const updatedProducts = prevProducts.filter(
         (product) => product.id !== productId
       );
-      if (updatedProducts.length <= (currentPage - 1) * itemsPerPage && currentPage > 1) {
+      if (
+        updatedProducts.length <= (currentPage - 1) * itemsPerPage &&
+        currentPage > 1
+      ) {
         setCurrentPage(currentPage - 1);
       }
       return updatedProducts;
@@ -105,34 +111,13 @@ function AllProducts() {
     setSelectedProducts((prev) => prev.filter((id) => id !== productId));
   };
 
-  const handleDeleteMultiple = async () => {
-    setIsDeleting(true);
-    try {
-      setProducts(prevProducts =>
-        prevProducts.filter(product => !selectedProducts.includes(product.id))
-      );
-      setSelectedProducts([]);
-      setSelectAll(false);
-      
-      if (paginationData.currentItems.length === selectedProducts.length && currentPage > 1) {
-        setCurrentPage(currentPage - 1);
-      }
-      
-      setShowDeleteModal(false);
-      toast.success(t("productsDeletedSuccessfully"));
-    } catch (error) {
-      console.error("Failed to delete products:", error);
-      toast.error(t("deleteFailed"));
-    } finally {
-      setIsDeleting(false);
-    }
-  };
-
   const handleSelectAll = (e) => {
     const isChecked = e.target.checked;
     setSelectAll(isChecked);
     if (isChecked) {
-      const allProductIds = paginationData.currentItems.map((product) => product.id);
+      const allProductIds = paginationData.currentItems.map(
+        (product) => product.id
+      );
       setSelectedProducts(allProductIds);
     } else {
       setSelectedProducts([]);
@@ -157,9 +142,15 @@ function AllProducts() {
     setSelectAll(false);
     setSelectedProducts([]);
   };
-
+  useEffect(() => {
+    if (showDeleteModal) {
+      document.body.classList.add("no-scroll");
+    } else {
+      document.body.classList.remove("no-scroll");
+    }
+  }, [showDeleteModal]);
   return (
-    <div className="bg-gray-100 min-h-[89vh] mx-5 pt-5">
+    <div className="bg-gray-100 min-h-screen mx-5 pt-5">
       <Helmet>
         <title>
           {t("products")} | {t("vertex")}
@@ -187,18 +178,17 @@ function AllProducts() {
         {selectedProducts.length > 0 && (
           <div className="mt-3 flex justify-between items-center bg-gray-50 p-3 rounded">
             <span>
-              {t("selecting")} <span className="text-primary font-bold">{selectedProducts.length}</span> {t("items")}
+              {t("selecting")}{" "}
+              <span className="text-primary font-bold">
+                {selectedProducts.length}
+              </span>{" "}
+              {t("items")}
             </span>
             <button
               onClick={handleDeleteSelected}
               className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-              disabled={isDeleting}
             >
-              {isDeleting ? (
-                <ClipLoader color="#ffffff" size={20} />
-              ) : (
-                t("deleteAll")
-              )}
+              {t("deleteAll")}
             </button>
           </div>
         )}
@@ -400,12 +390,10 @@ function AllProducts() {
         <DeleteMutipleProducts
           isOpen={showDeleteModal}
           onClose={() => setShowDeleteModal(false)}
-          onConfirm={handleDeleteMultiple}
           count={selectedProducts.length}
         />
       </div>
     </div>
   );
 }
-
 export default AllProducts;

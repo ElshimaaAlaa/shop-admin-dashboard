@@ -58,5 +58,4 @@ function DeleteMultipleCategories({ isOpen, onClose, onConfirm, count }) {
     </FailedModal>
   );
 }
-
 export default DeleteMultipleCategories;

@@ -22,7 +22,7 @@ const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [selectedItem, setSelectedItem] = useState(
-    localStorage.getItem("selectedMenuItem") || "dashboard"
+    localStorage.getItem("selectedMenuItem") || ""
   );
   const [openSubmenu, setOpenSubmenu] = useState(
     localStorage.getItem("openSubmenu") || null
@@ -48,66 +48,67 @@ const Sidebar = () => {
 
   useEffect(() => {
     const path = location.pathname;
-
-    // Reset selection first
-    setSelectedItemPersistent("");
-    setOpenSubmenuPersistent(null);
-
-    if (
-      path === "/Login" ||
-      path === "/Dashboard" ||
-      path === "/Dashboard/" ||
-      path.includes("/Dashboard/Home-dashboard")
-    ) {
-      setSelectedItemPersistent("dashboard");
-      return;
-    }
-
-    if (path.includes("/Dashboard/Home-dashboard")) {
-      setSelectedItemPersistent("dashboard");
-    } else if (path.includes("/Dashboard/categories")) {
-      setSelectedItemPersistent("categories");
-    } else if (path.includes("/Dashboard/products")) {
-      setSelectedItemPersistent("products");
-    } else if (path.includes("/Dashboard/orders")) {
-      if (path.includes("/Dashboard/RecivedOrders")) {
-        setSelectedItemPersistent("orders,orders-pending");
-        setOpenSubmenuPersistent("orders");
-      } else if (path.includes("/Dashboard/RefundRequests")) {
-        setSelectedItemPersistent("orders,orders-processing");
-        setOpenSubmenuPersistent("orders");
-      } else {
-        setSelectedItemPersistent("orders");
-      }
-    } else if (path.includes("/Dashboard/AllInvoices")) {
-      setSelectedItemPersistent("invoices");
-    } else if (path.includes("/Dashboard/AllCustomers")) {
-      setSelectedItemPersistent("clients");
-    } else if (path.includes("/Dashboard/AllDiscounts")) {
-      setSelectedItemPersistent("promotions");
-    } else if (path.includes("/Dashboard/Coupons")) {
-      // Add this condition for coupons
-      setSelectedItemPersistent("coupons");
-    } else if (path.includes("/Dashboard/Analytics")) {
-      setSelectedItemPersistent("reports");
-    } else if (path.includes("/Dashboard/ShippingProviders")) {
-      setSelectedItemPersistent("settings,shipping-providers");
-      setOpenSubmenuPersistent("settings");
-    } else if (path.includes("/Dashboard/PaymentMethods")) {
-      setSelectedItemPersistent("settings,payment-methods");
-      setOpenSubmenuPersistent("settings");
-    } else if (path.includes("/Dashboard/SupportQuestion")) {
-      setSelectedItemPersistent("settings,support-questions");
-      setOpenSubmenuPersistent("settings");
-    } else if (path.includes("/Dashboard/support")) {
-      setSelectedItemPersistent("support");
-    } else if (path.includes("/Dashboard/Faqs")) {
-      setSelectedItemPersistent("help");
-    } else {
-      setSelectedItemPersistent("dashboard");
-    }
-
     setIsRTL(i18n.language === "ar");
+
+    const determineActiveItem = () => {
+      // Default to dashboard only for root paths
+      if (path === "/" || path === "/Dashboard" || path === "/Dashboard/") {
+        return "dashboard";
+      }
+
+      const pathMappings = [
+        { path: "/Dashboard/Home-dashboard", item: "dashboard" },
+        { path: "/Dashboard/categories", item: "categories" },
+        { path: "/Dashboard/products", item: "products" },
+        { path: "/Dashboard/orders", item: "orders" },
+        { path: "/Dashboard/RecivedOrders", item: "orders,orders-pending" },
+        { path: "/Dashboard/RefundRequests", item: "orders,orders-processing" },
+        { path: "/Dashboard/AllInvoices", item: "invoices" },
+        { path: "/Dashboard/AllCustomers", item: "clients" },
+        { path: "/Dashboard/AllDiscounts", item: "promotions" },
+        { path: "/Dashboard/Coupons", item: "coupons" },
+        { path: "/Dashboard/Analytics", item: "reports" },
+        { path: "/Dashboard/ShippingProviders", item: "settings,shipping-providers" },
+        { path: "/Dashboard/PaymentMethods", item: "settings,payment-methods" },
+        { path: "/Dashboard/SupportQuestion", item: "settings,support-questions" },
+        { path: "/Dashboard/support", item: "support" },
+        { path: "/Dashboard/Faqs", item: "help" },
+      ];
+
+      // Check exact matches first
+      for (const mapping of pathMappings) {
+        if (path === mapping.path) {
+          return mapping.item;
+        }
+      }
+
+      // Handle CRUD operations (add/edit/view)
+      const crudMatch = path.match(/\/Dashboard\/([^\/]+)\/(add|edit|view|details)/i);
+      if (crudMatch) {
+        const mainPath = `/Dashboard/${crudMatch[1]}`;
+        for (const mapping of pathMappings) {
+          if (mapping.path === mainPath) {
+            return mapping.item;
+          }
+        }
+      }
+
+      // Check partial matches for sub-paths
+      for (const mapping of pathMappings) {
+        if (path.startsWith(mapping.path)) {
+          return mapping.item;
+        }
+      }
+
+      // No match found - return empty to keep nothing selected
+      return "";
+    };
+
+    const activeItem = determineActiveItem();
+    const [mainItem, subItem] = activeItem.split(",");
+    
+    setSelectedItemPersistent(activeItem);
+    setOpenSubmenuPersistent(subItem ? mainItem : null);
   }, [location, i18n.language]);
 
   const togglePin = (e) => {
@@ -135,6 +136,18 @@ const Sidebar = () => {
     setSelectedItemPersistent(`${mainItem.id},${subItem.id}`);
     setOpenSubmenuPersistent(mainItem.id);
     if (subItem.onclick) subItem.onclick();
+  };
+
+  const isMenuItemActive = (item) => {
+    if (!selectedItem) return false;
+    if (item.subItems) {
+      return selectedItem.startsWith(item.id);
+    }
+    return selectedItem === item.id;
+  };
+
+  const isSubItemActive = (mainItem, subItem) => {
+    return selectedItem === `${mainItem.id},${subItem.id}`;
   };
 
   const menuItems = [
@@ -297,9 +310,7 @@ const Sidebar = () => {
             <div key={item.id} className="menu-item-container">
               <div
                 className={`menu-item ${
-                  selectedItem.includes(item.id) && !selectedItem.includes(",")
-                    ? "active"
-                    : ""
+                  isMenuItemActive(item) ? "active" : ""
                 }`}
                 onClick={() => handleItemClick(item)}
                 data-id={item.id}
@@ -307,7 +318,7 @@ const Sidebar = () => {
                 <div className="menu-icon">
                   {React.cloneElement(item.icon, {
                     className: `${
-                      selectedItem.includes(item.id) ? "icon-active" : ""
+                      isMenuItemActive(item) ? "icon-active" : ""
                     }`,
                   })}
                 </div>
@@ -333,7 +344,7 @@ const Sidebar = () => {
                     <div
                       key={subItem.id}
                       className={`submenu-item ${
-                        selectedItem.includes(subItem.id) ? "active" : ""
+                        isSubItemActive(item, subItem) ? "active" : ""
                       }`}
                       onClick={() => handleSubItemClick(item, subItem)}
                     >
@@ -351,14 +362,14 @@ const Sidebar = () => {
             <div
               key={item.id}
               className={`menu-item ${
-                selectedItem === item.id ? "active" : ""
+                isMenuItemActive(item) ? "active" : ""
               }`}
               onClick={() => handleItemClick(item)}
               data-id={item.id}
             >
               <div className="menu-icon">
                 {React.cloneElement(item.icon, {
-                  className: `${selectedItem === item.id ? "icon-active" : ""}`,
+                  className: `${isMenuItemActive(item) ? "icon-active" : ""}`,
                 })}
               </div>
               {expanded && (

@@ -341,7 +341,7 @@ function EditCategory() {
           />
           <p className="font-bold mt-5 text-center">{t("successUpdateCat")}</p>
           <button
-            className="bg-primary text-white rounded-md p-2 text-14 mt-4"
+            className="bg-primary text-white rounded-md p-2 w-40 text-14 mt-4"
             onClick={() => navigate("/Dashboard/categories")}
             aria-label="Back to categories"
           >

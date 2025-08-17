@@ -13,7 +13,7 @@ import Header from "../../Components/Header/Header";
 import Head from "../../Components/Head/Head";
 import DeleteMultiplePayments from "./DeleteMultiplePayment";
 import Pagination from "../../Components/Pagination/Pagination";
-
+import "./PaymentStyle.scss"
 function PaymentMethods() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -105,11 +105,20 @@ function PaymentMethods() {
     fetchData();
   };
 
-  if (showModal) {
-    document.body.classList.add("no-scroll");
-  } else {
-    document.body.classList.remove("no-scroll");
-  }
+   useEffect(() => {
+    if (showDeleteAllModal ) {
+      document.body.classList.add("no-scroll");
+    } else {
+      document.body.classList.remove("no-scroll");
+    }
+  }, [showDeleteAllModal]);
+  useEffect(() => {
+    if (showModal ) {
+      document.body.classList.add("no-scroll");
+    } else {
+      document.body.classList.remove("no-scroll");
+    }
+  }, [showModal]);
 
   return (
     <div className="bg-gray-100 flex flex-col h-[89vh] ">
@@ -125,7 +134,7 @@ function PaymentMethods() {
       />
       <Head
         icon={MdPayment}
-        title={t("shippingProvider")}
+        title={t("paymentMethod")}
         value={filteredPaymentData.length}
         backgroundColor="bg-customOrange-mediumOrange"
         iconColor="#E0A75E"
