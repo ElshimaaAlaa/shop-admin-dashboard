@@ -140,7 +140,6 @@ function StoreInformation() {
                 {themeData.bannersBase64 &&
                 themeData.bannersBase64.length > 0 ? (
                   <>
-                    {/* Display only the first banner by default */}
                     <div className="group flex items-center gap-44">
                       <img
                         src={themeData.bannersBase64[0]}
