@@ -1,5 +1,5 @@
 import { Formik, Form, Field } from "formik";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { setUpStore } from "../../ApiServices/setUpStore";
@@ -22,7 +22,7 @@ const convertToBase64 = (file) => {
   });
 };
 
-function ThemeStore() {
+function StoreTheme() {
   const navigate = useNavigate();
   const [logoUrl, setLogoUrl] = useState(null);
   const [bannerUrls, setBannerUrls] = useState([]);
@@ -33,6 +33,8 @@ function ThemeStore() {
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
   const [showPrimaryPicker, setShowPrimaryPicker] = useState(false);
   const [showSecondaryPicker, setShowSecondaryPicker] = useState(false);
+  const primaryPickerRef = useRef(null);
+  const secondaryPickerRef = useRef(null);
 
   const steps = [
     { number: 1, title: t("storeTheme") },
@@ -41,8 +43,8 @@ function ThemeStore() {
   ];
 
   const initialValues = {
-    theme_primary_color: "",
-    theme_secondary_color: "",
+    theme_primary_color: "#3b82f6",
+    theme_secondary_color: "#f59e0b",
     image: null,
     banners: [],
   };
@@ -68,11 +70,15 @@ function ThemeStore() {
       ),
     banners: Yup.array()
       .min(1, t("atLeastOneBanner"))
-      .test("fileSize", t("fileTooLargeEach"), (files) =>
-        files.every((file) => file.size <= 5 * 1024 * 1024)
+      .test(
+        "fileSize",
+        t("fileTooLargeEach"),
+        (files) => files && files.every((file) => file.size <= 5 * 1024 * 1024)
       )
-      .test("fileType", t("unsupportedFormat"), (files) =>
-        files.every((file) => ["image/jpeg", "image/png"].includes(file.type))
+      .test(
+        "fileType",
+        t("unsupportedFormat"),
+        (files) => files && files.every((file) => ["image/jpeg", "image/png"].includes(file.type))
       ),
   });
 
@@ -142,20 +148,23 @@ function ThemeStore() {
 
   const handleColorChange = (color, fieldName, setFieldValue) => {
     setFieldValue(fieldName, color);
-    if (fieldName === "theme_primary_color") {
-      setShowPrimaryPicker(false);
-    } else {
-      setShowSecondaryPicker(false);
-    }
   };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
-        (showPrimaryPicker || showSecondaryPicker) &&
-        !event.target.closest(".color-picker-container")
+        primaryPickerRef.current && 
+        !primaryPickerRef.current.contains(event.target) &&
+        !event.target.closest('.primary-color-input')
       ) {
         setShowPrimaryPicker(false);
+      }
+
+      if (
+        secondaryPickerRef.current && 
+        !secondaryPickerRef.current.contains(event.target) &&
+        !event.target.closest('.secondary-color-input')
+      ) {
         setShowSecondaryPicker(false);
       }
     };
@@ -164,7 +173,7 @@ function ThemeStore() {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [showPrimaryPicker, showSecondaryPicker]);
+  }, []);
 
   return (
     <div className="p-3 bg-gradient-to-r from-customBlue-mediumBlue via-customOrange-mediumOrange to-customOrange-mediumOrange min-h-screen flex items-center justify-center">
@@ -249,11 +258,11 @@ function ThemeStore() {
                 {t("enterColor")}
               </h3>
               <div className="flex gap-2 mb-6 px-6">
-                <div className="w-full relative color-picker-container">
+                <div className="w-full relative">
                   <Field
                     name="theme_primary_color"
                     placeholder={t("primColor")}
-                    className={`w-full bg-gray-50 p-3 border rounded-md outline-none transition-all duration-200 placeholder:text-14 placeholder:text-gray-500 focus:border-primary ${
+                    className={`primary-color-input w-full bg-gray-50 p-3 border rounded-md outline-none transition-all duration-200 placeholder:text-14 placeholder:text-gray-500 focus:border-primary ${
                       touched.theme_primary_color && errors.theme_primary_color
                         ? "border-red-500"
                         : "border-gray-200"
@@ -265,22 +274,35 @@ function ThemeStore() {
                     readOnly
                   />
                   {showPrimaryPicker && (
-                    <div className="absolute -top-44 z-10 mt-2 bg-white p-3 rounded-md shadow-lg">
+                    <div 
+                      ref={primaryPickerRef}
+                      className="absolute -top-44 z-10 mt-2 bg-white p-3 rounded-md shadow-lg"
+                      onMouseDown={(e) => e.preventDefault()}
+                    >
                       <HexColorPicker
                         color={values.theme_primary_color}
                         onChange={(color) =>
                           handleColorChange(color, "theme_primary_color", setFieldValue)
                         }
                       />
+                      <div className="flex justify-end mt-2">
+                        <button
+                          type="button"
+                          className="text-primary text-sm"
+                          onClick={() => setShowPrimaryPicker(false)}
+                        >
+                          {t("done")}
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>
 
-                <div className="w-full relative color-picker-container">
+                <div className="w-full relative">
                   <Field
                     name="theme_secondary_color"
                     placeholder={t("secColor")}
-                    className={`w-full bg-gray-50 p-3 border rounded-md outline-none transition-all duration-200 placeholder:text-14 placeholder:text-gray-500 focus:border-primary ${
+                    className={`secondary-color-input w-full bg-gray-50 p-3 border rounded-md outline-none transition-all duration-200 placeholder:text-14 placeholder:text-gray-500 focus:border-primary ${
                       touched.theme_secondary_color &&
                       errors.theme_secondary_color
                         ? "border-red-500"
@@ -293,13 +315,26 @@ function ThemeStore() {
                     readOnly
                   />
                   {showSecondaryPicker && (
-                    <div className="absolute -top-44 z-10 mt-2 bg-white p-3 rounded-md shadow-lg">
+                    <div 
+                      ref={secondaryPickerRef}
+                      className="absolute -top-44 z-10 mt-2 bg-white p-3 rounded-md shadow-lg"
+                      onMouseDown={(e) => e.preventDefault()}
+                    >
                       <HexColorPicker
                         color={values.theme_secondary_color}
                         onChange={(color) =>
                           handleColorChange(color, "theme_secondary_color", setFieldValue)
                         }
                       />
+                      <div className="flex justify-end mt-2">
+                        <button
+                          type="button"
+                          className="text-primary text-sm"
+                          onClick={() => setShowSecondaryPicker(false)}
+                        >
+                          {t("done")}
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -329,4 +364,4 @@ function ThemeStore() {
   );
 }
 
-export default ThemeStore;
+export default StoreTheme;
