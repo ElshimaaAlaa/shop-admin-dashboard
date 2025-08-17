@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { Helmet } from "react-helmet";
 import { Search } from "lucide-react";
 import AcceptRefundRequests from "./Accept Refund Requests";
@@ -14,7 +14,7 @@ import Pagination from "../Components/Pagination/Pagination";
 import DeleteMutipleRefundOrders from "./DeleteMutipleRefundOrders";
 
 function RefundRequests() {
-  const [refundOrders, setRefundOrders] = useState([]);
+  const [allRefundOrders, setAllRefundOrders] = useState([]); // Store all orders
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -28,29 +28,29 @@ function RefundRequests() {
   const [showDeleteAllModal, setShowDeleteAllModal] = useState(false);
 
   const [pagination, setPagination] = useState({
-    total: 0,
-    count: 0,
-    per_page: 5,
     current_page: 1,
-    total_pages: 1,
-    next_page_url: null,
-    prev_page_url: null,
+    per_page: 5,
+    total: 0,
+    last_page: 1,
   });
 
+  // Fetch all refund requests
   useEffect(() => {
     const fetchRefundRequest = async () => {
       setIsLoading(true);
       try {
         const response = await refundrequests();
-        setRefundOrders(response || []);
-        if (response.pagination) {
-          setPagination(response.pagination);
-        }
+        setAllRefundOrders(response || []);
+        setPagination((prev) => ({
+          ...prev,
+          total: response?.length || 0,
+          last_page: Math.ceil((response?.length || 0) / prev.per_page),
+        }));
         setIsLoading(false);
       } catch (error) {
         setError(true);
         console.error("Failed to fetch refund requests:", error);
-        setRefundOrders([]);
+        setAllRefundOrders([]);
         setIsLoading(false);
       }
     };
@@ -73,18 +73,38 @@ function RefundRequests() {
     };
   }, []);
 
-  const filteredOrders = refundOrders.filter((order) => {
-    const matchesSearch =
-      order.order_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.refund_reason.toLowerCase().includes(searchQuery.toLowerCase());
+  // Filter orders based on search and date filter
+  const filteredOrders = useMemo(() => {
+    return allRefundOrders.filter((order) => {
+      const matchesSearch =
+        order.order_number?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        order.refund_reason?.toLowerCase().includes(searchQuery.toLowerCase());
 
-    const matchesDate = dateFilter
-      ? new Date(order.request_refund_date).toDateString() ===
-        dateFilter.toDateString()
-      : true;
+      const matchesDate = dateFilter
+        ? new Date(order.request_refund_date).toDateString() ===
+          dateFilter.toDateString()
+        : true;
 
-    return matchesSearch && matchesDate;
-  });
+      return matchesSearch && matchesDate;
+    });
+  }, [allRefundOrders, searchQuery, dateFilter]);
+
+  // Update pagination when filters change
+  useEffect(() => {
+    setPagination((prev) => ({
+      ...prev,
+      current_page: 1, // Reset to first page when filters change
+      total: filteredOrders.length,
+      last_page: Math.ceil(filteredOrders.length / prev.per_page) || 1,
+    }));
+  }, [filteredOrders]);
+
+  // Get paginated orders
+  const paginatedOrders = useMemo(() => {
+    const startIndex = (pagination.current_page - 1) * pagination.per_page;
+    const endIndex = startIndex + pagination.per_page;
+    return filteredOrders.slice(startIndex, endIndex);
+  }, [filteredOrders, pagination.current_page, pagination.per_page]);
 
   const handleDateChange = (date) => {
     setDateFilter(date);
@@ -100,14 +120,16 @@ function RefundRequests() {
       ...prev,
       current_page: selected + 1,
     }));
+    setSelectAll(false);
+    setSelectedOrders([]);
   };
 
-  // Select all orders
+  // Select all orders on current page
   const handleSelectAll = (e) => {
     const isChecked = e.target.checked;
     setSelectAll(isChecked);
     if (isChecked) {
-      const allOrderIds = filteredOrders.map((order) => order.id);
+      const allOrderIds = paginatedOrders.map((order) => order.id);
       setSelectedOrders(allOrderIds);
     } else {
       setSelectedOrders([]);
@@ -127,11 +149,10 @@ function RefundRequests() {
   // Handle delete multiple orders
   const handleDeleteMultiple = async () => {
     try {
-      // Add your API call to delete multiple orders here
-      console.log("Deleting orders:", selectedOrders);
-      
-      // After successful deletion
-      setRefundOrders(prev => prev.filter(order => !selectedOrders.includes(order.id)));
+      setAllRefundOrders((prev) =>
+        prev.filter((order) => !selectedOrders.includes(order.id))
+      );
+
       setSelectedOrders([]);
       setSelectAll(false);
       setShowDeleteAllModal(false);
@@ -180,10 +201,10 @@ function RefundRequests() {
 
         {selectedOrders.length > 0 && (
           <div className="mt-3 flex justify-between items-center bg-gray-50 p-3 rounded">
-            <span className="text-gray-600">
-              {t("selecting")} {selectedOrders.length} {t("items")}
+            <span>
+              {t("selecting")} <span className="text-primary font-bold">{selectedOrders.length}</span> {t("items")}
             </span>
-            <button 
+            <button
               className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
               onClick={() => setShowDeleteAllModal(true)}
             >
@@ -201,114 +222,33 @@ function RefundRequests() {
         ) : error ? (
           <div className="text-red-500 text-center mt-10">{t("error")}</div>
         ) : filteredOrders.length === 0 ? (
-          <div className="text-gray-500 text-center mt-10">{t("noData")}</div>
+          <div className="text-gray-500 text-center mt-10">
+            {searchQuery || dateFilter ? t("noMatchResults") : t("noData")}
+          </div>
         ) : (
-          <div className="border border-gray-200 rounded-lg mt-4 overflow-x-auto">
-            <table className="bg-white min-w-full table">
-              <thead>
-                <tr>
-                  <th className="px-3 py-3 border-b text-left cursor-pointer">
-                    <div className="flex items-center gap-3">
-                      <label className="inline-flex items-center cursor-pointer">
-                        <input
-                          type="checkbox"
-                          className="hidden peer"
-                          checked={selectAll}
-                          onChange={handleSelectAll}
-                          aria-label="Select all orders"
-                        />
-                        <span
-                          className={`w-4 h-4 border-2 rounded flex items-center justify-center transition-all duration-200 ${
-                            selectAll
-                              ? "border-primary bg-primary"
-                              : "border-gray-300"
-                          }`}
-                        >
-                          {selectAll && (
-                            <svg
-                              className="w-3 h-3 text-white"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
-                            </svg>
-                          )}
-                        </span>
-                      </label>
-                      {t("order")}
-                    </div>
-                  </th>
-                  <th className="px-3 py-3 text-left border-b border-l border-r rtl:text-right">
-                    <div className="flex items-center justify-between gap-2">
-                      <p>{t("date")}</p>
-                      <div className="flex items-center gap-2">
-                        {dateFilter && (
-                          <button
-                            onClick={clearDateFilter}
-                            className="text-primary text-13 flex items-center"
-                            aria-label="Clear date filter"
-                          >
-                            {t("clear")}
-                          </button>
-                        )}
-                        <div ref={datePickerRef}>
-                          <button
-                            className={`rounded-md p-2 ${
-                              dateFilter
-                                ? "bg-customOrange-lightOrange text-primary"
-                                : "bg-customOrange-lightOrange text-primary"
-                            }`}
-                            onClick={() => setShowDatePicker(!showDatePicker)}
-                            aria-label="Filter by date"
-                          >
-                            <BsSortDown />
-                          </button>
-                          {showDatePicker && (
-                            <div className="absolute ltr:right-40 rtl:left-[520px] mt-0.5 z-10">
-                              <CustomCalendar
-                                selectedDate={dateFilter}
-                                onChange={handleDateChange}
-                              />
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </th>
-                  <th className="px-3 py-3 text-left border-b border-r rtl:text-right">
-                    {t("price")}
-                  </th>
-                  <th className="px-3 py-3 text-left border-b border-r rtl:text-right">
-                    {t("reason")}
-                  </th>
-                  <th className="px-3 py-3 text-center border-b rtl:border-r">
-                    {t("actions")}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredOrders.map((order) => (
-                  <tr key={order.id} className="hover:bg-gray-50">
-                    <td className="px-3 py-3 border">
+          <>
+            <div className="border border-gray-200 rounded-lg mt-4 overflow-x-auto">
+              <table className="bg-white min-w-full table">
+                <thead>
+                  <tr>
+                    <th className="px-3 py-3 border-b text-left cursor-pointer">
                       <div className="flex items-center gap-3">
                         <label className="inline-flex items-center cursor-pointer">
                           <input
                             type="checkbox"
                             className="hidden peer"
-                            checked={selectedOrders.includes(order.id)}
-                            onChange={(e) =>
-                              handleSelectOrder(order.id, e.target.checked)
-                            }
-                            aria-label={`Select ${order.order_number}`}
+                            checked={selectAll}
+                            onChange={handleSelectAll}
+                            aria-label="Select all orders"
                           />
                           <span
                             className={`w-4 h-4 border-2 rounded flex items-center justify-center transition-all duration-200 ${
-                              selectedOrders.includes(order.id)
+                              selectAll
                                 ? "border-primary bg-primary"
                                 : "border-gray-300"
                             }`}
                           >
-                            {selectedOrders.includes(order.id) && (
+                            {selectAll && (
                               <svg
                                 className="w-3 h-3 text-white"
                                 viewBox="0 0 20 20"
@@ -319,53 +259,143 @@ function RefundRequests() {
                             )}
                           </span>
                         </label>
-                        <span className="text-14 text-gray-600">
-                          {order.order_number}
-                        </span>
+                        {t("order")}
                       </div>
-                    </td>
-                    <td className="px-3 py-3 mt-2 text-13 text-gray-600 border">
-                      <p className="flex items-center gap-2">
-                        <IoCalendarNumberOutline color="#69ABB5" size={17} />
-                        {order.request_refund_date}
-                      </p>
-                    </td>
-                    <td className="px-3 py-3 border-t border-l text-gray-600 text-14 rtl:border-r">
-                      {order.total} $
-                    </td>
-                    <td className="px-2 py-3 border-t border-l text-gray-600">
-                      <p className="bg-customOrange-mediumOrange text-primary rounded-md p-2 text-14">
-                        {order.refund_reason || t("notProvided")}
-                      </p>
-                    </td>
-                    <td className="px-6 py-3 w-10 border-t border-l">
-                      <div className="flex items-center gap-3">
-                        <AcceptRefundRequests
-                          order_id={order.id}
-                          status={order.status}
-                          amount={order.items_count}
-                        />
-                        <RejectRefundRequests
-                          orderId={order.id}
-                          status={order.status}
-                          amount={order.items_count}
-                        />
+                    </th>
+                    <th className="px-3 py-3 text-left border-b border-l border-r rtl:text-right">
+                      <div className="flex items-center justify-between gap-2">
+                        <p>{t("date")}</p>
+                        <div className="flex items-center gap-2">
+                          {dateFilter && (
+                            <button
+                              onClick={clearDateFilter}
+                              className="text-primary text-13 flex items-center"
+                              aria-label="Clear date filter"
+                            >
+                              {t("clear")}
+                            </button>
+                          )}
+                          <div ref={datePickerRef}>
+                            <button
+                              className={`rounded-md p-2 ${
+                                dateFilter
+                                  ? "bg-customOrange-lightOrange text-primary"
+                                  : "bg-customOrange-lightOrange text-primary"
+                              }`}
+                              onClick={() => setShowDatePicker(!showDatePicker)}
+                              aria-label="Filter by date"
+                            >
+                              <BsSortDown />
+                            </button>
+                            {showDatePicker && (
+                              <div className="absolute ltr:right-40 rtl:left-[520px] mt-0.5 z-10">
+                                <CustomCalendar
+                                  selectedDate={dateFilter}
+                                  onChange={handleDateChange}
+                                />
+                              </div>
+                            )}
+                          </div>
+                        </div>
                       </div>
-                    </td>
+                    </th>
+                    <th className="px-3 py-3 text-left border-b border-r rtl:text-right">
+                      {t("price")}
+                    </th>
+                    <th className="px-3 py-3 text-left border-b border-r rtl:text-right">
+                      {t("reason")}
+                    </th>
+                    <th className="px-3 py-3 text-center border-b rtl:border-r">
+                      {t("actions")}
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {paginatedOrders.map((order) => (
+                    <tr key={order.id} className="hover:bg-gray-50">
+                      <td className="px-3 py-3 border">
+                        <div className="flex items-center gap-3">
+                          <label className="inline-flex items-center cursor-pointer">
+                            <input
+                              type="checkbox"
+                              className="hidden peer"
+                              checked={selectedOrders.includes(order.id)}
+                              onChange={(e) =>
+                                handleSelectOrder(order.id, e.target.checked)
+                              }
+                              aria-label={`Select ${order.order_number}`}
+                            />
+                            <span
+                              className={`w-4 h-4 border-2 rounded flex items-center justify-center transition-all duration-200 ${
+                                selectedOrders.includes(order.id)
+                                  ? "border-primary bg-primary"
+                                  : "border-gray-300"
+                              }`}
+                            >
+                              {selectedOrders.includes(order.id) && (
+                                <svg
+                                  className="w-3 h-3 text-white"
+                                  viewBox="0 0 20 20"
+                                  fill="currentColor"
+                                >
+                                  <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
+                                </svg>
+                              )}
+                            </span>
+                          </label>
+                          <span className="text-14 text-gray-600">
+                            {order.order_number}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-3 py-3 mt-2 text-13 text-gray-600 border">
+                        <p className="flex items-center gap-2">
+                          <IoCalendarNumberOutline color="#69ABB5" size={17} />
+                          {order.request_refund_date}
+                        </p>
+                      </td>
+                      <td className="px-3 py-3 border-t border-l text-gray-600 text-14 rtl:border-r">
+                        {order.total} $
+                      </td>
+                      <td className="px-2 py-3 border-t border-l text-gray-600">
+                        <p className="bg-customOrange-mediumOrange text-primary rounded-md p-2 text-14">
+                          {order.refund_reason || t("notProvided")}
+                        </p>
+                      </td>
+                      <td className="px-6 py-3 w-10 border-t border-l">
+                        <div className="flex items-center gap-3">
+                          <AcceptRefundRequests
+                            order_id={order.id}
+                            status={order.status}
+                            amount={order.items_count}
+                          />
+                          <RejectRefundRequests
+                            orderId={order.id}
+                            status={order.status}
+                            amount={order.items_count}
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {filteredOrders.length > pagination.per_page && (
+              <Pagination
+                pageCount={pagination.last_page}
+                onPageChange={handlePageClick}
+                forcePage={pagination.current_page - 1}
+                isRTL={isRTL}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={5}
+              />
+            )}
+          </>
         )}
-        <Pagination
-          pageCount={pagination.total_pages}
-          onPageChange={handlePageClick}
-          isRTL={isRTL}
-          marginPagesDisplayed={2}
-          pageRangeDisplayed={5}
-        />
       </div>
+
       <DeleteMutipleRefundOrders
         isOpen={showDeleteAllModal}
         onClose={() => setShowDeleteAllModal(false)}
@@ -375,4 +405,5 @@ function RefundRequests() {
     </div>
   );
 }
+
 export default RefundRequests;

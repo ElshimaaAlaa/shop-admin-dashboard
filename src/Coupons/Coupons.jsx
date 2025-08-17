@@ -255,8 +255,8 @@ function Coupons() {
 
         {selectedCoupons.length > 0 && (
           <div className="mt-3 flex justify-between items-center bg-gray-50 p-3 rounded">
-            <span className="text-gray-600">
-              {t("selecting")} {selectedCoupons.length} {t("items")}
+            <span>
+              {t("selecting")} <span className="font-bold text-primary">{selectedCoupons.length}</span> {t("items")}
             </span>
             <button
               onClick={() => setShowDeleteAllModal(true)}

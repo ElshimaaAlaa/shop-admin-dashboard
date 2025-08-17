@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Helmet } from "react-helmet";
 import { receivedOrders } from "../ApiServices/received-orders";
 import { OrdersStatistics } from "./OrdersStatistics";
@@ -10,6 +10,7 @@ import Header from "../Components/Header/Header";
 
 function ReceivedOrders() {
   const [orders, setOrders] = useState([]);
+  const [allOrders, setAllOrders] = useState([]); // Store all orders for search
   const [statistics, setStatistics] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
@@ -20,31 +21,42 @@ function ReceivedOrders() {
   
   const [pagination, setPagination] = useState({
     current_page: 1,
-    per_page: 10,  
+    per_page: 10,
     total: 0,
     last_page: 1
   });
 
   // Debounce search query
   useEffect(() => {
-    const timer = setTimeout(() => setDebouncedSearchQuery(searchQuery), 300);
+    const timer = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+      setPagination(prev => ({ ...prev, current_page: 1 })); // Reset to first page on search
+    }, 300);
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
   // Filter orders based on search query
-  const filteredOrders = Array.isArray(orders)
-    ? orders.filter((order) => {
-        if (!debouncedSearchQuery) return true;
-        const searchTerm = debouncedSearchQuery.toLowerCase();
-        return [
-          order.order_number?.toString().toLowerCase(),
-          order.status_name?.toString().toLowerCase(),
-          order.payment_status?.toString().toLowerCase(),
-          order.total?.toString().toLowerCase(),
-          order.date?.toString().toLowerCase(),
-        ].some((field) => field?.includes(searchTerm));
-      })
-    : [];
+  const filteredOrders = useMemo(() => {
+    if (!debouncedSearchQuery) return allOrders;
+    
+    return allOrders.filter((order) => {
+      const searchTerm = debouncedSearchQuery.toLowerCase();
+      return [
+        order.order_number?.toString().toLowerCase(),
+        order.status_name?.toString().toLowerCase(),
+        order.payment_status?.toString().toLowerCase(),
+        order.total?.toString().toLowerCase(),
+        order.date?.toString().toLowerCase(),
+      ].some((field) => field?.includes(searchTerm));
+    });
+  }, [allOrders, debouncedSearchQuery]);
+
+  // Calculate paginated orders
+  const paginatedOrders = useMemo(() => {
+    const startIndex = (pagination.current_page - 1) * pagination.per_page;
+    const endIndex = startIndex + pagination.per_page;
+    return filteredOrders.slice(startIndex, endIndex);
+  }, [filteredOrders, pagination.current_page, pagination.per_page]);
 
   // Fetch orders from API
   useEffect(() => {
@@ -53,6 +65,7 @@ function ReceivedOrders() {
       try {
         const response = await receivedOrders(pagination.current_page);
         setOrders(response.orders || []);
+        setAllOrders(response.orders || []); // Store all orders for search
         setStatistics(response.statistics || {});
         
         setPagination(prev => ({
@@ -72,9 +85,27 @@ function ReceivedOrders() {
     fetchReceivedOrder();
   }, [pagination.current_page]);
 
+  // Update pagination when filtered orders change
+  useEffect(() => {
+    if (debouncedSearchQuery) {
+      setPagination(prev => ({
+        ...prev,
+        total: filteredOrders.length,
+        last_page: Math.ceil(filteredOrders.length / prev.per_page) || 1,
+        current_page: 1
+      }));
+    }
+  }, [filteredOrders, debouncedSearchQuery]);
+
   // Handle page change
   const handlePageClick = ({ selected }) => {
     setPagination(prev => ({ ...prev, current_page: selected + 1 }));
+  };
+
+  // Handle delete multiple orders
+  const handleDeleteMultiple = (orderIds) => {
+    setAllOrders(prev => prev.filter(order => !orderIds.includes(order.id)));
+    setOrders(prev => prev.filter(order => !orderIds.includes(order.id)));
   };
 
   return (
@@ -103,17 +134,27 @@ function ReceivedOrders() {
         />
         
         <OrdersTable
-          filteredOrders={filteredOrders}
+          filteredOrders={paginatedOrders}
+          allOrders={filteredOrders} // Pass filtered orders for accurate count
           isLoading={isLoading}
           error={error}
           debouncedSearchQuery={debouncedSearchQuery}
+          onDeleteMultiple={handleDeleteMultiple}
         />
+        
+        {filteredOrders.length > 0 && (
           <OrdersPagination
-            pagination={pagination}
+            pagination={{
+              ...pagination,
+              total: filteredOrders.length,
+              last_page: Math.ceil(filteredOrders.length / pagination.per_page)
+            }}
             handlePageClick={handlePageClick}
           />
+        )}
       </div>
     </div>
   );
 }
+
 export default ReceivedOrders;

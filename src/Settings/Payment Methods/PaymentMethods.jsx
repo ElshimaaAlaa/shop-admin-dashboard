@@ -168,8 +168,8 @@ function PaymentMethods() {
           <>
             {selectedPayments.length > 0 && (
               <div className="mt-3 flex justify-between items-center bg-gray-50 p-3 rounded">
-                <span className="text-gray-600">
-                  {t("selecting")} {selectedPayments.length} {t("fromitems")}
+                <span>
+                  {t("selecting")} <span className="font-bold text-primary">{selectedPayments.length}</span> {t("fromitems")}
                 </span>
                 <button
                   onClick={() => setShowDeleteAllModal(true)}

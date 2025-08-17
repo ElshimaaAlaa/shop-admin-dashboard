@@ -38,7 +38,7 @@ const SizeItem = React.memo(({ size }) => {
   return (
     <div>
       <h2 className="text-gray-400 text-15">{t("size")}</h2>
-      <p className="text-14 mt-1 bg-customOrange-mediumOrange rounded-md p-1 text-primary">
+      <p className="text-14 mt-1 text-center bg-customOrange-mediumOrange rounded-md p-1 text-primary">
         {size.name}
       </p>
     </div>
@@ -288,5 +288,4 @@ function ViewProduct() {
     </div>
   );
 }
-
 export default ViewProduct;

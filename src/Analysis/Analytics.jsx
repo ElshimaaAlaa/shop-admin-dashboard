@@ -13,7 +13,8 @@ import { fetchAnalyticsData } from "../ApiServices/Analytics";
 import { useTranslation } from "react-i18next";
 import Header from "../Components/Header/Header";
 function Analytics() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
   const [analyticsData, setAnalyticsData] = useState({
     monthly_expended: [],
     monthly_income: [],
@@ -31,7 +32,7 @@ function Analytics() {
   useEffect(() => {
     const getAnalyticsData = async () => {
       try {
-        const response = await fetchAnalyticsData();
+        const response = await fetchAnalyticsData(i18n.language);
 
         if (response && Array.isArray(response.monthly_expended)) {
           setAnalyticsData(response);
@@ -96,8 +97,12 @@ function Analytics() {
           {t("reports")} | {t("vertex")}
         </title>
       </Helmet>
-      <Header subtitle={t("reportMenu")} title={t("analytics")} className="mb-4"/>
-      <div className="bg-white rounded-md p-5 mb-5">
+      <Header
+        subtitle={t("reportMenu")}
+        title={t("analytics")}
+        className="mb-4"
+      />
+      <div className={`bg-white rounded-md p-5 mb-5 ${isRTL ? "rtl": "rtl"}`}>
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 mb-8">
           <StatisticsCard
             icon={FaMoneyBillWave}

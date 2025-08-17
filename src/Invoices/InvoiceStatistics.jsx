@@ -13,7 +13,7 @@ export const InvoiceStatistics = ({ statistics }) => {
         totalNumber={statistics.paid_orders.current || 0}
         percentage={`${statistics.paid_orders.change_rate || 0}% ${
           statistics.paid_orders.increased ? "+" : ""
-        } vs. ${t("previousMonth")}`}
+        } ${t("vs")} ${t("previousMonth")}`}
         duration={`${t("lastMonth")} ${statistics.paid_orders.previous || 0}`}
       />
       <StatisticsCard
@@ -22,7 +22,7 @@ export const InvoiceStatistics = ({ statistics }) => {
         totalNumber={statistics.pending_payment.current || 0}
         percentage={`${statistics.pending_payment.change_rate || 0}% ${
           statistics.pending_payment.increased ? "+" : ""
-        } vs. ${t("previousMonth")}`}
+        } ${t("vs")} ${t("previousMonth")}`}
         duration={`${t("lastMonth")} ${statistics.pending_payment.previous || 0}`}
       />
       <StatisticsCard
@@ -31,7 +31,7 @@ export const InvoiceStatistics = ({ statistics }) => {
         totalNumber={statistics.cancelled_orders.current || 0}
         percentage={`${statistics.cancelled_orders.change_rate || 0}% ${
           statistics.cancelled_orders.increased ? "+" : ""
-        } vs. ${t("previousMonth")}`}
+        } ${t("vs")} ${t("previousMonth")}`}
         duration={`${t("lastMonth")} ${statistics.cancelled_orders.previous || 0}`}
       />
     </section>

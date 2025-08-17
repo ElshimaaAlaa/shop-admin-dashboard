@@ -9,6 +9,7 @@ import { ImageUpload } from "../../Components/Upload Image/UploadUpdatedImage";
 import InputField from "../../Components/InputFields/InputField";
 import "./style.scss";
 import { useTranslation } from "react-i18next";
+import Header from "../../Components/Header/Header";
 const CustomDropdown = ({
   options,
   value,
@@ -204,10 +205,11 @@ function EditCategory() {
         </title>
         <meta name="description" content="Edit category details in VERTEX" />
       </Helmet>
-      <section className="rounded-md p-5 mx-5 bg-white mt-5 mb-3">
-        <p className="text-gray-400 text-13">{t("editCatHead")}</p>
-        <h1 className="font-bold text-17 mt-2">{t("editCat")}</h1>
-      </section>
+      <Header
+        subtitle={t("editCatHead")}
+        title={t("editCat")}
+        className="mx-5 mt-5 mb-3"
+      />
       <Formik
         initialValues={initialValues}
         enableReinitialize={true}

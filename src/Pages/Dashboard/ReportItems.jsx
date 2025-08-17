@@ -5,19 +5,19 @@ const StatisticsCard = ({
   totalNumber,
   percentage,
   duration,
-  increased, // Make sure to pass this prop
+  increased,
 }) => {
-  const {i18n } = useTranslation();
+  const { i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
   const currentLanguage = i18n.language;
 
-  // Format the percentage display based on language (if needed)
   const displayPercentage =
     currentLanguage === "ar"
       ? percentage
       : percentage.replace("من السنة الماضية", "from last year");
 
   return (
-    <div className="bg-white rounded-md border border-gray-200 flex-1 min-w-[200px]">
+    <div className={`bg-white rounded-md border border-gray-200 flex-1 min-w-[200px] ${isRTL ? "rtl" :"ltr"}`}>
       <div className="flex items-center gap-3 bg-gray-100 rounded-tl-md rounded-tr-md p-3 mb-5">
         <Icon className="text-xl text-primary" />
         <h3 className="text-gray-600 text-14">{title}</h3>
@@ -26,7 +26,7 @@ const StatisticsCard = ({
         <h1 className="text-xl font-bold">{totalNumber}</h1>
         <p
           className={`text-12 font-bold rounded-md py-1 px-4 ${
-            increased === false // Use the 'increased' prop to determine color
+            increased === false
               ? "text-red-600 bg-red-50"
               : "text-[#34B41E] bg-[#E7F6E5]"
           }`}

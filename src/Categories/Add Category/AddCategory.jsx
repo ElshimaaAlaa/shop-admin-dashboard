@@ -11,6 +11,7 @@ import { ImageUpload } from "../../Components/Upload Image/UploadImage";
 import { TagsInput } from "../../Components/Tag Input/TagInput";
 import InputField from "../../Components/InputFields/InputField";
 import { useTranslation } from "react-i18next";
+import Header from "../../Components/Header/Header";
 const CustomDropdown = ({
   options,
   value,
@@ -200,10 +201,7 @@ function AddCategory() {
       >
         {({ setFieldValue, values, errors, touched }) => (
           <Form className="flex flex-col">
-            <h1 className=" rounded-md p-5 mx-4 bg-white mt-5 mb-3">
-              <p className="text-gray-400 text-13">{t("addCatHead")}</p>
-              <h3 className="text-17 font-bold mt-2">{t("addCat")}</h3>
-            </h1>
+            <Header subtitle={t("addCatHead")} title={t("addCat")} className="mx-5 mb-3 mt-5" />
             <div className="flex gap-3 mx-4">
               <section className="bg-white p-4 rounded-md w-full">
                 <h2 className="font-bold mb-5 text-16">{t("basicInfo")}</h2>

@@ -219,8 +219,8 @@ function AllCategory() {
 
         {selectedCategories.length > 0 && (
           <div className="mt-3 flex justify-between items-center bg-gray-50 p-3 rounded">
-            <span className="text-gray-600">
-              {t("selecting")} {selectedCategories.length} {t("items")}
+            <span>
+              {t("selecting")} <span className="font-bold text-primary">{selectedCategories.length}</span> {t("items")}
             </span>
             <button
               onClick={handleDeleteSelected}
@@ -242,8 +242,10 @@ function AllCategory() {
           <div className="text-gray-400 text-center mt-10">
             <ClipLoader color="#E0A75E" />
           </div>
-        ) : filteredCategories.length === 0 ? (
-          <div className="text-gray-400 text-center mt-10">{t("noData")}</div>
+        ) :categories.length === 0 ? (
+          <p className="text-gray-400 text-16 text-center mt-10">{t("noData")}</p>
+        ): filteredCategories.length === 0 ? (
+          <div className="text-gray-400 text-center mt-10">{t("noMatchResults")}</div>
         ) : (
           <>
             <div className="border border-gray-200 rounded-lg ">
@@ -449,5 +451,4 @@ function AllCategory() {
     </div>
   );
 }
-
 export default AllCategory;

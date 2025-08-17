@@ -10,8 +10,8 @@ import { useTranslation } from "react-i18next";
 import Pagination from "../../Components/Pagination/Pagination";
 import Header from "../../Components/Header/Header";
 import { toast } from "react-toastify";
-// import DeleteMutipleProducts from "./DeleteMultipleProducts";
 import DeleteMutipleProducts from "./DeleteMultipleProducts";
+
 function AllProducts() {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -25,7 +25,7 @@ function AllProducts() {
   const [isDeleting, setIsDeleting] = useState(false);
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
-  const isRTL = i18n.language === "ar"
+  const isRTL = i18n.language === "ar";
 
   useEffect(() => {
     const getProducts = async () => {
@@ -51,15 +51,53 @@ function AllProducts() {
     getProducts();
   }, [i18n.language]);
 
+  const filteredProducts = useMemo(() => {
+    if (!products || !Array.isArray(products)) return [];
+    return products.filter(
+      (product) =>
+        product?.name?.toLowerCase()?.includes(searchQuery.toLowerCase()) ||
+        product?.category?.name
+          ?.toLowerCase()
+          ?.includes(searchQuery.toLowerCase())
+    );
+  }, [products, searchQuery]);
+
+  const paginationData = useMemo(() => {
+    const totalItems = filteredProducts.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = filteredProducts.slice(indexOfFirstItem, indexOfLastItem);
+
+    return {
+      totalItems,
+      totalPages,
+      currentItems,
+      hasItems: totalItems > 0
+    };
+  }, [filteredProducts, currentPage, itemsPerPage]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+    setSelectAll(false);
+    setSelectedProducts([]);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    if (!selectAll) return;
+    const allCurrentIds = paginationData.currentItems.map(item => item.id);
+    const allSelected = allCurrentIds.every(id => selectedProducts.includes(id));
+    if (!allSelected) {
+      setSelectAll(false);
+    }
+  }, [paginationData.currentItems, selectedProducts, selectAll]);
+
   const handleDeleteProduct = (productId) => {
     setProducts((prevProducts) => {
       const updatedProducts = prevProducts.filter(
         (product) => product.id !== productId
       );
-      if (
-        updatedProducts.length <= (currentPage - 1) * itemsPerPage &&
-        currentPage > 1
-      ) {
+      if (updatedProducts.length <= (currentPage - 1) * itemsPerPage && currentPage > 1) {
         setCurrentPage(currentPage - 1);
       }
       return updatedProducts;
@@ -70,16 +108,13 @@ function AllProducts() {
   const handleDeleteMultiple = async () => {
     setIsDeleting(true);
     try {
-      // await deleteMultipleProducts(selectedProducts);
-      
       setProducts(prevProducts =>
         prevProducts.filter(product => !selectedProducts.includes(product.id))
       );
-      
       setSelectedProducts([]);
       setSelectAll(false);
       
-      if (currentItems.length === selectedProducts.length && currentPage > 1) {
+      if (paginationData.currentItems.length === selectedProducts.length && currentPage > 1) {
         setCurrentPage(currentPage - 1);
       }
       
@@ -93,29 +128,11 @@ function AllProducts() {
     }
   };
 
-  const filteredProducts = useMemo(() => {
-    if (!products || !Array.isArray(products)) return [];
-    return products.filter(
-      (product) =>
-        product?.name?.toLowerCase()?.includes(searchQuery.toLowerCase()) ||
-        product?.category?.name
-          ?.toLowerCase()
-          ?.includes(searchQuery.toLowerCase())
-    );
-  }, [products, searchQuery]);
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredProducts.slice(
-    indexOfFirstItem,
-    indexOfLastItem
-  );
-
   const handleSelectAll = (e) => {
     const isChecked = e.target.checked;
     setSelectAll(isChecked);
     if (isChecked) {
-      const allProductIds = currentItems.map((product) => product.id);
+      const allProductIds = paginationData.currentItems.map((product) => product.id);
       setSelectedProducts(allProductIds);
     } else {
       setSelectedProducts([]);
@@ -133,6 +150,12 @@ function AllProducts() {
 
   const handleDeleteSelected = () => {
     setShowDeleteModal(true);
+  };
+
+  const handlePageChange = ({ selected }) => {
+    setCurrentPage(selected + 1);
+    setSelectAll(false);
+    setSelectedProducts([]);
   };
 
   return (
@@ -163,8 +186,8 @@ function AllProducts() {
 
         {selectedProducts.length > 0 && (
           <div className="mt-3 flex justify-between items-center bg-gray-50 p-3 rounded">
-            <span className="text-gray-600">
-              {t("selecting")} {selectedProducts.length} {t("items")}
+            <span>
+              {t("selecting")} <span className="text-primary font-bold">{selectedProducts.length}</span> {t("items")}
             </span>
             <button
               onClick={handleDeleteSelected}
@@ -186,9 +209,9 @@ function AllProducts() {
           <div className="flex justify-center mt-10">
             <ClipLoader color="#E0A75E" size={40} />
           </div>
-        ) : filteredProducts.length === 0 ? (
+        ) : !paginationData.hasItems ? (
           <div className="text-gray-400 text-center mt-10">
-            {searchQuery ? t("noMatchResults") : t("noProductsAvailable")}
+            {searchQuery ? t("noMatchResults") : t("noData")}
           </div>
         ) : (
           <>
@@ -245,7 +268,7 @@ function AllProducts() {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentItems.map((product) => (
+                  {paginationData.currentItems.map((product) => (
                     <tr key={product.id} className="hover:bg-gray-50">
                       <td
                         className="px-3 py-3 border-t border-r text-gray-600 text-15 cursor-pointer"
@@ -362,14 +385,16 @@ function AllProducts() {
                 </tbody>
               </table>
             </div>
-            <Pagination
-              pageCount={Math.ceil(filteredProducts.length / itemsPerPage)}
-              onPageChange={({ selected }) => setCurrentPage(selected + 1)}
-              currentPage={currentPage}
-              isRTL={isRTL}
-              marginPagesDisplayed={2}
-              pageRangeDisplayed={5}
-            />
+            {paginationData.totalPages > 1 && (
+              <Pagination
+                pageCount={paginationData.totalPages}
+                onPageChange={handlePageChange}
+                forcePage={currentPage - 1}
+                isRTL={isRTL}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={5}
+              />
+            )}
           </>
         )}
         <DeleteMutipleProducts

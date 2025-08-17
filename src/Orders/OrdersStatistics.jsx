@@ -26,7 +26,7 @@ export const OrdersStatistics = ({ statistics }) => {
         percentage={`${
           statistics.refund_orders?.current || 0
         }% ${t("vs")} ${t("previousMonth")}`}
-        duration={`Last month: ${statistics.refund_orders?.previous || 0}`}
+        duration={`${t("lastMonth")} ${statistics.refund_orders?.previous || 0}`}
       />
       <StatisticsCard
         icon={TbCancel}
