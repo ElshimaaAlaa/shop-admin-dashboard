@@ -496,5 +496,7 @@
   "female":"Female",
   "children":"Children",
   "selectGender":"Select Gender",
-  "productImage":"Product Icons / Images"
+  "productImage":"Product Icons / Images",
+  "rememberMe":"Remember Me",
+  "noPaymentMethod":"No payment methods available"
 }

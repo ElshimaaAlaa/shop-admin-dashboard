@@ -12,7 +12,6 @@ export const GetPersonalInfo = async () => {
       },
     });
     if (response.status === 200) {
-      console.log(response.data.data);
       localStorage.setItem("User Name", response.data.data.name);
       localStorage.setItem("User email", response.data.data.email);
       localStorage.setItem("User Phone", response.data.data.phone);

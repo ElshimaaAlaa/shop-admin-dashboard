@@ -15,8 +15,6 @@ export const notificationService = async ({language}) => {
     });
 
     if (response.status === 200) {
-      console.log("success get notifications", response.data.data);
-
       return response.data.data;
     }
     throw new Error("Failed to get notifications");

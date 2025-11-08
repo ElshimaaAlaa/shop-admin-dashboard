@@ -20,7 +20,6 @@ export const AddNewRequest = async (questionId, answer) => {
     });
 
     if (response.status === 200) {
-      console.log("Response added successfully", response.data);
       return response.data;
     }
     throw new Error("Failed to add response");

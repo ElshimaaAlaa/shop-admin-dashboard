@@ -296,7 +296,7 @@ function AllCategory() {
                               <BsSortDown />
                             </button>
                             {showTypeDropdown && (
-                              <div className="absolute ltr:right-48 rtl:left-36 mt-0.5 w-48 bg-white rounded-md shadow-lg z-10 border border-gray-200">
+                              <div className="absolute ltr:right-36 rtl:left-36 mt-0.5 w-48 bg-white rounded-md shadow-lg z-10 border border-gray-200">
                                 {uniqueTypes.map((type) => (
                                   <div
                                     key={type}

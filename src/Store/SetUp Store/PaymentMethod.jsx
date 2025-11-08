@@ -221,7 +221,7 @@ function PaymentMethods() {
                         ))
                       ) : (
                         <p className="col-span-2 text-center text-gray-500 py-4">
-                          No payment methods available
+                          {t("noPaymentMethod")}
                         </p>
                       )}
                     </div>
@@ -237,14 +237,14 @@ function PaymentMethods() {
                 <button
                   type="button"
                   onClick={() => navigate("/Register/ShippingProvider")}
-                  className="flex font-bold items-center gap-3 text-dark pb-4 mx-6"
+                  className="flex font-bold items-center gap-3 text-dark pb-4 mx-6 rtl:flex-row-reverse"
                 >
-                  <FaArrowLeftLong />
+                 <span className="mt-1"><FaArrowLeftLong /></span> 
                   {t("back")}
                 </button>
                 <button
                   type="submit"
-                  className="bg-primary me-5 rtl:ms-5 text-white rounded-md p-3 w-32 flex items-center gap-2 justify-center disabled:opacity-70"
+                  className="bg-primary me-5 rtl:ms-5 text-white rounded-md p-3 w-32 flex items-center gap-2 justify-center disabled:opacity-70 rtl:flex-row-reverse"
                   disabled={isLoading || values.payment_method.length === 0}
                 >
                   {isLoading ? (

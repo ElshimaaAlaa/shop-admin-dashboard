@@ -500,5 +500,6 @@
   "male":"ذكر",
   "female":"أنثي",
   "children":"طفل",
-  "selectGender":"أختر نوع"
+  "selectGender":"أختر نوع",
+  "noPaymentMethod":"لا يوجد طرق دفع متاحة"
 }

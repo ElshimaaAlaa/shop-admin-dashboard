@@ -15,7 +15,6 @@ export const addDisc = async (formData) => {
     );
     if (response.status === 200) {
       console.log("discount added successfully");
-      console.log(response.data);
       return response.data;
     }
   } catch (error) {

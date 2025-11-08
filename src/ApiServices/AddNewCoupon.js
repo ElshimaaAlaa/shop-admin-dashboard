@@ -15,7 +15,6 @@ export const addCoupon = async (formData) => {
     );
     if (response.status === 200) {
       console.log("coupon added successfully");
-      console.log(response.data);
       return response.data;
     }
   } catch (error) {

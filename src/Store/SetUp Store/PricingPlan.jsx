@@ -170,7 +170,7 @@ const PricingPlan = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3 mb-5 px-6">
             <div className="rounded-full border-[5px] border-primary p-2 font-bold">
-              2/3
+              3/3
             </div>
             <h3 className="text-15 font-bold">{t("startStore")}</h3>
           </div>

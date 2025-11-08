@@ -78,7 +78,9 @@ function StoreTheme() {
       .test(
         "fileType",
         t("unsupportedFormat"),
-        (files) => files && files.every((file) => ["image/jpeg", "image/png"].includes(file.type))
+        (files) =>
+          files &&
+          files.every((file) => ["image/jpeg", "image/png"].includes(file.type))
       ),
   });
 
@@ -153,17 +155,17 @@ function StoreTheme() {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
-        primaryPickerRef.current && 
+        primaryPickerRef.current &&
         !primaryPickerRef.current.contains(event.target) &&
-        !event.target.closest('.primary-color-input')
+        !event.target.closest(".primary-color-input")
       ) {
         setShowPrimaryPicker(false);
       }
 
       if (
-        secondaryPickerRef.current && 
+        secondaryPickerRef.current &&
         !secondaryPickerRef.current.contains(event.target) &&
-        !event.target.closest('.secondary-color-input')
+        !event.target.closest(".secondary-color-input")
       ) {
         setShowSecondaryPicker(false);
       }
@@ -174,6 +176,17 @@ function StoreTheme() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
+    i18n.changeLanguage(savedLanguage);
+    setIsRTL(savedLanguage === "ar");
+  }, [i18n]);
+
+  useEffect(() => {
+    const currentLanguage = i18n.language;
+    setIsRTL(currentLanguage === "ar");
+    localStorage.setItem("selectedLanguage", currentLanguage);
+  }, [i18n.language]);
 
   return (
     <div className="p-3 bg-gradient-to-r from-customBlue-mediumBlue via-customOrange-mediumOrange to-customOrange-mediumOrange min-h-screen flex items-center justify-center">
@@ -254,7 +267,7 @@ function StoreTheme() {
                 setBannerUrls={setBannerUrls}
                 bannerUrls={bannerUrls}
               />
-              <h3 className="text-16 font-semibold mb-3 px-6">
+              <h3 className="text-16 font-semibold mb-3 px-6 ">
                 {t("enterColor")}
               </h3>
               <div className="flex gap-2 mb-6 px-6">
@@ -274,7 +287,7 @@ function StoreTheme() {
                     readOnly
                   />
                   {showPrimaryPicker && (
-                    <div 
+                    <div
                       ref={primaryPickerRef}
                       className="absolute -top-44 z-10 mt-2 bg-white p-3 rounded-md shadow-lg"
                       onMouseDown={(e) => e.preventDefault()}
@@ -282,7 +295,11 @@ function StoreTheme() {
                       <HexColorPicker
                         color={values.theme_primary_color}
                         onChange={(color) =>
-                          handleColorChange(color, "theme_primary_color", setFieldValue)
+                          handleColorChange(
+                            color,
+                            "theme_primary_color",
+                            setFieldValue
+                          )
                         }
                       />
                       <div className="flex justify-end mt-2">
@@ -315,7 +332,7 @@ function StoreTheme() {
                     readOnly
                   />
                   {showSecondaryPicker && (
-                    <div 
+                    <div
                       ref={secondaryPickerRef}
                       className="absolute -top-44 z-10 mt-2 bg-white p-3 rounded-md shadow-lg"
                       onMouseDown={(e) => e.preventDefault()}
@@ -323,7 +340,11 @@ function StoreTheme() {
                       <HexColorPicker
                         color={values.theme_secondary_color}
                         onChange={(color) =>
-                          handleColorChange(color, "theme_secondary_color", setFieldValue)
+                          handleColorChange(
+                            color,
+                            "theme_secondary_color",
+                            setFieldValue
+                          )
                         }
                       />
                       <div className="flex justify-end mt-2">
@@ -363,5 +384,4 @@ function StoreTheme() {
     </div>
   );
 }
-
 export default StoreTheme;

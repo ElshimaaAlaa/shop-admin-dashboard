@@ -228,7 +228,6 @@ function PaymentInfo({
                   <InputField
                     name="phone"
                     placeholder={t("phone")}
-                    // type="tel"
                   />
                 </div>
               </section>
@@ -272,15 +271,11 @@ function PaymentInfo({
                     <InputField
                       name="expiration_date"
                       placeholder="MM/YY"
+                      type="date"
                       onChange={(e) => {
                         let value = e.target.value.replace(/\D/g, "");
-                        // if (value.length > 2) {
-                        //   value =
-                        //     value.substring(0, 2) + "/" + value.substring(2, 4);
-                        // }
                         setFieldValue("expiration_date", value);
                       }}
-                      // maxLength="5"
                     />
                   </div>
                   <div className="flex items-center gap-2 mt-3">

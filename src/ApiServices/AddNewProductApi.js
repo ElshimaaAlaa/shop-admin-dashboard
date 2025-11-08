@@ -16,7 +16,6 @@ export const addProduct = async (formData) => {
     );
     if (response.status === 200) {
       console.log("Product added successfully");
-      console.log(response.data);
       return response.data;
     }
   } catch (error) {

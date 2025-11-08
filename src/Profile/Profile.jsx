@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  ChevronDown,
   ChevronRight,
   Eye,
   PenLine,
@@ -67,12 +66,11 @@ export default function ProfileMenu() {
             className="object-cover"
           />
         </div>
-        <ChevronDown className="w-5 h-5 text-black" />
       </button>
       {isOpen && (
         <div
           ref={dropdownRef}
-          className="absolute right-0 rtl:-right-52 mt-2 w-300 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50 px-3 flex flex-col gap-3"
+          className="absolute right-0 rtl:-right-60 mt-2 w-300 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50 px-3 flex flex-col gap-3"
         >
           <div className="flex items-center rtl:flex-row-reverse gap-3 py-2">
             <div className="w-14 h-14 rounded-full overflow-hidden">

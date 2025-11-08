@@ -57,7 +57,7 @@ function AllFaqs({ refreshTrigger }) {
     );
   }
   return (
-    <section className="mt-5 w-full">
+    <section className="my-5 w-full">
       <div
         ref={containerRef}
         className=""

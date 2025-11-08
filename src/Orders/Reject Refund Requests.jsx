@@ -61,7 +61,7 @@ function RejectRefundRequests({ order_id, status }) {
         <div className="bg-red-50 rounded-md p-2 mt-5 mb-5">
           <IoIosCloseCircle color="#DC2626" size={30} />
         </div>
-        <p className="font-bold text-center">{t("rejectRequest")}</p>
+        <p className="font-bold text-center w-72">{t("rejectRequest")}</p>
 
         {errorMessage && (
           <p className="text-red-500 text-sm text-center mt-2">
